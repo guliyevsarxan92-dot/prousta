@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}Elan Yerləşdir — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:680px;margin:40px auto;padding:0 20px}
+.page-wrap h2{font-size:24px;font-weight:700;margin-bottom:24px}
+.form-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);outline:none}
+.field textarea{height:140px;resize:vertical}
+.submit-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer;margin-top:8px}
+.submit-btn:hover{background:var(--pd)}
+.upload-area{border:2px dashed var(--border);border-radius:var(--r);padding:30px;text-align:center;cursor:pointer;transition:.2s}
+.upload-area:hover{border-color:var(--p);background:var(--pl)}
+.upload-area p{color:var(--muted);font-size:14px;margin-top:8px}
+.phone-wrap{display:flex;gap:8px}
+.phone-prefix{padding:11px 14px;background:#f1f5f9;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--muted);white-space:nowrap}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <h2>Elan Yerləşdir</h2>
+  <div class="form-box">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="field">
+        <label>Xidmətin adı</label>
+        <input name="bashliq" placeholder="Məs: Elektrik ustası, Santexnik, Kondisioner təmiri..." required>
+      </div>
+      <div class="field">
+        <label>Kateqoriya</label>
+        <select name="kategori" required>
+          <option value="">Seçin...</option>
+          {% for kat in kateqoriyalar %}
+            <option value="{{ kat.pk }}">{{ kat.ad }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Qiymət (₼)</label>
+        <input name="qiymet" type="number" placeholder="Boş buraxsanız 'Razılaşma ilə' yazılacaq">
+      </div>
+      <div class="field">
+        <label>Mobil nömrə</label>
+        <div class="phone-wrap">
+          <span class="phone-prefix">+994</span>
+          <input name="telefon" type="tel" placeholder="50 000 00 00" maxlength="12" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Bölgə</label>
+        <select name="sheher" required>
+          <option value="">Seçin...</option>
+          <optgroup label="Bakı">
+            <option>Bakı — Binəqədi</option>
+            <option>Bakı — Xəzər</option>
+            <option>Bakı — Xətai</option>
+            <option>Bakı — Nərimanov</option>
+            <option>Bakı — Nəsimi</option>
+            <option>Bakı — Nizami</option>
+            <option>Bakı — Pirallahı</option>
+            <option>Bakı — Qaradağ</option>
+            <option>Bakı — Sabail</option>
+            <option>Bakı — Sabunçu</option>
+            <option>Bakı — Suraxanı</option>
+            <option>Bakı — Abşeron</option>
+          </optgroup>
+          <optgroup label="Abşeron rayonu">
+            <option>Abşeron</option>
+            <option>Xırdalan</option>
+          </optgroup>
+          <optgroup label="Sumqayıt">
+            <option>Sumqayıt</option>
+          </optgroup>
+          <optgroup label="Gəncə">
+            <option>Gəncə</option>
+          </optgroup>
+          <optgroup label="Lənkəran">
+            <option>Lənkəran</option>
+          </optgroup>
+          <optgroup label="Digər şəhər və rayonlar">
+            <option>Ağcabədi</option>
+            <option>Ağdam</option>
+            <option>Ağdaş</option>
+            <option>Ağstafa</option>
+            <option>Ağsu</option>
+            <option>Astara</option>
+            <option>Balakən</option>
+            <option>Bərdə</option>
+            <option>Beyləqan</option>
+            <option>Biləsuvar</option>
+            <option>Cəbrayıl</option>
+            <option>Cəlilabad</option>
+            <option>Daşkəsən</option>
+            <option>Füzuli</option>
+            <option>Gədəbəy</option>
+            <option>Goranboy</option>
+            <option>Göyçay</option>
+            <option>Göygöl</option>
+            <option>Hacıqabul</option>
+            <option>İmişli</option>
+            <option>İsmayıllı</option>
+            <option>Kəlbəcər</option>
+            <option>Kürdəmir</option>
+            <option>Laçın</option>
+            <option>Lerik</option>
+            <option>Masallı</option>
+            <option>Mingəçevir</option>
+            <option>Naftalan</option>
+            <option>Naxçıvan</option>
+            <option>Neftçala</option>
+            <option>Oğuz</option>
+            <option>Qax</option>
+            <option>Qazax</option>
+            <option>Qəbələ</option>
+            <option>Qobustan</option>
+            <option>Quba</option>
+            <option>Qubadlı</option>
+            <option>Qusar</option>
+            <option>Saatlı</option>
+            <option>Sabirabad</option>
+            <option>Salyan</option>
+            <option>Şamaxı</option>
+            <option>Şəki</option>
+            <option>Şəmkir</option>
+            <option>Samux</option>
+            <option>Şirvan</option>
+            <option>Şuşa</option>
+            <option>Tərtər</option>
+            <option>Tovuz</option>
+            <option>Ucar</option>
+            <option>Xankəndi</option>
+            <option>Xocavənd</option>
+            <option>Xocaəsgər (Ağdərə)</option>
+            <option>Yardımlı</option>
+            <option>Zaqatala</option>
+            <option>Zəngilan</option>
+            <option>Zərdab</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field">
+        <label>Açıqlama</label>
+        <textarea name="acaqlama" placeholder="Xidmətiniz haqqında ətraflı məlumat yazın..." required></textarea>
+      </div>
+      <div class="field">
+        <label>Şəkillər</label>
+        <div class="upload-area" onclick="document.getElementById('shekilInput').click()">
+          <div style="font-size:32px">📷</div>
+          <p>Şəkil seçmək üçün klikləyin</p>
+          <p style="font-size:12px">Maksimum 5 şəkil</p>
+        </div>
+        <input type="file" id="shekilInput" name="shekillar" multiple accept="image/*" style="display:none" onchange="showFiles(this)">
+        <div id="fileNames" style="margin-top:8px;font-size:13px;color:var(--muted)"></div>
+      </div>
+      <button class="submit-btn" type="submit">Elanı Yerləşdir</button>
+    </form>
+  </div>
+</div>
+<script>
+function showFiles(input){
+  const names = Array.from(input.files).map(f=>f.name).join(', ');
+  document.getElementById('fileNames').textContent = names;
+}
+</script>
+{% endblock %}

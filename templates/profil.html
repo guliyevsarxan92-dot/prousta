@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Profil — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:1000px;margin:40px auto;padding:0 20px}
+.profil-header{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:30px}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--p)}
+.profil-ad{font-size:20px;font-weight:700}
+.profil-email{font-size:14px;color:var(--muted)}
+.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--border)}
+.tab{padding:10px 20px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s}
+.tab.aktiv{color:var(--p);border-bottom-color:var(--p)}
+.tab-content{display:none}
+.tab-content.aktiv{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.kart-img{width:100%;height:160px;object-fit:cover;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.kart-img img{width:100%;height:160px;object-fit:cover}
+.kart-body{padding:12px}
+.kart-title{font-weight:600;font-size:14px;margin-bottom:4px}
+.kart-price{color:var(--p);font-weight:700;font-size:15px;margin-bottom:8px}
+.kart-actions{display:flex;gap:8px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-aktiv{background:#dcfce7;color:#166534}
+.badge-gozlemede{background:#fef9c3;color:#854d0e}
+.sil-btn{padding:6px 12px;background:#fee2e2;color:#991b1b;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
+.bosh{color:var(--muted);font-size:14px;padding:20px 0}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <div class="profil-header">
+    <div class="avatar">{{ user.username|first|upper }}</div>
+    <div>
+      <div class="profil-ad">{{ user.username }}</div>
+      <div class="profil-email">{{ user.email }}</div>
+    </div>
+    <a href="/elan/yeni/" class="btn btn-primary" style="margin-left:auto">+ Yeni Elan</a>
+  </div>
+
+  <div class="tabs">
+    <div class="tab aktiv" onclick="showTab('elanlarim')">Elanlarım ({{ elanlar.count }})</div>
+    <div class="tab" onclick="showTab('favoritler')">Favoritlər ({{ favoritler.count }})</div>
+  </div>
+
+  <div id="elanlarim" class="tab-content aktiv">
+    {% if elanlar %}
+    <div class="grid">
+      {% for elan in elanlar %}
+      <div class="kart">
+        <div class="kart-img">
+          {% if elan.shekillar.first %}
+            <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
+          {% else %}Şəkil yoxdur{% endif %}
+        </div>
+        <div class="kart-body">
+          <div class="kart-title">{{ elan.bashliq }}</div>
+          <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+          <div class="kart-actions">
+            <span class="badge {% if elan.status == 'aktiv' %}badge-aktiv{% else %}badge-gozlemede{% endif %}">
+              {{ elan.get_status_display }}
+            </span>
+            <a href="/elan/{{ elan.pk }}/sil/" class="sil-btn" onclick="return confirm('Silmək istəyirsiniz?')">Sil</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="bosh">Hələ elan yerləşdirməmisiniz.</p>
+    {% endif %}
+  </div>
+
+  <div id="favoritler" class="tab-content">
+    {% if favoritler %}
+    <div class="grid">
+      {% for fav in favoritler %}
+      <a href="/elan/{{ fav.elan.pk }}/" class="kart">
+        <div class="kart-img">
+          {% if fav.elan.shekillar.first %}
+            <img src="{{ fav.elan.shekillar.first.shekil.url }}" alt="{{ fav.elan.bashliq }}">
+          {% else %}Şəkil yoxdur{% endif %}
+        </div>
+        <div class="kart-body">
+          <div class="kart-title">{{ fav.elan.bashliq }}</div>
+          <div class="kart-price">{% if fav.elan.qiymet %}{{ fav.elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="bosh">Hələ favorit elanınız yoxdur.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('aktiv'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktiv'));
+  document.getElementById(id).classList.add('aktiv');
+  event.target.classList.add('aktiv');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{{ elan.bashliq }} — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:1000px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:1fr 320px;gap:30px}
+.shekillar{display:flex;flex-direction:column;gap:10px}
+.ana-shekil{width:100%;height:400px;object-fit:cover;border-radius:var(--r);background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ana-shekil img{width:100%;height:400px;object-fit:cover;border-radius:var(--r)}
+.kicik-shekillar{display:flex;gap:8px;flex-wrap:wrap}
+.kicik-shekillar img{width:70px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:.2s}
+.kicik-shekillar img:hover{border-color:var(--p)}
+.info-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:24px;height:fit-content;position:sticky;top:80px}
+.qiymet{font-size:28px;font-weight:800;color:var(--p);margin-bottom:16px}
+.bashliq{font-size:20px;font-weight:700;margin-bottom:12px}
+.meta{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.meta-item{font-size:13px;color:var(--muted)}
+.satici{display:flex;align-items:center;gap:12px;padding:16px 0;border-top:1px solid var(--border);margin-top:16px}
+.satici-avatar{width:44px;height:44px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:18px}
+.satici-ad{font-weight:600;font-size:15px}
+.satici-tarix{font-size:12px;color:var(--muted)}
+.btn-fav{width:100%;padding:12px;border-radius:var(--r);font-weight:600;font-size:15px;margin-top:12px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:.2s}
+.btn-fav:hover{border-color:#ef4444;color:#ef4444}
+.btn-fav.aktiv{background:#fee2e2;border-color:#ef4444;color:#ef4444}
+.acaqlama{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-top:0}
+.acaqlama h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.acaqlama p{color:var(--muted);line-height:1.8}
+@media(max-width:768px){.page-wrap{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <div>
+    <div class="shekillar">
+      <div class="ana-shekil" id="anaShekil">
+        {% if elan.shekillar.first %}
+          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" id="anaImg">
+        {% else %}
+          Şəkil yoxdur
+        {% endif %}
+      </div>
+      {% if elan.shekillar.count > 1 %}
+      <div class="kicik-shekillar">
+        {% for s in elan.shekillar.all %}
+          <img src="{{ s.shekil.url }}" onclick="document.getElementById('anaImg').src=this.src">
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="acaqlama" style="margin-top:20px">
+      <h3>Açıqlama</h3>
+      <p>{{ elan.acaqlama }}</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="qiymet">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+    <div class="bashliq">{{ elan.bashliq }}</div>
+    <div class="meta">
+      <div class="meta-item">📍 {{ elan.sheher }}</div>
+      <div class="meta-item">🏷 {{ elan.kategori }}</div>
+      <div class="meta-item">✅ {{ elan.get_veziyyet_display }}</div>
+      <div class="meta-item">👁 {{ elan.baxish_sayi }} baxış</div>
+      <div class="meta-item">📅 {{ elan.yaradildi|date:"d.m.Y" }}</div>
+    </div>
+    {% if user.is_authenticated %}
+      <a href="/favorit/{{ elan.pk }}/" class="btn-fav {% if favorit %}aktiv{% endif %}">
+        {% if favorit %}❤️ Favoritdən çıxar{% else %}🤍 Favoritə əlavə et{% endif %}
+      </a>
+    {% endif %}
+    <div class="satici">
+      <div class="satici-avatar">{{ elan.istifadeci.username|first|upper }}</div>
+      <div>
+        <div class="satici-ad">{{ elan.istifadeci.username }}</div>
+        <div class="satici-tarix">{{ elan.istifadeci.date_joined|date:"d.m.Y" }}-dən üzv</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

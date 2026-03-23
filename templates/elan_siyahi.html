@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Elanlar — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:1200px;margin:40px auto;padding:0 20px}
+.filter-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.filter-bar input{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px}
+.filter-bar input:focus{border-color:var(--p);outline:none}
+.filter-bar button{padding:11px 22px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600;font-size:14px;border:none;cursor:pointer}
+.cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.cat{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
+.cat:hover,.cat.aktiv{border-color:var(--p);color:var(--p);background:var(--pl)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s}
+.kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.kart-img{width:100%;height:180px;object-fit:cover;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.kart-img img{width:100%;height:180px;object-fit:cover}
+.kart-body{padding:14px}
+.kart-title{font-weight:600;font-size:15px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kart-price{color:var(--p);font-weight:700;font-size:16px;margin-bottom:6px}
+.kart-meta{font-size:12px;color:var(--muted)}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <form class="filter-bar" method="get">
+    <input name="q" value="{{ axtaris }}" placeholder="Elan axtar...">
+    <button type="submit">Axtar</button>
+  </form>
+  <div class="cats">
+    <a href="/elanlar/" class="cat {% if not request.GET.kategori %}aktiv{% endif %}">Hamısı</a>
+    {% for kat in kateqoriyalar %}
+      <a href="/elanlar/?kategori={{ kat.slug }}" class="cat {% if request.GET.kategori == kat.slug %}aktiv{% endif %}">{{ kat.ad }}</a>
+    {% endfor %}
+  </div>
+  <div class="grid">
+  {% for elan in elanlar %}
+    <a href="/elan/{{ elan.pk }}/" class="kart">
+      <div class="kart-img">
+        {% if elan.shekillar.first %}
+          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
+        {% else %}
+          Şəkil yoxdur
+        {% endif %}
+      </div>
+      <div class="kart-body">
+        <div class="kart-title">{{ elan.bashliq }}</div>
+        <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+        <div class="kart-meta">📍 {{ elan.sheher }} &nbsp;·&nbsp; 👁 {{ elan.baxish_sayi }}</div>
+      </div>
+    </a>
+  {% empty %}
+    <p style="color:var(--muted);grid-column:1/-1">Heç bir elan tapılmadı.</p>
+  {% endfor %}
+  </div>
+</div>
+{% endblock %}

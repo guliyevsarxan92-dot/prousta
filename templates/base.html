@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Prousta.az{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#1a47c8;--pd:#1238a8;--pl:#eef2ff;--acc:#f59e0b;--tx:#0f172a;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--white:#fff;--r:12px;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit;outline:none}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.logo{font-size:22px;font-weight:800;color:var(--p)}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{color:var(--muted);font-weight:500;font-size:14px;transition:.2s}
+.nav-links a:hover{color:var(--p)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:var(--r);font-weight:600;font-size:14px;transition:.2s;cursor:pointer}
+.btn-primary{background:var(--p);color:#fff}
+.btn-primary:hover{background:var(--pd)}
+.btn-outline{border:1.5px solid var(--border);color:var(--tx);background:var(--white)}
+.btn-outline:hover{border-color:var(--p);color:var(--p)}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.msgs{position:fixed;top:80px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px}
+.msg{padding:12px 20px;border-radius:var(--r);font-size:14px;font-weight:500;animation:fadeIn .3s ease}
+.msg.success{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+footer{background:var(--tx);color:#94a3b8;text-align:center;padding:30px;font-size:13px;margin-top:60px}
+</style>
+{% block style %}{% endblock %}
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Prousta.az</a>
+  <div class="nav-links">
+    <a href="/elanlar/">Bütün Elanlar</a>
+    {% if user.is_authenticated %}
+      <a href="/profil/">Profil</a>
+      <a href="/elan/yeni/" class="btn btn-primary">+ Elan Yerləşdir</a>
+      <a href="/cixis/" class="btn btn-outline">Çıxış</a>
+    {% else %}
+      <a href="/giris/" class="btn btn-outline">Giriş</a>
+      <a href="/qeydiyyat/" class="btn btn-primary">Qeydiyyat</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="msgs">
+{% for msg in messages %}
+  <div class="msg {{ msg.tags }}">{{ msg }}</div>
+{% endfor %}
+</div>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <p>© 2024 Prousta.az — Bütün hüquqlar qorunur.</p>
+</footer>
+</body>
+</html>

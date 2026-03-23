@@ -1,0 +1,146 @@
+/* ÜMUMI */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    color: #333;
+}
+
+/* NAVİQASİYA */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a2e;
+    padding: 15px 50px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav .logo {
+    color: #e94560;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #e94560;
+}
+
+/* ANA BÖLMƏ */
+#hero {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    text-align: center;
+    padding: 120px 20px;
+}
+
+#hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+#hero p {
+    font-size: 20px;
+    margin-bottom: 40px;
+    color: #ccc;
+}
+
+.btn {
+    background-color: #e94560;
+    color: white;
+    padding: 14px 36px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #c73652;
+}
+
+/* BÖLMƏLƏR */
+section {
+    padding: 80px 50px;
+    text-align: center;
+}
+
+section h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #1a1a2e;
+}
+
+section p {
+    font-size: 17px;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+/* KARTLAR */
+.kartlar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.kart {
+    background: #f4f4f4;
+    border-radius: 12px;
+    padding: 40px 30px;
+    width: 250px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.kart:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.kart h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #1a1a2e;
+}
+
+/* ƏLAQƏ */
+#elaqe {
+    background-color: #f9f9f9;
+}
+
+#elaqe p {
+    font-size: 18px;
+    margin: 10px auto;
+}
+
+/* FOOTER */
+footer {
+    background-color: #1a1a2e;
+    color: #aaa;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+}

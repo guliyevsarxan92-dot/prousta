@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Giriş — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.auth-wrap{max-width:420px;margin:60px auto;padding:0 20px}
+.auth-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:36px}
+.auth-box h2{font-size:22px;font-weight:700;margin-bottom:24px;text-align:center}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
+.field input:focus{border-color:var(--p)}
+.auth-btn{width:100%;padding:13px;background:var(--p);color:#fff;border-radius:var(--r);font-size:15px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.auth-btn:hover{background:var(--pd)}
+.auth-link{text-align:center;margin-top:16px;font-size:14px;color:var(--muted)}
+.auth-link a{color:var(--p);font-weight:600}
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <h2>Hesaba daxil ol</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field"><label>İstifadəçi adı</label><input name="username" required></div>
+      <div class="field"><label>Şifrə</label><input name="password" type="password" required></div>
+      <button class="auth-btn" type="submit">Daxil ol</button>
+    </form>
+    <div class="auth-link">Hesabın yoxdur? <a href="/qeydiyyat/">Qeydiyyat</a></div>
+  </div>
+</div>
+{% endblock %}
