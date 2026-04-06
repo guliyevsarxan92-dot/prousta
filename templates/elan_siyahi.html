@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}Bütün Elanlar — Prousta.az{% endblock %}
-{% block description %}Prousta.az-da bütün xidmət elanlarına baxın. Elektrik, santexnik, təmir, gözəllik, avtomobil və daha çox sahədə ustalar.{% endblock %}
-{% block canonical %}/elanlar/{% endblock %}
+{% block title %}{% if aktiv_kategori %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} — Prousta.az{% endif %}{% else %}Bütün Elanlar — Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if aktiv_kategori %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da. Ən sərfəli qiymətlər və etibarlı xidmət.{% endif %}{% else %}Prousta.az-da bütün xidmət elanlarına baxın. Elektrik, santexnik, təmir, gözəllik, avtomobil və daha çox sahədə ustalar.{% endif %}{% endblock %}
+{% block canonical %}/elanlar/{% if aktiv_kategori %}?kategori={{ aktiv_kategori.slug }}{% endif %}{% endblock %}
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/elanlar/?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/elanlar/?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
@@ -28,6 +28,22 @@
 .vip-badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
 .vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
 .vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
+.seo-block{margin-top:50px;padding:36px 32px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);line-height:1.75;color:#334155;font-size:15px}
+.seo-block h2{font-size:24px;font-weight:800;color:var(--tx);margin-bottom:14px;line-height:1.3}
+.seo-block h3{font-size:18px;font-weight:700;color:var(--tx);margin-top:26px;margin-bottom:10px}
+.seo-block p{margin-bottom:14px}
+.seo-block ul,.seo-block ol{margin:10px 0 16px 20px;padding-left:10px}
+.seo-block li{margin-bottom:8px}
+.seo-block strong{color:var(--tx);font-weight:700}
+.seo-block a{color:var(--p);font-weight:600;text-decoration:underline}
+.seo-block .faq-item{border-top:1px solid var(--border);padding:14px 0}
+.seo-block .faq-item:first-of-type{border-top:none;padding-top:4px}
+.seo-block .faq-q{font-weight:700;color:var(--tx);margin-bottom:6px}
+@media(max-width:768px){
+  .seo-block{padding:22px 16px;font-size:14px;margin-top:32px}
+  .seo-block h2{font-size:20px}
+  .seo-block h3{font-size:16px}
+}
 
 @media(max-width:768px){
   .grid{grid-template-columns:repeat(2,1fr);gap:12px}
@@ -87,6 +103,12 @@
       <a href="?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.next_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">Sonrakı →</a>
     {% endif %}
   </div>
+  {% endif %}
+
+  {% if aktiv_kategori and aktiv_kategori.seo_metn %}
+  <section class="seo-block">
+    {{ aktiv_kategori.seo_metn|safe }}
+  </section>
   {% endif %}
 </div>
 {% endblock %}

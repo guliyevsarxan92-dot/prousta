@@ -9,6 +9,9 @@ class Kategori(models.Model):
     ikon = models.CharField(max_length=50, blank=True)
     slug = models.SlugField(unique=True)
     ust_kategori = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='alt_kateqoriyalar')
+    seo_title = models.CharField(max_length=200, blank=True)
+    seo_description = models.CharField(max_length=300, blank=True)
+    seo_metn = models.TextField(blank=True, help_text='Kateqoriya səhifəsinin altında göstəriləcək SEO üçün HTML mətn')
 
     def __str__(self):
         return self.ad

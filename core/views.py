@@ -53,12 +53,16 @@ def elan_siyahi(request):
     if kategori_slug:
         elanlar = elanlar.filter(Q(kategori__slug=kategori_slug)|Q(kategori__ust_kategori__slug=kategori_slug))
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None)
+    aktiv_kategori = None
+    if kategori_slug:
+        aktiv_kategori = Kategori.objects.filter(slug=kategori_slug).first()
     paginator = Paginator(elanlar, 20)
     elanlar_page = paginator.get_page(request.GET.get('page', 1))
     return render(request, 'elan_siyahi.html', {
         'elanlar': elanlar_page,
         'kateqoriyalar': kateqoriyalar,
-        'axtaris': axtaris
+        'axtaris': axtaris,
+        'aktiv_kategori': aktiv_kategori,
     })
 
 def elan_detail(request, pk):
