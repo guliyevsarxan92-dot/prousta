@@ -56,9 +56,39 @@
 .search-box{display:flex;gap:10px;max-width:560px;margin:0 auto}
 .search-box input{flex:1;padding:14px 18px;border-radius:var(--r);border:none;font-size:15px}
 .search-box button{padding:14px 24px;background:var(--acc);color:#fff;border-radius:var(--r);font-weight:700;font-size:15px;border:none;cursor:pointer}
-.cats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:28px 20px;max-width:1200px;margin:0 auto}
-.cat{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);transition:.2s}
-.cat:hover{border-color:var(--p);color:var(--p)}
+.cats-section{padding:40px 20px;max-width:1200px;margin:0 auto}
+.cats-title{font-size:22px;font-weight:700;margin-bottom:6px;text-align:center}
+.cats-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px}
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.kat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.2s}
+.kat-card[open]{border-color:var(--p);box-shadow:0 8px 24px rgba(26,71,200,.12)}
+.kat-card summary{list-style:none;cursor:pointer;padding:18px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;color:var(--tx);user-select:none;transition:.2s}
+.kat-card summary::-webkit-details-marker{display:none}
+.kat-card summary:hover{background:var(--pl)}
+.kat-card[open] summary{background:var(--pl);color:var(--p);border-bottom:1px solid var(--border)}
+.kat-icon{width:42px;height:42px;border-radius:10px;background:var(--pl);display:flex;align-items:center;justify-content:center;color:var(--p);flex-shrink:0;font-size:20px;transition:.2s}
+.kat-card[open] .kat-icon{background:var(--p);color:#fff}
+.kat-info{flex:1;min-width:0}
+.kat-name{display:block;font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kat-count{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
+.kat-card[open] .kat-count{color:var(--p)}
+.kat-arrow{flex-shrink:0;transition:.3s;color:var(--muted)}
+.kat-card[open] .kat-arrow{transform:rotate(180deg);color:var(--p)}
+.alt-list{padding:8px;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow-y:auto}
+.alt-list a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--tx);font-weight:500;transition:.15s}
+.alt-list a:hover{background:var(--pl);color:var(--p);padding-left:16px}
+.alt-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:.15s}
+.alt-list a:hover::before{background:var(--p);width:6px;height:6px}
+.kat-view-all{margin-top:6px;padding:10px 12px !important;border-top:1px solid var(--border);color:var(--p) !important;font-weight:700 !important;font-size:13px}
+.kat-view-all::before{display:none !important}
+@media(max-width:640px){
+  .cats-section{padding:24px 12px}
+  .cats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kat-card summary{padding:12px 10px;gap:8px;font-size:13px}
+  .kat-icon{width:36px;height:36px;font-size:16px}
+  .kat-name{font-size:12px}
+  .kat-count{font-size:10px}
+}
 .section{padding:40px 20px;max-width:1200px;margin:0 auto}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .section-title{font-size:20px;font-weight:700}
@@ -101,10 +131,41 @@
   </form>
 </div>
 
-<div class="cats">
-{% for kat in kateqoriyalar %}
-  <a href="/elanlar/?kategori={{ kat.slug }}" class="cat">{{ kat.ad }}</a>
-{% endfor %}
+<div class="cats-section">
+  <h2 class="cats-title">Xidmət Kateqoriyaları</h2>
+  <p class="cats-sub">Lazım olan kateqoriyaya tıklayıb alt xidmətləri seçin</p>
+  <div class="cats-grid">
+    {% for kat in kateqoriyalar %}
+    <details class="kat-card">
+      <summary>
+        <span class="kat-icon">
+          {% if kat.slug == 'meiset-texnikasi' %}🔌
+          {% elif kat.slug == 'elektronika' %}💻
+          {% elif kat.slug == 'temir-tikinti' %}🔨
+          {% elif kat.slug == 'reklam-dizayn' %}🎨
+          {% elif kat.slug == 'mebel-interyer' %}🛋️
+          {% elif kat.slug == 'avtomobil-temiri' %}🚗
+          {% elif kat.slug == 'neqliyyat-texnika' %}🚛
+          {% elif kat.slug == 'gozellik-saglamliq' %}💆
+          {% elif kat.slug == 'it-biznes' %}💼
+          {% elif kat.slug == 'diger-ustalar' %}🛠️
+          {% else %}📋{% endif %}
+        </span>
+        <div class="kat-info">
+          <span class="kat-name">{{ kat.ad }}</span>
+          <span class="kat-count">{{ kat.alt_kateqoriyalar.count }} xidmət</span>
+        </div>
+        <svg class="kat-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="alt-list">
+        {% for alt in kat.alt_kateqoriyalar.all %}
+          <a href="/elanlar/?kategori={{ alt.slug }}">{{ alt.ad }}</a>
+        {% endfor %}
+        <a href="/elanlar/?kategori={{ kat.slug }}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
+      </div>
+    </details>
+    {% endfor %}
+  </div>
 </div>
 
 {% if vip_elanlar %}

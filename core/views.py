@@ -34,7 +34,7 @@ def index(request):
     random.shuffle(vip_list)
     vip_elanlar = vip_list[:8]
     elanlar = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')[:12]
-    kateqoriyalar = Kategori.objects.filter(ust_kategori=None)
+    kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     return render(request, 'index.html', {
         'elanlar': elanlar,
         'vip_elanlar': vip_elanlar,
