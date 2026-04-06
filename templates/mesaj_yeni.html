@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Mesaj Göndər — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:580px;margin:40px auto;padding:0 20px}
+.form-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px}
+.form-box h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.elan-info{background:var(--pl);border-radius:8px;padding:12px;margin-bottom:20px;font-size:14px;color:var(--p);font-weight:600}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;height:140px;resize:vertical;transition:.2s}
+.field textarea:focus{border-color:var(--p);outline:none}
+.submit-btn{width:100%;padding:13px;background:var(--p);color:#fff;border-radius:var(--r);font-size:15px;font-weight:700;border:none;cursor:pointer;margin-top:12px}
+.submit-btn:hover{background:var(--pd)}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <div class="form-box">
+    <h2>Mesaj Göndər</h2>
+    <div class="elan-info">📋 {{ elan.bashliq }} — {{ elan.istifadeci.username }}</div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>Mesajınız</label>
+        <textarea name="metn" placeholder="Xidmət haqqında sualınızı yazın..." required></textarea>
+      </div>
+      <button class="submit-btn" type="submit">Göndər</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

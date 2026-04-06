@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Elanı Düzəlt — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:680px;margin:40px auto;padding:0 20px}
+.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
+.form-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);outline:none}
+.field textarea{height:140px;resize:vertical}
+.submit-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer}
+.phone-wrap{display:flex;gap:8px}
+.phone-prefix{padding:11px 14px;background:#f1f5f9;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--muted);white-space:nowrap}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <h2>Elanı Düzəlt — #{{ elan.nomre }}</h2>
+  <div class="form-box">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="field">
+        <label>Xidmətin adı</label>
+        <input name="bashliq" value="{{ elan.bashliq }}" required>
+      </div>
+      <div class="field">
+        <label>Kateqoriya</label>
+        <select name="kategori" required>
+          {% for kat in kateqoriyalar %}
+            {% if not kat.ust_kategori %}
+              <optgroup label="{{ kat.ad }}">
+                {% for alt in kat.alt_kateqoriyalar.all %}
+                  <option value="{{ alt.pk }}" {% if elan.kategori == alt %}selected{% endif %}>{{ alt.ad }}</option>
+                {% endfor %}
+              </optgroup>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Qiymət (₼)</label>
+        <input name="qiymet" type="number" value="{{ elan.qiymet|default:'' }}">
+      </div>
+      <div class="field">
+        <label>Mobil nömrə</label>
+        <div class="phone-wrap">
+          <span class="phone-prefix">+994</span>
+          <input name="telefon" type="tel" value="{{ elan.telefon|slice:'4:' }}" maxlength="9">
+        </div>
+      </div>
+      <div class="field">
+        <label>Bölgə</label>
+        <select name="sheher" required>
+          <option value="">Seçin...</option>
+          <optgroup label="Bakı">
+            <option {% if elan.sheher == 'Bakı' %}selected{% endif %}>Bakı</option>
+            <option {% if elan.sheher == 'Bakı — Binəqədi' %}selected{% endif %}>Bakı — Binəqədi</option>
+            <option {% if elan.sheher == 'Bakı — Xəzər' %}selected{% endif %}>Bakı — Xəzər</option>
+            <option {% if elan.sheher == 'Bakı — Xətai' %}selected{% endif %}>Bakı — Xətai</option>
+            <option {% if elan.sheher == 'Bakı — Nərimanov' %}selected{% endif %}>Bakı — Nərimanov</option>
+            <option {% if elan.sheher == 'Bakı — Nəsimi' %}selected{% endif %}>Bakı — Nəsimi</option>
+            <option {% if elan.sheher == 'Bakı — Nizami' %}selected{% endif %}>Bakı — Nizami</option>
+            <option {% if elan.sheher == 'Bakı — Sabail' %}selected{% endif %}>Bakı — Sabail</option>
+            <option {% if elan.sheher == 'Bakı — Sabunçu' %}selected{% endif %}>Bakı — Sabunçu</option>
+            <option {% if elan.sheher == 'Bakı — Suraxanı' %}selected{% endif %}>Bakı — Suraxanı</option>
+            <option {% if elan.sheher == 'Bakı — Abşeron' %}selected{% endif %}>Bakı — Abşeron</option>
+          </optgroup>
+          <optgroup label="Digər şəhər və rayonlar">
+            <option {% if elan.sheher == 'Abşeron' %}selected{% endif %}>Abşeron</option><option {% if elan.sheher == 'Xırdalan' %}selected{% endif %}>Xırdalan</option>
+            <option {% if elan.sheher == 'Sumqayıt' %}selected{% endif %}>Sumqayıt</option><option {% if elan.sheher == 'Gəncə' %}selected{% endif %}>Gəncə</option>
+            <option {% if elan.sheher == 'Lənkəran' %}selected{% endif %}>Lənkəran</option><option {% if elan.sheher == 'Mingəçevir' %}selected{% endif %}>Mingəçevir</option>
+            <option {% if elan.sheher == 'Naxçıvan' %}selected{% endif %}>Naxçıvan</option><option {% if elan.sheher == 'Şirvan' %}selected{% endif %}>Şirvan</option>
+            <option {% if elan.sheher == 'Ağcabədi' %}selected{% endif %}>Ağcabədi</option><option {% if elan.sheher == 'Ağdam' %}selected{% endif %}>Ağdam</option>
+            <option {% if elan.sheher == 'Ağdaş' %}selected{% endif %}>Ağdaş</option><option {% if elan.sheher == 'Ağstafa' %}selected{% endif %}>Ağstafa</option>
+            <option {% if elan.sheher == 'Astara' %}selected{% endif %}>Astara</option><option {% if elan.sheher == 'Balakən' %}selected{% endif %}>Balakən</option>
+            <option {% if elan.sheher == 'Bərdə' %}selected{% endif %}>Bərdə</option><option {% if elan.sheher == 'Beyləqan' %}selected{% endif %}>Beyləqan</option>
+            <option {% if elan.sheher == 'Biləsuvar' %}selected{% endif %}>Biləsuvar</option><option {% if elan.sheher == 'Cəlilabad' %}selected{% endif %}>Cəlilabad</option>
+            <option {% if elan.sheher == 'Daşkəsən' %}selected{% endif %}>Daşkəsən</option><option {% if elan.sheher == 'Füzuli' %}selected{% endif %}>Füzuli</option>
+            <option {% if elan.sheher == 'Gədəbəy' %}selected{% endif %}>Gədəbəy</option><option {% if elan.sheher == 'Goranboy' %}selected{% endif %}>Goranboy</option>
+            <option {% if elan.sheher == 'Göyçay' %}selected{% endif %}>Göyçay</option><option {% if elan.sheher == 'Hacıqabul' %}selected{% endif %}>Hacıqabul</option>
+            <option {% if elan.sheher == 'İmişli' %}selected{% endif %}>İmişli</option><option {% if elan.sheher == 'İsmayıllı' %}selected{% endif %}>İsmayıllı</option>
+            <option {% if elan.sheher == 'Kürdəmir' %}selected{% endif %}>Kürdəmir</option><option {% if elan.sheher == 'Lerik' %}selected{% endif %}>Lerik</option>
+            <option {% if elan.sheher == 'Masallı' %}selected{% endif %}>Masallı</option><option {% if elan.sheher == 'Neftçala' %}selected{% endif %}>Neftçala</option>
+            <option {% if elan.sheher == 'Oğuz' %}selected{% endif %}>Oğuz</option><option {% if elan.sheher == 'Qax' %}selected{% endif %}>Qax</option>
+            <option {% if elan.sheher == 'Qazax' %}selected{% endif %}>Qazax</option><option {% if elan.sheher == 'Qəbələ' %}selected{% endif %}>Qəbələ</option>
+            <option {% if elan.sheher == 'Quba' %}selected{% endif %}>Quba</option><option {% if elan.sheher == 'Qusar' %}selected{% endif %}>Qusar</option>
+            <option {% if elan.sheher == 'Saatlı' %}selected{% endif %}>Saatlı</option><option {% if elan.sheher == 'Sabirabad' %}selected{% endif %}>Sabirabad</option>
+            <option {% if elan.sheher == 'Salyan' %}selected{% endif %}>Salyan</option><option {% if elan.sheher == 'Şamaxı' %}selected{% endif %}>Şamaxı</option>
+            <option {% if elan.sheher == 'Şəki' %}selected{% endif %}>Şəki</option><option {% if elan.sheher == 'Şəmkir' %}selected{% endif %}>Şəmkir</option>
+            <option {% if elan.sheher == 'Tovuz' %}selected{% endif %}>Tovuz</option><option {% if elan.sheher == 'Ucar' %}selected{% endif %}>Ucar</option>
+            <option {% if elan.sheher == 'Yardımlı' %}selected{% endif %}>Yardımlı</option><option {% if elan.sheher == 'Zaqatala' %}selected{% endif %}>Zaqatala</option>
+            <option {% if elan.sheher == 'Zərdab' %}selected{% endif %}>Zərdab</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field">
+        <label>Açıqlama</label>
+        <textarea name="acaqlama" required>{{ elan.acaqlama }}</textarea>
+      </div>
+      <div class="field">
+        <label>Yeni şəkil əlavə et</label>
+        <input type="file" name="shekillar" multiple accept="image/*">
+      </div>
+      <button class="submit-btn" type="submit">Yadda Saxla</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -3,71 +3,162 @@
 {% block style %}
 <style>
 .page-wrap{max-width:1000px;margin:40px auto;padding:0 20px}
-.profil-header{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:30px}
-.avatar{width:64px;height:64px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--p)}
+.profil-header{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.avatar-wrap{position:relative;cursor:pointer;flex-shrink:0}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--p);overflow:hidden}
+.avatar img{width:72px;height:72px;object-fit:cover}
+.avatar-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s}
+.avatar-overlay svg{stroke:#fff}
+.avatar-wrap:hover .avatar-overlay{opacity:1}
 .profil-ad{font-size:20px;font-weight:700}
 .profil-email{font-size:14px;color:var(--muted)}
-.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--border)}
-.tab{padding:10px 20px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s}
+.balans-card{background:linear-gradient(135deg,#1a47c8,#1238a8);border-radius:var(--r);padding:20px 24px;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.balans-card h3{font-size:14px;opacity:.8;margin-bottom:4px}
+.balans-card .amount{font-size:32px;font-weight:800}
+.balans-card a{background:rgba(255,255,255,.2);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:600}
+.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto}
+.tab{padding:10px 20px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap}
 .tab.aktiv{color:var(--p);border-bottom-color:var(--p)}
 .tab-content{display:none}
 .tab-content.aktiv{display:block}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
-.kart-img{width:100%;height:160px;object-fit:cover;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);position:relative}
+.kart-img{width:100%;height:160px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
 .kart-img img{width:100%;height:160px;object-fit:cover}
 .kart-body{padding:12px}
 .kart-title{font-weight:600;font-size:14px;margin-bottom:4px}
 .kart-price{color:var(--p);font-weight:700;font-size:15px;margin-bottom:8px}
-.kart-actions{display:flex;gap:8px}
+.kart-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .badge-aktiv{background:#dcfce7;color:#166534}
 .badge-gozlemede{background:#fef9c3;color:#854d0e}
-.sil-btn{padding:6px 12px;background:#fee2e2;color:#991b1b;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
+.badge-bitmis{background:#fee2e2;color:#991b1b}
+.sil-btn{padding:6px 10px;background:#fee2e2;color:#991b1b;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none}
+.duzelis-btn{padding:6px 10px;background:var(--pl);color:var(--p);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none}
+.vip-btn{padding:6px 10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none}
+.aktiv-btn{padding:6px 10px;background:#dcfce7;color:#166534;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none}
+.vip-badge{position:absolute;top:8px;left:8px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
 .bosh{color:var(--muted);font-size:14px;padding:20px 0}
+.nomre-chip{font-size:11px;color:var(--muted);margin-bottom:4px}
+@media(max-width:600px){
+  .profil-header{flex-direction:column;align-items:flex-start}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kart-img,.kart-img img{height:120px}
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="page-wrap">
   <div class="profil-header">
-    <div class="avatar">{{ user.username|first|upper }}</div>
-    <div>
+    <a href="/profil/foto/crop/">
+      <div class="avatar-wrap">
+        <div class="avatar">
+          {% if user.profil.avatar %}
+            <img src="{{ user.profil.avatar.url }}" alt="avatar" loading="lazy">
+          {% else %}{{ user.username|first|upper }}{% endif %}
+        </div>
+        <div class="avatar-overlay">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+      </div>
+    </a>
+    <div style="flex:1">
       <div class="profil-ad">{{ user.username }}</div>
       <div class="profil-email">{{ user.email }}</div>
     </div>
-    <a href="/elan/yeni/" class="btn btn-primary" style="margin-left:auto">+ Yeni Elan</a>
+    <a href="/profil/duzelis/" class="btn btn-outline" style="margin-right:8px">Düzəliş</a><a href="/elan/yeni/" class="btn btn-primary">+ Yeni Elan</a>
+  </div>
+
+  <div class="balans-card">
+    <div>
+      <h3>Cari Balans</h3>
+      <div class="amount">{{ user.profil.balans }} ₼</div>
+    </div>
+    <a href="/odenis/">+ Balans Artır</a>
   </div>
 
   <div class="tabs">
-    <div class="tab aktiv" onclick="showTab('elanlarim')">Elanlarım ({{ elanlar.count }})</div>
-    <div class="tab" onclick="showTab('favoritler')">Favoritlər ({{ favoritler.count }})</div>
+    <div class="tab aktiv" onclick="showTab('elanlarim', this)">Elanlarım ({{ elanlar.count }})</div>
+    <div class="tab" onclick="showTab('bitmisler', this)">
+      Müddəti Bitmiş
+      {% if muddeti_bitmis.count %}<span style="background:#ef4444;color:#fff;font-size:11px;padding:1px 6px;border-radius:20px;margin-left:4px">{{ muddeti_bitmis.count }}</span>{% endif %}
+    </div>
+    <div class="tab" onclick="showTab('favoritler', this)">Favoritlər ({{ favoritler.count }})</div>
+    <div class="tab" onclick="showTab('mesajlarim', this)">
+      Mesajlar {% if oxunmamis %}<span style="background:#ef4444;color:#fff;font-size:11px;padding:1px 6px;border-radius:20px;margin-left:4px">{{ oxunmamis }}</span>{% endif %}
+    </div>
   </div>
 
   <div id="elanlarim" class="tab-content aktiv">
     {% if elanlar %}
     <div class="grid">
       {% for elan in elanlar %}
+      {% if elan.status != 'muddeti_bitmis' %}
       <div class="kart">
-        <div class="kart-img">
-          {% if elan.shekillar.first %}
-            <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
-          {% else %}Şəkil yoxdur{% endif %}
-        </div>
+        <a href="/elan/{{ elan.pk }}/">
+          <div class="kart-img">
+            {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+            {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+          </div>
+        </a>
+        {% if elan.is_vip_aktiv %}
+          <div class="vip-badge {{ elan.vip_status }}">{% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}</div>
+        {% endif %}
         <div class="kart-body">
+          <div class="nomre-chip">#{{ elan.nomre }}</div>
           <div class="kart-title">{{ elan.bashliq }}</div>
           <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
           <div class="kart-actions">
-            <span class="badge {% if elan.status == 'aktiv' %}badge-aktiv{% else %}badge-gozlemede{% endif %}">
-              {{ elan.get_status_display }}
-            </span>
-            <a href="/elan/{{ elan.pk }}/sil/" class="sil-btn" onclick="return confirm('Silmək istəyirsiniz?')">Sil</a>
+            <span class="badge {% if elan.status == 'aktiv' %}badge-aktiv{% else %}badge-gozlemede{% endif %}">{{ elan.get_status_display }}</span>
+            <a href="/elan/{{ elan.pk }}/duzelis/" class="duzelis-btn">Düzəlt</a>
+            {% if elan.vip_status == 'normal' %}<a href="/vip/{{ elan.pk }}/" class="vip-btn">VIP</a>{% endif %}
+            <form method="post" action="/elan/{{ elan.pk }}/sil/" style="display:inline" onsubmit="return confirm('Silmək istəyirsiniz?')">
+              {% csrf_token %}
+              <button type="submit" class="sil-btn" style="background:#fee2e2;border:none;cursor:pointer">Sil</button>
+            </form>
+          </div>
+          {% if elan.is_vip_aktiv and elan.vip_bitis %}
+            <div style="font-size:11px;color:var(--muted);margin-top:6px">{{ elan.vip_bitis|date:"d.m.Y" }}-dək VIP</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="bosh">Hələ elan yerləşdirməmisiniz.</p>
+    {% endif %}
+  </div>
+
+  <div id="bitmisler" class="tab-content">
+    {% if muddeti_bitmis %}
+    <div class="grid">
+      {% for elan in muddeti_bitmis %}
+      <div class="kart" style="opacity:.7">
+        <div class="kart-img">
+          {% if elan.shekillar.first %}<img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+          {% else %}Şəkil yoxdur{% endif %}
+        </div>
+        <div class="kart-body">
+          <div class="nomre-chip">#{{ elan.nomre }}</div>
+          <div class="kart-title">{{ elan.bashliq }}</div>
+          <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+          <div class="kart-actions">
+            <span class="badge badge-bitmis">Müddəti Bitib</span>
+            <form method="post" action="/elan/{{ elan.pk }}/aktivlesdir/" style="display:inline">{% csrf_token %}<button type="submit" class="aktiv-btn" style="border:none;cursor:pointer">Yenilə</button></form>
+            <form method="post" action="/elan/{{ elan.pk }}/sil/" style="display:inline" onsubmit="return confirm('Silmək istəyirsiniz?')">
+              {% csrf_token %}
+              <button type="submit" class="sil-btn" style="background:#fee2e2;border:none;cursor:pointer">Sil</button>
+            </form>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
     {% else %}
-    <p class="bosh">Hələ elan yerləşdirməmisiniz.</p>
+    <p class="bosh">Müddəti bitmiş elan yoxdur.</p>
     {% endif %}
   </div>
 
@@ -77,9 +168,8 @@
       {% for fav in favoritler %}
       <a href="/elan/{{ fav.elan.pk }}/" class="kart">
         <div class="kart-img">
-          {% if fav.elan.shekillar.first %}
-            <img src="{{ fav.elan.shekillar.first.shekil.url }}" alt="{{ fav.elan.bashliq }}">
-          {% else %}Şəkil yoxdur{% endif %}
+          {% with fav.elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ fav.elan.bashliq }}" loading="lazy">
+          {% else %}Şəkil yoxdur{% endif %}{% endwith %}
         </div>
         <div class="kart-body">
           <div class="kart-title">{{ fav.elan.bashliq }}</div>
@@ -92,14 +182,17 @@
     <p class="bosh">Hələ favorit elanınız yoxdur.</p>
     {% endif %}
   </div>
-</div>
 
+  <div id="mesajlarim" class="tab-content">
+    <a href="/mesajlar/" class="btn btn-primary" style="display:inline-flex">Bütün mesajlara bax</a>
+  </div>
+</div>
 <script>
-function showTab(id){
+function showTab(id,el){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('aktiv'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktiv'));
   document.getElementById(id).classList.add('aktiv');
-  event.target.classList.add('aktiv');
+  el.classList.add('aktiv');
 }
 </script>
 {% endblock %}

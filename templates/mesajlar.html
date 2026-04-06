@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Mesajlar — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:800px;margin:40px auto;padding:0 20px}
+.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--border)}
+.tab{padding:10px 20px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s}
+.tab.aktiv{color:var(--p);border-bottom-color:var(--p)}
+.tab-content{display:none}
+.tab-content.aktiv{display:block}
+.mesaj-kart{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;transition:.2s}
+.mesaj-kart:hover{border-color:var(--p)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:16px;flex-shrink:0}
+.mesaj-info{flex:1}
+.mesaj-ad{font-weight:600;font-size:14px}
+.mesaj-elan{font-size:12px;color:var(--muted);margin-bottom:4px}
+.mesaj-metn{font-size:14px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:500px}
+.mesaj-tarix{font-size:12px;color:var(--muted);white-space:nowrap}
+.yeni-badge{background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.bosh{color:var(--muted);font-size:14px;padding:20px 0}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <h2>Mesajlar</h2>
+  <div class="tabs">
+    <div class="tab aktiv" onclick="showTab('qelen', this)">Gələn ({{ qelen_say }})</div>
+    <div class="tab" onclick="showTab('gonderilenler', this)">Göndərilən ({{ gonderilenler_say }})</div>
+  </div>
+  <div id="qelen" class="tab-content aktiv">
+    {% for m in qelen %}
+    <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
+      <div class="avatar">{{ m.gonderici.username|first|upper }}</div>
+      <div class="mesaj-info">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span class="mesaj-ad">{{ m.gonderici.username }}</span>
+          {% if not m.oxundu %}<span class="yeni-badge">Yeni</span>{% endif %}
+        </div>
+        {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
+        <div class="mesaj-metn">{{ m.metn }}</div>
+      </div>
+      <div class="mesaj-tarix">{{ m.yaradildi|date:"d.m.Y H:i" }}</div>
+    </a>
+    {% empty %}
+    <p class="bosh">Heç bir mesaj yoxdur.</p>
+    {% endfor %}
+  </div>
+  <div id="gonderilenler" class="tab-content">
+    {% for m in gonderilenler %}
+    <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
+      <div class="avatar">{{ m.alici.username|first|upper }}</div>
+      <div class="mesaj-info">
+        <div style="margin-bottom:4px"><span class="mesaj-ad">{{ m.alici.username }}</span></div>
+        {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
+        <div class="mesaj-metn">{{ m.metn }}</div>
+      </div>
+      <div class="mesaj-tarix">{{ m.yaradildi|date:"d.m.Y H:i" }}</div>
+    </a>
+    {% empty %}
+    <p class="bosh">Heç bir mesaj göndərməmisiniz.</p>
+    {% endfor %}
+  </div>
+</div>
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('aktiv'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktiv'));
+  document.getElementById(id).classList.add('aktiv');
+  el.classList.add('aktiv');
+}
+</script>
+{% endblock %}

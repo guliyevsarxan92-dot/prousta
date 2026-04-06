@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Profil Düzəliş — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:600px;margin:40px auto;padding:0 20px}
+.back-link{font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;transition:.2s}
+.back-link:hover{color:var(--p)}
+
+.form-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:28px;margin-bottom:16px}
+.form-box h3{font-size:15px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.field-row{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.field-row:last-child{border-bottom:none}
+.field-label{width:120px;font-size:13px;font-weight:600;color:var(--muted);flex-shrink:0}
+.field-input{flex:1}
+.field-input input{width:100%;padding:8px 12px;border:1.5px solid transparent;border-radius:8px;font-size:15px;transition:.2s;background:transparent}
+.field-input input:focus{border-color:var(--p);background:var(--white);outline:none}
+.field-input input::placeholder{color:#cbd5e1}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;padding-left:12px}
+.save-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:15px;font-weight:700;border:none;cursor:pointer;transition:.2s}
+.save-btn:hover{background:var(--pd)}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <a href="/profil/" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    Profilə qayıt
+  </a>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-box">
+      <h3>Şəxsi məlumatlar</h3>
+      <div class="field-row">
+        <div class="field-label">Ad</div>
+        <div class="field-input"><input name="ad" value="{{ user.profil.ad }}" placeholder="Adınız"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Soyad</div>
+        <div class="field-input"><input name="soyad" value="{{ user.profil.soyad }}" placeholder="Soyadınız"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Email</div>
+        <div class="field-input"><input name="email" type="email" value="{{ user.email }}" placeholder="email@gmail.com"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Telefon</div>
+        <div class="field-input"><input name="telefon" value="{{ user.profil.telefon }}" placeholder="+994 XX XXX XX XX"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Şəhər</div>
+        <div class="field-input"><input name="sheher" value="{{ user.profil.sheher }}" placeholder="Bakı"></div>
+      </div>
+    </div>
+
+    <div class="form-box">
+      <h3>Şifrə dəyişimi</h3>
+      <div class="field-row">
+        <div class="field-label">Köhnə şifrə</div>
+        <div class="field-input"><input name="kohne_sifre" type="password" placeholder="Köhnə şifrəniz"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Yeni şifrə</div>
+        <div class="field-input">
+          <input name="yeni_sifre" type="password" placeholder="Minimum 8 simvol" minlength="8" maxlength="14">
+          <div class="hint">8-14 simvol, ən az 1 böyük hərf və 1 rəqəm</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Təkrar</div>
+        <div class="field-input"><input name="yeni_sifre2" type="password" placeholder="Yeni şifrəni təkrarlayın"></div>
+      </div>
+    </div>
+
+    <button class="save-btn" type="submit">Yadda Saxla</button>
+  </form>
+</div>
+{% endblock %}

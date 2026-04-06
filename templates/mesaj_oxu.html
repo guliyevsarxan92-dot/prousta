@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Mesaj — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:600px;margin:40px auto;padding:0 20px}
+.mesaj-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px}
+.mesaj-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:18px}
+.mesaj-ad{font-weight:700;font-size:16px}
+.mesaj-tarix{font-size:13px;color:var(--muted)}
+.elan-link{background:var(--pl);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--p);font-weight:600;margin-bottom:16px;display:block}
+.mesaj-metn{font-size:15px;line-height:1.8;color:var(--tx)}
+.cavab-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:10px 20px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600;font-size:14px}
+.geri{font-size:14px;color:var(--muted);margin-bottom:16px;display:block}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <a href="/mesajlar/" class="geri">← Mesajlara qayıt</a>
+  <div class="mesaj-box">
+    <div class="mesaj-header">
+      <div class="avatar">{{ mesaj.gonderici.username|first|upper }}</div>
+      <div>
+        <div class="mesaj-ad">{{ mesaj.gonderici.username }}</div>
+        <div class="mesaj-tarix">{{ mesaj.yaradildi|date:"d.m.Y H:i" }}</div>
+      </div>
+    </div>
+    {% if mesaj.elan %}
+    <a href="/elan/{{ mesaj.elan.pk }}/" class="elan-link">📋 {{ mesaj.elan.bashliq }}</a>
+    {% endif %}
+    <div class="mesaj-metn">{{ mesaj.metn }}</div>
+    {% if request.user != mesaj.gonderici and mesaj.elan %}
+    <a href="{% url 'mesaj_yeni' mesaj.elan.pk %}" class="cavab-btn">↩ Cavab ver</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

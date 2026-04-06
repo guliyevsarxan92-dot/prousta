@@ -1,57 +1,92 @@
 {% extends 'base.html' %}
-{% block title %}Elanlar — Prousta.az{% endblock %}
+{% block title %}Bütün Elanlar — Prousta.az{% endblock %}
+{% block description %}Prousta.az-da bütün xidmət elanlarına baxın. Elektrik, santexnik, təmir, gözəllik, avtomobil və daha çox sahədə ustalar.{% endblock %}
+{% block canonical %}/elanlar/{% endblock %}
+{% block extra_head %}
+{% if elanlar.has_previous %}<link rel="prev" href="/elanlar/?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
+{% if elanlar.has_next %}<link rel="next" href="/elanlar/?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
+{% endblock %}
 {% block style %}
 <style>
 .page-wrap{max-width:1200px;margin:40px auto;padding:0 20px}
 .filter-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.filter-bar input{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px}
+.filter-bar input{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;min-width:200px}
 .filter-bar input:focus{border-color:var(--p);outline:none}
 .filter-bar button{padding:11px 22px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600;font-size:14px;border:none;cursor:pointer}
 .cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
 .cat{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
 .cat:hover,.cat.aktiv{border-color:var(--p);color:var(--p);background:var(--pl)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s}
+.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s;position:relative}
 .kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.kart-img{width:100%;height:180px;object-fit:cover;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.kart-img{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
 .kart-img img{width:100%;height:180px;object-fit:cover}
 .kart-body{padding:14px}
 .kart-title{font-weight:600;font-size:15px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kart-price{color:var(--p);font-weight:700;font-size:16px;margin-bottom:6px}
 .kart-meta{font-size:12px;color:var(--muted)}
+.vip-badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
+
+@media(max-width:768px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .kart-img{height:140px}
+  .kart-img img{height:140px}
+  .kart-body{padding:10px}
+  .kart-title{font-size:13px}
+  .kart-price{font-size:14px}
+  .page-wrap{padding:0 12px}
+  .filter-bar input{min-width:0}
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="page-wrap">
   <form class="filter-bar" method="get">
+    {% if request.GET.kategori %}<input type="hidden" name="kategori" value="{{ request.GET.kategori }}">{% endif %}
     <input name="q" value="{{ axtaris }}" placeholder="Elan axtar...">
     <button type="submit">Axtar</button>
   </form>
   <div class="cats">
-    <a href="/elanlar/" class="cat {% if not request.GET.kategori %}aktiv{% endif %}">Hamısı</a>
+    <a href="{% url 'elan_siyahi' %}{% if axtaris %}?q={{ axtaris }}{% endif %}" class="cat {% if not request.GET.kategori %}aktiv{% endif %}">Hamısı</a>
     {% for kat in kateqoriyalar %}
-      <a href="/elanlar/?kategori={{ kat.slug }}" class="cat {% if request.GET.kategori == kat.slug %}aktiv{% endif %}">{{ kat.ad }}</a>
+      <a href="{% url 'elan_siyahi' %}?kategori={{ kat.slug }}{% if axtaris %}&q={{ axtaris }}{% endif %}" class="cat {% if request.GET.kategori == kat.slug %}aktiv{% endif %}">{{ kat.ad }}</a>
     {% endfor %}
   </div>
   <div class="grid">
   {% for elan in elanlar %}
     <a href="/elan/{{ elan.pk }}/" class="kart">
       <div class="kart-img">
-        {% if elan.shekillar.first %}
-          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
-        {% else %}
-          Şəkil yoxdur
-        {% endif %}
+        {% with elan.shekillar.all as sh %}{% if sh %}
+          <img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+        {% else %}Şəkil yoxdur{% endif %}{% endwith %}
       </div>
+      {% if elan.vip_status != 'normal' %}
+        <div class="vip-badge {{ elan.vip_status }}">
+          {% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}
+        </div>
+      {% endif %}
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
         <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-        <div class="kart-meta">📍 {{ elan.sheher }} &nbsp;·&nbsp; 👁 {{ elan.baxish_sayi }}</div>
+        <div class="kart-meta">📍 {{ elan.sheher }} · 👁 {{ elan.baxish_sayi }}</div>
       </div>
     </a>
   {% empty %}
     <p style="color:var(--muted);grid-column:1/-1">Heç bir elan tapılmadı.</p>
   {% endfor %}
   </div>
+  {% if elanlar.paginator.num_pages > 1 %}
+  <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:32px;flex-wrap:wrap">
+    {% if elanlar.has_previous %}
+      <a href="?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.previous_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">← Əvvəlki</a>
+    {% endif %}
+    <span style="padding:8px 16px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600">{{ elanlar.number }} / {{ elanlar.paginator.num_pages }}</span>
+    {% if elanlar.has_next %}
+      <a href="?{% if axtaris %}q={{ axtaris }}&{% endif %}{% if request.GET.kategori %}kategori={{ request.GET.kategori }}&{% endif %}page={{ elanlar.next_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">Sonrakı →</a>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

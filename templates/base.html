@@ -2,8 +2,47 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% block title %}Prousta.az{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#1a47c8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Prousta.az">
+<meta name="format-detection" content="telephone=yes">
+<title>{% block title %}Prousta.az — Azərbaycanda Usta Tapın{% endblock %}</title>
+<meta name="description" content="{% block description %}Prousta.az — Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın. Elektrik, santexnik, təmir, gözəllik və daha çox xidmət elanları.{% endblock %}">
+<meta name="keywords" content="{% block keywords %}usta, xidmət, təmir, elektrik, santexnik, Bakı, Azərbaycan, ustalar, elan{% endblock %}">
+<meta name="author" content="Prousta.az">
+<meta name="robots" content="index, follow">
+<meta name="language" content="Azerbaijani">
+<link rel="canonical" href="https://prousta.az{% block canonical %}{% endblock %}">
+
+<meta name="geo.region" content="AZ">
+<meta name="geo.country" content="Azerbaijan">
+<meta name="geo.placename" content="Bakı, Azərbaycan">
+<meta name="geo.position" content="40.4093;49.8671">
+<meta name="ICBM" content="40.4093, 49.8671">
+<meta name="DC.title" content="Prousta.az">
+<meta name="DC.language" content="az">
+<meta name="DC.coverage" content="Azerbaijan">
+{% if YANDEX_VERIFICATION %}<meta name="yandex-verification" content="{{ YANDEX_VERIFICATION }}">{% endif %}
+
+<link rel="alternate" hreflang="az" href="https://prousta.az{% block canonical2 %}{% endblock %}">
+<link rel="alternate" hreflang="x-default" href="https://prousta.az">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Prousta.az">
+<meta property="og:title" content="{% block og_title %}Prousta.az — Azərbaycanda Usta Tapın{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın.{% endblock %}">
+<meta property="og:image" content="{% block og_image %}https://prousta.az/static/og-image.jpg{% endblock %}">
+<meta property="og:url" content="https://prousta.az{% block og_url %}{% endblock %}">
+<meta property="og:locale" content="az_AZ">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@prousta_az">
+<meta name="twitter:title" content="{% block tw_title %}Prousta.az — Azərbaycanda Usta Tapın{% endblock %}">
+<meta name="twitter:description" content="{% block tw_description %}Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın.{% endblock %}">
+<meta name="twitter:image" content="{% block tw_image %}https://prousta.az/static/og-image.jpg{% endblock %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -13,9 +52,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none}
 input,select,textarea{font-family:inherit;outline:none}
-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200}
 .logo{font-size:22px;font-weight:800;color:var(--p)}
-.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;align-items:center;gap:16px}
 .nav-links a{color:var(--muted);font-weight:500;font-size:14px;transition:.2s}
 .nav-links a:hover{color:var(--p)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:var(--r);font-weight:600;font-size:14px;transition:.2s;cursor:pointer}
@@ -23,31 +62,102 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px
 .btn-primary:hover{background:var(--pd)}
 .btn-outline{border:1.5px solid var(--border);color:var(--tx);background:var(--white)}
 .btn-outline:hover{border-color:var(--p);color:var(--p)}
-.container{max-width:1200px;margin:0 auto;padding:0 20px}
-.msgs{position:fixed;top:80px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px}
+
+/* MESAJ BİLDİRİŞ */
+.mesaj-link{position:relative;display:inline-flex;align-items:center;gap:6px}
+.mesaj-dot{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--white);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* BALANS */
+.balans-chip{background:var(--pl);color:var(--p);font-weight:700;font-size:13px;padding:6px 14px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.balans-chip:hover{background:#dde8ff}
+
+/* HAMBURGEr */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:24px;height:2px;background:var(--tx);border-radius:2px;transition:.3s}
+.hamburger.aktiv span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.aktiv span:nth-child(2){opacity:0}
+.hamburger.aktiv span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobil-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--white);z-index:199;padding:20px 24px;overflow-y:auto;flex-direction:column;gap:4px}
+.mobil-menu.aktiv{display:flex}
+.mobil-menu a{padding:14px 16px;font-size:15px;font-weight:600;color:var(--tx);border-radius:var(--r);transition:.2s;border-bottom:1px solid var(--border)}
+.mobil-menu a:hover{background:var(--pl);color:var(--p)}
+
+.msgs{position:fixed;top:80px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px;max-width:320px}
 .msg{padding:12px 20px;border-radius:var(--r);font-size:14px;font-weight:500;animation:fadeIn .3s ease}
 .msg.success{background:#dcfce7;color:#166534;border:1px solid #86efac}
 .msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-footer{background:var(--tx);color:#94a3b8;text-align:center;padding:30px;font-size:13px;margin-top:60px}
+
+/* FOOTER */
+footer{background:#0f172a;color:#94a3b8;margin-top:60px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:50px 40px;max-width:1200px;margin:0 auto}
+.footer-brand .logo-f{font-size:22px;font-weight:800;color:#fff;display:block;margin-bottom:12px}
+.footer-brand p{font-size:13px;line-height:1.8;color:#64748b;max-width:260px}
+.footer-social{display:flex;gap:10px;margin-top:16px}
+.footer-social a{width:36px;height:36px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.2s}
+.footer-social a:hover{background:var(--p)}
+.footer-col h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;color:#64748b;margin-bottom:10px;transition:.2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid #1e293b;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;font-size:13px}
+.footer-bottom a{color:#64748b;transition:.2s}
+.footer-bottom a:hover{color:#fff}
+@media(max-width:768px){
+  .footer-top{grid-template-columns:1fr 1fr;padding:30px 20px;gap:24px}
+  .footer-brand{grid-column:1/-1}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center;padding:20px}
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .msgs{left:16px;right:16px;max-width:100%}
+}
 </style>
 {% block style %}{% endblock %}
+{% block extra_head %}{% endblock %}
 </head>
 <body>
 <nav>
-  <a href="/" class="logo">Prousta.az</a>
+  <a href="{% url 'index' %}" class="logo">Prousta.az</a>
   <div class="nav-links">
-    <a href="/elanlar/">Bütün Elanlar</a>
+    <a href="{% url 'elan_siyahi' %}">Elanlar</a>
     {% if user.is_authenticated %}
-      <a href="/profil/">Profil</a>
-      <a href="/elan/yeni/" class="btn btn-primary">+ Elan Yerləşdir</a>
-      <a href="/cixis/" class="btn btn-outline">Çıxış</a>
+      <a href="{% url 'mesajlar' %}" class="mesaj-link">
+        Mesajlar
+        {% if oxunmamis_mesaj %}
+          <span class="mesaj-dot">{{ oxunmamis_mesaj }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'odenis' %}" class="balans-chip" title="Balansı artır">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Balans: {{ user_balans }} ₼
+      </a>
+      <a href="{% url 'profil' %}">Profil</a>
+      <a href="{% url 'elan_yarat' %}" class="btn btn-primary">+ Elan Yerləşdir</a>
+      <form method="post" action="{% url 'cixis' %}" style="display:inline;margin:0">{% csrf_token %}<button type="submit" class="btn btn-outline" style="cursor:pointer">Çıxış</button></form>
     {% else %}
-      <a href="/giris/" class="btn btn-outline">Giriş</a>
-      <a href="/qeydiyyat/" class="btn btn-primary">Qeydiyyat</a>
+      <a href="{% url 'giris' %}" class="btn btn-outline">Giriş</a>
+      <a href="{% url 'qeydiyyat' %}" class="btn btn-primary">Qeydiyyat</a>
     {% endif %}
   </div>
+  <div class="hamburger" onclick="toggleMenu(this)" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+
+<div class="mobil-menu" id="mobilMenu">
+  <a href="{% url 'elan_siyahi' %}">Elanlar</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'mesajlar' %}">Mesajlar {% if oxunmamis_mesaj %}<span style="background:#ef4444;color:#fff;font-size:11px;padding:1px 6px;border-radius:20px;margin-left:4px">{{ oxunmamis_mesaj }}</span>{% endif %}</a>
+    <a href="{% url 'odenis' %}">Balans: {{ user_balans }} ₼</a>
+    <a href="{% url 'profil' %}">Profil</a>
+    <a href="{% url 'elan_yarat' %}" style="background:var(--p);color:#fff;border-radius:var(--r);text-align:center">+ Elan Yerləşdir</a>
+    <form method="post" action="{% url 'cixis' %}" style="margin:0">{% csrf_token %}<button type="submit" style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;width:100%;text-align:left">Çıxış</button></form>
+  {% else %}
+    <a href="{% url 'giris' %}">Giriş</a>
+    <a href="{% url 'qeydiyyat' %}" style="background:var(--p);color:#fff;border-radius:var(--r);text-align:center">Qeydiyyat</a>
+  {% endif %}
+</div>
 
 <div class="msgs">
 {% for msg in messages %}
@@ -58,7 +168,137 @@ footer{background:var(--tx);color:#94a3b8;text-align:center;padding:30px;font-si
 {% block content %}{% endblock %}
 
 <footer>
-  <p>© 2024 Prousta.az — Bütün hüquqlar qorunur.</p>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="{% url 'index' %}" class="logo-f">Prousta.az</a>
+      <p>Azərbaycanda peşəkar ustalar və xidmət sahibləri üçün ən böyük elanlar platforması.</p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/61568796886691" target="_blank" title="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/prousta.az" target="_blank" title="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@prousta.az" target="_blank" title="TikTok">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" title="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+        </a>
+        <a href="https://www.x.com/prousta.az" target="_blank" title="X (Twitter)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Xidmətlər</h4>
+      <a href="{% url 'elan_siyahi' %}?kategori=temir-tikinti">Təmir & Tikinti</a>
+      <a href="{% url 'elan_siyahi' %}?kategori=elektronika">Elektronika</a>
+      <a href="{% url 'elan_siyahi' %}?kategori=meiset-texnikasi">Məişət texnikası</a>
+      <a href="{% url 'elan_siyahi' %}?kategori=avtomobil-temiri">Avtomobil təmiri</a>
+      <a href="{% url 'elan_siyahi' %}?kategori=gozellik-saglamliq">Gözəllik</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hesab</h4>
+      <a href="{% url 'qeydiyyat' %}">Qeydiyyat</a>
+      <a href="{% url 'giris' %}">Giriş</a>
+      <a href="{% url 'elan_yarat' %}">Elan Yerləşdir</a>
+      <a href="{% url 'profil' %}">Profil</a>
+      <a href="{% url 'odenis' %}">Balans Artır</a>
+    </div>
+    <div class="footer-col">
+      <h4>Əlaqə</h4>
+      <a href="#">info@prousta.az</a>
+      <a href="tel:+994515888884">+994 51 588 88 84</a>
+      <a href="#">Bakı, Azərbaycan</a>
+      <a href="#">7/24 Dəstək</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© {% now "Y" %} Prousta.az — Bütün hüquqlar qorunur.</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
+      <a href="{% url 'gizlilik' %}">Gizlilik Siyasəti</a>
+      <a href="{% url 'istifade_sertleri' %}">İstifadə Şərtləri</a>
+      <a href="https://wa.me/994515888884" target="_blank">Bizə yazın</a>
+    </div>
+  </div>
 </footer>
+
+<script>
+function toggleMenu(el){
+  el.classList.toggle('aktiv');
+  document.getElementById('mobilMenu').classList.toggle('aktiv');
+  document.body.style.overflow=document.getElementById('mobilMenu').classList.contains('aktiv')?'hidden':'';
+}
+document.addEventListener('click',function(e){
+  const menu=document.getElementById('mobilMenu');
+  const hamburger=document.getElementById('hamburger');
+  if(menu.classList.contains('aktiv')&&!menu.contains(e.target)&&!hamburger.contains(e.target)){
+    menu.classList.remove('aktiv');
+    hamburger.classList.remove('aktiv');
+    document.body.style.overflow='';
+  }
+});
+</script>
+<!-- MOBİL ALT NAVİQASİYA -->
+<div class="mobil-alt-nav">
+  <a href="{% url 'index' %}" class="alt-nav-item {% block nav_index %}{% endblock %}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Ana səhifə</span>
+  </a>
+  <a href="{% url 'elan_siyahi' %}" class="alt-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span>Elanlar</span>
+  </a>
+  {% if user.is_authenticated %}
+  <a href="{% url 'elan_yarat' %}" class="alt-nav-plus">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </a>
+  <a href="{% url 'mesajlar' %}" class="alt-nav-item" style="position:relative">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    {% if oxunmamis_mesaj %}<span class="alt-nav-badge">{{ oxunmamis_mesaj }}</span>{% endif %}
+    <span>Mesajlar</span>
+  </a>
+  <a href="{% url 'profil' %}" class="alt-nav-item">
+    {% if user.profil.avatar %}
+      <img src="{{ user.profil.avatar.url }}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border)" loading="lazy">
+    {% else %}
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    {% endif %}
+    <span>Profil</span>
+  </a>
+  {% else %}
+  <a href="{% url 'elan_yarat' %}" class="alt-nav-plus">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </a>
+  <a href="{% url 'mesajlar' %}" class="alt-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Mesajlar</span>
+  </a>
+  <a href="{% url 'giris' %}" class="alt-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <span>Giriş</span>
+  </a>
+  {% endif %}
+</div>
+
+<style>
+.mobil-alt-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);z-index:300;padding:8px 0 calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+.mobil-alt-nav{display:none;flex-direction:row;align-items:center;justify-content:space-around}
+.alt-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10px;font-weight:600;padding:4px 12px;border-radius:10px;transition:.2s;position:relative;text-decoration:none}
+.alt-nav-item:hover,.alt-nav-item.aktiv{color:var(--p)}
+.alt-nav-item svg{transition:.2s}
+.alt-nav-plus{width:48px;height:48px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(26,71,200,.4);transition:.2s;flex-shrink:0}
+.alt-nav-plus:hover{background:var(--pd);transform:scale(1.05)}
+.alt-nav-badge{position:absolute;top:0;right:6px;width:16px;height:16px;background:#ef4444;border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
+@media(max-width:768px){
+  .mobil-alt-nav{display:flex}
+  body{padding-bottom:70px}
+}
+
+@media(max-width:768px){
+  .mobil-elaqe{bottom:80px;right:12px;padding:10px 18px;font-size:13px}
+}
+</style>
 </body>
 </html>

@@ -1,35 +1,102 @@
 {% extends 'base.html' %}
-{% block title %}Prousta.az — Elanlar Platforması{% endblock %}
+{% block title %}Prousta.az — Azərbaycanda Peşəkar Usta Tapın{% endblock %}
+{% block description %}Prousta.az — Azərbaycanda elektrik, santexnik, kondisioner, təmir ustaları və digər peşəkar xidmətləri tapın. Pulsuz elan yerləşdirin!{% endblock %}
+{% block keywords %}usta tap, elektrik ustası, santexnik, kondisioner ustası, ev təmiri, Bakı ustalar, Azərbaycan xidmət{% endblock %}
+{% block canonical %}/{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Prousta.az",
+  "url": "https://prousta.az",
+  "logo": "https://prousta.az/static/og-image.jpg",
+  "description": "Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın.",
+  "telephone": "+994515888884",
+  "email": "info@prousta.az",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Bakı",
+    "addressCountry": "AZ"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Azerbaijan"
+  },
+  "sameAs": [
+    "https://www.facebook.com/61568796886691",
+    "https://www.instagram.com/prousta.az",
+    "https://www.tiktok.com/@prousta.az",
+    "https://www.youtube.com/@prousta.servis.merkezi"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Prousta.az",
+  "url": "https://prousta.az",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://prousta.az/elanlar/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{% endblock %}
 {% block style %}
 <style>
-.hero{background:linear-gradient(135deg,#1a47c8,#1238a8);color:#fff;padding:60px 20px;text-align:center}
+.hero{background:linear-gradient(135deg,#1a47c8,#0f2d8f);color:#fff;padding:70px 20px;text-align:center}
 .hero h1{font-size:40px;font-weight:800;margin-bottom:12px}
 .hero p{font-size:17px;opacity:.85;margin-bottom:30px}
 .search-box{display:flex;gap:10px;max-width:560px;margin:0 auto}
 .search-box input{flex:1;padding:14px 18px;border-radius:var(--r);border:none;font-size:15px}
 .search-box button{padding:14px 24px;background:var(--acc);color:#fff;border-radius:var(--r);font-weight:700;font-size:15px;border:none;cursor:pointer}
-.cats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:30px 20px;max-width:1200px;margin:0 auto}
-.cat{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 20px;font-size:14px;font-weight:600;color:var(--muted);transition:.2s;cursor:pointer}
+.cats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:28px 20px;max-width:1200px;margin:0 auto}
+.cat{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:13px;font-weight:600;color:var(--muted);transition:.2s}
 .cat:hover{border-color:var(--p);color:var(--p)}
 .section{padding:40px 20px;max-width:1200px;margin:0 auto}
-.section-title{font-size:22px;font-weight:700;margin-bottom:20px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{font-size:20px;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s}
+.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s;position:relative}
 .kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.kart-img{width:100%;height:180px;object-fit:cover;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.kart-img{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
 .kart-img img{width:100%;height:180px;object-fit:cover}
 .kart-body{padding:14px}
 .kart-title{font-weight:600;font-size:15px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kart-price{color:var(--p);font-weight:700;font-size:16px;margin-bottom:6px}
 .kart-meta{font-size:12px;color:var(--muted)}
+.vip-badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,.4)}
+.vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.4)}
+.vip-section{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--r);padding:30px 20px;margin:0 20px 10px;max-width:1160px;margin-left:auto;margin-right:auto}
+.vip-section .section-title{color:#92400e}
+@media(max-width:768px){
+  .hero{padding:50px 16px}
+  .hero h1{font-size:26px}
+  .search-box{flex-direction:column}
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .kart-img{height:140px}
+  .kart-img img{height:140px}
+  .kart-body{padding:10px}
+  .kart-title{font-size:13px}
+  .kart-price{font-size:14px}
+  .section{padding:30px 12px}
+  .vip-section{margin:0 12px 10px}
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="hero">
-  <h1>Azərbaycanda ən böyük elanlar platforması</h1>
-  <p>Sat, al, tap — Prousta.az ilə asan!</p>
+  <h1>Peşəkar Usta Tapın</h1>
+  <p>Azərbaycanda ən böyük xidmət elanları platforması</p>
   <form class="search-box" action="/elanlar/" method="get">
-    <input name="q" placeholder="Nə axtarırsınız?">
+    <input name="q" placeholder="Hansı ustanı axtarırsınız?">
     <button type="submit">Axtar</button>
   </form>
 </div>
@@ -40,26 +107,52 @@
 {% endfor %}
 </div>
 
-<div class="section">
-  <div class="section-title">Son Elanlar</div>
+{% if vip_elanlar %}
+<div class="vip-section">
+  <div class="section-header">
+    <div class="section-title">VIP Elanlar</div>
+  </div>
   <div class="grid">
-  {% for elan in elanlar %}
+  {% for elan in vip_elanlar %}
     <a href="/elan/{{ elan.pk }}/" class="kart">
       <div class="kart-img">
-        {% if elan.shekillar.first %}
-          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
-        {% else %}
-          Şəkil yoxdur
-        {% endif %}
+        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+        {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+      </div>
+      <div class="vip-badge {{ elan.vip_status }}">
+        {% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}
       </div>
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
         <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-        <div class="kart-meta">📍 {{ elan.sheher }} &nbsp;·&nbsp; 👁 {{ elan.baxish_sayi }}</div>
+        <div class="kart-meta">📍 {{ elan.sheher }} · 👁 {{ elan.baxish_sayi }}</div>
+      </div>
+    </a>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Son Elanlar</div>
+    <a href="/elanlar/" style="font-size:14px;color:var(--p);font-weight:600">Hamısına bax →</a>
+  </div>
+  <div class="grid">
+  {% for elan in elanlar %}
+    <a href="/elan/{{ elan.pk }}/" class="kart">
+      <div class="kart-img">
+        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+        {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+      </div>
+      <div class="kart-body">
+        <div class="kart-title">{{ elan.bashliq }}</div>
+        <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
+        <div class="kart-meta">📍 {{ elan.sheher }} · 👁 {{ elan.baxish_sayi }}</div>
       </div>
     </a>
   {% empty %}
-    <p style="color:var(--muted)">Hələ elan yoxdur.</p>
+    <p style="color:var(--muted);grid-column:1/-1">Hələ elan yoxdur.</p>
   {% endfor %}
   </div>
 </div>

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}İstifadə Şərtləri — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:800px;margin:40px auto;padding:0 20px}
+.page-header{margin-bottom:36px}
+.page-header h1{font-size:32px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.page-header p{font-size:15px;color:var(--muted)}
+.section-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px;margin-bottom:20px}
+.section-box h2{font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-box p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.section-box ul{padding-left:20px;margin-bottom:12px}
+.section-box ul li{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:6px}
+.warning-box{background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--r);padding:16px;margin-bottom:12px}
+.warning-box p{color:#92400e;margin:0}
+.last-update{font-size:13px;color:var(--muted);margin-top:24px;text-align:center}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>İstifadə Şərtləri</h1>
+    <p>Son yenilənmə: Mart 2026</p>
+  </div>
+
+  <div class="section-box">
+    <h2>📋 Ümumi Müddəalar</h2>
+    <p>Prousta.az saytından istifadə etməklə siz bu istifadə şərtlərini qəbul etmiş olursunuz. Şərtlərlə razılaşmırsınızsa, saytdan istifadə etməyin.</p>
+    <p>Prousta.az Azərbaycanda peşəkar ustalar və xidmət sahiblərini müştərilərlə birləşdirən elanlar platformasıdır.</p>
+  </div>
+
+  <div class="section-box">
+    <h2>👤 Qeydiyyat Qaydaları</h2>
+    <ul>
+      <li>Qeydiyyat zamanı düzgün məlumat vermək məcburidir</li>
+      <li>Bir şəxs yalnız bir hesab yarada bilər</li>
+      <li>Hesab məlumatlarınızın təhlükəsizliyi sizin məsuliyyətinizdir</li>
+      <li>18 yaşdan aşağı şəxslər qeydiyyatdan keçə bilməz</li>
+    </ul>
+  </div>
+
+  <div class="section-box">
+    <h2>📝 Elan Yerləşdirmə Qaydaları</h2>
+    <ul>
+      <li>Yalnız real xidmət elanları yerləşdirilə bilər</li>
+      <li>Elan məlumatları düzgün və aktual olmalıdır</li>
+      <li>Bir kateqoriyada eyni xidmət üçün yalnız bir aktiv elan yerləşdirilə bilər</li>
+      <li>Elanlar 30 gün aktiv qalır</li>
+      <li>Bütün elanlar moderasiyadan keçir</li>
+    </ul>
+    <div class="warning-box">
+      <p>⚠️ Yalan məlumat, saxta elan və ya başqasının adından elan yerləşdirmək qadağandır. Belə hallarda hesab bloklanacaq.</p>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <h2>🚫 Qadağan Edilən Fəaliyyətlər</h2>
+    <ul>
+      <li>Saxta elan yerləşdirmək</li>
+      <li>Başqalarının məlumatlarını icazəsiz istifadə etmək</li>
+      <li>Spam mesaj göndərmək</li>
+      <li>Saytın normal işini pozmaq</li>
+      <li>Qanunla qadağan edilmiş xidmətlərin reklamını etmək</li>
+      <li>Digər istifadəçiləri aldatmaq</li>
+    </ul>
+  </div>
+
+  <div class="section-box">
+    <h2>💰 Ödəniş Şərtləri</h2>
+    <ul>
+      <li>VIP elan xidmətləri ödənişlidir</li>
+      <li>Ödənişlər geri qaytarılmır</li>
+      <li>Balans artırma bank köçürməsi ilə həyata keçirilir</li>
+      <li>Qəbz yüklənmədən balans artırılmır</li>
+      <li>Şübhəli ödənişlər təsdiq edilməyə bilər</li>
+    </ul>
+  </div>
+
+  <div class="section-box">
+    <h2>⚖️ Məsuliyyətin Məhdudlaşdırılması</h2>
+    <p>Prousta.az yalnız elanlar platformasıdır. Usta ilə müştəri arasında baş verən mübahisələrə görə Prousta.az məsuliyyət daşımır.</p>
+    <p>İstifadəçilər arasında aparılan əməliyyatlar tamamilə onların öz məsuliyyətidir.</p>
+  </div>
+
+  <div class="section-box">
+    <h2>🔄 Şərtlərdə Dəyişikliklər</h2>
+    <p>Prousta.az istənilən vaxt bu şərtləri dəyişdirmək hüququna malikdir. Dəyişikliklər saytda elan edildikdən sonra qüvvəyə minir.</p>
+  </div>
+
+  <div class="section-box">
+    <h2>📞 Əlaqə</h2>
+    <p>İstifadə şərtləri ilə bağlı suallarınız üçün:</p>
+    <p>📧 info@prousta.az</p>
+    <p>📞 <a href="tel:+994515888884" style="color:var(--p)">+994 51 588 88 84</a></p>
+    <p>💬 <a href="https://wa.me/994515888884" target="_blank" style="color:var(--p)">WhatsApp ilə yazın</a></p>
+  </div>
+
+  <p class="last-update">© 2026 Prousta.az — Bütün hüquqlar qorunur.</p>
+</div>
+{% endblock %}

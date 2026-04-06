@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block title %}Profil Şəkli — Prousta.az{% endblock %}
+{% block style %}
+<style>
+.page-wrap{max-width:480px;margin:40px auto;padding:0 20px;text-align:center}
+.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
+.upload-area{border:2px dashed var(--border);border-radius:var(--r);padding:40px;cursor:pointer;transition:.2s;margin-bottom:20px}
+.upload-area:hover{border-color:var(--p);background:var(--pl)}
+.upload-area p{color:var(--muted);font-size:14px;margin-top:8px}
+.crop-wrap{display:none;margin-bottom:20px}
+.crop-container{position:relative;width:300px;height:300px;margin:0 auto;overflow:hidden;border-radius:50%;border:3px solid var(--p);background:#000;cursor:move}
+.crop-container img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none}
+.zoom-wrap{display:flex;align-items:center;gap:12px;margin:16px auto;max-width:300px}
+.zoom-wrap label{font-size:13px;color:var(--muted);white-space:nowrap}
+.zoom-wrap input{flex:1}
+.btn-row{display:flex;gap:12px;max-width:300px;margin:0 auto}
+.btn-save{flex:1;padding:12px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:700;border:none;cursor:pointer;font-size:15px}
+.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;cursor:pointer;background:#fff;font-size:15px}
+.preview-wrap{display:none;margin-bottom:20px}
+.preview-img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--p);margin:0 auto 16px;display:block}
+.btn-confirm{width:100%;max-width:300px;padding:13px;background:#166534;color:#fff;border-radius:var(--r);font-weight:700;border:none;cursor:pointer;font-size:15px;margin-bottom:10px}
+.btn-retry{width:100%;max-width:300px;padding:13px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;cursor:pointer;background:#fff;font-size:15px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <a href="/profil/duzelis/" style="font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:20px">← Geri</a>
+  <h2>Profil Şəklini Dəyiş</h2>
+
+  <!-- UPLOAD -->
+  <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+    <div style="font-size:48px">📷</div>
+    <p>Şəkil seçmək üçün klikləyin</p>
+    <p style="font-size:12px">JPG, PNG — maksimum 5MB</p>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadImage(this)">
+
+  <!-- CROP -->
+  <div class="crop-wrap" id="cropWrap">
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Şəkli sürüşdür və ölçüsünü tənzimlə</p>
+    <div class="crop-container" id="cropContainer">
+      <img id="cropImg" draggable="false">
+    </div>
+    <div class="zoom-wrap">
+      <label>Kiçik</label>
+      <input type="range" id="zoomSlider" min="0.5" max="3" step="0.01" value="1" oninput="applyZoom(this.value)">
+      <label>Böyük</label>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="resetAll()">Ləğv et</button>
+      <button class="btn-save" onclick="cropImage()">Kəs və Bax</button>
+    </div>
+  </div>
+
+  <!-- PREVİEW -->
+  <div class="preview-wrap" id="previewWrap">
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Belə görünəcək:</p>
+    <img id="previewImg" class="preview-img">
+    <form method="post" action="/profil/foto/" enctype="multipart/form-data" id="uploadForm">
+      {% csrf_token %}
+      <input type="file" id="finalInput" name="avatar" style="display:none">
+      <button class="btn-confirm" type="button" onclick="submitForm()">✅ Yadda Saxla</button>
+      <button class="btn-retry" onclick="resetAll()">Yenidən seç</button>
+    </form>
+  </div>
+</div>
+
+<script>
+let img = document.getElementById('cropImg');
+let container = document.getElementById('cropContainer');
+let isDragging = false;
+let startX, startY, posX = 0, posY = 0;
+let currentScale = 1;
+let naturalW, naturalH;
+let croppedBlob = null;
+
+function loadImage(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    img.src = e.target.result;
+    img.onload = () => {
+      naturalW = img.naturalWidth;
+      naturalH = img.naturalHeight;
+      const minScale = 300 / Math.min(naturalW, naturalH);
+      currentScale = minScale;
+      document.getElementById('zoomSlider').min = minScale;
+      document.getElementById('zoomSlider').value = minScale;
+      posX = (300 - naturalW * currentScale) / 2;
+      posY = (300 - naturalH * currentScale) / 2;
+      updatePos();
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('cropWrap').style.display = 'block';
+    };
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function updatePos() {
+  img.style.width = (naturalW * currentScale) + 'px';
+  img.style.height = (naturalH * currentScale) + 'px';
+  img.style.left = posX + 'px';
+  img.style.top = posY + 'px';
+}
+
+function applyZoom(val) {
+  const oldScale = currentScale;
+  currentScale = parseFloat(val);
+  posX = posX - (naturalW * (currentScale - oldScale)) / 2;
+  posY = posY - (naturalH * (currentScale - oldScale)) / 2;
+  updatePos();
+}
+
+// Mouse drag
+container.addEventListener('mousedown', e => {
+  isDragging = true;
+  startX = e.clientX - posX;
+  startY = e.clientY - posY;
+  e.preventDefault();
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  posX = e.clientX - startX;
+  posY = e.clientY - startY;
+  updatePos();
+});
+document.addEventListener('mouseup', () => isDragging = false);
+
+// Touch drag
+container.addEventListener('touchstart', e => {
+  isDragging = true;
+  startX = e.touches[0].clientX - posX;
+  startY = e.touches[0].clientY - posY;
+});
+document.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  posX = e.touches[0].clientX - startX;
+  posY = e.touches[0].clientY - startY;
+  updatePos();
+});
+document.addEventListener('touchend', () => isDragging = false);
+
+function cropImage() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 300;
+  canvas.height = 300;
+  const ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  ctx.arc(150, 150, 150, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(img, posX, posY, naturalW * currentScale, naturalH * currentScale);
+  canvas.toBlob(blob => {
+    croppedBlob = blob;
+    const url = URL.createObjectURL(blob);
+    document.getElementById('previewImg').src = url;
+    document.getElementById('cropWrap').style.display = 'none';
+    document.getElementById('previewWrap').style.display = 'block';
+  }, 'image/jpeg', 0.92);
+}
+
+function submitForm() {
+  if (!croppedBlob) return;
+  const file = new File([croppedBlob], 'avatar.jpg', {type: 'image/jpeg'});
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  document.getElementById('finalInput').files = dt.files;
+  document.getElementById('uploadForm').submit();
+}
+
+function resetAll() {
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('cropWrap').style.display = 'none';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  posX = 0; posY = 0; currentScale = 1;
+}
+</script>
+{% endblock %}
