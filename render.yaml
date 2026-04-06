@@ -1,0 +1,30 @@
+databases:
+  - name: prousta-db
+    plan: free
+    databaseName: prousta
+    user: prousta
+
+services:
+  - type: web
+    name: prousta
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn prousta.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: prousta-db
+          property: connectionString
+      - key: CLOUDINARY_URL
+        sync: false
