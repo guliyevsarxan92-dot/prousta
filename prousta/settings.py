@@ -97,10 +97,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Cloudinary (production-da media fayllar üçün)
+# cloudinary library CLOUDINARY_URL env var-ını avtomatik oxuyur
 if os.getenv('CLOUDINARY_URL'):
-    CLOUDINARY_STORAGE = {
-        'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL'),
-    }
+    import cloudinary
+    cloudinary.config(secure=True)
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
