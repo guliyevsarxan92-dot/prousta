@@ -28,7 +28,7 @@
     {% if mesaj.elan %}
     <a href="/elan/{{ mesaj.elan.pk }}/" class="elan-link">📋 {{ mesaj.elan.bashliq }}</a>
     {% endif %}
-    <div class="mesaj-metn">{{ mesaj.metn }}</div>
+    <div class="mesaj-metn">{{ mesaj.metn|linebreaksbr }}</div>
     {% if request.user != mesaj.gonderici and mesaj.elan %}
     <a href="{% url 'mesaj_yeni' mesaj.elan.pk %}" class="cavab-btn">↩ Cavab ver</a>
     {% endif %}
