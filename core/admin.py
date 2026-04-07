@@ -5,7 +5,9 @@ from .models import Kategori, Elan, ElanShekil, Profil, Favorit, Mesaj, Odenis, 
 @admin.register(Kategori)
 class KategoriAdmin(admin.ModelAdmin):
     list_display = ['ad', 'slug', 'ust_kategori']
-    prepopulated_fields = {'slug': ('ad',)}
+    # prepopulated_fields silindi — Azərbaycan hərfləri (İ, Ə, Ş...) ilə
+    # Django-nun avtomatik slugify funksiyası non-ASCII simvol yaradır və URL
+    # reverse-ini sındırır. Slug əl ilə ASCII olaraq daxil edilməlidir.
 
 @admin.register(Elan)
 class ElanAdmin(admin.ModelAdmin):

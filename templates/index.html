@@ -174,9 +174,9 @@
       </summary>
       <div class="alt-list">
         {% for alt in kat.alt_kateqoriyalar.all %}
-          <a href="/elanlar/?kategori={{ alt.slug }}">{{ alt.ad }}</a>
+          <a href="{% url 'xidmet_detail' alt.slug %}">{{ alt.ad }}</a>
         {% endfor %}
-        <a href="/elanlar/?kategori={{ kat.slug }}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
+        <a href="{% url 'xidmet_detail' kat.slug %}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
       </div>
     </details>
     {% endfor %}

@@ -16,14 +16,27 @@ class ElanSitemap(Sitemap):
         return obj.yenilendi
 
 class KategoriSitemap(Sitemap):
+    """Əsas kateqoriyalar (10 ədəd) üçün sitemap."""
     changefreq = 'weekly'
-    priority = 0.6
+    priority = 0.7
 
     def items(self):
-        return Kategori.objects.filter(ust_kategori=None)
+        return Kategori.objects.filter(ust_kategori__isnull=True).order_by('pk')
 
     def location(self, obj):
-        return f'/elanlar/?kategori={obj.slug}'
+        return reverse('xidmet_detail', args=[obj.slug])
+
+
+class AltKategoriSitemap(Sitemap):
+    """Alt xidmət kateqoriyaları (120+ ədəd) üçün sitemap — hər xidmət ayrı URL."""
+    changefreq = 'weekly'
+    priority = 0.8
+
+    def items(self):
+        return Kategori.objects.filter(ust_kategori__isnull=False).order_by('pk')
+
+    def location(self, obj):
+        return reverse('xidmet_detail', args=[obj.slug])
 
 class StatikSitemap(Sitemap):
     changefreq = 'monthly'

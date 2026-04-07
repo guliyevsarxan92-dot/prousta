@@ -42,27 +42,64 @@ def index(request):
     })
 
 def elan_siyahi(request):
+    """
+    /elanlar/ — əsas xidmət seçimi səhifəsi.
+    - Heç bir parametrsiz: əsas səhifədəki kimi açılan kateqoriya kartları göstərilir
+    - ?q=<axtaris>: axtarış nəticələri düz siyahı şəklində
+    - ?kategori=<slug> (köhnə URL-lər): /xidmet/<slug>/ ünvanına 301 yönləndirmə
+    """
     _update_elan_status()
-    elanlar = Elan.objects.filter(status='aktiv').prefetch_related('shekillar').order_by(
-        '-vip_siralama', '-yaradildi'
-    )
-    axtaris = request.GET.get('q', '')
-    kategori_slug = request.GET.get('kategori', '')
+
+    # Köhnə URL-ləri yeni xidmət səhifəsinə 301 redirect et (SEO backward compat)
+    kategori_slug = request.GET.get('kategori', '').strip()
+    if kategori_slug:
+        return redirect('xidmet_detail', slug=kategori_slug, permanent=True)
+
+    kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
+    axtaris = request.GET.get('q', '').strip()
+
+    elanlar_page = None
     if axtaris:
-        elanlar = elanlar.filter(Q(bashliq__icontains=axtaris)|Q(acaqlama__icontains=axtaris)|Q(nomre__icontains=axtaris))
-    if kategori_slug:
-        elanlar = elanlar.filter(Q(kategori__slug=kategori_slug)|Q(kategori__ust_kategori__slug=kategori_slug))
-    kateqoriyalar = Kategori.objects.filter(ust_kategori=None)
-    aktiv_kategori = None
-    if kategori_slug:
-        aktiv_kategori = Kategori.objects.filter(slug=kategori_slug).first()
-    paginator = Paginator(elanlar, 20)
-    elanlar_page = paginator.get_page(request.GET.get('page', 1))
+        elanlar = Elan.objects.filter(status='aktiv').filter(
+            Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
+        ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
+        paginator = Paginator(elanlar, 20)
+        elanlar_page = paginator.get_page(request.GET.get('page', 1))
+
     return render(request, 'elan_siyahi.html', {
         'elanlar': elanlar_page,
         'kateqoriyalar': kateqoriyalar,
         'axtaris': axtaris,
+    })
+
+
+def xidmet_detail(request, slug):
+    """
+    /xidmet/<slug>/ — xidmət üzrə elanlar səhifəsi (SEO-friendly URL).
+    Həm əsas, həm alt kateqoriyalar üçün işləyir.
+    """
+    _update_elan_status()
+    aktiv_kategori = get_object_or_404(Kategori, slug=slug)
+
+    elanlar = Elan.objects.filter(status='aktiv').filter(
+        Q(kategori__slug=slug) | Q(kategori__ust_kategori__slug=slug)
+    ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
+
+    axtaris = request.GET.get('q', '').strip()
+    if axtaris:
+        elanlar = elanlar.filter(
+            Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
+        )
+
+    kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
+    paginator = Paginator(elanlar, 20)
+    elanlar_page = paginator.get_page(request.GET.get('page', 1))
+
+    return render(request, 'xidmet_detail.html', {
+        'elanlar': elanlar_page,
+        'kateqoriyalar': kateqoriyalar,
         'aktiv_kategori': aktiv_kategori,
+        'axtaris': axtaris,
     })
 
 def elan_detail(request, pk):

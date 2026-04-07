@@ -8,6 +8,7 @@ urlpatterns = [
     path('cixis/', views.cixis, name='cixis'),
     path('sifre-unutdum/', views.sifre_unutdum, name='sifre_unutdum'),
     path('elanlar/', views.elan_siyahi, name='elan_siyahi'),
+    path('xidmet/<slug:slug>/', views.xidmet_detail, name='xidmet_detail'),
     path('elan/yeni/', views.elan_yarat, name='elan_yarat'),
     path('elan/<int:pk>/', views.elan_detail, name='elan_detail'),
     path('elan/<int:pk>/duzelis/', views.elan_duzelis, name='elan_duzelis'),
