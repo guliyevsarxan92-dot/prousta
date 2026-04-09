@@ -5,17 +5,32 @@
 {
   "@context": "https://schema.org",
   "@type": "Service",
+  "@id": "https://prousta.az/elan/{{ elan.pk }}/",
+  "url": "https://prousta.az/elan/{{ elan.pk }}/",
   "name": "{{ elan.bashliq|escapejs }}",
-  "description": "{{ elan.acaqlama|truncatechars:200|escapejs }}",
-  "areaServed": "{{ elan.sheher|escapejs }}",
+  "description": "{{ elan.acaqlama|truncatechars:300|escapejs }}",
+  "serviceType": "{{ elan.kategori.ad|escapejs }}",
+  "areaServed": {
+    "@type": "City",
+    "name": "{{ elan.sheher|escapejs }}"
+  }{% if elan.shekillar.first %},
+  "image": "{{ elan.shekillar.first.shekil.url }}"{% endif %},
   "provider": {
-    "@type": "Person",
-    "name": "{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|escapejs }} {{ elan.istifadeci.profil.soyad|escapejs }}{% else %}Satıcı{% endif %}"
+    "@type": "LocalBusiness",
+    "name": "{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|escapejs }} {{ elan.istifadeci.profil.soyad|escapejs }}{% else %}Prousta.az Usta{% endif %}",
+    "telephone": "{% if elan.istifadeci.profil.telefon %}{{ elan.istifadeci.profil.telefon|escapejs }}{% else %}+994515888884{% endif %}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "{{ elan.sheher|escapejs }}",
+      "addressCountry": "AZ"
+    }
   }{% if elan.qiymet %},
   "offers": {
     "@type": "Offer",
     "price": "{{ elan.qiymet }}",
-    "priceCurrency": "AZN"
+    "priceCurrency": "AZN",
+    "availability": "https://schema.org/InStock",
+    "url": "https://prousta.az/elan/{{ elan.pk }}/"
   }{% endif %}
 }
 </script>

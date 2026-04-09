@@ -6,6 +6,86 @@
 {% block og_url %}/haqqimizda/{% endblock %}
 {% block og_title %}Haqqımızda — Prousta.az{% endblock %}
 {% block og_description %}Prousta.az — Azərbaycanda peşəkar xidmət elanları platforması.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "Prousta.az haqqında",
+  "url": "https://prousta.az/haqqimizda/",
+  "description": "Prousta.az — Azərbaycanda peşəkar xidmət elanları platforması. Elektrik, santexnik, təmir, məişət texnikası, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə usta bir ünvanda.",
+  "inLanguage": "az-AZ",
+  "about": {
+    "@type": "Organization",
+    "name": "Prousta.az",
+    "url": "https://prousta.az",
+    "logo": "https://prousta.az/static/og-image.jpg",
+    "email": "info@prousta.az",
+    "telephone": "+994515888884",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "AZ",
+      "addressLocality": "Bakı"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Azerbaijan"
+    },
+    "description": "Azərbaycanda peşəkar usta və xidmət elanları platforması. Elektrik, santexnik, kombi, kondisioner, məişət texnikası, mebel, tikinti, avtomobil, gözəllik, IT və digər xidmətlər.",
+    "slogan": "Peşəkar Usta Tapın",
+    "knowsAbout": [
+      "Elektrik xidmətləri",
+      "Santexnik xidmətləri",
+      "Kombi və kondisioner təmiri",
+      "Məişət texnikası təmiri",
+      "Mebel və interyer",
+      "Tikinti və təmir",
+      "Avtomobil təmiri",
+      "Gözəllik və sağlamlıq",
+      "IT və biznes xidmətləri",
+      "Reklam və dizayn"
+    ]
+  },
+  "mainEntity": {
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Prousta.az nədir?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Prousta.az — Azərbaycanda peşəkar usta və xidmət sahiblərini istifadəçilərlə birləşdirən onlayn elan platformasıdır. Elektrik, santexnik, kombi, kondisioner, təmir, mebel, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə aktiv elan yer alır."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prousta.az-da elan yerləşdirmək pulsuzdur?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bəli, Prousta.az-da adi elan yerləşdirmək tamamilə pulsuzdur. Əlavə olaraq VIP və Super VIP reklam paketləri də mövcuddur ki, elanınız daha çox istifadəçiyə çatsın."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prousta.az hansı şəhərləri əhatə edir?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Prousta.az bütün Azərbaycanı əhatə edir: Bakı, Sumqayıt, Gəncə, Mingəçevir, Şəki, Lənkəran, Şirvan və digər şəhər və rayonlar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Usta ilə necə əlaqə saxlaya bilərəm?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hər elan səhifəsində ustanın telefon nömrəsinə birbaşa zəng edə bilərsiniz, həmçinin daxili mesajlaşma sistemi vasitəsilə yazılı əlaqə saxlamaq da mümkündür."
+        }
+      }
+    ]
+  }
+}
+</script>
+{% endblock %}
 {% block style %}
 <style>
 .haqqimizda{background:linear-gradient(180deg,#f8fafc,#eef2ff);padding:60px 20px 50px}
@@ -133,83 +213,4 @@
     </div>
   </div>
 </section>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AboutPage",
-  "name": "Prousta.az haqqında",
-  "url": "https://prousta.az/haqqimizda/",
-  "description": "Prousta.az — Azərbaycanda peşəkar xidmət elanları platforması. Elektrik, santexnik, təmir, məişət texnikası, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə usta bir ünvanda.",
-  "inLanguage": "az-AZ",
-  "about": {
-    "@type": "Organization",
-    "name": "Prousta.az",
-    "url": "https://prousta.az",
-    "logo": "https://prousta.az/static/og-image.jpg",
-    "email": "info@prousta.az",
-    "telephone": "+994515888884",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "AZ",
-      "addressLocality": "Bakı"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Azerbaijan"
-    },
-    "description": "Azərbaycanda peşəkar usta və xidmət elanları platforması. Elektrik, santexnik, kombi, kondisioner, məişət texnikası, mebel, tikinti, avtomobil, gözəllik, IT və digər xidmətlər.",
-    "slogan": "Peşəkar Usta Tapın",
-    "knowsAbout": [
-      "Elektrik xidmətləri",
-      "Santexnik xidmətləri",
-      "Kombi və kondisioner təmiri",
-      "Məişət texnikası təmiri",
-      "Mebel və interyer",
-      "Tikinti və təmir",
-      "Avtomobil təmiri",
-      "Gözəllik və sağlamlıq",
-      "IT və biznes xidmətləri",
-      "Reklam və dizayn"
-    ]
-  },
-  "mainEntity": {
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Prousta.az nədir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Prousta.az — Azərbaycanda peşəkar usta və xidmət sahiblərini istifadəçilərlə birləşdirən onlayn elan platformasıdır. Elektrik, santexnik, kombi, kondisioner, təmir, mebel, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə aktiv elan yer alır."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Prousta.az-da elan yerləşdirmək pulsuzdur?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bəli, Prousta.az-da adi elan yerləşdirmək tamamilə pulsuzdur. Əlavə olaraq VIP və Super VIP reklam paketləri də mövcuddur ki, elanınız daha çox istifadəçiyə çatsın."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Prousta.az hansı şəhərləri əhatə edir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Prousta.az bütün Azərbaycanı əhatə edir: Bakı, Sumqayıt, Gəncə, Mingəçevir, Şəki, Lənkəran, Şirvan və digər şəhər və rayonlar."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Usta ilə necə əlaqə saxlaya bilərəm?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Hər elan səhifəsində ustanın telefon nömrəsinə birbaşa zəng edə bilərsiniz, həmçinin daxili mesajlaşma sistemi vasitəsilə yazılı əlaqə saxlamaq da mümkündür."
-        }
-      }
-    ]
-  }
-}
-</script>
 {% endblock %}

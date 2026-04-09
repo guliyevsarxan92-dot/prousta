@@ -3,6 +3,49 @@
 {% block description %}Prousta.az-da Azərbaycanın bütün peşəkar xidmət kateqoriyaları: elektrik, santexnik, kondisioner, təmir, gözəllik, avtomobil və daha çox. Lazım olan ustanı tapın.{% endblock %}
 {% block keywords %}xidmətlər, ustalar, peşəkar xidmət, Bakı ustalar, Prousta.az, elan sayti{% endblock %}
 {% block canonical %}/elanlar/{% endblock %}
+{% block canonical2 %}/elanlar/{% endblock %}
+{% block og_url %}/elanlar/{% endblock %}
+{% block og_title %}{% if axtaris %}"{{ axtaris }}" — Axtarış Nəticələri{% else %}Bütün Elanlar{% endif %} — Prousta.az{% endblock %}
+{% block og_description %}Prousta.az-da bütün peşəkar xidmət elanları: elektrik, santexnik, kondisioner, təmir, gözəllik, avtomobil və daha çox.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{% if axtaris %}{{ axtaris|escapejs }} — Axtarış Nəticələri{% else %}Bütün Elanlar{% endif %} — Prousta.az",
+  "description": "Prousta.az-da peşəkar xidmət elanlarının tam siyahısı.",
+  "url": "https://prousta.az/elanlar/{% if axtaris %}?q={{ axtaris|urlencode }}{% endif %}",
+  "inLanguage": "az-AZ",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Prousta.az",
+    "url": "https://prousta.az"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": {{ elanlar.paginator.count|default:0 }},
+    "itemListElement": [
+      {% for elan in elanlar %}{
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "url": "https://prousta.az/elan/{{ elan.pk }}/",
+        "name": "{{ elan.bashliq|escapejs }}"
+      }{% if not forloop.last %},{% endif %}{% endfor %}
+    ]
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
+    {"@type": "ListItem", "position": 2, "name": "Bütün Elanlar", "item": "https://prousta.az/elanlar/"}
+  ]
+}
+</script>
+{% endblock %}
 {% block style %}
 <style>
 .page-wrap{max-width:1200px;margin:30px auto;padding:0 20px}

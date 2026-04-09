@@ -3,9 +3,41 @@
 {% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da. Ən sərfəli qiymətlər və etibarlı xidmət.{% endif %}{% endblock %}
 {% block keywords %}{{ aktiv_kategori.ad }}, {{ aktiv_kategori.ad|lower }} Bakı, usta, xidmət, Prousta.az{% endblock %}
 {% block canonical %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
+{% block canonical2 %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
+{% block og_url %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
+{% block og_title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} — Prousta.az{% endif %}{% endblock %}
+{% block og_description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}{% endblock %}
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ aktiv_kategori.ad|escapejs }} — Prousta.az",
+  "description": "{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}",
+  "url": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/",
+  "inLanguage": "az-AZ",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Prousta.az",
+    "url": "https://prousta.az"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "{{ aktiv_kategori.ad|escapejs }} elanları",
+    "numberOfItems": {{ elanlar.paginator.count|default:0 }},
+    "itemListElement": [
+      {% for elan in elanlar %}{
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "url": "https://prousta.az/elan/{{ elan.pk }}/",
+        "name": "{{ elan.bashliq|escapejs }}"
+      }{% if not forloop.last %},{% endif %}{% endfor %}
+    ]
+  }
+}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
