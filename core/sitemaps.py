@@ -23,7 +23,7 @@ class ElanSitemap(Sitemap):
         return obj.yenilendi
 
     def location(self, obj):
-        return f'/elan/{obj.pk}/'
+        return obj.get_absolute_url()
 
 
 class KategoriSitemap(Sitemap):

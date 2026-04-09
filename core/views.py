@@ -126,8 +126,11 @@ def xidmet_detail(request, slug):
         'axtaris': axtaris,
     })
 
-def elan_detail(request, pk):
+def elan_detail(request, pk, slug=None):
     elan = get_object_or_404(Elan, pk=pk)
+    # Slug mövcud deyilsə (köhnə /elan/<id>/) və ya səhvdirsə → 301 canonical
+    if slug != elan.slug:
+        return redirect(elan.get_absolute_url(), permanent=True)
     is_owner = request.user.is_authenticated and request.user == elan.istifadeci
     viewed_key = f'viewed_elan_{pk}'
     if not is_owner and not request.session.get(viewed_key):
@@ -479,7 +482,7 @@ def favorit_toggle(request, pk):
     fav, yaradildi = Favorit.objects.get_or_create(istifadeci=request.user, elan=elan)
     if not yaradildi:
         fav.delete()
-    return redirect('elan_detail', pk=pk)
+    return redirect(elan.get_absolute_url())
 
 @login_required
 def mesajlar(request):
@@ -507,13 +510,13 @@ def mesaj_yeni(request, elan_pk):
     elan = get_object_or_404(Elan, pk=elan_pk)
     if request.user == elan.istifadeci:
         messages.error(request, 'Özünüzə mesaj göndərə bilməzsiniz!')
-        return redirect('elan_detail', pk=elan_pk)
+        return redirect(elan.get_absolute_url())
     if request.method == 'POST':
         metn = request.POST.get('metn', '').strip()
         if metn:
             Mesaj.objects.create(gonderici=request.user, alici=elan.istifadeci, elan=elan, metn=metn)
             messages.success(request, 'Mesajınız göndərildi!')
-            return redirect('elan_detail', pk=elan_pk)
+            return redirect(elan.get_absolute_url())
     return render(request, 'mesaj_yeni.html', {'elan': elan})
 
 @login_required

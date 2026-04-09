@@ -98,7 +98,7 @@
       {% for elan in elanlar %}
       {% if elan.status != 'muddeti_bitmis' %}
       <div class="kart">
-        <a href="/elan/{{ elan.pk }}/">
+        <a href="{{ elan.get_absolute_url }}">
           <div class="kart-img">
             {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
             {% else %}Şəkil yoxdur{% endif %}{% endwith %}
@@ -167,7 +167,7 @@
     {% if favoritler %}
     <div class="grid">
       {% for fav in favoritler %}
-      <a href="/elan/{{ fav.elan.pk }}/" class="kart">
+      <a href="{{ fav.elan.get_absolute_url }}" class="kart">
         <div class="kart-img">
           {% with fav.elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ fav.elan.bashliq }}" loading="lazy">
           {% else %}Şəkil yoxdur{% endif %}{% endwith %}

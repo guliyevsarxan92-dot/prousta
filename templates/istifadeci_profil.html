@@ -38,7 +38,7 @@
   </div>
   <div class="grid">
   {% for elan in elanlar %}
-    <a href="/elan/{{ elan.pk }}/" class="kart">
+    <a href="{{ elan.get_absolute_url }}" class="kart">
       <div class="kart-img">
         {% if elan.shekillar.first %}
           <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">

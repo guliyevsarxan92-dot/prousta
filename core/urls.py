@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -10,7 +10,8 @@ urlpatterns = [
     path('elanlar/', views.elan_siyahi, name='elan_siyahi'),
     path('xidmet/<slug:slug>/', views.xidmet_detail, name='xidmet_detail'),
     path('elan/yeni/', views.elan_yarat, name='elan_yarat'),
-    path('elan/<int:pk>/', views.elan_detail, name='elan_detail'),
+    re_path(r'^elan/(?P<pk>\d+)-(?P<slug>[a-z0-9-]+)/$', views.elan_detail, name='elan_detail'),
+    path('elan/<int:pk>/', views.elan_detail),  # legacy → 301 redirect
     path('elan/<int:pk>/duzelis/', views.elan_duzelis, name='elan_duzelis'),
     path('elan/<int:pk>/sil/', views.elan_sil, name='elan_sil'),
     path('elan/<int:pk>/aktivlesdir/', views.elan_aktivlesdir, name='elan_aktivlesdir'),

@@ -30,7 +30,7 @@
       {% for elan in elanlar %}{
         "@type": "ListItem",
         "position": {{ forloop.counter }},
-        "url": "https://prousta.az/elan/{{ elan.pk }}/",
+        "url": "https://prousta.az{{ elan.get_absolute_url }}",
         "name": "{{ elan.bashliq|escapejs }}"
       }{% if not forloop.last %},{% endif %}{% endfor %}
     ]
@@ -134,7 +134,7 @@
     <h2 class="search-title">{{ elanlar.paginator.count }} elan</h2>
     <div class="grid">
     {% for elan in elanlar %}
-      <a href="/elan/{{ elan.pk }}/" class="kart">
+      <a href="{{ elan.get_absolute_url }}" class="kart">
         <div class="kart-img">
           {% with elan.shekillar.all as sh %}{% if sh %}
             <img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">

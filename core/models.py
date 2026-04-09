@@ -1,8 +1,33 @@
+import re
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
+
+
+_AZ_MAP = str.maketrans({
+    'ə': 'e', 'Ə': 'e',
+    'ı': 'i', 'I': 'i', 'İ': 'i',
+    'ö': 'o', 'Ö': 'o',
+    'ü': 'u', 'Ü': 'u',
+    'ç': 'c', 'Ç': 'c',
+    'ş': 's', 'Ş': 's',
+    'ğ': 'g', 'Ğ': 'g',
+})
+
+
+def slug_az(text: str, max_length: int = 50) -> str:
+    """Azərbaycan dilində başlıqdan SEO-dost slug yaradır."""
+    if not text:
+        return ''
+    text = text.translate(_AZ_MAP).lower()
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    text = text.strip('-')
+    if len(text) > max_length:
+        text = text[:max_length].rsplit('-', 1)[0] or text[:max_length]
+    return text
+
 
 class Kategori(models.Model):
     ad = models.CharField(max_length=100)
@@ -71,6 +96,17 @@ class Elan(models.Model):
         if self.vip_bitis and self.vip_bitis < timezone.now():
             return False
         return True
+
+    @property
+    def slug(self) -> str:
+        """Başlıqdan avtomatik yaranan SEO slug (maks. 60 simvol, -baki suffix ilə)."""
+        base = slug_az(self.bashliq or '', max_length=50)
+        if base:
+            return f'{base}-baki'
+        return 'elan-baki'
+
+    def get_absolute_url(self) -> str:
+        return f'/elan/{self.pk}-{self.slug}/'
 
     def __str__(self):
         return f"#{self.nomre} {self.bashliq}"

@@ -27,7 +27,7 @@
       </div>
     </div>
     {% if mesaj.elan %}
-    <a href="/elan/{{ mesaj.elan.pk }}/" class="elan-link">📋 {{ mesaj.elan.bashliq }}</a>
+    <a href="{{ mesaj.elan.get_absolute_url }}" class="elan-link">📋 {{ mesaj.elan.bashliq }}</a>
     {% endif %}
     <div class="mesaj-metn">{{ mesaj.metn|linebreaksbr }}</div>
     {% if request.user != mesaj.gonderici and mesaj.elan %}

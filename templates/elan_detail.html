@@ -5,8 +5,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": "https://prousta.az/elan/{{ elan.pk }}/",
-  "url": "https://prousta.az/elan/{{ elan.pk }}/",
+  "@id": "https://prousta.az{{ elan.get_absolute_url }}",
+  "url": "https://prousta.az{{ elan.get_absolute_url }}",
   "name": "{{ elan.bashliq|escapejs }}",
   "description": "{{ elan.acaqlama|truncatechars:300|escapejs }}",
   "serviceType": "{{ elan.kategori.ad|escapejs }}",
@@ -30,7 +30,7 @@
     "price": "{{ elan.qiymet }}",
     "priceCurrency": "AZN",
     "availability": "https://schema.org/InStock",
-    "url": "https://prousta.az/elan/{{ elan.pk }}/"
+    "url": "https://prousta.az{{ elan.get_absolute_url }}"
   }{% endif %}
 }
 </script>
@@ -50,8 +50,8 @@
 {% block keywords %}{{ elan.bashliq }}, {{ elan.sheher }}, {{ elan.kategori }}, usta, xidmət{% endblock %}
 {% block og_title %}{{ elan.bashliq }} — {{ elan.sheher }}{% endblock %}
 {% block og_description %}{{ elan.acaqlama|truncatechars:200 }}{% endblock %}
-{% block og_url %}/elan/{{ elan.pk }}/{% endblock %}
-{% block canonical %}/elan/{{ elan.pk }}/{% endblock %}
+{% block og_url %}{{ elan.get_absolute_url }}{% endblock %}
+{% block canonical %}{{ elan.get_absolute_url }}{% endblock %}
 {% block style %}
 <style>
 .page-wrap{max-width:1000px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:1fr 320px;gap:30px}
