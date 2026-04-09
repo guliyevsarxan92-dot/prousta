@@ -29,4 +29,5 @@ urlpatterns = [
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('gizlilik/', views.gizlilik, name='gizlilik'),
     path('istifade-sertleri/', views.istifade_sertleri, name='istifade_sertleri'),
+    path('haqqimizda/', views.haqqimizda, name='haqqimizda'),
 ]

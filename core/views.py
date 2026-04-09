@@ -589,6 +589,9 @@ def gizlilik(request):
 def istifade_sertleri(request):
     return render(request, 'istifade_sertleri.html')
 
+def haqqimizda(request):
+    return render(request, 'haqqimizda.html')
+
 @login_required
 def profil_foto_crop(request):
     return render(request, 'profil_foto_crop.html')
