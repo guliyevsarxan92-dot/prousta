@@ -82,13 +82,13 @@ def elan_siyahi(request):
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     axtaris = request.GET.get('q', '').strip()
 
-    elanlar_page = None
+    elanlar = Elan.objects.filter(status='aktiv').prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
     if axtaris:
-        elanlar = Elan.objects.filter(status='aktiv').filter(
+        elanlar = elanlar.filter(
             Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
-        ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
-        paginator = Paginator(elanlar, 20)
-        elanlar_page = paginator.get_page(request.GET.get('page', 1))
+        )
+    paginator = Paginator(elanlar, 20)
+    elanlar_page = paginator.get_page(request.GET.get('page', 1))
 
     return render(request, 'elan_siyahi.html', {
         'elanlar': elanlar_page,
