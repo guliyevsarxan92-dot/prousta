@@ -220,26 +220,6 @@
         {% endfor %}
         <a href="{% url 'xidmet_detail' kat.slug %}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
       </div>
-      {% if kat.son_elanlar %}
-      <div class="kat-elanlar">
-        <div class="kat-elanlar-basliq">Son elanlar</div>
-        <div class="kat-elanlar-grid">
-          {% for e in kat.son_elanlar %}
-          <a href="/elan/{{ e.pk }}/" class="kat-elan-kart">
-            <div class="kat-elan-img">
-              {% if e.shekillar.first %}
-                <img src="{{ e.shekillar.first.shekil.url }}" alt="{{ e.bashliq }}" loading="lazy">
-              {% else %}Şəkil yoxdur{% endif %}
-            </div>
-            <div class="kat-elan-body">
-              <div class="kat-elan-title">{{ e.bashliq }}</div>
-              <div class="kat-elan-price">{% if e.qiymet %}{{ e.qiymet }} ₼{% else %}Razılaşma{% endif %}</div>
-            </div>
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
     </details>
     {% endfor %}
   </div>
