@@ -11,7 +11,7 @@ class KategoriAdmin(admin.ModelAdmin):
 
 @admin.register(Elan)
 class ElanAdmin(admin.ModelAdmin):
-    list_display = ['nomre_link', 'bashliq', 'istifadeci', 'kategori', 'sheher', 'qiymet', 'status', 'vip_status', 'yaradildi']
+    list_display = ['nomre_link', 'istifadeci', 'kategori', 'status', 'vip_status']
     list_filter = ['status', 'vip_status', 'kategori']
     list_editable = ['status', 'vip_status']
     readonly_fields = ['nomre', 'yaradildi', 'baxish_sayi']
