@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from core.sitemaps import KategoriSitemap, AltKategoriSitemap, StatikSitemap
+from core.sitemaps import KategoriSitemap, AltKategoriSitemap, StatikSitemap, ElanSitemap
 
 sitemaps = {
+    'statik': StatikSitemap,
     'kateqoriyalar': KategoriSitemap,
     'alt_kateqoriyalar': AltKategoriSitemap,
-    'statik': StatikSitemap,
+    'elanlar': ElanSitemap,
 }
 from django.urls import path, include
 from django.conf import settings

@@ -1,9 +1,30 @@
 from django.contrib.sitemaps import Sitemap
+from django.db.models import Q
 from django.urls import reverse
-from .models import Kategori
+from django.utils import timezone
+from .models import Kategori, Elan
 
-# ElanSitemap qəsdən silinib — sitemap-da yalnız xidmət (kateqoriya)
-# URL-ləri yer alır, ayrı-ayrı elan linkləri daxil edilmir.
+
+class ElanSitemap(Sitemap):
+    """Aktiv və müddəti bitməmiş elanlar üçün sitemap."""
+    changefreq = 'daily'
+    priority = 0.6
+    limit = 5000
+
+    def items(self):
+        now = timezone.now()
+        return Elan.objects.filter(
+            status='aktiv'
+        ).filter(
+            Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=now)
+        ).order_by('-yenilendi')
+
+    def lastmod(self, obj):
+        return obj.yenilendi
+
+    def location(self, obj):
+        return f'/elan/{obj.pk}/'
+
 
 class KategoriSitemap(Sitemap):
     """Əsas kateqoriyalar (10 ədəd) üçün sitemap."""
@@ -33,7 +54,7 @@ class StatikSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return ['index', 'elan_siyahi', 'giris', 'qeydiyyat']
+        return ['index', 'elan_siyahi', 'haqqimizda', 'gizlilik', 'istifade_sertleri']
 
     def location(self, item):
         return reverse(item)
