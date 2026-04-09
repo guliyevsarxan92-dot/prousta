@@ -18,6 +18,20 @@ from datetime import timedelta
 from django.core.paginator import Paginator
 from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat
 
+def _aciqlama_qadaga_yoxla(metn):
+    """Açıqlamada telefon nömrəsi və ya sayt adı varsa xəta mesajı qaytarır."""
+    normalized = re.sub(r'[\s\-\(\)\.]+', '', metn)
+    if re.search(r'\d{7,}', normalized):
+        return 'Açıqlamada telefon nömrəsi və ya əlaqə nömrəsi yazmaq qadağandır!'
+    url_pattern = re.compile(
+        r'(https?://|www\.|\b[\w\-]+\.(com|az|net|org|ru|info|biz|co|io|me|tv|edu|gov|az\.com))\b',
+        re.IGNORECASE
+    )
+    if url_pattern.search(metn):
+        return 'Açıqlamada sayt adı və ya link yazmaq qadağandır!'
+    return None
+
+
 def _update_elan_status():
     # NOTE: With default LocMemCache and multiple Gunicorn workers, each worker
     # has its own cache, so this may run more often than every 300s across workers.
@@ -34,7 +48,17 @@ def index(request):
     random.shuffle(vip_list)
     vip_elanlar = vip_list[:8]
     elanlar = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')[:12]
-    kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
+    kateqoriyalar = list(
+        Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
+    )
+    # Hər əsas kateqoriya üçün son 6 aktiv elan (öz və alt kateqoriyalarından)
+    # kategori kartı açıldıqda alt sırada göstərilir.
+    for kat in kateqoriyalar:
+        kat.son_elanlar = list(
+            Elan.objects.filter(status='aktiv').filter(
+                Q(kategori=kat) | Q(kategori__ust_kategori=kat)
+            ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')[:6]
+        )
     return render(request, 'index.html', {
         'elanlar': elanlar,
         'vip_elanlar': vip_elanlar,
@@ -136,6 +160,10 @@ def elan_yarat(request):
         if not acaqlama:
             messages.error(request, 'Açıqlama boş ola bilməz!')
             return render(request, 'elan_yarat.html', ctx)
+        qadaga_xeta = _aciqlama_qadaga_yoxla(acaqlama)
+        if qadaga_xeta:
+            messages.error(request, qadaga_xeta)
+            return render(request, 'elan_yarat.html', ctx)
         qiymet_raw = request.POST.get('qiymet')
         if qiymet_raw:
             try:
@@ -191,6 +219,11 @@ def elan_duzelis(request, pk):
         if not re.match(r'^\d{9}$', telefon_son):
             messages.error(request, 'Telefon nömrəsi 9 rəqəmdən ibarət olmalıdır!')
             return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
+        acaqlama_yeni = request.POST.get('acaqlama', '').strip()
+        qadaga_xeta = _aciqlama_qadaga_yoxla(acaqlama_yeni)
+        if qadaga_xeta:
+            messages.error(request, qadaga_xeta)
+            return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         shekillar = request.FILES.getlist('shekillar')
         for shekil in shekillar:
             if shekil.size > 5 * 1024 * 1024:
@@ -200,7 +233,7 @@ def elan_duzelis(request, pk):
                 messages.error(request, 'Yalnız şəkil faylları yüklənə bilər!')
                 return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         elan.bashliq = request.POST.get('bashliq')
-        elan.acaqlama = request.POST.get('acaqlama')
+        elan.acaqlama = acaqlama_yeni
         elan.qiymet = request.POST.get('qiymet') or None
         elan.sheher = request.POST.get('sheher', 'Bakı')
         elan.telefon = '+994' + telefon_son

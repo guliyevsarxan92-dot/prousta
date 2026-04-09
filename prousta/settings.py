@@ -158,6 +158,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
+    # 'social_core.pipeline.user.user_details' qəsdən silinib —
+    # əks halda Google hər daxilolmada istifadəçinin dəyişdiyi ad/soyadı
+    # Google hesabındakı dəyərlərə geri qaytarırdı.
     'core.pipeline.create_profil',
 )

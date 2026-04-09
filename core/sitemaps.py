@@ -1,19 +1,9 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from .models import Elan, Kategori
+from .models import Kategori
 
-class ElanSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.8
-
-    def items(self):
-        return Elan.objects.filter(status='aktiv')
-
-    def location(self, obj):
-        return f'/elan/{obj.pk}/'
-
-    def lastmod(self, obj):
-        return obj.yenilendi
+# ElanSitemap qəsdən silinib — sitemap-da yalnız xidmət (kateqoriya)
+# URL-ləri yer alır, ayrı-ayrı elan linkləri daxil edilmir.
 
 class KategoriSitemap(Sitemap):
     """Əsas kateqoriyalar (10 ədəd) üçün sitemap."""

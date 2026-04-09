@@ -10,7 +10,7 @@
   "areaServed": "{{ elan.sheher|escapejs }}",
   "provider": {
     "@type": "Person",
-    "name": "{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|escapejs }} {{ elan.istifadeci.profil.soyad|escapejs }}{% else %}{{ elan.istifadeci.username|escapejs }}{% endif %}"
+    "name": "{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|escapejs }} {{ elan.istifadeci.profil.soyad|escapejs }}{% else %}Satıcı{% endif %}"
   }{% if elan.qiymet %},
   "offers": {
     "@type": "Offer",
@@ -101,7 +101,7 @@
     </div>
     <div class="acaqlama" style="margin-top:20px">
       <h3>Açıqlama</h3>
-      <p>{{ elan.acaqlama }}</p>
+      <p>{{ elan.acaqlama|linebreaksbr }}</p>
     </div>
   </div>
 
@@ -142,13 +142,13 @@
     <a href="/istifadeci/{{ elan.istifadeci.pk }}/" class="satici">
       <div class="satici-avatar">
         {% if elan.istifadeci.profil.avatar %}
-          <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{{ elan.istifadeci.username }}" loading="lazy">
+          <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}Satıcı{% endif %}" loading="lazy">
         {% else %}
-          {{ elan.istifadeci.username|first|upper }}
+          {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|first|upper }}{% else %}S{% endif %}
         {% endif %}
       </div>
       <div>
-        <div class="satici-ad">{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}{{ elan.istifadeci.username }}{% endif %}</div>
+        <div class="satici-ad">{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}Satıcı{% endif %}</div>
         <div class="satici-tarix">Digər elanlarına bax →</div>
       </div>
     </a>

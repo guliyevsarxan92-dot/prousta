@@ -19,9 +19,9 @@
   <a href="/mesajlar/" class="geri">← Mesajlara qayıt</a>
   <div class="mesaj-box">
     <div class="mesaj-header">
-      <div class="avatar">{{ mesaj.gonderici.username|first|upper }}</div>
+      <div class="avatar">{% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad|first|upper }}{% else %}S{% endif %}</div>
       <div>
-        <div class="mesaj-ad">{{ mesaj.gonderici.username }}</div>
+        <div class="mesaj-ad">{% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad }} {{ mesaj.gonderici.profil.soyad }}{% else %}Satıcı{% endif %}</div>
         <div class="mesaj-tarix">{{ mesaj.yaradildi|date:"d.m.Y H:i" }}</div>
       </div>
     </div>

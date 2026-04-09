@@ -83,6 +83,16 @@
 .alt-list a:hover::before{background:var(--p);width:6px;height:6px}
 .kat-view-all{margin-top:6px;padding:10px 12px !important;border-top:1px solid var(--border);color:var(--p) !important;font-weight:700 !important;font-size:13px}
 .kat-view-all::before{display:none !important}
+.kat-elanlar{border-top:1px solid var(--border);padding:12px 10px 10px}
+.kat-elanlar-basliq{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:8px;letter-spacing:.3px}
+.kat-elanlar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.kat-elan-kart{display:flex;flex-direction:column;background:var(--pl);border-radius:10px;overflow:hidden;transition:.15s}
+.kat-elan-kart:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,71,200,.15)}
+.kat-elan-img{width:100%;height:80px;background:#e2e8f0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}
+.kat-elan-img img{width:100%;height:80px;object-fit:cover}
+.kat-elan-body{padding:6px 8px 8px}
+.kat-elan-title{font-size:12px;font-weight:600;color:var(--tx);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px}
+.kat-elan-price{font-size:12px;font-weight:700;color:var(--p);margin-top:3px}
 @media(max-width:640px){
   .cats-section{padding:24px 12px}
   .cats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
@@ -178,6 +188,26 @@
         {% endfor %}
         <a href="{% url 'xidmet_detail' kat.slug %}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
       </div>
+      {% if kat.son_elanlar %}
+      <div class="kat-elanlar">
+        <div class="kat-elanlar-basliq">Son elanlar</div>
+        <div class="kat-elanlar-grid">
+          {% for e in kat.son_elanlar %}
+          <a href="/elan/{{ e.pk }}/" class="kat-elan-kart">
+            <div class="kat-elan-img">
+              {% if e.shekillar.first %}
+                <img src="{{ e.shekillar.first.shekil.url }}" alt="{{ e.bashliq }}" loading="lazy">
+              {% else %}Şəkil yoxdur{% endif %}
+            </div>
+            <div class="kat-elan-body">
+              <div class="kat-elan-title">{{ e.bashliq }}</div>
+              <div class="kat-elan-price">{% if e.qiymet %}{{ e.qiymet }} ₼{% else %}Razılaşma{% endif %}</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
     </details>
     {% endfor %}
   </div>
@@ -201,7 +231,6 @@
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
         <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-        <div class="kart-meta">📍 {{ elan.sheher }} · 👁 {{ elan.baxish_sayi }}</div>
       </div>
     </a>
   {% endfor %}
@@ -224,7 +253,6 @@
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
         <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-        <div class="kart-meta">📍 {{ elan.sheher }} · 👁 {{ elan.baxish_sayi }}</div>
       </div>
     </a>
   {% empty %}

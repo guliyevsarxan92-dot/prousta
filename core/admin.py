@@ -42,8 +42,13 @@ class MesajAdmin(admin.ModelAdmin):
 class OdenisAdmin(admin.ModelAdmin):
     list_display = ['istifadeci', 'nov', 'mebleg', 'status', 'qebz_goruntu', 'yaradildi']
     list_editable = ['status']
-    list_filter = ['status', 'nov']
+    list_filter = ['nov']
     readonly_fields = ['qebz_goruntu', 'yaradildi']
+
+    def get_queryset(self, request):
+        # Admin panelində yalnız gözləmədə olan ödəniş sorğuları görünsün.
+        # Təsdiqlənmiş və ya ləğv edilmiş ödənişlər (VIP alışları və s.) siyahıdan gizlənir.
+        return super().get_queryset(request).filter(status='gozlemede')
 
     def qebz_goruntu(self, obj):
         if obj.qebz:

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ sahib.username }} — Prousta.az{% endblock %}
+{% block title %}{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% else %}Satıcı{% endif %} — Prousta.az{% endblock %}
 {% block style %}
 <style>
 .page-wrap{max-width:1000px;margin:40px auto;padding:0 20px}
@@ -25,13 +25,13 @@
   <div class="profil-header">
     <div class="avatar">
       {% if sahib.profil.avatar %}
-        <img src="{{ sahib.profil.avatar.url }}" alt="{{ sahib.username }}">
+        <img src="{{ sahib.profil.avatar.url }}" alt="{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% else %}Satıcı{% endif %}">
       {% else %}
-        {{ sahib.username|first|upper }}
+        {% if sahib.profil.ad %}{{ sahib.profil.ad|first|upper }}{% else %}S{% endif %}
       {% endif %}
     </div>
     <div>
-      <div class="ad">{{ sahib.username }}</div>
+      <div class="ad">{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% else %}Satıcı{% endif %}</div>
       <div class="tarix">{{ sahib.date_joined|date:"d.m.Y" }}-dən üzv</div>
       <div class="elan-say">{{ elanlar.count }} aktiv elan</div>
     </div>
