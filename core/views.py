@@ -46,7 +46,7 @@ def index(request):
     _update_elan_status()
     vip_list = list(Elan.objects.filter(status='aktiv', vip_status__in=['vip','super_vip']).prefetch_related('shekillar'))
     random.shuffle(vip_list)
-    vip_elanlar = vip_list[:8]
+    vip_elanlar = vip_list
     elanlar = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')[:12]
     kateqoriyalar = list(
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
