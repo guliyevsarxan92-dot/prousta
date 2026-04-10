@@ -14,6 +14,8 @@ urlpatterns = [
     path('elan/<int:pk>/', views.elan_detail),  # legacy → 301 redirect
     path('elan/<int:pk>/duzelis/', views.elan_duzelis, name='elan_duzelis'),
     path('elan/<int:pk>/sil/', views.elan_sil, name='elan_sil'),
+    path('shekil/<int:pk>/sil/', views.shekil_sil, name='shekil_sil'),
+    path('shekil/<int:pk>/esas/', views.shekil_esas, name='shekil_esas'),
     path('elan/<int:pk>/aktivlesdir/', views.elan_aktivlesdir, name='elan_aktivlesdir'),
     path('profil/', views.profil, name='profil'),
     path('profil/foto/', views.profil_foto, name='profil_foto'),

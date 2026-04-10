@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 import random
 import secrets
@@ -251,6 +251,40 @@ def elan_duzelis(request, pk):
         messages.success(request, 'Elan yeniləndi!')
         return redirect('profil')
     return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
+
+@login_required
+@require_POST
+def shekil_sil(request, pk):
+    shekil = get_object_or_404(ElanShekil, pk=pk, elan__istifadeci=request.user)
+    elan = shekil.elan
+    was_esas = shekil.esas
+    if shekil.shekil:
+        shekil.shekil.delete(save=False)
+    shekil.delete()
+    if was_esas:
+        next_shekil = elan.shekillar.first()
+        if next_shekil:
+            next_shekil.esas = True
+            next_shekil.save()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True})
+    messages.success(request, 'Şəkil silindi!')
+    return redirect('elan_duzelis', pk=elan.pk)
+
+
+@login_required
+@require_POST
+def shekil_esas(request, pk):
+    shekil = get_object_or_404(ElanShekil, pk=pk, elan__istifadeci=request.user)
+    elan = shekil.elan
+    elan.shekillar.update(esas=False)
+    shekil.esas = True
+    shekil.save()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True})
+    messages.success(request, 'Əsas şəkil dəyişdirildi!')
+    return redirect('elan_duzelis', pk=elan.pk)
+
 
 @login_required
 def elan_sil(request, pk):
