@@ -59,7 +59,9 @@ a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none}
 input,select,textarea{font-family:inherit;outline:none}
 nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200}
-.logo{font-size:22px;font-weight:800;color:var(--p)}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:36px;height:36px;flex-shrink:0}
+.logo-text{font-size:20px;font-weight:800;color:var(--p);line-height:1}
 .nav-links{display:flex;align-items:center;gap:16px}
 .nav-links a{color:var(--muted);font-weight:500;font-size:14px;transition:.2s}
 .nav-links a:hover{color:var(--p)}
@@ -100,7 +102,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 /* FOOTER */
 footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:50px 40px;max-width:1200px;margin:0 auto}
-.footer-brand .logo-f{font-size:22px;font-weight:800;color:#fff;display:block;margin-bottom:12px}
+.footer-brand .logo-f{display:flex;align-items:center;gap:8px;margin-bottom:12px;text-decoration:none}
+.footer-brand .logo-f .logo-text-f{font-size:20px;font-weight:800;color:#fff;line-height:1}
 .footer-brand p{font-size:13px;line-height:1.8;color:#64748b;max-width:260px}
 .footer-social{display:flex;gap:10px;margin-top:16px}
 .footer-social a{width:36px;height:36px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.2s}
@@ -126,7 +129,13 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 </head>
 <body>
 <nav>
-  <a href="{% url 'index' %}" class="logo">Prousta.az</a>
+  <a href="{% url 'index' %}" class="logo">
+    <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="14" fill="#1a47c8"/>
+      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="'Plus Jakarta Sans',Arial,sans-serif" font-weight="800" font-size="34" fill="#fff">P</text>
+    </svg>
+    <span class="logo-text">prousta<span style="color:#6b7280">.az</span></span>
+  </a>
   <div class="nav-links">
     <a href="{% url 'elan_siyahi' %}">Elanlar</a>
     {% if user.is_authenticated %}
@@ -178,7 +187,13 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
-      <a href="{% url 'index' %}" class="logo-f">Prousta.az</a>
+      <a href="{% url 'index' %}" class="logo-f">
+        <svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="14" fill="#1a47c8"/>
+          <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="'Plus Jakarta Sans',Arial,sans-serif" font-weight="800" font-size="34" fill="#fff">P</text>
+        </svg>
+        <span class="logo-text-f">prousta<span style="color:#64748b">.az</span></span>
+      </a>
       <p>Azərbaycanda peşəkar ustalar və xidmət sahibləri üçün ən böyük elanlar platforması.</p>
       <div class="footer-social">
         <a href="https://www.facebook.com/61568796886691" target="_blank" title="Facebook">
