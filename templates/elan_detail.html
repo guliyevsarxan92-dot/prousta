@@ -31,6 +31,19 @@
     "priceCurrency": "AZN",
     "availability": "https://schema.org/InStock",
     "url": "https://prousta.az{{ elan.get_absolute_url }}"
+  }{% endif %},
+  "datePublished": "{{ elan.yaradildi|date:'c' }}",
+  "dateModified": "{{ elan.yenilendi|date:'c' }}"{% if elan.shekillar.count > 1 %},
+  "subjectOf": {
+    "@type": "ImageGallery",
+    "name": "{{ elan.bashliq|escapejs }} şəkilləri",
+    "image": [{% for s in elan.shekillar.all %}
+      {
+        "@type": "ImageObject",
+        "url": "{{ s.shekil.url }}",
+        "name": "{{ elan.bashliq|escapejs }} — şəkil {{ forloop.counter }}"
+      }{% if not forloop.last %},{% endif %}{% endfor %}
+    ]
   }{% endif %}
 }
 </script>
@@ -50,6 +63,8 @@
 {% block keywords %}{{ elan.bashliq }}, {{ elan.sheher }}, {{ elan.kategori }}, usta, xidmət{% endblock %}
 {% block og_title %}{{ elan.bashliq }} — {{ elan.sheher }}{% endblock %}
 {% block og_description %}{{ elan.acaqlama|truncatechars:200 }}{% endblock %}
+{% block og_image %}{% if elan.shekillar.first %}{{ elan.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endblock %}
+{% block tw_image %}{% if elan.shekillar.first %}{{ elan.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endblock %}
 {% block og_url %}{{ elan.get_absolute_url }}{% endblock %}
 {% block canonical %}{{ elan.get_absolute_url }}{% endblock %}
 {% block style %}

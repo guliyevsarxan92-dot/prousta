@@ -7,6 +7,7 @@
 {% block og_url %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
 {% block og_title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} — Prousta.az{% endif %}{% endblock %}
 {% block og_description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}{% endblock %}
+{% block og_image %}{% with elanlar.0 as ilk %}{% if ilk and ilk.shekillar.first %}{{ ilk.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endwith %}{% endblock %}
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
