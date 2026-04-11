@@ -120,18 +120,14 @@
           <div class="photo-item {% if sh.esas %}esas{% endif %}" id="photo-{{ sh.pk }}">
             <img src="{{ sh.shekil.url }}" alt="Şəkil">
             <div class="photo-actions">
-              <form method="post" action="{% url 'shekil_esas' sh.pk %}" class="inline-form">
-                {% csrf_token %}
-                <button type="submit" class="photo-btn btn-esas {% if sh.esas %}aktiv{% endif %}" title="Əsas şəkil et">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="{% if sh.esas %}#fff{% else %}none{% endif %}" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </button>
-              </form>
-              <form method="post" action="{% url 'shekil_sil' sh.pk %}" class="inline-form" onsubmit="return confirm('Bu şəkli silmək istəyirsiniz?')">
-                {% csrf_token %}
-                <button type="submit" class="photo-btn btn-sil" title="Şəkli sil">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-              </form>
+              <button type="button" class="photo-btn btn-esas {% if sh.esas %}aktiv{% endif %}" title="Əsas şəkil et"
+                      data-esas-url="{% url 'shekil_esas' sh.pk %}" data-pk="{{ sh.pk }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="{% if sh.esas %}#fff{% else %}none{% endif %}" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+              <button type="button" class="photo-btn btn-sil" title="Şəkli sil"
+                      data-sil-url="{% url 'shekil_sil' sh.pk %}" data-pk="{{ sh.pk }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
             </div>
             {% if sh.esas %}<div class="photo-label">Əsas</div>{% endif %}
           </div>
@@ -148,4 +144,47 @@
     </form>
   </div>
 </div>
+<script>
+(function(){
+  function csrf(){
+    var m = document.cookie.match(/csrftoken=([^;]+)/);
+    if(m) return m[1];
+    var el = document.querySelector('input[name=csrfmiddlewaretoken]');
+    return el ? el.value : '';
+  }
+  function post(url){
+    return fetch(url,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':csrf()},credentials:'same-origin'});
+  }
+  document.querySelectorAll('.btn-sil[data-sil-url]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(!confirm('Bu şəkli silmək istəyirsiniz?')) return;
+      var pk = btn.getAttribute('data-pk');
+      post(btn.getAttribute('data-sil-url')).then(function(r){
+        if(r.ok){ var el=document.getElementById('photo-'+pk); if(el) el.remove(); }
+        else alert('Xəta baş verdi');
+      });
+    });
+  });
+  document.querySelectorAll('.btn-esas[data-esas-url]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pk = btn.getAttribute('data-pk');
+      post(btn.getAttribute('data-esas-url')).then(function(r){
+        if(!r.ok){ alert('Xəta baş verdi'); return; }
+        document.querySelectorAll('.photo-item').forEach(function(pi){ pi.classList.remove('esas'); var lbl=pi.querySelector('.photo-label'); if(lbl) lbl.remove(); });
+        document.querySelectorAll('.btn-esas').forEach(function(b){
+          b.classList.remove('aktiv');
+          var svg=b.querySelector('svg'); if(svg) svg.setAttribute('fill','none');
+        });
+        var item=document.getElementById('photo-'+pk);
+        if(item){
+          item.classList.add('esas');
+          var lbl=document.createElement('div'); lbl.className='photo-label'; lbl.textContent='Əsas'; item.appendChild(lbl);
+        }
+        btn.classList.add('aktiv');
+        var svg=btn.querySelector('svg'); if(svg) svg.setAttribute('fill','#fff');
+      });
+    });
+  });
+})();
+</script>
 {% endblock %}
