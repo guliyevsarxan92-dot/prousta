@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Kategori, Elan, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat
+from .models import Kategori, Elan, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem
 
 @admin.register(Kategori)
 class KategoriAdmin(admin.ModelAdmin):
@@ -58,6 +58,15 @@ class OdenisAdmin(admin.ModelAdmin):
             )
         return '—'
     qebz_goruntu.short_description = 'Qəbz'
+
+@admin.register(Problem)
+class ProblemAdmin(admin.ModelAdmin):
+    list_display = ['bashliq', 'kategori', 'aktiv', 'yaradildi']
+    list_filter = ['aktiv', 'kategori']
+    list_editable = ['aktiv']
+    prepopulated_fields = {'slug': ('bashliq',)}
+    search_fields = ['bashliq']
+    ordering = ['-yaradildi']
 
 @admin.register(BankMelumat)
 class BankMelumatAdmin(admin.ModelAdmin):

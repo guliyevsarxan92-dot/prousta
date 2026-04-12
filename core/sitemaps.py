@@ -2,7 +2,7 @@ from django.contrib.sitemaps import Sitemap
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from .models import Kategori, Elan
+from .models import Kategori, Elan, Problem
 
 
 class ElanSitemap(Sitemap):
@@ -49,12 +49,26 @@ class AltKategoriSitemap(Sitemap):
     def location(self, obj):
         return reverse('xidmet_detail', args=[obj.slug])
 
+class ProblemSitemap(Sitemap):
+    changefreq = 'weekly'
+    priority = 0.7
+
+    def items(self):
+        return Problem.objects.filter(aktiv=True).order_by('-yenilendi')
+
+    def lastmod(self, obj):
+        return obj.yenilendi
+
+    def location(self, obj):
+        return obj.get_absolute_url()
+
+
 class StatikSitemap(Sitemap):
     changefreq = 'monthly'
     priority = 0.5
 
     def items(self):
-        return ['index', 'elan_siyahi', 'haqqimizda', 'gizlilik', 'istifade_sertleri']
+        return ['index', 'elan_siyahi', 'haqqimizda', 'problemler_siyahi', 'gizlilik', 'istifade_sertleri']
 
     def location(self, item):
         return reverse(item)

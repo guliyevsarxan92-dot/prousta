@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Ev Problemləri və Həlləri — Prousta.az{% endblock %}
+{% block description %}Evdə yarana biləcək ən çox rast gəlinən problemlər və onların həll yolları. Kombi, elektrik, santexnik, kondisioner və digər sahələr üzrə peşəkar məsləhətlər.{% endblock %}
+{% block keywords %}ev problemləri, kombi yanmır, elektrik keçir, kanalizasiya tıxanıb, kondisioner soyutmur, usta məsləhəti, təmir həlləri{% endblock %}
+{% block canonical %}/problemler/{% endblock %}
+{% block canonical2 %}/problemler/{% endblock %}
+{% block og_url %}/problemler/{% endblock %}
+{% block og_title %}Ev Problemləri və Həlləri — Prousta.az{% endblock %}
+{% block og_description %}Ən çox rast gəlinən ev problemləri və peşəkar həll yolları.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Ev Problemləri və Həlləri",
+  "description": "Evdə yarana biləcək ən çox rast gəlinən problemlər və onların həll yolları.",
+  "url": "https://prousta.az/problemler/",
+  "inLanguage": "az-AZ",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Prousta.az",
+    "url": "https://prousta.az"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
+    {"@type": "ListItem", "position": 2, "name": "Problemlər və Həllər", "item": "https://prousta.az/problemler/"}
+  ]
+}
+</script>
+{% endblock %}
+{% block style %}
+<style>
+.prob-page{padding:40px 20px 60px;background:linear-gradient(180deg,#f8fafc,#eef2ff);min-height:60vh}
+.prob-wrap{max-width:1100px;margin:0 auto}
+.prob-head{text-align:center;margin-bottom:32px}
+.prob-head h1{font-size:28px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.prob-head p{font-size:14px;color:var(--muted);max-width:600px;margin:0 auto;line-height:1.7}
+.prob-filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+.prob-filters a{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;background:var(--white);border:1px solid var(--border);color:var(--muted);transition:.2s}
+.prob-filters a:hover{border-color:var(--p);color:var(--p)}
+.prob-filters a.aktiv{background:var(--p);color:#fff;border-color:var(--p)}
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.prob-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:.2s;display:flex;flex-direction:column}
+.prob-card:hover{border-color:var(--p);box-shadow:0 6px 24px rgba(26,71,200,.08);transform:translateY(-2px)}
+.prob-card-kat{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.prob-card h2{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:10px;line-height:1.4}
+.prob-card h2 a{color:inherit;transition:.2s}
+.prob-card h2 a:hover{color:var(--p)}
+.prob-card-desc{font-size:13px;color:#64748b;line-height:1.7;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.prob-card-footer{margin-top:14px;display:flex;align-items:center;justify-content:space-between}
+.prob-card-link{font-size:13px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:4px;transition:.2s}
+.prob-card-link:hover{gap:8px}
+.prob-card-date{font-size:11px;color:var(--muted)}
+.prob-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.prob-empty svg{margin-bottom:12px;opacity:.4}
+.prob-empty p{font-size:15px}
+@media(max-width:768px){
+  .prob-page{padding:24px 12px 40px}
+  .prob-head h1{font-size:22px}
+  .prob-grid{grid-template-columns:1fr}
+  .prob-card{padding:18px}
+  .prob-filters{gap:6px}
+  .prob-filters a{padding:7px 14px;font-size:12px}
+}
+</style>
+{% endblock %}
+{% block content %}
+<section class="prob-page">
+  <div class="prob-wrap">
+    <header class="prob-head">
+      <h1>Problemlər və Həll Yolları</h1>
+      <p>Evdə ən çox rast gəlinən problemlər, səbəbləri və peşəkar həll yolları. Doğru ustanı tapmaq üçün oxuyun.</p>
+    </header>
+
+    {% if kateqoriyalar %}
+    <div class="prob-filters">
+      <a href="{% url 'problemler_siyahi' %}" class="{% if not secilmis %}aktiv{% endif %}">Hamısı</a>
+      {% for kat in kateqoriyalar %}
+      <a href="{% url 'problemler_siyahi' %}?kategori={{ kat.slug }}" class="{% if secilmis == kat.slug %}aktiv{% endif %}">{{ kat.ad }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if problemler %}
+    <div class="prob-grid">
+      {% for p in problemler %}
+      <article class="prob-card">
+        {% if p.kategori %}
+        <span class="prob-card-kat">{{ p.kategori.ad }}</span>
+        {% endif %}
+        <h2><a href="{{ p.get_absolute_url }}">{{ p.bashliq }}</a></h2>
+        <div class="prob-card-desc">{{ p.metn|striptags|truncatewords:30 }}</div>
+        <div class="prob-card-footer">
+          <a href="{{ p.get_absolute_url }}" class="prob-card-link">
+            Ətraflı oxu
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <span class="prob-card-date">{{ p.yaradildi|date:"d.m.Y" }}</span>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="prob-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Bu kateqoriyada hələlik problem yazılmayıb.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -33,4 +33,6 @@ urlpatterns = [
     path('gizlilik/', views.gizlilik, name='gizlilik'),
     path('istifade-sertleri/', views.istifade_sertleri, name='istifade_sertleri'),
     path('haqqimizda/', views.haqqimizda, name='haqqimizda'),
+    path('problemler/', views.problemler_siyahi, name='problemler_siyahi'),
+    path('problemler/<slug:slug>/', views.problem_detail, name='problem_detail'),
 ]

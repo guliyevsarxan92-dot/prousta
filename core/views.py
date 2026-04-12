@@ -17,7 +17,7 @@ import re
 from datetime import timedelta
 from decimal import Decimal
 from django.core.paginator import Paginator
-from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat
+from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem
 
 def _aciqlama_qadaga_yoxla(metn):
     """Açıqlamada telefon nömrəsi və ya sayt adı varsa xəta mesajı qaytarır."""
@@ -654,6 +654,39 @@ def haqqimizda(request):
 @login_required
 def profil_foto_crop(request):
     return render(request, 'profil_foto_crop.html')
+
+def problemler_siyahi(request):
+    problemler = Problem.objects.filter(aktiv=True)
+    kateqoriyalar = Kategori.objects.filter(
+        ust_kategori__isnull=False,
+        problemler__aktiv=True
+    ).distinct()
+    secilmis = request.GET.get('kategori')
+    if secilmis:
+        problemler = problemler.filter(kategori__slug=secilmis)
+    return render(request, 'problemler_siyahi.html', {
+        'problemler': problemler,
+        'kateqoriyalar': kateqoriyalar,
+        'secilmis': secilmis,
+    })
+
+
+def problem_detail(request, slug):
+    problem = get_object_or_404(Problem, slug=slug, aktiv=True)
+    elanlar = Elan.objects.filter(
+        status='aktiv',
+        kategori=problem.kategori
+    ).order_by('-vip_siralama', '-yaradildi')[:6] if problem.kategori else []
+    oxsar = Problem.objects.filter(
+        aktiv=True,
+        kategori=problem.kategori
+    ).exclude(pk=problem.pk)[:4] if problem.kategori else []
+    return render(request, 'problem_detail.html', {
+        'problem': problem,
+        'elanlar': elanlar,
+        'oxsar': oxsar,
+    })
+
 
 def robots_txt(request):
     content = """User-agent: *

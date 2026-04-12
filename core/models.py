@@ -177,6 +177,29 @@ class BankMelumat(models.Model):
         verbose_name_plural = 'Bank Məlumatları'
 
 
+class Problem(models.Model):
+    bashliq = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=100, unique=True)
+    metn = models.TextField(help_text='Problem haqqında ətraflı HTML mətn')
+    kategori = models.ForeignKey(Kategori, on_delete=models.SET_NULL, null=True, blank=True, related_name='problemler')
+    seo_title = models.CharField(max_length=200, blank=True)
+    seo_description = models.CharField(max_length=300, blank=True)
+    aktiv = models.BooleanField(default=True, db_index=True)
+    yaradildi = models.DateTimeField(auto_now_add=True)
+    yenilendi = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return f'/problemler/{self.slug}/'
+
+    def __str__(self):
+        return self.bashliq
+
+    class Meta:
+        ordering = ['-yaradildi']
+        verbose_name = 'Problem'
+        verbose_name_plural = 'Problemlər'
+
+
 class Odenis(models.Model):
     STATUS = [
         ('gozlemede', 'Gözləmədə'),
