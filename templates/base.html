@@ -51,6 +51,23 @@
 <meta name="twitter:image" content="{% block tw_image %}https://prousta.az/static/og-image.jpg{% endblock %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '952170327291832');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=952170327291832&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <style>
 :root{--p:#1a47c8;--pd:#1238a8;--pl:#eef2ff;--acc:#f59e0b;--tx:#0f172a;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--white:#fff;--r:12px;}
 *{margin:0;padding:0;box-sizing:border-box}
