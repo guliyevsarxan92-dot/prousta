@@ -15,6 +15,7 @@ import random
 import secrets
 import re
 from datetime import timedelta
+from decimal import Decimal
 from django.core.paginator import Paginator
 from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat
 
@@ -196,7 +197,28 @@ def elan_yarat(request):
         except Kategori.DoesNotExist:
             messages.error(request, 'Seçilmiş kateqoriya tapılmadı!')
             return render(request, 'elan_yarat.html', ctx)
+        aktiv_elanlar = Elan.objects.filter(
+            istifadeci=request.user,
+            status__in=['aktiv', 'gozlemede']
+        )
+        if aktiv_elanlar.filter(kategori=kategori).exists():
+            messages.error(request, 'Bu kateqoriyada artıq elanınız var! Eyni kateqoriyada ikinci elan yerləşdirmək olmaz.')
+            return render(request, 'elan_yarat.html', ctx)
+        PULSUZ_LIMIT = 4
+        elan_sayi = aktiv_elanlar.count()
+        if elan_sayi >= PULSUZ_LIMIT:
+            profil = request.user.profil
+            if profil.balans < Decimal('1.00'):
+                messages.error(request, f'Pulsuz elan limitiniz ({PULSUZ_LIMIT}) bitib. Əlavə elan üçün balansınızda ən azı 1 AZN olmalıdır.')
+                return render(request, 'elan_yarat.html', ctx)
         with transaction.atomic():
+            if elan_sayi >= PULSUZ_LIMIT:
+                profil = Profil.objects.select_for_update().get(istifadeci=request.user)
+                if profil.balans < Decimal('1.00'):
+                    messages.error(request, f'Pulsuz elan limitiniz ({PULSUZ_LIMIT}) bitib. Balansınız kifayət deyil.')
+                    return render(request, 'elan_yarat.html', ctx)
+                profil.balans -= Decimal('1.00')
+                profil.save(update_fields=['balans'])
             elan = Elan.objects.create(
                 istifadeci=request.user,
                 kategori=kategori,
