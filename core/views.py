@@ -635,6 +635,8 @@ def profil_foto_crop(request):
 
 def robots_txt(request):
     content = """User-agent: *
+Allow: /static/
+Allow: /media/
 Allow: /
 Disallow: /admin/
 Disallow: /profil/
@@ -643,14 +645,18 @@ Disallow: /mesaj/
 Disallow: /odenis/
 Disallow: /favorit/
 Disallow: /elan/yeni/
-Disallow: /elan/*/duzelis/
-Disallow: /elan/*/sil/
-Disallow: /elan/*/aktivlesdir/
+Disallow: /elan/duzelis/
+Disallow: /elan/sil/
+Disallow: /elan/aktivlesdir/
 Disallow: /vip/
 Disallow: /cixis/
 Disallow: /sifre-unutdum/
+Disallow: /giris/
+Disallow: /qeydiyyat/
 
 User-agent: Yandex
+Allow: /static/
+Allow: /media/
 Allow: /
 Disallow: /admin/
 Disallow: /profil/
@@ -659,9 +665,8 @@ Disallow: /mesaj/
 Disallow: /odenis/
 Disallow: /favorit/
 Disallow: /elan/yeni/
-Disallow: /elan/*/duzelis/
-Disallow: /elan/*/sil/
-Crawl-delay: 1
+Disallow: /elan/duzelis/
+Disallow: /elan/sil/
 
 Sitemap: https://prousta.az/sitemap.xml"""
     return HttpResponse(content, content_type='text/plain')
