@@ -2,6 +2,7 @@
 {% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Qiymət və Elanlar | Prousta.az{% endif %}{% endblock %}
 {% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları, qiymətlər və peşəkar ustalar. Elə indi ən yaxın ustanı tapın!{% endif %}{% endblock %}
 {% block keywords %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} qiymət, {{ aktiv_kategori.ad|lower }} elanları, {{ aktiv_kategori.ad|lower }} Azərbaycan, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endblock %}
+{% if not elan_var %}{% block robots %}noindex, follow{% endblock %}{% endif %}
 {% block canonical %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
 {% block canonical2 %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
 {% block og_url %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
@@ -164,7 +165,10 @@
     </a>
   {% empty %}
     <div class="empty" style="grid-column:1/-1">
-      Bu kateqoriyada hələ aktiv elan yoxdur. <a href="{% url 'elan_yarat' %}" style="color:var(--p);font-weight:700">İlk elanı siz yerləşdirin →</a>
+      <svg width="48" height="48" fill="none" stroke="#94a3b8" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+      <p style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Bu kateqoriyada hələ aktiv elan yoxdur</p>
+      <p style="font-size:14px;margin-bottom:18px">{{ aktiv_kategori.ad }} üzrə ilk elanı yerləşdirən siz olun!</p>
+      <a href="{% url 'elan_yarat' %}" style="display:inline-block;padding:12px 28px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:700;font-size:15px">Pulsuz Elan Yerləşdir →</a>
     </div>
   {% endfor %}
   </div>

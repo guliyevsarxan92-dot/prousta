@@ -125,6 +125,7 @@ def xidmet_detail(request, slug):
         'kateqoriyalar': kateqoriyalar,
         'aktiv_kategori': aktiv_kategori,
         'axtaris': axtaris,
+        'elan_var': elanlar.exists(),
     })
 
 def elan_detail(request, pk, slug=None):
