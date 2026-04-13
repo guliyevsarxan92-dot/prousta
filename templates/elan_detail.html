@@ -59,8 +59,8 @@
 }
 </script>
 {% endblock %}
-{% block description %}{{ elan.bashliq }} — {{ elan.sheher }}. {% if elan.qiymet %}Qiymət: {{ elan.qiymet }} ₼. {% endif %}{{ elan.acaqlama|truncatechars:150 }}{% endblock %}
-{% block keywords %}{{ elan.bashliq }}, {{ elan.sheher }}, {{ elan.kategori }}, usta, xidmət{% endblock %}
+{% block description %}{{ elan.bashliq }} — {{ elan.sheher }}{% if elan.sheher != "Bakı" %}, Azərbaycan{% endif %}. {% if elan.qiymet %}Qiymət: {{ elan.qiymet }} ₼. {% endif %}{{ elan.acaqlama|truncatechars:120 }} Prousta.az-da peşəkar usta tapın!{% endblock %}
+{% block keywords %}{{ elan.bashliq }}, {{ elan.kategori }} {{ elan.sheher }}, {{ elan.kategori|lower }} usta, {{ elan.kategori|lower }} qiymət, {{ elan.sheher }} usta tap, Prousta.az{% endblock %}
 {% block og_title %}{{ elan.bashliq }} — {{ elan.sheher }}{% endblock %}
 {% block og_description %}{{ elan.acaqlama|truncatechars:200 }}{% endblock %}
 {% block og_image %}{% if elan.shekillar.first %}{{ elan.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endblock %}

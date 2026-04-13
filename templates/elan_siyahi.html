@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}{% if axtaris %}"{{ axtaris }}" — Axtarış Nəticələri{% else %}Bütün Elanlar{% endif %} — Prousta.az{% endblock %}
-{% block description %}Prousta.az-da Azərbaycanın bütün peşəkar xidmət kateqoriyaları: elektrik, santexnik, kondisioner, təmir, gözəllik, avtomobil və daha çox. Lazım olan ustanı tapın.{% endblock %}
-{% block keywords %}xidmətlər, ustalar, peşəkar xidmət, Bakı ustalar, Prousta.az, elan sayti{% endblock %}
+{% block title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
+{% block description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda və Azərbaycanda usta elanları. Ən yaxşı qiymətlər və etibarlı ustalar Prousta.az-da.{% else %}Bakıda və Azərbaycanda bütün usta elanları: elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri, mebel ustası və daha çox. Prousta.az-da tapın!{% endif %}{% endblock %}
+{% block keywords %}usta elanları Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri Bakı, mebel ustası, peşəkar xidmət Bakı, Prousta.az{% endblock %}
 {% block canonical %}/elanlar/{% endblock %}
 {% block canonical2 %}/elanlar/{% endblock %}
 {% block og_url %}/elanlar/{% endblock %}
-{% block og_title %}{% if axtaris %}"{{ axtaris }}" — Axtarış Nəticələri{% else %}Bütün Elanlar{% endif %} — Prousta.az{% endblock %}
-{% block og_description %}Prousta.az-da bütün peşəkar xidmət elanları: elektrik, santexnik, kondisioner, təmir, gözəllik, avtomobil və daha çox.{% endblock %}
+{% block og_title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
+{% block og_description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda usta elanları Prousta.az-da.{% else %}Bakıda elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası və 100+ xidmət elanı.{% endif %}{% endblock %}
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}

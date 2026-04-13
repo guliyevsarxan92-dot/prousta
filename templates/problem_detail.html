@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}{% if problem.seo_title %}{{ problem.seo_title }}{% else %}{{ problem.bashliq }} — Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if problem.seo_description %}{{ problem.seo_description }}{% else %}{{ problem.bashliq }} — səbəbi, həll yolu və peşəkar usta tövsiyələri. Prousta.az{% endif %}{% endblock %}
-{% block keywords %}{{ problem.bashliq|lower }}, {{ problem.bashliq|lower }} həlli, {{ problem.bashliq|lower }} səbəbi, usta, Bakı{% endblock %}
+{% block title %}{% if problem.seo_title %}{{ problem.seo_title }}{% else %}{{ problem.bashliq }} — Səbəbi və Həlli | Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if problem.seo_description %}{{ problem.seo_description }}{% else %}{{ problem.bashliq }} — niyə baş verir, necə həll olunur? Peşəkar usta tövsiyələri və Bakıda usta çağırmaq üçün Prousta.az{% endif %}{% endblock %}
+{% block keywords %}{{ problem.bashliq|lower }}, {{ problem.bashliq|lower }} həlli, {{ problem.bashliq|lower }} səbəbi, {{ problem.bashliq|lower }} Bakı, usta çağır Bakı, təmir Bakı, Prousta.az{% endblock %}
 {% block canonical %}/problemler/{{ problem.slug }}/{% endblock %}
 {% block canonical2 %}/problemler/{{ problem.slug }}/{% endblock %}
 {% block og_url %}/problemler/{{ problem.slug }}/{% endblock %}

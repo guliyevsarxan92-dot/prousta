@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} — Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da. Ən sərfəli qiymətlər və etibarlı xidmət.{% endif %}{% endblock %}
-{% block keywords %}{{ aktiv_kategori.ad }}, {{ aktiv_kategori.ad|lower }} Bakı, usta, xidmət, Prousta.az{% endblock %}
+{% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Qiymət və Elanlar | Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları, qiymətlər və peşəkar ustalar. Elə indi ən yaxın ustanı tapın!{% endif %}{% endblock %}
+{% block keywords %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} qiymət, {{ aktiv_kategori.ad|lower }} elanları, {{ aktiv_kategori.ad|lower }} Azərbaycan, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endblock %}
 {% block canonical %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
 {% block canonical2 %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
 {% block og_url %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
