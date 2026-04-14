@@ -97,6 +97,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Upload limitləri (mobil app profil şəkli + qəbz üçün)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024      # 15 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024      # 15 MB
+
 # Django 5.x STORAGES — köhnə DEFAULT_FILE_STORAGE / STATICFILES_STORAGE əvəzinə
 _CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '').strip()
 

@@ -512,16 +512,25 @@ def profil_duzelis(request):
 def profil_foto(request):
     if request.method == 'POST' and request.FILES.get('avatar'):
         avatar = request.FILES['avatar']
-        if avatar.size > 5 * 1024 * 1024:
-            messages.error(request, 'Şəkil 5MB-dan böyük ola bilməz!')
+        if avatar.size > 10 * 1024 * 1024:
+            messages.error(request, 'Şəkil 10MB-dan böyük ola bilməz!')
             return redirect('profil')
-        if not avatar.content_type.startswith('image/'):
+        ctype = (avatar.content_type or '').lower()
+        if not (ctype.startswith('image/') or ctype == 'application/octet-stream'):
             messages.error(request, 'Yalnız şəkil faylı yüklənə bilər!')
             return redirect('profil')
-        profil = request.user.profil
-        profil.avatar = avatar
-        profil.save()
-        messages.success(request, 'Profil foto yeniləndi!')
+        try:
+            profil = request.user.profil
+            profil.avatar = avatar
+            profil.save()
+            messages.success(request, 'Profil foto yeniləndi!')
+        except Exception as e:
+            import logging, traceback
+            logging.getLogger('django').error(
+                'profil_foto upload failed user=%s name=%s size=%s type=%s\n%s',
+                request.user.pk, avatar.name, avatar.size, ctype, traceback.format_exc()
+            )
+            messages.error(request, f'Şəkil yüklənmədi: {type(e).__name__}')
     return redirect('profil')
 
 def istifadeci_profil(request, pk):
