@@ -31,7 +31,7 @@ def mobile_google_login(request):
     if not token:
         return JsonResponse({"error": "id_token required"}, status=400)
 
-    client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+    client_id = getattr(settings, "GOOGLE_WEB_CLIENT_ID", "") or settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
     if not client_id:
         return JsonResponse({"error": "server not configured"}, status=500)
 

@@ -140,6 +140,13 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET', '')
 
+# Mobil tətbiqin Credential Manager-dən göndərdiyi ID token-in audience-i
+# (Google Cloud Console → Web application OAuth client ID)
+GOOGLE_WEB_CLIENT_ID = os.environ.get(
+    'GOOGLE_WEB_CLIENT_ID',
+    '811460264298-gge8uv2mfv7rro7fsi6jhkgfs7i1krht.apps.googleusercontent.com',
+)
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
