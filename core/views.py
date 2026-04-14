@@ -208,7 +208,7 @@ def elan_yarat(request):
         PULSUZ_LIMIT = 4
         elan_sayi = aktiv_elanlar.count()
         if elan_sayi >= PULSUZ_LIMIT:
-            profil = request.user.profil
+            profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
             if profil.balans < Decimal('1.00'):
                 messages.error(request, f'Pulsuz elan limitiniz ({PULSUZ_LIMIT}) bitib. Əlavə elan üçün balansınızda ən azı 1 AZN olmalıdır.')
                 return render(request, 'elan_yarat.html', ctx)
@@ -490,7 +490,7 @@ def profil_duzelis(request):
         if yeni_email and yeni_email != user.email:
             user.email = yeni_email
 
-        profil = user.profil
+        profil, _ = Profil.objects.get_or_create(istifadeci=user)
         profil.telefon = yeni_telefon
         profil.sheher = yeni_sheher
         profil.save()
@@ -520,7 +520,7 @@ def profil_foto(request):
             messages.error(request, 'Yalnız şəkil faylı yüklənə bilər!')
             return redirect('profil')
         try:
-            profil = request.user.profil
+            profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
             profil.avatar = avatar
             profil.save()
             messages.success(request, 'Profil foto yeniləndi!')
@@ -588,7 +588,7 @@ def mesaj_yeni(request, elan_pk):
 @login_required
 def vip_et(request, pk):
     elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
-    profil = request.user.profil
+    profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
     if request.method == 'POST':
         nov = request.POST.get('nov')
         if nov not in ('vip', 'super_vip'):
