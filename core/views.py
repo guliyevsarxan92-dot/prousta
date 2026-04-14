@@ -661,6 +661,9 @@ def istifade_sertleri(request):
 def haqqimizda(request):
     return render(request, 'haqqimizda.html')
 
+def mobil_app(request):
+    return render(request, 'mobil_app.html')
+
 @login_required
 def profil_foto_crop(request):
     return render(request, 'profil_foto_crop.html')

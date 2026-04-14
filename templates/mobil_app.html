@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Prousta.az Android Tətbiqini Yüklə — Mobil Tətbiq{% endblock %}
+{% block description %}Prousta.az mobil tətbiqini pulsuz Android telefonunuza yükləyin. Elanları daha rahat axtarın, ustalarla birbaşa əlaqə saxlayın.{% endblock %}
+{% block canonical %}/mobil-tetbiq/{% endblock %}
+
+{% block style %}
+<style>
+.app-hero{background:linear-gradient(135deg,#1a47c8,#1238a8);color:#fff;padding:60px 24px;text-align:center}
+.app-hero h1{font-size:36px;font-weight:800;margin-bottom:14px;line-height:1.2}
+.app-hero p{font-size:17px;opacity:.92;max-width:620px;margin:0 auto 28px}
+.app-wrap{max-width:1000px;margin:0 auto;padding:40px 24px}
+.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.app-features{display:flex;flex-direction:column;gap:18px}
+.feat{display:flex;gap:14px;align-items:flex-start}
+.feat-icon{width:44px;height:44px;border-radius:12px;background:#eef2ff;color:#1a47c8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat h3{font-size:16px;font-weight:700;margin-bottom:4px;color:#0f172a}
+.feat p{font-size:14px;color:#64748b;line-height:1.6}
+.download-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.04);text-align:center}
+.download-card h2{font-size:22px;font-weight:700;margin-bottom:8px}
+.download-card .version{color:#64748b;font-size:13px;margin-bottom:20px}
+.download-btn{display:inline-flex;align-items:center;gap:10px;background:#1a47c8;color:#fff;padding:16px 32px;border-radius:12px;font-weight:700;font-size:16px;transition:.2s;margin-bottom:16px}
+.download-btn:hover{background:#1238a8;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,71,200,.3)}
+.download-meta{font-size:12px;color:#94a3b8;margin-top:8px}
+.install-steps{background:#fff8e6;border:1px solid #fde68a;border-radius:12px;padding:20px;margin-top:30px}
+.install-steps h3{font-size:15px;font-weight:700;color:#92400e;margin-bottom:12px}
+.install-steps ol{padding-left:20px;color:#78350f;font-size:14px;line-height:1.8}
+@media(max-width:768px){
+  .app-hero h1{font-size:26px}
+  .app-hero p{font-size:15px}
+  .app-grid{grid-template-columns:1fr;gap:30px}
+  .download-card{padding:24px}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="app-hero">
+  <h1>Prousta.az Android Tətbiqi</h1>
+  <p>Usta axtarmaq, elan yerləşdirmək və mesajlaşmaq indi daha rahat — birbaşa cibinizdə.</p>
+  <a href="https://github.com/guliyevsarxan92-dot/prousta/releases/download/v1.0/prousta.apk" class="download-btn" download>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    APK-nı Yüklə (32 MB)
+  </a>
+</section>
+
+<div class="app-wrap">
+  <div class="app-grid">
+    <div class="app-features">
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div>
+          <h3>Sürətli axtarış</h3>
+          <p>100+ kateqoriya üzrə ustaları bir neçə saniyəyə tapın.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <h3>Anlıq mesajlaşma</h3>
+          <p>Ustalarla birbaşa yazışın — push bildirişlərlə heç bir mesajı qaçırmayın.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        </div>
+        <div>
+          <h3>Favoritlər</h3>
+          <p>Bəyəndiyiniz elanları saxlayın, sonra asanlıqla geri qayıdın.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <h3>7/24 əlçatan</h3>
+          <p>İnternetiniz olan yerdə — evdə, yolda, iş yerində istifadə edin.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="download-card">
+      <h2>Pulsuz yüklə</h2>
+      <div class="version">Versiya 1.0 • Android 7.0 və yuxarı</div>
+      <a href="https://github.com/guliyevsarxan92-dot/prousta/releases/download/v1.0/prousta.apk" class="download-btn" download>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        APK Yüklə
+      </a>
+      <div class="download-meta">Fayl ölçüsü: ~32 MB</div>
+
+      <div class="install-steps">
+        <h3>Quraşdırma təlimatı</h3>
+        <ol>
+          <li>APK faylını yükləyin</li>
+          <li>Telefonunuzun parametrlərində <b>"Naməlum mənbələrdən quraşdırmaya icazə"</b> verin</li>
+          <li>Yüklənmiş faylı açıb "Quraşdır" düyməsinə basın</li>
+          <li>Tətbiqi açıb hesabınıza daxil olun</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
