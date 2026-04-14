@@ -24,6 +24,7 @@ requests-oauthlib==2.0.0
 six==1.17.0
 social-auth-app-django==5.7.0
 social-auth-core==4.8.5
+google-auth==2.35.0
 sqlparse==0.5.5
 urllib3==2.6.3
 whitenoise==6.12.0

@@ -1,8 +1,11 @@
 from django.urls import path, re_path
 from . import views
+from . import mobile_auth
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('mobile/google-login/', mobile_auth.mobile_google_login, name='mobile_google_login'),
+    path('mobile/session/', mobile_auth.mobile_session, name='mobile_session'),
     path('qeydiyyat/', views.qeydiyyat, name='qeydiyyat'),
     path('giris/', views.giris, name='giris'),
     path('cixis/', views.cixis, name='cixis'),
