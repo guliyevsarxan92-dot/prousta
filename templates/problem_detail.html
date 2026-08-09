@@ -142,16 +142,25 @@
       </div>
     </article>
 
-    {% if problem.kategori %}
     <div class="pd-cta">
       <h2>Bu problemi həll edən usta lazımdır?</h2>
-      <p>{{ problem.kategori.ad }} üzrə peşəkar ustaları Prousta.az-da tapın. Birbaşa zəng edin, vasitəçi yoxdur.</p>
-      <a href="{% url 'xidmet_detail' problem.kategori.slug %}" class="pd-cta-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Ustaları gör
-      </a>
+      <p>{% if problem.kategori %}{{ problem.kategori.ad }}{% else %}Peşəkar usta{% endif %} xidməti üçün birbaşa zəng edin və ya WhatsApp ilə yazın. Təcili çıxış və zəmanətli təmir.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px">
+        <a href="tel:+994515888884" class="pd-cta-btn" style="background:#10b981;color:#fff;border:none;font-size:15px;padding:12px 24px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 4px 14px rgba(16,185,129,.35)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Zəng et: 051 588 88 84
+        </a>
+        <a href="https://wa.me/994515888884" target="_blank" rel="noopener" class="pd-cta-btn" style="background:#25D366;color:#fff;border:none;font-size:15px;padding:12px 24px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 4px 14px rgba(37,211,102,.35)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/></svg>
+          WhatsApp ilə yaz
+        </a>
+        {% if problem.kategori %}
+        <a href="{% url 'xidmet_detail' problem.kategori.slug %}" class="pd-cta-btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);font-size:15px;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:600">
+          Digər ustalar →
+        </a>
+        {% endif %}
+      </div>
     </div>
-    {% endif %}
 
     {% if elanlar %}
     <div class="pd-elanlar">
@@ -161,20 +170,28 @@
       </h2>
       <div class="pd-elan-grid">
         {% for elan in elanlar %}
-        <div class="pd-elan">
-          <h3><a href="{{ elan.get_absolute_url }}">{{ elan.bashliq }}</a></h3>
-          <div class="pd-elan-info">
-            <span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              {{ elan.sheher }}
-            </span>
-            {% if elan.qiymet %}
-            <span>{{ elan.qiymet }} &#8380;</span>
-            {% endif %}
-            {% if elan.is_vip_aktiv %}
-            <span class="pd-elan-vip">VIP</span>
-            {% endif %}
+        <div class="pd-elan" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <h3><a href="{{ elan.get_absolute_url }}">{{ elan.bashliq }}</a></h3>
+            <div class="pd-elan-info">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ elan.sheher }}
+              </span>
+              {% if elan.qiymet %}
+              <span>{{ elan.qiymet }} ₼</span>
+              {% else %}
+              <span>Razılaşma ilə</span>
+              {% endif %}
+              {% if elan.is_vip_aktiv %}
+              <span class="pd-elan-vip">VIP</span>
+              {% endif %}
+            </div>
           </div>
+          <a href="tel:{% if elan.telefon %}{{ elan.telefon }}{% else %}+994515888884{% endif %}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--p,#1a47c8);color:#fff;font-size:13px;font-weight:700;padding:9px 14px;border-radius:8px;text-decoration:none;margin-top:12px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Zəng et: {% if elan.telefon %}{{ elan.telefon }}{% else %}051 588 88 84{% endif %}
+          </a>
         </div>
         {% endfor %}
       </div>
