@@ -18,7 +18,7 @@
 <div class="page-wrap">
   <div class="form-box">
     <h2>Mesaj Göndər</h2>
-    <div class="elan-info">📋 {{ elan.bashliq }} — {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}Satıcı{% endif %}</div>
+    <div class="elan-info">📋 {{ elan.bashliq }} — {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}</div>
     <form method="post">
       {% csrf_token %}
       <div class="field">

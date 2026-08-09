@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1a47c8">
-<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
-<link rel="apple-touch-icon" href="{% static 'favicon.svg' %}">
-<link rel="mask-icon" href="{% static 'favicon.svg' %}" color="#1a47c8">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+<link rel="icon" type="image/png" sizes="64x64" href="{% static 'img/favicon-64.png' %}">
+<link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+<link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+<link rel="apple-touch-icon" sizes="192x192" href="{% static 'img/icon_192.png' %}">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -50,7 +52,10 @@
 <meta name="twitter:description" content="{% block tw_description %}Bakıda və Azərbaycanda elektrik ustası, santexnik, kombi ustası, kondisioner ustası tapın. Prousta.az{% endblock %}">
 <meta name="twitter:image" content="{% block tw_image %}https://prousta.az/static/og-image.jpg{% endblock %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/logo.css' %}">
+<link rel="stylesheet" href="{% static 'css/prousta.css' %}">
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -76,9 +81,7 @@ a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none}
 input,select,textarea{font-family:inherit;outline:none}
 nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.logo-icon{width:36px;height:36px;flex-shrink:0}
-.logo-text{font-size:20px;font-weight:800;color:var(--p);line-height:1}
+
 .nav-links{display:flex;align-items:center;gap:16px}
 .nav-links a{color:var(--muted);font-weight:500;font-size:14px;transition:.2s}
 .nav-links a:hover{color:var(--p)}
@@ -110,7 +113,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 .mobil-menu a{padding:14px 16px;font-size:15px;font-weight:600;color:var(--tx);border-radius:var(--r);transition:.2s;border-bottom:1px solid var(--border)}
 .mobil-menu a:hover{background:var(--pl);color:var(--p)}
 
-.msgs{position:fixed;top:80px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px;max-width:320px}
+.msgs{position:fixed;top:76px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px;max-width:320px}
 .msg{padding:12px 20px;border-radius:var(--r);font-size:14px;font-weight:500;animation:fadeIn .3s ease}
 .msg.success{background:#dcfce7;color:#166534;border:1px solid #86efac}
 .msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
@@ -119,8 +122,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 /* FOOTER */
 footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:50px 40px;max-width:1200px;margin:0 auto}
-.footer-brand .logo-f{display:flex;align-items:center;gap:8px;margin-bottom:12px;text-decoration:none}
-.footer-brand .logo-f .logo-text-f{font-size:20px;font-weight:800;color:#fff;line-height:1}
+.footer-brand .brand{margin-bottom:12px}
 .footer-brand p{font-size:13px;line-height:1.8;color:#64748b;max-width:260px}
 .footer-social{display:flex;gap:10px;margin-top:16px}
 .footer-social a{width:36px;height:36px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.2s}
@@ -135,7 +137,9 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .footer-top{grid-template-columns:1fr 1fr;padding:30px 20px;gap:24px}
   .footer-brand{grid-column:1/-1}
   .footer-bottom{flex-direction:column;gap:12px;text-align:center;padding:20px}
-  nav{padding:0 16px}
+  nav{height:58px;padding:0 14px}
+  .brand-img{height:50px !important;max-height:52px !important;transform:scale(1.08) !important}
+  .mobil-menu{top:58px}
   .nav-links{display:none}
   .hamburger{display:flex}
   .msgs{left:16px;right:16px;max-width:100%}
@@ -146,13 +150,7 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 </head>
 <body>
 <nav>
-  <a href="{% url 'index' %}" class="logo">
-    <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <rect width="64" height="64" rx="14" fill="#1a47c8"/>
-      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="'Plus Jakarta Sans',Arial,sans-serif" font-weight="800" font-size="34" fill="#fff">P</text>
-    </svg>
-    <span class="logo-text">prousta<span style="color:#6b7280">.az</span></span>
-  </a>
+  {% include 'partials/brand_logo.html' %}
   <div class="nav-links">
     <a href="{% url 'mobil_app' %}" style="display:inline-flex;align-items:center;gap:6px">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
@@ -183,6 +181,7 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   </div>
 </nav>
 
+<div class="mobil-menu-overlay" id="mobilMenuOverlay" onclick="toggleMenu(document.getElementById('hamburger'))"></div>
 <div class="mobil-menu" id="mobilMenu">
   <a href="{% url 'mobil_app' %}" style="display:flex;align-items:center;gap:8px">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
@@ -207,18 +206,14 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 {% endfor %}
 </div>
 
+<main class="page-shell">
 {% block content %}{% endblock %}
+</main>
 
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
-      <a href="{% url 'index' %}" class="logo-f">
-        <svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-          <rect width="64" height="64" rx="14" fill="#1a47c8"/>
-          <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="'Plus Jakarta Sans',Arial,sans-serif" font-weight="800" font-size="34" fill="#fff">P</text>
-        </svg>
-        <span class="logo-text-f">prousta<span style="color:#64748b">.az</span></span>
-      </a>
+      {% include 'partials/brand_logo.html' with variant='light' %}
       <p>Azərbaycanda peşəkar ustalar və xidmət sahibləri üçün ən böyük elanlar platforması.</p>
       <div class="footer-social">
         <a href="https://www.facebook.com/61568796886691" target="_blank" title="Facebook">
@@ -267,33 +262,21 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© {% now "Y" %} Prousta.az — Bütün hüquqlar qorunur.</span>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
-      <a href="{% url 'haqqimizda' %}">Haqqımızda</a>
-      <a href="{% url 'problemler_siyahi' %}">Problemlər və Həllər</a>
-      <a href="{% url 'gizlilik' %}">Gizlilik Siyasəti</a>
-      <a href="{% url 'istifade_sertleri' %}">İstifadə Şərtləri</a>
-      <a href="https://wa.me/994515888884" target="_blank">Bizə yazın</a>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%">
+      <span>© {% now "Y" %} Prousta.az — Bütün hüquqlar qorunur. | Bir <a href="https://kodnex.store" target="_blank" rel="noopener" style="color:var(--p,#38bdf8);font-weight:700;text-decoration:none">Kodnex</a> məhsuludur.</span>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
+        <a href="{% url 'haqqimizda' %}">Haqqımızda</a>
+        <a href="{% url 'problemler_siyahi' %}">Problemlər və Həllər</a>
+        <a href="{% url 'gizlilik' %}">Gizlilik Siyasəti</a>
+        <a href="{% url 'istifade_sertleri' %}">İstifadə Şərtləri</a>
+        <a href="https://kodnex.store" target="_blank" rel="noopener" style="font-weight:600">kodnex.store</a>
+        <a href="https://wa.me/994515888884" target="_blank">Bizə yazın</a>
+      </div>
     </div>
   </div>
 </footer>
 
-<script>
-function toggleMenu(el){
-  el.classList.toggle('aktiv');
-  document.getElementById('mobilMenu').classList.toggle('aktiv');
-  document.body.style.overflow=document.getElementById('mobilMenu').classList.contains('aktiv')?'hidden':'';
-}
-document.addEventListener('click',function(e){
-  const menu=document.getElementById('mobilMenu');
-  const hamburger=document.getElementById('hamburger');
-  if(menu.classList.contains('aktiv')&&!menu.contains(e.target)&&!hamburger.contains(e.target)){
-    menu.classList.remove('aktiv');
-    hamburger.classList.remove('aktiv');
-    document.body.style.overflow='';
-  }
-});
-</script>
+<script src="{% static 'js/motion.js' %}" defer></script>
 <!-- MOBİL ALT NAVİQASİYA -->
 <div class="mobil-alt-nav">
   <a href="{% url 'index' %}" class="alt-nav-item {% block nav_index %}{% endblock %}">

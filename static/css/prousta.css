@@ -1,0 +1,140 @@
+/* Prousta — motion, kölgələr, ümumi UI */
+
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.2s;
+  --dur-normal: 0.4s;
+  --dur-slow: 0.65s;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 28px rgba(15, 23, 42, 0.09);
+  --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.12);
+  --shadow-brand: 0 8px 32px rgba(26, 71, 200, 0.18);
+}
+
+html { scroll-behavior: smooth; }
+
+/* Səhifə girişi */
+.page-shell {
+  opacity: 0;
+  animation: pageIn var(--dur-slow) var(--ease-out) forwards;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll reveal */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+
+[data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+[data-reveal="fade"] { transform: none; }
+
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-out);
+}
+
+[data-stagger].is-visible > * { opacity: 1; transform: translateY(0); }
+
+[data-reveal].is-visible [data-stagger] > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Nav scroll */
+nav {
+  transition: box-shadow var(--dur-normal), border-color var(--dur-normal), background var(--dur-normal) !important;
+}
+
+nav.is-scrolled {
+  box-shadow: var(--shadow-sm) !important;
+  background: rgba(255, 255, 255, 0.97) !important;
+}
+
+/* Düymələr */
+.btn {
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) !important;
+}
+
+.btn-primary {
+  box-shadow: 0 2px 10px rgba(26, 71, 200, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(26, 71, 200, 0.32);
+}
+
+.btn:active { transform: scale(0.98); }
+
+/* Toast */
+.msg {
+  box-shadow: var(--shadow-md);
+  transition: opacity var(--dur-fast), transform var(--dur-fast);
+}
+
+.msg.is-dismissing {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+/* Kartlar */
+.kart {
+  transition: transform var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal), border-color var(--dur-fast) !important;
+}
+
+.kart:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.kart-img img {
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.kart:hover .kart-img img { transform: scale(1.04); }
+
+/* Mobil menyu overlay */
+.mobil-menu-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 198;
+  opacity: 0;
+  transition: opacity var(--dur-normal);
+}
+
+.mobil-menu-overlay.aktiv { display: block; opacity: 1; }
+
+.mobil-menu {
+  left: auto !important;
+  right: 0 !important;
+  width: min(300px, 88vw) !important;
+  transform: translateX(100%);
+  transition: transform var(--dur-normal) var(--ease-out) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.mobil-menu.aktiv {
+  display: flex !important;
+  transform: translateX(0) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal], [data-stagger] > *, .page-shell { opacity: 1; transform: none; animation: none; }
+}

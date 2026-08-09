@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Prousta.az — Bakıda Usta Tap | Elektrik, Santexnik, Kombi, Kondisioner Ustası{% endblock %}
 {% block description %}Bakıda və Azərbaycanda peşəkar usta axtarırsınız? Elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri və 100+ xidmət. Pulsuz elan yerləşdirin, ən yaxın ustanı tapın!{% endblock %}
 {% block keywords %}usta tap Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası Bakı, kondisioner ustası Bakı, havalandırma ustası Bakı, soyuducu ustası Bakı, paltaryuyan ustası, ev təmiri Bakı, mebel ustası, avtomobil ustası Bakı, Azərbaycan usta, Prousta.az{% endblock %}
 {% block canonical %}/{% endblock %}
+{% block nav_index %}aktiv{% endblock %}
 {% block extra_head %}
 <script type="application/ld+json">
 {
@@ -13,176 +15,30 @@
   "url": "https://prousta.az",
   "logo": "https://prousta.az/static/og-image.jpg",
   "image": "https://prousta.az/static/og-image.jpg",
-  "description": "Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın. Elektrik, santexnik, kondisioner, təmir, gözəllik və digər xidmətlər.",
+  "description": "Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın.",
   "telephone": "+994515888884",
-  "email": "info@prousta.az",
-  "priceRange": "₼",
-  "currenciesAccepted": "AZN",
-  "paymentAccepted": "Cash, Bank Transfer",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Bakı şəhəri",
-    "addressLocality": "Bakı",
-    "addressRegion": "Bakı",
-    "postalCode": "AZ1000",
-    "addressCountry": "AZ"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "40.4093",
-    "longitude": "49.8671"
-  },
-  "areaServed": {
-    "@type": "Country",
-    "name": "Azerbaijan"
-  },
-  "contactPoint": [
-    {
-      "@type": "ContactPoint",
-      "telephone": "+994515888884",
-      "contactType": "customer service",
-      "email": "info@prousta.az",
-      "availableLanguage": ["Azerbaijani", "Russian"],
-      "areaServed": "AZ"
-    }
-  ],
-  "sameAs": [
-    "https://www.facebook.com/61568796886691",
-    "https://www.instagram.com/prousta.az",
-    "https://www.tiktok.com/@prousta.az",
-    "https://www.youtube.com/@prousta.servis.merkezi",
-    "https://www.x.com/prousta.az"
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Prousta.az",
-  "url": "https://prousta.az",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://prousta.az/elanlar/?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  }
+  "email": "info@prousta.az"
 }
 </script>
 {% endblock %}
 {% block style %}
-<style>
-.hero{background:linear-gradient(135deg,#1a47c8,#0f2d8f);color:#fff;padding:36px 20px 32px;text-align:center;position:relative}
-.hero h1{font-size:30px;font-weight:800;margin-bottom:6px}
-.hero p{font-size:15px;opacity:.85;margin-bottom:20px}
-.search-box{display:flex;gap:10px;max-width:560px;margin:0 auto}
-.search-box input{flex:1;padding:14px 18px;border-radius:var(--r);border:none;font-size:15px}
-.search-box button{padding:14px 24px;background:var(--acc);color:#fff;border-radius:var(--r);font-weight:700;font-size:15px;border:none;cursor:pointer}
-.hero-promos{display:flex;justify-content:center;gap:24px;margin-top:18px}
-.hero-promo-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:50px;padding:8px 20px 8px 10px;color:#fff;text-decoration:none;font-size:13px;font-weight:600;transition:.25s;backdrop-filter:blur(6px)}
-.hero-promo-pill:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
-.hero-promo-pill .pill-icon{width:32px;height:32px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(245,158,11,.4)}
-.hero-promo-pill .pill-amount{font-weight:900;font-size:15px;color:#fbbf24}
-.hero-mobile-promo{display:none;background:linear-gradient(90deg,#f59e0b,#f97316);padding:10px 16px}
-.hero-mobile-promo a{color:#fff;font-weight:700;font-size:13px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px}
-.hero-mobile-promo .mob-badge{background:rgba(255,255,255,.25);padding:2px 8px;border-radius:50px;font-size:12px;font-weight:800}
-.cats-section{padding:40px 20px;max-width:1200px;margin:0 auto}
-.cats-title{font-size:22px;font-weight:700;margin-bottom:6px;text-align:center}
-.cats-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px}
-.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.kat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.2s}
-.kat-card[open]{border-color:var(--p);box-shadow:0 8px 24px rgba(26,71,200,.12)}
-.kat-card summary{list-style:none;cursor:pointer;padding:18px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;color:var(--tx);user-select:none;transition:.2s}
-.kat-card summary::-webkit-details-marker{display:none}
-.kat-card summary:hover{background:var(--pl)}
-.kat-card[open] summary{background:var(--pl);color:var(--p);border-bottom:1px solid var(--border)}
-.kat-icon{width:44px;height:44px;border-radius:12px;background:var(--pl);display:flex;align-items:center;justify-content:center;color:var(--p);flex-shrink:0;transition:.2s}
-.kat-icon svg{width:24px;height:24px;stroke-width:2}
-.kat-card[open] .kat-icon{background:var(--p);color:#fff;transform:scale(1.05)}
-.kat-card:hover .kat-icon{background:var(--p);color:#fff}
-.kat-info{flex:1;min-width:0}
-.kat-name{display:block;font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kat-count{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
-.kat-card[open] .kat-count{color:var(--p)}
-.kat-arrow{flex-shrink:0;transition:.3s;color:var(--muted)}
-.kat-card[open] .kat-arrow{transform:rotate(180deg);color:var(--p)}
-.alt-list{padding:8px;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow-y:auto}
-.alt-list a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--tx);font-weight:500;transition:.15s}
-.alt-list a:hover{background:var(--pl);color:var(--p);padding-left:16px}
-.alt-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:.15s}
-.alt-list a:hover::before{background:var(--p);width:6px;height:6px}
-.kat-view-all{margin-top:6px;padding:10px 12px !important;border-top:1px solid var(--border);color:var(--p) !important;font-weight:700 !important;font-size:13px}
-.kat-view-all::before{display:none !important}
-.kat-elanlar{border-top:1px solid var(--border);padding:12px 10px 10px}
-.kat-elanlar-basliq{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:8px;letter-spacing:.3px}
-.kat-elanlar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.kat-elan-kart{display:flex;flex-direction:column;background:var(--pl);border-radius:10px;overflow:hidden;transition:.15s}
-.kat-elan-kart:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,71,200,.15)}
-.kat-elan-img{width:100%;height:80px;background:#e2e8f0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}
-.kat-elan-img img{width:100%;height:80px;object-fit:cover}
-.kat-elan-body{padding:6px 8px 8px}
-.kat-elan-title{font-size:12px;font-weight:600;color:var(--tx);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px}
-.kat-elan-price{font-size:12px;font-weight:700;color:var(--p);margin-top:3px}
-@media(max-width:640px){
-  .cats-section{padding:24px 12px}
-  .cats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .kat-card summary{padding:12px 10px;gap:8px;font-size:13px}
-  .kat-icon{width:38px;height:38px;border-radius:10px}
-  .kat-icon svg{width:20px;height:20px}
-  .kat-name{font-size:12px}
-  .kat-count{font-size:10px}
-}
-.section{padding:40px 20px;max-width:1200px;margin:0 auto}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.section-title{font-size:20px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s;position:relative}
-.kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.kart-img{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
-.kart-img img{width:100%;height:180px;object-fit:cover}
-.kart-body{padding:14px}
-.kart-title{font-weight:600;font-size:15px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kart-price{color:var(--p);font-weight:700;font-size:16px;margin-bottom:6px}
-.kart-meta{font-size:12px;color:var(--muted)}
-.vip-badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
-.vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,.4)}
-.vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.4)}
-.vip-section{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--r);padding:30px 20px;margin:0 20px 10px;max-width:1160px;margin-left:auto;margin-right:auto}
-.vip-section .section-title{color:#92400e}
-@media(max-width:768px){
-  .hero{padding:26px 16px 24px}
-  .hero h1{font-size:22px}
-  .search-box{flex-direction:column}
-  .hero-promos{display:none}
-  .hero-mobile-promo{display:block}
-  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
-  .kart-img{height:140px}
-  .kart-img img{height:140px}
-  .kart-body{padding:10px}
-  .kart-title{font-size:13px}
-  .kart-price{font-size:14px}
-  .section{padding:30px 12px}
-  .vip-section{margin:0 12px 10px}
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 {% block content %}
 <div class="hero">
   <h1>Azərbaycanda Peşəkar Usta və Xidmət Elanları</h1>
   <p>Bakı və bütün bölgələrdə etibarlı ustalar bir ünvanda — Prousta.az</p>
   <form class="search-box" action="/elanlar/" method="get">
-    <input name="q" placeholder="Hansı ustanı axtarırsınız?">
+    <input name="q" type="search" placeholder="Hansı ustanı axtarırsınız?" autocomplete="off">
     <button type="submit">Axtar</button>
   </form>
   <div class="hero-promos">
     <a href="{% url 'qeydiyyat' %}" class="hero-promo-pill">
-      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
       Qeydiyyatdan keç — <span class="pill-amount">20 ₼</span> balans hədiyyə!
     </a>
     <a href="{% url 'qeydiyyat' %}" class="hero-promo-pill">
-      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span>
+      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
       İlk elanını VIP et — xərc bizdan!
     </a>
   </div>
@@ -191,70 +47,48 @@
   <a href="{% url 'qeydiyyat' %}">Qeydiyyatdan keç — <span class="mob-badge">20 ₼ hədiyyə!</span></a>
 </div>
 
-<div class="cats-section">
-  <h2 class="cats-title">Xidmət Kateqoriyaları</h2>
-  <p class="cats-sub">Lazım olan kateqoriyaya tıklayıb alt xidmətləri seçin</p>
-  <div class="cats-grid">
-    {% for kat in kateqoriyalar %}
-    <details class="kat-card">
-      <summary>
-        <span class="kat-icon">
-          {% if kat.slug == 'meiset-texnikasi' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          {% elif kat.slug == 'elektronika' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="12" rx="2"/><path d="M2 20h20"/><path d="M9 16h6"/></svg>
-          {% elif kat.slug == 'temir-tikinti' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          {% elif kat.slug == 'reklam-dizayn' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 0 0 0 20"/><circle cx="17.5" cy="8.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="15.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/></svg>
-          {% elif kat.slug == 'mebel-interyer' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0Z"/><path d="M6 18v2"/><path d="M18 18v2"/></svg>
-          {% elif kat.slug == 'avtomobil-temiri' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18 10l-2.3-4.6c-.3-.6-.9-1-1.5-1H6c-.6 0-1.2.4-1.5 1L2.5 10 1.5 11.1C.7 11.3 0 12.1 0 13v3c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-          {% elif kat.slug == 'neqliyyat-texnika' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-          {% elif kat.slug == 'gozellik-saglamliq' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-          {% elif kat.slug == 'it-biznes' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          {% elif kat.slug == 'diger-ustalar' %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          {% else %}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 9h6v6H9z"/></svg>
-          {% endif %}
-        </span>
-        <div class="kat-info">
-          <span class="kat-name">{{ kat.ad }}</span>
-          <span class="kat-count">{{ kat.alt_kateqoriyalar.count }} xidmət</span>
-        </div>
-        <svg class="kat-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </summary>
-      <div class="alt-list">
-        {% for alt in kat.alt_kateqoriyalar.all %}
-          <a href="{% url 'xidmet_detail' alt.slug %}">{{ alt.ad }}</a>
-        {% endfor %}
-        <a href="{% url 'xidmet_detail' kat.slug %}" class="kat-view-all">Bütün {{ kat.ad }} elanları →</a>
-      </div>
-    </details>
-    {% endfor %}
+<section class="cats-section" data-reveal>
+  <div class="cats-head">
+    <h2 class="cats-title">Xidmət Kateqoriyaları</h2>
+    <p class="cats-sub">Bütün xidmətlər avtomatik sürüşür — siçanla dayandırıb idarə edə bilərsiniz</p>
   </div>
-</div>
+
+  <div class="xidmet-slider" id="xidmetSlider">
+    <button type="button" class="xidmet-arrow xidmet-arrow-prev" aria-label="Əvvəlki xidmətlər" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+
+    <div class="xidmet-viewport" tabindex="0" aria-label="Bütün xidmətlər">
+      <div class="xidmet-track">
+        {% for kat in kateqoriyalar %}
+        {% for alt in kat.alt_kateqoriyalar.all %}
+        <a href="{% url 'xidmet_detail' alt.slug %}" class="xidmet-chip" data-kat="{{ kat.slug }}">
+          <span class="xidmet-chip-kat">{{ kat.ad }}</span>
+          <span class="xidmet-chip-name">{{ alt.ad }}</span>
+        </a>
+        {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="button" class="xidmet-arrow xidmet-arrow-next" aria-label="Növbəti xidmətlər">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
 
 {% if vip_elanlar %}
-<div class="vip-section">
+<section class="vip-section" data-reveal>
   <div class="section-header">
     <div class="section-title">VIP Elanlar</div>
   </div>
-  <div class="grid">
+  <div class="grid" data-stagger>
   {% for elan in vip_elanlar %}
     <a href="{{ elan.get_absolute_url }}" class="kart">
       <div class="kart-img">
-        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
-        {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">{% else %}Şəkil yoxdur{% endif %}{% endwith %}
       </div>
-      <div class="vip-badge {{ elan.vip_status }}">
-        {% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}
-      </div>
+      <div class="vip-badge {{ elan.vip_status }}">{% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}</div>
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
         <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
@@ -262,20 +96,19 @@
     </a>
   {% endfor %}
   </div>
-</div>
+</section>
 {% endif %}
 
-<div class="section">
+<section class="section" data-reveal>
   <div class="section-header">
-    <div class="section-title">Son Elanlar</div>
-    <a href="/elanlar/" style="font-size:14px;color:var(--p);font-weight:600">Hamısına bax →</a>
+    <div class="section-title">Bütün Elanlar</div>
+    <a href="/elanlar/" class="section-link">Kateqoriyalar üzrə →</a>
   </div>
-  <div class="grid">
+  <div class="grid" data-stagger>
   {% for elan in elanlar %}
     <a href="{{ elan.get_absolute_url }}" class="kart">
       <div class="kart-img">
-        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
-        {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">{% else %}Şəkil yoxdur{% endif %}{% endwith %}
       </div>
       <div class="kart-body">
         <div class="kart-title">{{ elan.bashliq }}</div>
@@ -286,6 +119,5 @@
     <p style="color:var(--muted);grid-column:1/-1">Hələ elan yoxdur.</p>
   {% endfor %}
   </div>
-</div>
-
+</section>
 {% endblock %}

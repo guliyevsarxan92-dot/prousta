@@ -172,13 +172,13 @@
     <a href="/istifadeci/{{ elan.istifadeci.pk }}/" class="satici">
       <div class="satici-avatar">
         {% if elan.istifadeci.profil.avatar %}
-          <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}Satıcı{% endif %}" loading="lazy">
+          <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}" loading="lazy">
         {% else %}
-          {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|first|upper }}{% else %}S{% endif %}
+          {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|first|upper }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name|first|upper }}{% else %}U{% endif %}
         {% endif %}
       </div>
       <div>
-        <div class="satici-ad">{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% else %}Satıcı{% endif %}</div>
+        <div class="satici-ad">{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}</div>
         <div class="satici-tarix">Digər elanlarına bax →</div>
       </div>
     </a>

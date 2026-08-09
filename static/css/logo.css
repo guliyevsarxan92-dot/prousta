@@ -1,0 +1,34 @@
+/* Prousta.az — wordmark loqo (tip A) */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 1;
+  transition: opacity 0.2s ease;
+}
+
+.brand:hover { opacity: 0.82; }
+
+.brand-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--p, #1a47c8);
+  white-space: nowrap;
+}
+
+.brand-suffix {
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #94a3b8;
+}
+
+/* Footer — tünd fon */
+.brand--light .brand-logo { color: #ffffff; }
+.brand--light .brand-suffix { color: #64748b; }
+
+@media (max-width: 768px) {
+  .brand-logo { font-size: 1.3125rem; }
+}

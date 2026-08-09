@@ -32,10 +32,10 @@
   <div id="qelen" class="tab-content aktiv">
     {% for m in qelen %}
     <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
-      <div class="avatar">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad|first|upper }}{% else %}S{% endif %}</div>
+      <div class="avatar">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad|first|upper }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name|first|upper }}{% else %}U{% endif %}</div>
       <div class="mesaj-info">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span class="mesaj-ad">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad }} {{ m.gonderici.profil.soyad }}{% else %}Satıcı{% endif %}</span>
+          <span class="mesaj-ad">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad }} {{ m.gonderici.profil.soyad }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name }} {{ m.gonderici.last_name }}{% else %}Usta{% endif %}</span>
           {% if not m.oxundu %}<span class="yeni-badge">Yeni</span>{% endif %}
         </div>
         {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
@@ -50,9 +50,9 @@
   <div id="gonderilenler" class="tab-content">
     {% for m in gonderilenler %}
     <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
-      <div class="avatar">{% if m.alici.profil.ad %}{{ m.alici.profil.ad|first|upper }}{% else %}S{% endif %}</div>
+      <div class="avatar">{% if m.alici.profil.ad %}{{ m.alici.profil.ad|first|upper }}{% elif m.alici.first_name %}{{ m.alici.first_name|first|upper }}{% else %}U{% endif %}</div>
       <div class="mesaj-info">
-        <div style="margin-bottom:4px"><span class="mesaj-ad">{% if m.alici.profil.ad %}{{ m.alici.profil.ad }} {{ m.alici.profil.soyad }}{% else %}Satıcı{% endif %}</span></div>
+        <div style="margin-bottom:4px"><span class="mesaj-ad">{% if m.alici.profil.ad %}{{ m.alici.profil.ad }} {{ m.alici.profil.soyad }}{% elif m.alici.first_name %}{{ m.alici.first_name }} {{ m.alici.last_name }}{% else %}Usta{% endif %}</span></div>
         {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
         <div class="mesaj-metn">{{ m.metn }}</div>
       </div>

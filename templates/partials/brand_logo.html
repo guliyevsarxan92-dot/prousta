@@ -1,0 +1,4 @@
+{% load static %}
+<a href="{% url 'index' %}" class="brand{% if variant == 'light' %} brand--light{% endif %}" aria-label="Prousta.az" style="display:inline-flex;align-items:center;text-decoration:none;padding:0">
+  <img src="{% static 'img/brand_logo.png' %}" alt="Prousta.az" class="brand-img" style="height:62px;max-height:64px;width:auto;object-fit:contain;display:block;transform:scale(1.12);transform-origin:left center;transition:.2s">
+</a>
