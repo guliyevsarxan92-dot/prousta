@@ -47,7 +47,9 @@ def index(request):
     _update_elan_status()
     vip_list = list(Elan.objects.filter(status='aktiv', vip_status__in=['vip','super_vip']).prefetch_related('shekillar'))
     vip_elanlar = vip_list
-    elanlar = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')
+    elanlar_qs = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')
+    paginator = Paginator(elanlar_qs, 20)
+    elanlar = paginator.get_page(request.GET.get('page', 1))
     kateqoriyalar = list(
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     )
@@ -64,6 +66,7 @@ def index(request):
         'vip_elanlar': vip_elanlar,
         'kateqoriyalar': kateqoriyalar
     })
+
 
 def elan_siyahi(request):
     """

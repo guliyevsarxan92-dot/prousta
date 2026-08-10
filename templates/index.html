@@ -119,5 +119,16 @@
     <p style="color:var(--muted);grid-column:1/-1">Hələ elan yoxdur.</p>
   {% endfor %}
   </div>
+  {% if elanlar.paginator.num_pages > 1 %}
+  <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:32px;flex-wrap:wrap">
+    {% if elanlar.has_previous %}
+      <a href="?page={{ elanlar.previous_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">← Əvvəlki</a>
+    {% endif %}
+    <span style="padding:8px 16px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600">{{ elanlar.number }} / {{ elanlar.paginator.num_pages }}</span>
+    {% if elanlar.has_next %}
+      <a href="?page={{ elanlar.next_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">Sonrakı →</a>
+    {% endif %}
+  </div>
+  {% endif %}
 </section>
 {% endblock %}
