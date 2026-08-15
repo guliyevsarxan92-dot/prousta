@@ -67,6 +67,7 @@
 {% block tw_image %}{% if elan.shekillar.first %}{{ elan.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endblock %}
 {% block og_url %}{{ elan.get_absolute_url }}{% endblock %}
 {% block canonical %}{{ elan.get_absolute_url }}{% endblock %}
+{% block canonical2 %}{{ elan.get_absolute_url }}{% endblock %}
 {% block style %}
 <style>
 .page-wrap{max-width:1000px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:1fr 320px;gap:30px}

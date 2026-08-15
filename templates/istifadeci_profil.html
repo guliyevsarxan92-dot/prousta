@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block robots %}noindex, nofollow{% endblock %}
 {% block title %}{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}Usta{% endif %} — Prousta.az{% endblock %}
 {% block style %}
 <style>
