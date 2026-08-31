@@ -30,7 +30,7 @@ def odenis_tesdiq_signal(sender, instance, **kwargs):
     instance._tesdiq_transition = False
     if instance.pk:
         try:
-            kohne = Odenis.objects.get(pk=instance.pk)
+            kohne = Odenis.objects.select_for_update().get(pk=instance.pk)
             if kohne.status != 'tesdiq_edildi' and instance.status == 'tesdiq_edildi':
                 instance._tesdiq_transition = True
                 if instance.nov == 'balans':

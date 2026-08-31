@@ -82,13 +82,19 @@ class Elan(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.nomre:
-            self.nomre = uuid.uuid4().hex[:8].upper()
+            for _ in range(5):
+                candidate = uuid.uuid4().hex[:8].upper()
+                if not Elan.objects.filter(nomre=candidate).exists():
+                    self.nomre = candidate
+                    break
+            else:
+                self.nomre = uuid.uuid4().hex[:10].upper()
         self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 0)
         super().save(*args, **kwargs)
         if not self.bitis_tarixi and self.status == 'aktiv':
-            Elan.objects.filter(pk=self.pk).update(
-                bitis_tarixi=timezone.now() + timedelta(days=30)
-            )
+            now = timezone.now() + timedelta(days=30)
+            Elan.objects.filter(pk=self.pk).update(bitis_tarixi=now)
+            self.bitis_tarixi = now
 
     def is_vip_aktiv(self):
         if self.vip_status == 'normal':

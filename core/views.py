@@ -45,8 +45,7 @@ def _update_elan_status():
 
 def index(request):
     _update_elan_status()
-    vip_list = list(Elan.objects.filter(status='aktiv', vip_status__in=['vip','super_vip']).prefetch_related('shekillar'))
-    vip_elanlar = vip_list
+    vip_elanlar = list(Elan.objects.filter(status='aktiv', vip_status__in=['vip','super_vip']).prefetch_related('shekillar'))
     elanlar_qs = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')
     paginator = Paginator(elanlar_qs, 20)
     elanlar = paginator.get_page(request.GET.get('page', 1))
@@ -54,13 +53,23 @@ def index(request):
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     )
     # Hər əsas kateqoriya üçün son 6 aktiv elan (öz və alt kateqoriyalarından)
-    # kategori kartı açıldıqda alt sırada göstərilir.
+    # Bütün aktiv elanları bir sorğu ilə çəkib Python-da paylamaq — N+1 problemi aradan qaldırır
+    from collections import defaultdict
+    kat_elanlar = defaultdict(list)
+    kat_pks = {kat.pk for kat in kateqoriyalar}
+    all_aktiv = (
+        Elan.objects.filter(status='aktiv')
+        .filter(Q(kategori__in=kat_pks) | Q(kategori__ust_kategori__in=kat_pks))
+        .select_related('kategori', 'kategori__ust_kategori')
+        .prefetch_related('shekillar')
+        .order_by('-vip_siralama', '-yaradildi')
+    )
+    for elan in all_aktiv:
+        ust_pk = (elan.kategori.ust_kategori_id or elan.kategori_id) if elan.kategori else None
+        if ust_pk and len(kat_elanlar[ust_pk]) < 6:
+            kat_elanlar[ust_pk].append(elan)
     for kat in kateqoriyalar:
-        kat.son_elanlar = list(
-            Elan.objects.filter(status='aktiv').filter(
-                Q(kategori=kat) | Q(kategori__ust_kategori=kat)
-            ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')[:6]
-        )
+        kat.son_elanlar = kat_elanlar.get(kat.pk, [])
     return render(request, 'index.html', {
         'elanlar': elanlar,
         'vip_elanlar': vip_elanlar,
@@ -127,7 +136,7 @@ def xidmet_detail(request, slug):
         'kateqoriyalar': kateqoriyalar,
         'aktiv_kategori': aktiv_kategori,
         'axtaris': axtaris,
-        'elan_var': elanlar.exists(),
+        'elan_var': elanlar_page.paginator.count > 0,
     })
 
 def elan_detail(request, pk, slug=None):
@@ -243,6 +252,10 @@ def elan_duzelis(request, pk):
     elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     if request.method == 'POST':
+        bashliq = request.POST.get('bashliq', '').strip()
+        if not bashliq:
+            messages.error(request, 'Başlıq boş ola bilməz!')
+            return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         telefon_son = request.POST.get('telefon', '')
         if not re.match(r'^\d{9}$', telefon_son):
             messages.error(request, 'Telefon nömrəsi 9 rəqəmdən ibarət olmalıdır!')
@@ -253,6 +266,10 @@ def elan_duzelis(request, pk):
             messages.error(request, qadaga_xeta)
             return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         shekillar = request.FILES.getlist('shekillar')
+        movcud_say = elan.shekillar.count()
+        if movcud_say + len(shekillar) > 5:
+            messages.error(request, f'Maksimum 5 şəkil! Hal-hazırda {movcud_say} şəkil var, ən çox {5 - movcud_say} əlavə edə bilərsiniz.')
+            return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         for shekil in shekillar:
             if shekil.size > 5 * 1024 * 1024:
                 messages.error(request, 'Hər şəkil 5MB-dan böyük ola bilməz!')
@@ -260,7 +277,7 @@ def elan_duzelis(request, pk):
             if not shekil.content_type.startswith('image/'):
                 messages.error(request, 'Yalnız şəkil faylları yüklənə bilər!')
                 return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
-        elan.bashliq = request.POST.get('bashliq')
+        elan.bashliq = bashliq
         elan.acaqlama = acaqlama_yeni
         elan.qiymet = request.POST.get('qiymet') or None
         elan.sheher = request.POST.get('sheher', 'Bakı')
@@ -493,6 +510,8 @@ def profil_duzelis(request):
             user.email = yeni_email
 
         profil, _ = Profil.objects.get_or_create(istifadeci=user)
+        profil.ad = yeni_ad
+        profil.soyad = yeni_soyad
         profil.telefon = yeni_telefon
         profil.sheher = yeni_sheher
         profil.save()
