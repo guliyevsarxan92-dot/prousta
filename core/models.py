@@ -247,6 +247,7 @@ class Odenis(models.Model):
 
 class ReklamBanner(models.Model):
     MOVQELER = [
+        ('ust', 'Üst Banner (Tam Enli - Ekran Boyu)'),
         ('sol', 'Sol Yan Banner (Desktop)'),
         ('sag', 'Sağ Yan Banner (Desktop)'),
         ('orta', 'Orta / Horizontal Banner'),
@@ -255,7 +256,7 @@ class ReklamBanner(models.Model):
     movqe = models.CharField('Mövqe', max_length=20, choices=MOVQELER, unique=True)
     bashliq = models.CharField('Başlıq / Müştəri adı', max_length=150, blank=True)
     link = models.URLField('Keçid Linki (URL)', blank=True, help_text='Məsələn: https://example.com və ya https://wa.me/99450xxxxxxx')
-    shekil = models.ImageField('Banner Şəkli', upload_to='bannerler/', blank=True, null=True, help_text='Yan bannerlər üçün tövsiyə olunan ölçü: 160x600 və ya 120x600')
+    shekil = models.ImageField('Banner Şəkli', upload_to='bannerler/', blank=True, null=True, help_text='Üst banner üçün tövsiyə olunan ölçü: 1920x150 və ya 1200x120. Yan bannerlər üçün: 160x600 və ya 120x600')
     html_kod = models.TextField('HTML / AdSense Kodu (Şəkil yoxdursa)', blank=True, help_text='Google AdSense və ya xüsusi script kodu')
     aktiv = models.BooleanField('Aktivdir', default=True, db_index=True)
     bitis_tarixi = models.DateTimeField('Bitmə tarixi', null=True, blank=True, help_text='Boş buraxsanız müddətsiz aktiv olar')

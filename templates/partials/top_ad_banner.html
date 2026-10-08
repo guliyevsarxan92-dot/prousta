@@ -1,0 +1,32 @@
+{% if reklam_ust and reklam_ust.shekil %}
+<aside class="top-ad-banner" id="topAdBanner" aria-label="Üst Reklam Banneri">
+  <div class="top-ad-container">
+    <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <img src="{{ reklam_ust.shekil.url }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img">
+    </a>
+  </div>
+</aside>
+{% elif reklam_ust and reklam_ust.html_kod %}
+<aside class="top-ad-banner" id="topAdBanner" aria-label="Üst Reklam Banneri">
+  <div class="top-ad-container">
+    <div class="top-ad-custom-html">
+      {{ reklam_ust.html_kod|safe }}
+    </div>
+  </div>
+</aside>
+{% else %}
+<aside class="top-ad-banner top-ad-banner--placeholder" id="topAdBanner" aria-label="Üst Reklam Yeri">
+  <div class="top-ad-container">
+    <div class="top-ad-placeholder">
+      <div class="top-ad-placeholder-left">
+        <span class="top-ad-badge-title">ÜST REKLAM YERİ</span>
+        <span class="top-ad-badge-size">1920 × 150</span>
+        <span class="top-ad-desc">Saytda tam enli üst banner yerləşdirmək üçün əlaqə saxlayın</span>
+      </div>
+      <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Ust%20banner)" class="top-ad-btn">
+        Əlaqə saxlayın
+      </a>
+    </div>
+  </div>
+</aside>
+{% endif %}

@@ -1,6 +1,4 @@
 <div class="side-ad-slot" id="sideAdRightSlot">
-  <button type="button" class="side-ad-close" onclick="document.getElementById('sideAdRight').style.display='none'" aria-label="Reklamı bağla" title="Bağla">×</button>
-  <span class="side-ad-badge">REKLAM</span>
   {% if reklam_sag and reklam_sag.shekil %}
     <a href="{{ reklam_sag.link|default:'#' }}" {% if reklam_sag.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sag.bashliq }}">
       <img src="{{ reklam_sag.shekil.url }}" alt="{{ reklam_sag.bashliq|default:'Reklam' }}" class="side-ad-custom-img">

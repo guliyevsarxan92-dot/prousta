@@ -30,6 +30,7 @@ def oxunmamis_mesaj(request):
     ctx = {
         'nav_kateqoriyalar': nav_kateqoriyalar,
         'YANDEX_VERIFICATION': getattr(settings, 'YANDEX_VERIFICATION', ''),
+        'reklam_ust': reklamlar.get('ust'),
         'reklam_sol': reklamlar.get('sol'),
         'reklam_sag': reklamlar.get('sag'),
         'reklam_orta': reklamlar.get('orta'),
