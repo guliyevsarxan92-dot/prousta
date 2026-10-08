@@ -47,53 +47,39 @@ def _update_elan_status():
 
 def index(request):
     _update_elan_status()
-    now = timezone.now()
 
-    # Bütün aktiv Super VIP və VIP elanlar (vaxtı keçməmiş)
-    super_vips = list(
-        Elan.objects.filter(status='aktiv', vip_status='super_vip', vip_bitis__gt=now)
-        .select_related('kategori')
-        .prefetch_related('shekillar')
-        .order_by(F('vip_yenilendi').desc(nulls_last=True), '-yaradildi')
-    )
-    vips = list(
-        Elan.objects.filter(status='aktiv', vip_status='vip', vip_bitis__gt=now)
-        .select_related('kategori')
-        .prefetch_related('shekillar')
-        .order_by(F('vip_yenilendi').desc(nulls_last=True), '-yaradildi')
-    )
-
-    # Ədalətli rotasiya: Super VIP və VIP elanları bərabər nümayiş şansı üçün qarışdırırıq
-    random_super = list(super_vips)
-    random.shuffle(random_super)
-    random_vip = list(vips)
-    random.shuffle(random_vip)
-
-    selected_paid = (random_super + random_vip)[:4]
-
-    # Əgər 4-dən az ödənişli elan varsa, qalan yerləri ən son aktiv elanlarla tamamla
-    if len(selected_paid) < 4:
-        needed = 4 - len(selected_paid)
-        exclude_pks = [e.pk for e in selected_paid]
-        recent = list(
-            Elan.objects.filter(status='aktiv')
-            .exclude(pk__in=exclude_pks)
-            .select_related('kategori')
-            .prefetch_related('shekillar')
-            .order_by('-yaradildi')[:needed]
-        )
-        home_cards = selected_paid + recent
-    else:
-        home_cards = selected_paid
-
+    # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar
     elanlar_qs = (
-        Elan.objects.filter(status='aktiv', vip_status='normal')
+        Elan.objects.filter(status='aktiv')
         .select_related('kategori')
         .prefetch_related('shekillar')
-        .order_by('-yaradildi')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc(),
+        )
     )
+
     paginator = Paginator(elanlar_qs, 20)
-    elanlar = paginator.get_page(request.GET.get('page', 1))
+    page_number = request.GET.get('page', 1)
+    elanlar = paginator.get_page(page_number)
+
+    # AJAX: sonsuz sürüşdürmə (infinite scroll) və ya "Daha çox göstər" üçün
+    if request.GET.get('ajax') == '1' or request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        cards_html = render_to_string('partials/elan_cards_list.html', {'elanlar': elanlar, 'user': request.user}, request=request)
+        return JsonResponse({
+            'html': cards_html,
+            'has_next': elanlar.has_next(),
+            'next_page': elanlar.next_page_number() if elanlar.has_next() else None,
+            'current_page': elanlar.number,
+            'num_pages': elanlar.paginator.num_pages,
+            'total_count': elanlar.paginator.count,
+        })
+
+    page_range = list(paginator.get_elided_page_range(elanlar.number, on_each_side=2, on_ends=1))
+
+    # Kateqoriyalar bloku üçün
     kateqoriyalar = list(
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     )
@@ -117,12 +103,13 @@ def index(request):
             kat_elanlar[ust_pk].append(elan)
     for kat in kateqoriyalar:
         kat.son_elanlar = kat_elanlar.get(kat.pk, [])
+
     from .homepage import presentation_context
     return render(request, 'index.html', {
         'elanlar': elanlar,
-        'vip_elanlar': super_vips + vips,
+        'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
-        **presentation_context(home_cards),
+        **presentation_context(list(elanlar)[:6]),
     })
 
 
@@ -159,9 +146,11 @@ def elan_siyahi(request):
         )
     paginator = Paginator(elanlar, 20)
     elanlar_page = paginator.get_page(request.GET.get('page', 1))
+    page_range = list(paginator.get_elided_page_range(elanlar_page.number, on_each_side=2, on_ends=1))
 
     return render(request, 'elan_siyahi.html', {
         'elanlar': elanlar_page,
+        'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
         'axtaris': axtaris,
     })
@@ -196,9 +185,11 @@ def xidmet_detail(request, slug):
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     paginator = Paginator(elanlar, 20)
     elanlar_page = paginator.get_page(request.GET.get('page', 1))
+    page_range = list(paginator.get_elided_page_range(elanlar_page.number, on_each_side=2, on_ends=1))
 
     return render(request, 'xidmet_detail.html', {
         'elanlar': elanlar_page,
+        'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
         'aktiv_kategori': aktiv_kategori,
         'axtaris': axtaris,

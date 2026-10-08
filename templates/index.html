@@ -18,9 +18,64 @@
 </section>
 <div class="home-container home-content">
  <section class="home-section category-section" id="kateqoriyalar"><div class="home-section-heading"><h2>Populyar kateqoriyalar</h2><a href="{% url 'elan_siyahi' %}">Bütün kateqoriyalar {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="category-grid">{% for name, slug, icon in home_categories %}<a href="{% url 'xidmet_detail' slug %}" class="category-tile"><span class="category-emoji category-{{ slug }}" aria-hidden="true">{{ icon }}</span><span>{{ name }}</span></a>{% endfor %}</div></section>
- <section class="home-section" id="elanlar"><div class="home-section-heading"><h2>{% if vip_elanlar or home_is_demo %}Premium elanlar{% else %}Son elanlar{% endif %}</h2><a href="{% url 'elan_siyahi' %}">Bütün elanlara bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></div>
- {% if home_is_demo %}<p class="design-note">Dizayn nümunəsi · Aşağıdakı elanlar, profillər, rəylər və rəqəmlər nümayiş üçündür.</p>{% endif %}
- <div class="service-grid">{% for elan in home_cards %}{% include 'partials/home_service_card.html' %}{% empty %}{% for service in example_services %}<article class="service-card"><div class="service-photo"><a class="example-photo example-photo-{{ forloop.counter }}" href="{% url 'xidmet_detail' service.slug %}" aria-label="{{ service.title }} xidmətləri"></a>{% if forloop.counter < 3 %}<span class="premium-label">{% include 'partials/ui_icon.html' with name='star' %} Premium</span>{% endif %}<button type="button" class="favorite-button" data-demo-favorite aria-label="Nümunə elanı seç" aria-pressed="false">{% include 'partials/ui_icon.html' with name='heart' %}</button></div><div class="service-info"><h3><a href="{% url 'xidmet_detail' service.slug %}">{{ service.title }}</a></h3><p class="service-description">{{ service.description }}</p><p class="service-location">{% include 'partials/ui_icon.html' with name='pin' %} Bakı, {{ service.district }}</p><div class="service-meta"><span><span class="rating-star">★</span> <b>{{ service.rating }}</b> <span class="muted">({{ service.reviews }} rəy)</span></span><span class="verified-label">{% include 'partials/ui_icon.html' with name='shield' %} Doğrulanmış usta</span></div><p class="service-price">{{ service.price }} AZN<small>-dən</small></p><div class="service-actions"><button class="call-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='phone' %} Zəng et</button><button class="whatsapp-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='whatsapp' %} WhatsApp</button></div></div></article>{% endfor %}{% endfor %}</div></section>
+ <section class="home-section" id="elanlar">
+  <div class="home-section-heading">
+   <div style="display:flex;align-items:center;gap:10px">
+    <h2>Elanlar</h2>
+    <span class="section-badge">{{ elanlar.paginator.count }} aktiv elan</span>
+   </div>
+   <a href="{% url 'elan_siyahi' %}">Bütün kateqoriyalar {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+  </div>
+  {% if home_is_demo %}<p class="design-note">Dizayn nümunəsi · Aşağıdakı elanlar nümayiş üçündür.</p>{% endif %}
+  <div class="service-grid" id="elanlar-grid">
+   {% for elan in elanlar %}
+    {% include 'partials/home_service_card.html' %}
+   {% empty %}
+    {% for service in example_services %}
+     <article class="service-card">
+      <div class="service-photo">
+       <a class="example-photo example-photo-{{ forloop.counter }}" href="{% url 'xidmet_detail' service.slug %}" aria-label="{{ service.title }} xidmətləri"></a>
+       {% if forloop.counter < 3 %}<span class="premium-label">{% include 'partials/ui_icon.html' with name='star' %} Premium</span>{% endif %}
+       <button type="button" class="favorite-button" data-demo-favorite aria-label="Nümunə elanı seç" aria-pressed="false">{% include 'partials/ui_icon.html' with name='heart' %}</button>
+      </div>
+      <div class="service-info">
+       <h3><a href="{% url 'xidmet_detail' service.slug %}">{{ service.title }}</a></h3>
+       <p class="service-description">{{ service.description }}</p>
+       <p class="service-location">{% include 'partials/ui_icon.html' with name='pin' %} Bakı, {{ service.district }}</p>
+       <div class="service-meta">
+        <span><span class="rating-star">★</span> <b>{{ service.rating }}</b> <span class="muted">({{ service.reviews }} rəy)</span></span>
+        <span class="verified-label">{% include 'partials/ui_icon.html' with name='shield' %} Doğrulanmış usta</span>
+       </div>
+       <p class="service-price">{{ service.price }} AZN<small>-dən</small></p>
+       <div class="service-actions">
+        <button class="call-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='phone' %} Zəng et</button>
+        <button class="whatsapp-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='whatsapp' %} WhatsApp</button>
+       </div>
+      </div>
+     </article>
+    {% endfor %}
+   {% endfor %}
+  </div>
+
+  <!-- Aşağı getdikcə / Load more avtomatik yükləmə -->
+  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{{ elanlar.next_page_number|default:'' }}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'index' %}">
+   {% if elanlar.has_next %}
+    <button type="button" class="btn load-more-btn" id="loadMoreBtn">
+     {% include 'partials/ui_icon.html' with name='arrow' %}
+     Daha çox elan göstər
+    </button>
+    <div class="scroll-spinner" id="scrollSpinner" style="display:none">
+     <span class="spinner-ring"></span>
+     <span>Daha çox elan yüklənir...</span>
+    </div>
+   {% endif %}
+  </div>
+
+  <!-- Keçid səhifələr (1, 2, 3 ... 26) -->
+  <div id="elanlar-pager">
+   {% include 'partials/pager.html' with page=elanlar fragment='elanlar' page_range=page_range %}
+  </div>
+ </section>
  <section class="home-section" id="ustalar"><div class="home-section-heading"><h2>{% if home_is_demo %}Tövsiyə olunan ustalar{% else %}Ustalarla tanış olun{% endif %}</h2><a href="{% url 'elan_siyahi' %}">Bütün ustalara bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="professional-grid">{% for elan in home_professionals %}<article class="professional-card"><a class="professional-avatar" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">{% if elan.istifadeci.profil.avatar %}<img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}" loading="lazy">{% else %}{% include 'partials/ui_icon.html' with name='user' %}{% endif %}</a><div class="professional-info"><h3>{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}</h3><p>{{ elan.kategori.ad }}</p><small>{% include 'partials/ui_icon.html' with name='pin' %} {{ elan.sheher }}</small></div><a class="profile-button" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">Profilə bax</a></article>{% empty %}{% for pro in example_professionals %}<article class="professional-card"><span class="professional-avatar example-avatar portrait-{{ forloop.counter }}" role="img" aria-label="Nümunə usta portreti"></span><div class="professional-info"><h3>{{ pro.name }} {% include 'partials/ui_icon.html' with name='shield' class='verified-icon' %}</h3><p>{{ pro.job }}</p><small><span class="rating-star">★</span> <b>{{ pro.rating }}</b> ({{ pro.reviews }} rəy)</small><small>{% include 'partials/ui_icon.html' with name='clock' %} {{ pro.jobs }} tamamlanmış iş</small></div><a class="profile-button" href="{% url 'xidmet_detail' pro.slug %}">Ustaları tap</a></article>{% endfor %}{% endfor %}</div></section>
  <section class="home-section how-section" id="nece-isleyir"><div class="home-section-heading"><h2>Necə işləyir?</h2></div><div class="steps-grid"><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">1</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='search' %}</span><span><strong>Axtar</strong><small>Xidmət və ya usta axtarın</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">2</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='list' %}</span><span><strong>Müqayisə et</strong><small>Elanlara, qiymətlərə və<br>xidmətlərə baxın</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">3</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='phone' %}</span><span><strong>Əlaqə saxla</strong><small>Usta ilə birbaşa zəng və ya<br>WhatsApp ilə danışın</small></span></a></div></section>
  <div class="home-stats" aria-label="{% if home_is_demo %}Nümunə statistika{% else %}Platformanın üstünlükləri{% endif %}"><div>{% include 'partials/ui_icon.html' with name='users' %}<span><strong>{% if home_is_demo %}10,000+{% else %}Bir platforma{% endif %}</strong><small>{% if home_is_demo %}elan{% else %}müxtəlif xidmətlər{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='user' %}<span><strong>{% if home_is_demo %}2,500+{% else %}Birbaşa{% endif %}</strong><small>{% if home_is_demo %}aktiv usta{% else %}usta ilə əlaqə{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='eye' %}<span><strong>{% if home_is_demo %}50,000+{% else %}Rahat seçim{% endif %}</strong><small>{% if home_is_demo %}aylıq baxış{% else %}ətraflı elanlar{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='star' %}<span><strong>{% if home_is_demo %}4.8{% else %}Pulsuz{% endif %}</strong><small>{% if home_is_demo %}orta reytinq{% else %}usta axtarışı{% endif %}</small></span></div></div>
