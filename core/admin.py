@@ -126,9 +126,9 @@ admin.site.register(Association, CustomAssociationAdmin)
 
 @admin.register(ReklamBanner)
 class ReklamBannerAdmin(admin.ModelAdmin):
-    list_display = ['movqe', 'bashliq', 'shekil_baxish', 'animasiya_effekti', 'link', 'aktiv', 'bitis_tarixi', 'yenilendi']
-    list_editable = ['aktiv']
-    list_filter = ['movqe', 'aktiv', 'animasiya_effekti']
+    list_display = ['movqe', 'bashliq', 'shekil_baxish', 'animasiya_effekti', 'aktiv', 'bos_olduqda_gizlet', 'link', 'bitis_tarixi', 'yenilendi']
+    list_editable = ['aktiv', 'bos_olduqda_gizlet']
+    list_filter = ['movqe', 'aktiv', 'bos_olduqda_gizlet', 'animasiya_effekti']
     search_fields = ['bashliq', 'link']
 
     def shekil_baxish(self, obj):

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#007b52">
+<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
 <link rel="icon" type="image/png" sizes="64x64" href="{% static 'img/favicon-64.png' %}">
 <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
@@ -90,7 +91,7 @@ src="https://www.facebook.com/tr?id=952170327291832&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 
 <style>
-:root{--p:#1a47c8;--pd:#1238a8;--pl:#eef2ff;--acc:#f59e0b;--tx:#0f172a;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--white:#fff;--r:12px;}
+:root{--p:#007b52;--pd:#005c40;--pl:#eaf6f1;--acc:#00a96b;--tx:#151a1d;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--white:#fff;--r:12px;}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6}
 a{text-decoration:none;color:inherit}
@@ -198,12 +199,16 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 </div>
 
 <!-- Sol və Sağ Reklam Bannerləri (Yalnız Web/Desktop) -->
+{% if reklam_sol and reklam_sol.shekil or reklam_sol and reklam_sol.video or reklam_sol and reklam_sol.video_url or reklam_sol and reklam_sol.html_kod or reklam_sol and not reklam_sol.bos_olduqda_gizlet %}
 <aside class="side-ad-banner side-ad-banner--left" id="sideAdLeft" aria-label="Sol Reklam">
   {% include 'partials/side_ad_left.html' %}
 </aside>
+{% endif %}
+{% if reklam_sag and reklam_sag.shekil or reklam_sag and reklam_sag.video or reklam_sag and reklam_sag.video_url or reklam_sag and reklam_sag.html_kod or reklam_sag and not reklam_sag.bos_olduqda_gizlet %}
 <aside class="side-ad-banner side-ad-banner--right" id="sideAdRight" aria-label="Sağ Reklam">
   {% include 'partials/side_ad_right.html' %}
 </aside>
+{% endif %}
 
 <main class="page-shell">
 {% block content %}{% endblock %}

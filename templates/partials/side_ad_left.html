@@ -19,7 +19,7 @@
     <div class="side-ad-custom-html">
       {{ reklam_sol.html_kod|safe }}
     </div>
-  {% else %}
+  {% elif reklam_sol and not reklam_sol.bos_olduqda_gizlet %}
     <div class="side-ad-placeholder">
       <div class="side-ad-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

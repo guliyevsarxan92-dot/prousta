@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Prousta">
   <defs>
     <linearGradient id="bg" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1a47c8"/>
-      <stop offset="1" stop-color="#0f2d8f"/>
+      <stop stop-color="#008f60"/>
+      <stop offset="1" stop-color="#005c40"/>
     </linearGradient>
     <linearGradient id="shine" x1="16" y1="2" x2="16" y2="18" gradientUnits="userSpaceOnUse">
       <stop stop-color="#fff" stop-opacity="0.22"/>

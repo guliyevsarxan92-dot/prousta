@@ -40,10 +40,10 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 .top-ad-banner{width:100%;max-width:100vw;background:#ffffff;border-bottom:1px solid var(--border);position:relative;z-index:20;box-sizing:border-box}
 .top-ad-container{width:100%;margin:0;padding:0}
 .top-ad-link{display:block;width:100%;line-height:0;text-decoration:none}
-.top-ad-img{width:100%;height:auto;max-height:180px;object-fit:cover;display:block}
-.top-ad-video{width:100%;height:auto;max-height:180px;object-fit:cover;display:block}
+.top-ad-img{width:100%;height:auto;max-height:400px;object-fit:cover;display:block}
+.top-ad-video{width:100%;height:auto;max-height:400px;object-fit:cover;display:block}
 @media(min-width:1200px){
-  .top-ad-img,.top-ad-video{max-height:220px}
+  .top-ad-img,.top-ad-video{max-height:400px}
 }
 .top-ad-custom-html{width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .top-ad-banner--placeholder{background:linear-gradient(90deg,#f0fdf4 0%,#ffffff 50%,#f0fdf4 100%);border-top:1px dashed #b7cdc4;border-bottom:1px dashed #b7cdc4;padding:12px 24px}

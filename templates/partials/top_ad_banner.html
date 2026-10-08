@@ -1,36 +1,52 @@
-<aside class="top-ad-banner{% if not reklam_ust or not reklam_ust.video and not reklam_ust.video_url and not reklam_ust.shekil and not reklam_ust.html_kod %} top-ad-banner--placeholder{% endif %}{% if reklam_ust and reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri">
+{% if reklam_ust and reklam_ust.video %}
+<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri">
   <div class="top-ad-container">
-    {% if reklam_ust and reklam_ust.video %}
-      <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-        <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
-          <source src="{{ reklam_ust.video.url }}">
-        </video>
-      </a>
-    {% elif reklam_ust and reklam_ust.video_url %}
-      <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-        <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
-          <source src="{{ reklam_ust.video_url }}">
-        </video>
-      </a>
-    {% elif reklam_ust and reklam_ust.shekil %}
-      <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-        <img src="{{ reklam_ust.shekil.url }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img" loading="eager">
-      </a>
-    {% elif reklam_ust and reklam_ust.html_kod %}
-      <div class="top-ad-custom-html">
-        {{ reklam_ust.html_kod|safe }}
-      </div>
-    {% else %}
-      <div class="top-ad-placeholder">
-        <div class="top-ad-placeholder-left">
-          <span class="top-ad-badge-title">ÜST REKLAM BANNERİ</span>
-          <span class="top-ad-badge-size">1920 × 150</span>
-          <span class="top-ad-desc">Saytda tam enli video, animasiya və ya şəkil banner yerləşdirmək üçün</span>
-        </div>
-        <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Ust%20banner)" class="top-ad-btn">
-          Əlaqə saxlayın
-        </a>
-      </div>
-    {% endif %}
+    <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
+        <source src="{{ reklam_ust.video.url }}">
+      </video>
+    </a>
   </div>
 </aside>
+{% elif reklam_ust and reklam_ust.video_url %}
+<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri">
+  <div class="top-ad-container">
+    <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
+        <source src="{{ reklam_ust.video_url }}">
+      </video>
+    </a>
+  </div>
+</aside>
+{% elif reklam_ust and reklam_ust.shekil %}
+<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri">
+  <div class="top-ad-container">
+    <a href="{{ reklam_ust.link|default:'#' }}" {% if reklam_ust.link %}target="_blank" rel="noopener sponsored"{% endif %} class="top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <img src="{{ reklam_ust.shekil.url }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img" loading="eager">
+    </a>
+  </div>
+</aside>
+{% elif reklam_ust and reklam_ust.html_kod %}
+<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri">
+  <div class="top-ad-container">
+    <div class="top-ad-custom-html">
+      {{ reklam_ust.html_kod|safe }}
+    </div>
+  </div>
+</aside>
+{% elif reklam_ust and not reklam_ust.bos_olduqda_gizlet %}
+<aside class="top-ad-banner top-ad-banner--placeholder" id="topAdBanner" aria-label="Üst Reklam Yeri">
+  <div class="top-ad-container">
+    <div class="top-ad-placeholder">
+      <div class="top-ad-placeholder-left">
+        <span class="top-ad-badge-title">ÜST REKLAM BANNERİ</span>
+        <span class="top-ad-badge-size">1920 × 400</span>
+        <span class="top-ad-desc">Saytda tam enli video, animasiya və ya şəkil banner yerləşdirmək üçün</span>
+      </div>
+      <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Ust%20banner)" class="top-ad-btn">
+        Əlaqə saxlayın
+      </a>
+    </div>
+  </div>
+</aside>
+{% endif %}
