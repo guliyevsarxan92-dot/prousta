@@ -22,6 +22,8 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 .side-ad-slot:has(.side-ad-custom-img){border:none;background:transparent}
 .side-ad-link{display:block;width:100%;height:100%;text-decoration:none}
 .side-ad-custom-img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+.side-ad-custom-video{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+.side-ad-slot:has(.side-ad-custom-video){border:none;background:transparent}
 .side-ad-custom-html{width:100%;height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .side-ad-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 10px;gap:10px}
 .side-ad-icon{width:44px;height:44px;border-radius:12px;background:#eaf7f1;color:#007b52;display:flex;align-items:center;justify-content:center}
@@ -39,7 +41,10 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 .top-ad-container{width:100%;margin:0;padding:0}
 .top-ad-link{display:block;width:100%;line-height:0;text-decoration:none}
 .top-ad-img{width:100%;height:auto;max-height:180px;object-fit:cover;display:block}
-@media(min-width:1200px){.top-ad-img{max-height:220px}}
+.top-ad-video{width:100%;height:auto;max-height:180px;object-fit:cover;display:block}
+@media(min-width:1200px){
+  .top-ad-img,.top-ad-video{max-height:220px}
+}
 .top-ad-custom-html{width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .top-ad-banner--placeholder{background:linear-gradient(90deg,#f0fdf4 0%,#ffffff 50%,#f0fdf4 100%);border-top:1px dashed #b7cdc4;border-bottom:1px dashed #b7cdc4;padding:12px 24px}
 .top-ad-placeholder{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -55,3 +60,11 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
   .top-ad-placeholder-left{justify-content:center}
   .top-ad-desc{display:none}
 }
+
+/* Animasiya Effektləri */
+.anim-zoom img,.anim-zoom video{transition:transform .4s ease}
+.anim-zoom:hover img,.anim-zoom:hover video{transform:scale(1.02)}
+.anim-pulse{animation:adPulse 3s ease-in-out infinite}
+@keyframes adPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.01)}}
+.anim-glow{animation:adGlow 3.5s ease-in-out infinite}
+@keyframes adGlow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 4px 16px rgba(0,169,107,.4))}}

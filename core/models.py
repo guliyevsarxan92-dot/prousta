@@ -253,11 +253,21 @@ class ReklamBanner(models.Model):
         ('orta', 'Orta / Horizontal Banner'),
     ]
 
+    ANIMASIYA_CHOICES = [
+        ('none', 'Standart (Statik / Normal)'),
+        ('zoom', 'Zərif Yaxınlaşma (Smooth Zoom on Hover)'),
+        ('glow', 'İşıqlı Parıltı (Glow / Parlaq animasiya)'),
+        ('pulse', 'Nəbzlənmə (Pulse animasiya)'),
+    ]
+
     movqe = models.CharField('Mövqe', max_length=20, choices=MOVQELER, unique=True)
     bashliq = models.CharField('Başlıq / Müştəri adı', max_length=150, blank=True)
     link = models.URLField('Keçid Linki (URL)', blank=True, help_text='Məsələn: https://example.com və ya https://wa.me/99450xxxxxxx')
-    shekil = models.ImageField('Banner Şəkli', upload_to='bannerler/', blank=True, null=True, help_text='Üst banner üçün tövsiyə olunan ölçü: 1920x150 və ya 1200x120. Yan bannerlər üçün: 160x600 və ya 120x600')
-    html_kod = models.TextField('HTML / AdSense Kodu (Şəkil yoxdursa)', blank=True, help_text='Google AdSense və ya xüsusi script kodu')
+    shekil = models.ImageField('Banner Şəkli / GIF', upload_to='bannerler/', blank=True, null=True, help_text='Şəkil və ya GIF animasiya (1920x150, 160x600 və s.)')
+    video = models.FileField('Video Faylı (MP4 / WebM)', upload_to='bannerler/videolar/', blank=True, null=True, help_text='Animasiyalı video banner üçün MP4 və ya WebM faylı (avtomatik və səssiz oxunur)')
+    video_url = models.URLField('Video Linki (Birbaşa MP4 / WebM URL)', blank=True, help_text='Cloudinary və ya digər birbaşa video linki')
+    html_kod = models.TextField('HTML / Animasiya / AdSense Kodu', blank=True, help_text='HTML5 Canvas, CSS animasiya, Lottie, SVG və ya script kodu')
+    animasiya_effekti = models.CharField('Animasiya Effekti', max_length=20, choices=ANIMASIYA_CHOICES, default='zoom')
     aktiv = models.BooleanField('Aktivdir', default=True, db_index=True)
     bitis_tarixi = models.DateTimeField('Bitmə tarixi', null=True, blank=True, help_text='Boş buraxsanız müddətsiz aktiv olar')
     yaradildi = models.DateTimeField(auto_now_add=True)

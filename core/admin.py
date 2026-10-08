@@ -126,16 +126,20 @@ admin.site.register(Association, CustomAssociationAdmin)
 
 @admin.register(ReklamBanner)
 class ReklamBannerAdmin(admin.ModelAdmin):
-    list_display = ['movqe', 'bashliq', 'shekil_baxish', 'link', 'aktiv', 'bitis_tarixi', 'yenilendi']
+    list_display = ['movqe', 'bashliq', 'shekil_baxish', 'animasiya_effekti', 'link', 'aktiv', 'bitis_tarixi', 'yenilendi']
     list_editable = ['aktiv']
-    list_filter = ['movqe', 'aktiv']
+    list_filter = ['movqe', 'aktiv', 'animasiya_effekti']
     search_fields = ['bashliq', 'link']
 
     def shekil_baxish(self, obj):
+        if obj.video:
+            return format_html('<video src="{}" style="height:45px;max-width:80px;border-radius:4px;object-fit:cover;" autoplay muted loop></video>', obj.video.url)
+        if obj.video_url:
+            return format_html('<span style="font-size:11px;color:#0284c7;font-weight:700;">Video URL</span>')
         if obj.shekil:
             return format_html('<img src="{}" style="height:45px;max-width:80px;border-radius:4px;object-fit:cover;"/>', obj.shekil.url)
         if obj.html_kod:
-            return format_html('<span style="font-size:11px;color:#007b52;">HTML Kod</span>')
+            return format_html('<span style="font-size:11px;color:#007b52;font-weight:700;">HTML/Animasiya</span>')
         return '—'
-    shekil_baxish.short_description = 'Görüntü'
+    shekil_baxish.short_description = 'Görüntü / Video'
 

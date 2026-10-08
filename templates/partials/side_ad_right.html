@@ -1,5 +1,17 @@
-<div class="side-ad-slot" id="sideAdRightSlot">
-  {% if reklam_sag and reklam_sag.shekil %}
+<div class="side-ad-slot{% if reklam_sag and reklam_sag.animasiya_effekti != 'none' %} anim-{{ reklam_sag.animasiya_effekti }}{% endif %}" id="sideAdRightSlot">
+  {% if reklam_sag and reklam_sag.video %}
+    <a href="{{ reklam_sag.link|default:'#' }}" {% if reklam_sag.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sag.bashliq }}">
+      <video class="side-ad-custom-video" autoplay muted loop playsinline preload="auto">
+        <source src="{{ reklam_sag.video.url }}">
+      </video>
+    </a>
+  {% elif reklam_sag and reklam_sag.video_url %}
+    <a href="{{ reklam_sag.link|default:'#' }}" {% if reklam_sag.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sag.bashliq }}">
+      <video class="side-ad-custom-video" autoplay muted loop playsinline preload="auto">
+        <source src="{{ reklam_sag.video_url }}">
+      </video>
+    </a>
+  {% elif reklam_sag and reklam_sag.shekil %}
     <a href="{{ reklam_sag.link|default:'#' }}" {% if reklam_sag.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sag.bashliq }}">
       <img src="{{ reklam_sag.shekil.url }}" alt="{{ reklam_sag.bashliq|default:'Reklam' }}" class="side-ad-custom-img">
     </a>
