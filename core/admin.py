@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Kategori, Elan, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem
+from .models import Kategori, Elan, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem, ReklamBanner
 
 @admin.register(Kategori)
 class KategoriAdmin(admin.ModelAdmin):
@@ -122,3 +122,20 @@ class CustomAssociationAdmin(AssociationOption):
 admin.site.register(UserSocialAuth, CustomSocialAuthAdmin)
 admin.site.register(Nonce, CustomNonceAdmin)
 admin.site.register(Association, CustomAssociationAdmin)
+
+
+@admin.register(ReklamBanner)
+class ReklamBannerAdmin(admin.ModelAdmin):
+    list_display = ['movqe', 'bashliq', 'shekil_baxish', 'link', 'aktiv', 'bitis_tarixi', 'yenilendi']
+    list_editable = ['aktiv']
+    list_filter = ['movqe', 'aktiv']
+    search_fields = ['bashliq', 'link']
+
+    def shekil_baxish(self, obj):
+        if obj.shekil:
+            return format_html('<img src="{}" style="height:45px;max-width:80px;border-radius:4px;object-fit:cover;"/>', obj.shekil.url)
+        if obj.html_kod:
+            return format_html('<span style="font-size:11px;color:#007b52;">HTML Kod</span>')
+        return '—'
+    shekil_baxish.short_description = 'Görüntü'
+

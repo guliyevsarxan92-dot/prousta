@@ -243,3 +243,45 @@ class Odenis(models.Model):
 
     class Meta:
         verbose_name_plural = "Ödənişlər"
+
+
+class ReklamBanner(models.Model):
+    MOVQELER = [
+        ('sol', 'Sol Yan Banner (Desktop)'),
+        ('sag', 'Sağ Yan Banner (Desktop)'),
+        ('orta', 'Orta / Horizontal Banner'),
+    ]
+
+    movqe = models.CharField('Mövqe', max_length=20, choices=MOVQELER, unique=True)
+    bashliq = models.CharField('Başlıq / Müştəri adı', max_length=150, blank=True)
+    link = models.URLField('Keçid Linki (URL)', blank=True, help_text='Məsələn: https://example.com və ya https://wa.me/99450xxxxxxx')
+    shekil = models.ImageField('Banner Şəkli', upload_to='bannerler/', blank=True, null=True, help_text='Yan bannerlər üçün tövsiyə olunan ölçü: 160x600 və ya 120x600')
+    html_kod = models.TextField('HTML / AdSense Kodu (Şəkil yoxdursa)', blank=True, help_text='Google AdSense və ya xüsusi script kodu')
+    aktiv = models.BooleanField('Aktivdir', default=True, db_index=True)
+    bitis_tarixi = models.DateTimeField('Bitmə tarixi', null=True, blank=True, help_text='Boş buraxsanız müddətsiz aktiv olar')
+    yaradildi = models.DateTimeField(auto_now_add=True)
+    yenilendi = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Reklam Banneri'
+        verbose_name_plural = 'Reklam Bannerləri'
+
+    def __str__(self):
+        return f"{self.get_movqe_display()} — {self.bashliq or 'Başlıqsız'}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        try:
+            from django.core.cache import cache
+            cache.delete('reklam_bannerleri')
+        except Exception:
+            pass
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        try:
+            from django.core.cache import cache
+            cache.delete('reklam_bannerleri')
+        except Exception:
+            pass
+

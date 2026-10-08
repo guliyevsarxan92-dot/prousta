@@ -1,7 +1,7 @@
 /* Prousta — daxili səhifələr üçün ortaq dizayn sistemi (ana səhifə dizaynına uyğun) */
 
 /* ---------- Layout ---------- */
-.pg{width:calc(100% - 64px);max-width:1120px;margin:0 auto;padding:18px 0 8px}
+.pg{width:calc(100% - 64px);max-width:var(--content-w,1120px);margin:0 auto;padding:18px 0 8px}
 .pg--narrow{max-width:760px}
 .pg--form{max-width:860px}
 .pg-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}

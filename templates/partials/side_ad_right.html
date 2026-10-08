@@ -1,19 +1,29 @@
 <div class="side-ad-slot" id="sideAdRightSlot">
   <button type="button" class="side-ad-close" onclick="document.getElementById('sideAdRight').style.display='none'" aria-label="Reklamı bağla" title="Bağla">×</button>
   <span class="side-ad-badge">REKLAM</span>
-  <div class="side-ad-placeholder">
-    <div class="side-ad-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-        <line x1="8" y1="21" x2="16" y2="21"></line>
-        <line x1="12" y1="17" x2="12" y2="21"></line>
-      </svg>
-    </div>
-    <div class="side-ad-title">Reklam Yeri</div>
-    <div class="side-ad-dim">160 × 600</div>
-    <p class="side-ad-text">Saytda reklam və banner yerləşdirmək üçün</p>
-    <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Sağ%20banner)" class="side-ad-btn">
-      Əlaqə saxlayın
+  {% if reklam_sag and reklam_sag.shekil %}
+    <a href="{{ reklam_sag.link|default:'#' }}" {% if reklam_sag.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sag.bashliq }}">
+      <img src="{{ reklam_sag.shekil.url }}" alt="{{ reklam_sag.bashliq|default:'Reklam' }}" class="side-ad-custom-img">
     </a>
-  </div>
+  {% elif reklam_sag and reklam_sag.html_kod %}
+    <div class="side-ad-custom-html">
+      {{ reklam_sag.html_kod|safe }}
+    </div>
+  {% else %}
+    <div class="side-ad-placeholder">
+      <div class="side-ad-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <div class="side-ad-title">Reklam Yeri</div>
+      <div class="side-ad-dim">160 × 600</div>
+      <p class="side-ad-text">Saytda reklam və banner yerləşdirmək üçün</p>
+      <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Sağ%20banner)" class="side-ad-btn">
+        Əlaqə saxlayın
+      </a>
+    </div>
+  {% endif %}
 </div>
