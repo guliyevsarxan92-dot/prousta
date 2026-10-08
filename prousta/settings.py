@@ -9,15 +9,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-key-only-for-dev')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv(
-    'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,.onrender.com'
-).split(',')
+ALLOWED_HOSTS = [
+    h.strip() for h in os.getenv(
+        'ALLOWED_HOSTS',
+        'localhost,127.0.0.1,testserver,prousta.az,www.prousta.az,.onrender.com'
+    ).split(',') if h.strip()
+]
 
 CSRF_TRUSTED_ORIGINS = [
     o.strip() for o in os.getenv(
         'CSRF_TRUSTED_ORIGINS',
-        'https://*.onrender.com'
+        'https://*.onrender.com,https://prousta.az,https://www.prousta.az'
     ).split(',') if o.strip()
 ]
 
