@@ -1,4 +1,4 @@
+{% load static %}
 <a href="{% url 'index' %}" class="brand{% if variant == 'light' %} brand--light{% endif %}" aria-label="Prousta.az — Ana səhifə">
-  <svg class="brand-mark" width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M4 34V16L20 3l16 13v18h-8V21l-8-7-8 7v13H4Z" fill="currentColor"/><path d="m15 34 5-5 5 5V23l-5-4-5 4v11Z" fill="currentColor"/></svg>
-  <span class="brand-wordmark">PROUSTA.AZ</span>
+  <img src="{% static 'img/logo.png' %}" alt="Prousta.az" class="brand-logo-img" width="168" height="49">
 </a>
