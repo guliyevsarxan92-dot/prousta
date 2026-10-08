@@ -4,21 +4,28 @@ from django.utils import timezone
 from .models import Mesaj, Kategori, ReklamBanner
 
 def oxunmamis_mesaj(request):
-    nav_kateqoriyalar = cache.get('nav_kateqoriyalar')
-    if nav_kateqoriyalar is None:
-        nav_kateqoriyalar = list(Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar'))
-        cache.set('nav_kateqoriyalar', nav_kateqoriyalar, 300)
+    try:
+        nav_kateqoriyalar = cache.get('nav_kateqoriyalar')
+        if nav_kateqoriyalar is None:
+            nav_kateqoriyalar = list(Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar'))
+            cache.set('nav_kateqoriyalar', nav_kateqoriyalar, 300)
+    except Exception:
+        nav_kateqoriyalar = []
 
     # Reklam bannerləri (Tap.az üslubunda sol, sağ və orta)
-    reklamlar = cache.get('reklam_bannerleri')
-    if reklamlar is None:
+    reklamlar = {}
+    try:
+        reklamlar = cache.get('reklam_bannerleri')
+        if reklamlar is None:
+            reklamlar = {}
+            now = timezone.now()
+            for r in ReklamBanner.objects.filter(aktiv=True):
+                if r.bitis_tarixi and r.bitis_tarixi < now:
+                    continue
+                reklamlar[r.movqe] = r
+            cache.set('reklam_bannerleri', reklamlar, 180)
+    except Exception:
         reklamlar = {}
-        now = timezone.now()
-        for r in ReklamBanner.objects.filter(aktiv=True):
-            if r.bitis_tarixi and r.bitis_tarixi < now:
-                continue
-            reklamlar[r.movqe] = r
-        cache.set('reklam_bannerleri', reklamlar, 180)
 
     ctx = {
         'nav_kateqoriyalar': nav_kateqoriyalar,
