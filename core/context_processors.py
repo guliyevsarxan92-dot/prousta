@@ -34,10 +34,14 @@ def oxunmamis_mesaj(request):
         'reklam_sag': reklamlar.get('sag'),
         'reklam_orta': reklamlar.get('orta'),
     }
-    if request.user.is_authenticated:
-        ctx['oxunmamis_mesaj'] = Mesaj.objects.filter(alici=request.user, oxundu=False).count()
+    user = getattr(request, 'user', None)
+    if user and getattr(user, 'is_authenticated', False):
         try:
-            ctx['user_balans'] = request.user.profil.balans
+            ctx['oxunmamis_mesaj'] = Mesaj.objects.filter(alici=user, oxundu=False).count()
+        except Exception:
+            ctx['oxunmamis_mesaj'] = 0
+        try:
+            ctx['user_balans'] = getattr(user.profil, 'balans', 0)
         except Exception:
             ctx['user_balans'] = 0
     else:

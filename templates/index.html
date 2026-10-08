@@ -58,7 +58,7 @@
   </div>
 
   <!-- Aşağı getdikcə / Load more avtomatik yükləmə -->
-  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{{ elanlar.next_page_number|default:'' }}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'index' %}">
+  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{% if elanlar.has_next %}{{ elanlar.next_page_number }}{% endif %}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'index' %}">
    {% if elanlar.has_next %}
     <button type="button" class="btn load-more-btn" id="loadMoreBtn">
      {% include 'partials/ui_icon.html' with name='arrow' %}

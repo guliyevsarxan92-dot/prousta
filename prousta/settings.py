@@ -68,11 +68,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prousta.wsgi.application'
 
+_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
+
+_raw_db_url = os.getenv('DATABASE_URL', '').strip()
+if not _raw_db_url or 'frankfurt-postgres.render.com' in _raw_db_url or 'dpg-' in _raw_db_url or 'prousta-db' in _raw_db_url:
+    _active_db_url = _SUPABASE_DB_URL
+else:
+    _active_db_url = _raw_db_url
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+    'default': dj_database_url.parse(
+        _active_db_url,
         conn_max_age=600,
-        ssl_require=not DEBUG,
+        ssl_require=True if 'supabase' in _active_db_url else (not DEBUG),
     )
 }
 

@@ -46,76 +46,72 @@ def _update_elan_status():
         Elan.objects.filter(vip_status='normal', vip_siralama__gt=0).update(vip_siralama=0)
 
 def index(request):
-    try:
-        _update_elan_status()
+    _update_elan_status()
 
-        # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar
-        elanlar_qs = (
-            Elan.objects.filter(status='aktiv')
-            .select_related('kategori')
-            .prefetch_related('shekillar')
-            .order_by(
-                F('vip_siralama').desc(),
-                F('vip_yenilendi').desc(nulls_last=True),
-                F('yaradildi').desc(),
-            )
+    # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar
+    elanlar_qs = (
+        Elan.objects.filter(status='aktiv')
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc(),
         )
+    )
 
-        paginator = Paginator(elanlar_qs, 20)
-        page_number = request.GET.get('page', 1)
-        elanlar = paginator.get_page(page_number)
+    paginator = Paginator(elanlar_qs, 20)
+    page_number = request.GET.get('page', 1)
+    elanlar = paginator.get_page(page_number)
 
-        # AJAX: sonsuz sürüşdürmə (infinite scroll) və ya "Daha çox göstər" üçün
-        if request.GET.get('ajax') == '1' or request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            from django.template.loader import render_to_string
-            cards_html = render_to_string('partials/elan_cards_list.html', {'elanlar': elanlar, 'user': getattr(request, 'user', None)}, request=request)
-            return JsonResponse({
-                'html': cards_html,
-                'has_next': elanlar.has_next(),
-                'next_page': elanlar.next_page_number() if elanlar.has_next() else None,
-                'current_page': elanlar.number,
-                'num_pages': elanlar.paginator.num_pages,
-                'total_count': elanlar.paginator.count,
-            })
-
-        page_range = list(paginator.get_elided_page_range(elanlar.number, on_each_side=2, on_ends=1))
-
-        # Kateqoriyalar bloku üçün
-        kateqoriyalar = list(
-            Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
-        )
-        from collections import defaultdict
-        kat_elanlar = defaultdict(list)
-        kat_pks = {kat.pk for kat in kateqoriyalar}
-        all_aktiv = (
-            Elan.objects.filter(status='aktiv')
-            .filter(Q(kategori__in=kat_pks) | Q(kategori__ust_kategori__in=kat_pks))
-            .select_related('kategori', 'kategori__ust_kategori')
-            .prefetch_related('shekillar')
-            .order_by(
-                F('vip_siralama').desc(),
-                F('vip_yenilendi').desc(nulls_last=True),
-                F('yaradildi').desc()
-            )
-        )
-        for elan in all_aktiv:
-            ust_pk = (elan.kategori.ust_kategori_id or elan.kategori_id) if elan.kategori else None
-            if ust_pk and len(kat_elanlar[ust_pk]) < 6:
-                kat_elanlar[ust_pk].append(elan)
-        for kat in kateqoriyalar:
-            kat.son_elanlar = kat_elanlar.get(kat.pk, [])
-
-        from .homepage import presentation_context
-        return render(request, 'index.html', {
-            'elanlar': elanlar,
-            'page_range': page_range,
-            'kateqoriyalar': kateqoriyalar,
-            **presentation_context(list(elanlar)[:6]),
+    # AJAX: sonsuz sürüşdürmə (infinite scroll) və ya "Daha çox göstər" üçün
+    if request.GET.get('ajax') == '1' or request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        cards_html = render_to_string('partials/elan_cards_list.html', {'elanlar': elanlar, 'user': getattr(request, 'user', None)}, request=request)
+        return JsonResponse({
+            'html': cards_html,
+            'has_next': elanlar.has_next(),
+            'next_page': elanlar.next_page_number() if elanlar.has_next() else None,
+            'current_page': elanlar.number,
+            'num_pages': elanlar.paginator.num_pages,
+            'total_count': elanlar.paginator.count,
         })
-    except Exception as e:
-        import traceback
-        from django.http import HttpResponse
-        return HttpResponse(f"<pre style='color:red;'>ERROR IN INDEX: {traceback.format_exc()}</pre>", status=200)
+
+    page_range = list(paginator.get_elided_page_range(elanlar.number, on_each_side=2, on_ends=1))
+
+    # Kateqoriyalar bloku üçün
+    kateqoriyalar = list(
+        Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
+    )
+    from collections import defaultdict
+    kat_elanlar = defaultdict(list)
+    kat_pks = {kat.pk for kat in kateqoriyalar}
+    all_aktiv = (
+        Elan.objects.filter(status='aktiv')
+        .filter(Q(kategori__in=kat_pks) | Q(kategori__ust_kategori__in=kat_pks))
+        .select_related('kategori', 'kategori__ust_kategori')
+        .prefetch_related('shekillar')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc()
+        )
+    )
+    for elan in all_aktiv:
+        ust_pk = (elan.kategori.ust_kategori_id or elan.kategori_id) if elan.kategori else None
+        if ust_pk and len(kat_elanlar[ust_pk]) < 6:
+            kat_elanlar[ust_pk].append(elan)
+    for kat in kateqoriyalar:
+        kat.son_elanlar = kat_elanlar.get(kat.pk, [])
+
+    from .homepage import presentation_context
+    return render(request, 'index.html', {
+        'elanlar': elanlar,
+        'page_range': page_range,
+        'kateqoriyalar': kateqoriyalar,
+        'next_page_number': elanlar.next_page_number() if elanlar.has_next() else '',
+        **presentation_context(list(elanlar)[:6]),
+    })
 
 
 def elan_siyahi(request):

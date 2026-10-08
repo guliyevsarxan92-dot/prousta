@@ -1,9 +1,3 @@
-databases:
-  - name: prousta-db
-    plan: free
-    databaseName: prousta
-    user: prousta
-
 services:
   - type: web
     name: prousta
@@ -23,8 +17,6 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://*.onrender.com,https://prousta.az,https://www.prousta.az"
       - key: DATABASE_URL
-        fromDatabase:
-          name: prousta-db
-          property: connectionString
+        sync: false
       - key: CLOUDINARY_URL
         sync: false
