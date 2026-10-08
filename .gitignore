@@ -7,4 +7,5 @@ media/*
 !media/elanlar/
 staticfiles/
 dentcrm/
-
+elanlar_backup_tam.json
+*.json.bak

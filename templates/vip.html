@@ -1,72 +1,103 @@
 {% extends 'base.html' %}
 {% block title %}VIP Elan — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
+
 {% block style %}
 <style>
-.page-wrap{max-width:580px;margin:40px auto;padding:0 20px}
-.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:8px}
-.page-wrap p{color:var(--muted);font-size:14px;margin-bottom:24px}
-.balans-box{background:linear-gradient(135deg,#1a47c8,#1238a8);color:#fff;border-radius:var(--r);padding:16px 20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
-.balans-box span{font-size:13px;opacity:.8}
-.balans-box strong{font-size:24px;font-weight:800}
-.balans-box a{background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600}
-.vip-kartlar{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-.vip-kart{background:var(--white);border:2px solid var(--border);border-radius:var(--r);padding:24px;text-align:center;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
-.vip-kart input{display:none}
-.vip-kart:has(input:checked){border-color:var(--p);background:var(--pl);transform:translateY(-4px);box-shadow:0 8px 24px rgba(26,71,200,.15)}
-.vip-kart.super:has(input:checked){border-color:#7c3aed;background:#f5f3ff;box-shadow:0 8px 24px rgba(124,58,237,.15)}
-.vip-icon{width:48px;height:48px;border-radius:12px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
-.vip-icon.gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
-.vip-icon.purple{background:linear-gradient(135deg,#7c3aed,#4f46e5)}
-.vip-icon svg{stroke:#fff}
-.vip-kart h3{font-size:17px;font-weight:700;margin-bottom:6px}
-.vip-kart .qiymet{font-size:30px;font-weight:800;color:var(--p);margin-bottom:4px}
-.vip-kart.super .qiymet{color:#7c3aed}
-.vip-kart .gun{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600}
-.vip-kart .xususiyyet{font-size:12px;color:var(--muted)}
-.ribbon{position:absolute;top:12px;right:-8px;background:#7c3aed;color:#fff;font-size:10px;font-weight:700;padding:3px 20px}
-.submit-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer;transition:.2s}
-.submit-btn:hover{background:var(--pd)}
-@media(max-width:480px){.vip-kartlar{grid-template-columns:1fr}}
+.vip-choice{cursor:pointer;position:relative}
+.vip-choice input{position:absolute;opacity:0;pointer-events:none}
+.vip-choice.is-selected{border-color:#007b52;box-shadow:0 8px 24px rgba(0,123,82,.18);background:#f6fbf9}
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <h2>VIP Elan Et</h2>
-  <p>Elanınızı öndə göstərin, daha çox müştəri tapın!</p>
-  <div class="balans-box">
-    <div>
-      <span>Mövcud balans</span>
-      <div><strong>{{ profil.balans }} ₼</strong></div>
-    </div>
-    <a href="/odenis/">+ Artır</a>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">VIP Xidməti</span>
+  </nav>
+
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='crown' %} Premium xidmət</span>
+    <h1>Elanınızı <span>VIP edin</span></h1>
+    <p>Elanınızı axtarışlarda və ana səhifədə ön sıralara çıxararaq 5 dəfəyə qədər daha çox zəng və sifariş qazanın.</p>
   </div>
+
+  <div class="panel panel--soft" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div class="person">
+      <div class="avatar" style="background:#007b52;color:#fff">
+        {% include 'partials/ui_icon.html' with name='wallet' %}
+      </div>
+      <div>
+        <small>Mövcud balansınız</small>
+        <div style="font-size:22px;font-weight:800;color:#00734b">{{ profil.balans }} ₼</div>
+      </div>
+    </div>
+    <a href="{% url 'odenis' %}" class="btn btn-primary btn-sm">
+      {% include 'partials/ui_icon.html' with name='plus' %}
+      Balansı artır
+    </a>
+  </div>
+
   <form method="post">
     {% csrf_token %}
-    <div class="vip-kartlar">
-      <label class="vip-kart">
-        <input type="radio" name="nov" value="vip" checked>
-        <div class="vip-icon gold">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <div class="plan-grid" style="margin-bottom:20px">
+      <!-- VIP -->
+      <label class="plan vip-choice is-selected" id="plan-vip">
+        <input type="radio" name="nov" value="vip" checked onchange="updateChoice()">
+        <span class="badge badge--gold">
+          {% include 'partials/ui_icon.html' with name='star' %} VIP
+        </span>
+        <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
+          {% include 'partials/ui_icon.html' with name='star' %}
         </div>
-        <h3>VIP</h3>
-        <div class="qiymet">3 ₼</div>
-        <div class="gun">10 gün</div>
-        <div class="xususiyyet">Elanlar siyahısında öndə görünür</div>
+        <h3>VIP Elan</h3>
+        <div class="plan-price">3 ₼ <small>/ 10 gün</small></div>
+        <ul>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Elanlar siyahısında öndə görünür</li>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Xüsusi qızılı nişan ilə fərqlənir</li>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Daha çox baxış və zəng</li>
+        </ul>
       </label>
-      <label class="vip-kart super">
-        <input type="radio" name="nov" value="super_vip">
-        <div class="ribbon">ƏN YAXŞI</div>
-        <div class="vip-icon purple">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+
+      <!-- Super VIP -->
+      <label class="plan vip-choice is-featured" id="plan-super_vip">
+        <input type="radio" name="nov" value="super_vip" onchange="updateChoice()">
+        <span class="badge" style="background:linear-gradient(135deg,#008f60,#00714c);color:#fff">
+          {% include 'partials/ui_icon.html' with name='crown' %} Ən Yaxşı Seçim
+        </span>
+        <div style="width:40px;height:40px;border-radius:10px;background:#eaf7f1;color:#007b52;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
+          {% include 'partials/ui_icon.html' with name='crown' %}
         </div>
-        <h3>Super VIP</h3>
-        <div class="qiymet">8 ₼</div>
-        <div class="gun">30 gün</div>
-        <div class="xususiyyet">Ana səhifədə + ən üstdə görünür</div>
+        <h3>Super VIP Elan</h3>
+        <div class="plan-price">8 ₼ <small>/ 30 gün</small></div>
+        <ul>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Ana səhifədə birbaşa görünür</li>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Ən üst sırada yerləşir</li>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} 30 gün fasiləsiz aktivlik</li>
+          <li>{% include 'partials/ui_icon.html' with name='check' %} Maksimum müştəri axını</li>
+        </ul>
       </label>
     </div>
-    <button class="submit-btn" type="submit">VIP Et — Balansdan Çıxıl</button>
+
+    <button class="btn btn-primary btn-block btn-lg" type="submit">
+      {% include 'partials/ui_icon.html' with name='bolt' %}
+      VIP Et — Balansdan ödə
+    </button>
   </form>
 </div>
+
+<script>
+function updateChoice() {
+  document.querySelectorAll('.vip-choice').forEach(function(card){
+    var inp = card.querySelector('input');
+    if (inp && inp.checked) {
+      card.classList.add('is-selected');
+    } else {
+      card.classList.remove('is-selected');
+    }
+  });
+}
+</script>
 {% endblock %}

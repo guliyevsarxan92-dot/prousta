@@ -1,160 +1,152 @@
 {% extends 'base.html' %}
 {% block title %}Elan Yerləşdir — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:680px;margin:40px auto;padding:0 20px}
-.page-wrap h2{font-size:24px;font-weight:700;margin-bottom:24px}
-.form-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px;margin-bottom:20px}
-.field{margin-bottom:18px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);outline:none}
-.field textarea{height:140px;resize:vertical}
-.submit-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer}
-.submit-btn:hover{background:var(--pd)}
-.upload-area{border:2px dashed var(--border);border-radius:var(--r);padding:30px;text-align:center;cursor:pointer;transition:.2s}
-.upload-area:hover{border-color:var(--p);background:var(--pl)}
-.phone-wrap{display:flex;gap:8px}
-.phone-prefix{padding:11px 14px;background:#f1f5f9;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--muted);white-space:nowrap}
-.qaydalar{background:#f8fafc;border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-bottom:20px}
-.qaydalar h3{font-size:16px;font-weight:700;margin-bottom:16px}
-.qayda{display:flex;gap:10px;margin-bottom:12px;font-size:13px;color:var(--muted);line-height:1.6}
-.qayda-icon{width:20px;height:20px;border-radius:50%;background:var(--pl);color:var(--p);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
-.reklam-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--r);padding:24px;margin-bottom:20px;border:1px solid #fcd34d}
-.reklam-box h3{font-size:16px;font-weight:700;color:#92400e;margin-bottom:12px}
-.reklam-paket{background:#fff;border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.paket-ad{font-weight:700;font-size:14px}
-.paket-acaqlama{font-size:12px;color:var(--muted);margin-top:2px}
-.paket-qiymet{font-size:18px;font-weight:800;color:#d97706;white-space:nowrap}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <h2>Elan Yerləşdir</h2>
-  <div class="form-box">
+<div class="pg pg--form">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Yeni elan</span>
+  </nav>
+
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='plus' %} Pulsuz yerləşdirmə</span>
+    <h1>Xidmət elanı <span>yerləşdir</span></h1>
+    <p>Minlərlə müştəri ustanı burada axtarır. Xidmətiniz haqqında məlumatları doldurun və müştəri qazanın.</p>
+  </div>
+
+  <div class="panel">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      
       <div class="field">
-        <label>Xidmətin adı</label>
-        <input name="bashliq" value="{{ form_data.bashliq|default:'' }}" placeholder="Məs: Elektrik ustası, Santexnik, Kondisioner təmiri..." required>
+        <label for="id_bashliq">Xidmətin adı <span class="req">*</span></label>
+        <input id="id_bashliq" name="bashliq" value="{{ form_data.bashliq|default:'' }}" placeholder="Məsələn: Elektrik ustası, Santexnik, Kombi təmiri..." required>
       </div>
-      <div class="field">
-        <label>Kateqoriya</label>
-        <select name="kategori" required>
-          <option value="">Seçin...</option>
-          {% for kat in kateqoriyalar %}
-            <optgroup label="{{ kat.ad }}">
-              {% for alt in kat.alt_kateqoriyalar.all %}
-                <option value="{{ alt.pk }}">{{ alt.ad }}</option>
-              {% endfor %}
-            </optgroup>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="field">
-        <label>Qiymət (₼)</label>
-        <input name="qiymet" type="number" value="{{ form_data.qiymet|default:'' }}" placeholder="Boş buraxsanız 'Razılaşma ilə' yazılacaq">
-      </div>
-      <div class="field">
-        <label>Mobil nömrə</label>
-        <div class="phone-wrap">
-          <span class="phone-prefix">+994</span>
-          <input name="telefon" type="tel" value="{{ form_data.telefon|default:'' }}" placeholder="51 588 88 84" maxlength="9" required>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_kategori">Kateqoriya <span class="req">*</span></label>
+          <select id="id_kategori" name="kategori" required>
+            <option value="">Seçin...</option>
+            {% for kat in kateqoriyalar %}
+              <optgroup label="{{ kat.ad }}">
+                {% for alt in kat.alt_kateqoriyalar.all %}
+                  <option value="{{ alt.pk }}">{{ alt.ad }}</option>
+                {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="id_qiymet">Qiymət (₼)</label>
+          <input id="id_qiymet" name="qiymet" type="number" step="any" value="{{ form_data.qiymet|default:'' }}" placeholder="Boş buraxsanız 'Razılaşma ilə' qeyd olunacaq">
         </div>
       </div>
-      <div class="field">
-        <label>Bölgə</label>
-        <select name="sheher" required>
-          <option value="">Seçin...</option>
-          <optgroup label="Bakı">
-            <option>Bakı</option>
-            <option>Bakı — Binəqədi</option>
-            <option>Bakı — Xəzər</option>
-            <option>Bakı — Xətai</option>
-            <option>Bakı — Nərimanov</option>
-            <option>Bakı — Nəsimi</option>
-            <option>Bakı — Nizami</option>
-            <option>Bakı — Sabail</option>
-            <option>Bakı — Sabunçu</option>
-            <option>Bakı — Suraxanı</option>
-            <option>Bakı — Abşeron</option>
-          </optgroup>
-          <optgroup label="Digər şəhər və rayonlar">
-            <option>Abşeron</option><option>Xırdalan</option>
-            <option>Sumqayıt</option><option>Gəncə</option>
-            <option>Lənkəran</option><option>Mingəçevir</option>
-            <option>Naxçıvan</option><option>Şirvan</option>
-            <option>Ağcabədi</option><option>Ağdam</option>
-            <option>Ağdaş</option><option>Ağstafa</option>
-            <option>Astara</option><option>Balakən</option>
-            <option>Bərdə</option><option>Beyləqan</option>
-            <option>Biləsuvar</option><option>Cəlilabad</option>
-            <option>Daşkəsən</option><option>Füzuli</option>
-            <option>Gədəbəy</option><option>Goranboy</option>
-            <option>Göyçay</option><option>Hacıqabul</option>
-            <option>İmişli</option><option>İsmayıllı</option>
-            <option>Kürdəmir</option><option>Lerik</option>
-            <option>Masallı</option><option>Neftçala</option>
-            <option>Oğuz</option><option>Qax</option>
-            <option>Qazax</option><option>Qəbələ</option>
-            <option>Quba</option><option>Qusar</option>
-            <option>Saatlı</option><option>Sabirabad</option>
-            <option>Salyan</option><option>Şamaxı</option>
-            <option>Şəki</option><option>Şəmkir</option>
-            <option>Tovuz</option><option>Ucar</option>
-            <option>Yardımlı</option><option>Zaqatala</option>
-            <option>Zərdab</option>
-          </optgroup>
-        </select>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_telefon">Mobil nömrə (WhatsApp) <span class="req">*</span></label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="padding:10px 14px;background:#f6fbf9;border:1px solid #d7e2de;border-radius:8px;font-size:13px;font-weight:700;color:#007b52">+994</span>
+            <input id="id_telefon" name="telefon" type="tel" value="{{ form_data.telefon|default:'' }}" placeholder="51 588 88 84" maxlength="9" required>
+          </div>
+          <div class="field-hint">Məs: 501234567 (prefiks olmadan)</div>
+        </div>
+
+        <div class="field">
+          <label for="id_sheher">Bölgə / Şəhər <span class="req">*</span></label>
+          <select id="id_sheher" name="sheher" required>
+            <option value="">Seçin...</option>
+            <optgroup label="Bakı">
+              <option>Bakı</option>
+              <option>Bakı — Binəqədi</option>
+              <option>Bakı — Xəzər</option>
+              <option>Bakı — Xətai</option>
+              <option>Bakı — Nərimanov</option>
+              <option>Bakı — Nəsimi</option>
+              <option>Bakı — Nizami</option>
+              <option>Bakı — Sabail</option>
+              <option>Bakı — Sabunçu</option>
+              <option>Bakı — Suraxanı</option>
+              <option>Bakı — Abşeron</option>
+            </optgroup>
+            <optgroup label="Digər şəhər və rayonlar">
+              <option>Abşeron</option><option>Xırdalan</option>
+              <option>Sumqayıt</option><option>Gəncə</option>
+              <option>Lənkəran</option><option>Mingəçevir</option>
+              <option>Naxçıvan</option><option>Şirvan</option>
+              <option>Ağcabədi</option><option>Ağdam</option>
+              <option>Ağdaş</option><option>Ağstafa</option>
+              <option>Astara</option><option>Balakən</option>
+              <option>Bərdə</option><option>Beyləqan</option>
+              <option>Biləsuvar</option><option>Cəlilabad</option>
+              <option>Daşkəsən</option><option>Füzuli</option>
+              <option>Gədəbəy</option><option>Goranboy</option>
+              <option>Göyçay</option><option>Hacıqabul</option>
+              <option>İmişli</option><option>İsmayıllı</option>
+              <option>Kürdəmir</option><option>Lerik</option>
+              <option>Masallı</option><option>Neftçala</option>
+              <option>Oğuz</option><option>Qax</option>
+              <option>Qazax</option><option>Qəbələ</option>
+              <option>Quba</option><option>Qusar</option>
+              <option>Saatlı</option><option>Sabirabad</option>
+              <option>Salyan</option><option>Şamaxı</option>
+              <option>Şəki</option><option>Şəmkir</option>
+              <option>Tovuz</option><option>Ucar</option>
+              <option>Yardımlı</option><option>Zaqatala</option>
+              <option>Zərdab</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
+
       <div class="field">
-        <label>Açıqlama</label>
-        <textarea name="acaqlama" placeholder="Xidmətiniz haqqında ətraflı məlumat yazın..." required>{{ form_data.acaqlama|default:'' }}</textarea>
+        <label for="id_acaqlama">Xidmət haqqında ətraflı məlumat <span class="req">*</span></label>
+        <textarea id="id_acaqlama" name="acaqlama" placeholder="Gördüyünüz işlər, təcrübəniz, zəmanət və digər şərtləri qeyd edin..." required>{{ form_data.acaqlama|default:'' }}</textarea>
       </div>
+
       <div class="field">
-        <label>Şəkillər</label>
-        <div class="upload-area" onclick="document.getElementById('shekilInput').click()">
-          <div style="font-size:32px">📷</div>
-          <p style="color:var(--muted);font-size:14px;margin-top:8px">Şəkil seçmək üçün klikləyin</p>
-          <p style="color:var(--muted);font-size:12px">Maksimum 5 şəkil</p>
+        <label>İşinizin şəkilləri</label>
+        <div style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:.2s" onclick="document.getElementById('shekilInput').click()">
+          <div style="width:48px;height:48px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px">
+            {% include 'partials/ui_icon.html' with name='camera' %}
+          </div>
+          <p style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">Şəkilləri seçmək üçün klikləyin</p>
+          <small style="color:var(--muted)">Maksimum 5 şəkil (JPG, PNG)</small>
         </div>
         <input type="file" id="shekilInput" name="shekillar" multiple accept="image/*" style="display:none" onchange="showFiles(this)">
-        <div id="fileNames" style="margin-top:8px;font-size:13px;color:var(--muted)"></div>
+        <div id="fileNames" style="margin-top:8px;font-size:12px;color:#007b52;font-weight:600"></div>
       </div>
-      <button class="submit-btn" type="submit">Elanı Yerləşdir</button>
+
+      <div class="form-actions">
+        <button class="btn btn-primary btn-lg" type="submit" style="min-width:200px">
+          {% include 'partials/ui_icon.html' with name='check' %}
+          Elanı Yerləşdir
+        </button>
+      </div>
     </form>
   </div>
 
-  <div class="qaydalar">
-    <h3>📋 Elan Vermə Qaydaları</h3>
-    <div class="qayda"><div class="qayda-icon">1</div><span>Elanınız moderasiya yoxlanmasından keçdikdən sonra aktiv ediləcək (24 saat ərzində).</span></div>
-    <div class="qayda"><div class="qayda-icon">2</div><span>Elan 30 gün aktiv qalır. Müddət bitdikdən sonra profil səhifənizdən yeniləyə bilərsiniz.</span></div>
-    <div class="qayda"><div class="qayda-icon">3</div><span>Elanda real məlumat yerləşdirin. Yalan məlumat olan elanlar silinəcək.</span></div>
-    <div class="qayda"><div class="qayda-icon">4</div><span>Əlaqə nömrəsi mütləq işlək olmalıdır.</span></div>
-  </div>
-
-  <div class="reklam-box">
-    <h3>⭐ Ödənişli Reklam Paketləri</h3>
-    <div class="reklam-paket">
-      <div>
-        <div class="paket-ad">⭐ VIP Elan</div>
-        <div class="paket-acaqlama">10 gün elanlar siyahısında öndə görünür</div>
-      </div>
-      <div class="paket-qiymet">3 ₼</div>
-    </div>
-    <div class="reklam-paket">
-      <div>
-        <div class="paket-ad">🔥 Super VIP Elan</div>
-        <div class="paket-acaqlama">30 gün ana səhifədə + ən üstdə görünür</div>
-      </div>
-      <div class="paket-qiymet">8 ₼</div>
-    </div>
+  <div class="panel panel--soft" style="margin-top:18px">
+    <h3 class="panel-title">
+      {% include 'partials/ui_icon.html' with name='info' %}
+      Elan vermə qaydaları
+    </h3>
+    <ul class="meta-list" style="line-height:1.6">
+      <li>{% include 'partials/ui_icon.html' with name='check' %} Elanınız moderasiya yoxlanmasından sonra (24 saat ərzində) aktivləşəcək.</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} Elan 30 gün aktiv qalır. Müddət bitdikdə profilinizdən yeniləyə bilərsiniz.</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} Yalnız real xidmət məlumatları daxil edilməlidir.</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} Əlaqə nömrəniz mütləq işlək və dəqiq olmalıdır.</li>
+    </ul>
   </div>
 </div>
+
 <script>
 function showFiles(input){
-  document.getElementById('fileNames').textContent = Array.from(input.files).map(f=>f.name).join(', ');
+  var names = Array.from(input.files).map(function(f){ return f.name; });
+  document.getElementById('fileNames').textContent = names.length ? 'Seçildi: ' + names.join(', ') : '';
 }
 </script>
 {% endblock %}

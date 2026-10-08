@@ -1,68 +1,70 @@
 {% extends 'base.html' %}
 {% block title %}Profil Şəkli — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
+
 {% block style %}
 <style>
-.page-wrap{max-width:480px;margin:40px auto;padding:0 20px;text-align:center}
-.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
-.upload-area{border:2px dashed var(--border);border-radius:var(--r);padding:40px;cursor:pointer;transition:.2s;margin-bottom:20px}
-.upload-area:hover{border-color:var(--p);background:var(--pl)}
-.upload-area p{color:var(--muted);font-size:14px;margin-top:8px}
-.crop-wrap{display:none;margin-bottom:20px}
-.crop-container{position:relative;width:300px;height:300px;margin:0 auto;overflow:hidden;border-radius:50%;border:3px solid var(--p);background:#000;cursor:move}
+.crop-container{position:relative;width:280px;height:280px;margin:0 auto;overflow:hidden;border-radius:50%;border:3px solid #007b52;background:#000;cursor:move;box-shadow:0 8px 24px rgba(0,123,82,.2)}
 .crop-container img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none}
-.zoom-wrap{display:flex;align-items:center;gap:12px;margin:16px auto;max-width:300px}
-.zoom-wrap label{font-size:13px;color:var(--muted);white-space:nowrap}
-.zoom-wrap input{flex:1}
-.btn-row{display:flex;gap:12px;max-width:300px;margin:0 auto}
-.btn-save{flex:1;padding:12px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:700;border:none;cursor:pointer;font-size:15px}
-.btn-cancel{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;cursor:pointer;background:#fff;font-size:15px}
-.preview-wrap{display:none;margin-bottom:20px}
-.preview-img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--p);margin:0 auto 16px;display:block}
-.btn-confirm{width:100%;max-width:300px;padding:13px;background:#166534;color:#fff;border-radius:var(--r);font-weight:700;border:none;cursor:pointer;font-size:15px;margin-bottom:10px}
-.btn-retry{width:100%;max-width:300px;padding:13px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;cursor:pointer;background:#fff;font-size:15px}
+.preview-img{width:130px;height:130px;border-radius:50%;object-fit:cover;border:3px solid #007b52;margin:0 auto 16px;display:block;box-shadow:0 8px 24px rgba(0,123,82,.2)}
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <a href="/profil/duzelis/" style="font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:20px">← Geri</a>
-  <h2>Profil Şəklini Dəyiş</h2>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Profil şəkli</span>
+  </nav>
 
-  <!-- UPLOAD -->
-  <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-    <div style="font-size:48px">📷</div>
-    <p>Şəkil seçmək üçün klikləyin</p>
-    <p style="font-size:12px">JPG, PNG — maksimum 5MB</p>
-  </div>
-  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadImage(this)">
+  <div class="panel" style="text-align:center;padding:32px 24px">
+    <h1 style="font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px">Profil Şəklini Yeniləyin</h1>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Şəkilinizi yükləyin və istədiyiniz formaya uyğunlaşdırın.</p>
 
-  <!-- CROP -->
-  <div class="crop-wrap" id="cropWrap">
-    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Şəkli sürüşdür və ölçüsünü tənzimlə</p>
-    <div class="crop-container" id="cropContainer">
-      <img id="cropImg" draggable="false">
+    <!-- 1. Yükləmə Sahəsi -->
+    <div id="uploadArea" style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:12px;padding:40px 20px;cursor:pointer;transition:.2s;max-width:380px;margin:0 auto" onclick="document.getElementById('fileInput').click()">
+      <div style="width:54px;height:54px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px">
+        {% include 'partials/ui_icon.html' with name='camera' %}
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px">Şəkil seçmək üçün klikləyin</div>
+      <small style="color:var(--muted)">JPG, PNG formatları (maks. 5MB)</small>
     </div>
-    <div class="zoom-wrap">
-      <label>Kiçik</label>
-      <input type="range" id="zoomSlider" min="0.5" max="3" step="0.01" value="1" oninput="applyZoom(this.value)">
-      <label>Böyük</label>
-    </div>
-    <div class="btn-row">
-      <button class="btn-cancel" onclick="resetAll()">Ləğv et</button>
-      <button class="btn-save" onclick="cropImage()">Kəs və Bax</button>
-    </div>
-  </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadImage(this)">
 
-  <!-- PREVİEW -->
-  <div class="preview-wrap" id="previewWrap">
-    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Belə görünəcək:</p>
-    <img id="previewImg" class="preview-img">
-    <form method="post" action="/profil/foto/" enctype="multipart/form-data" id="uploadForm">
-      {% csrf_token %}
-      <input type="file" id="finalInput" name="avatar" style="display:none">
-      <button class="btn-confirm" type="button" onclick="submitForm()">✅ Yadda Saxla</button>
-      <button class="btn-retry" onclick="resetAll()">Yenidən seç</button>
-    </form>
+    <!-- 2. Kəsim Sahəsi -->
+    <div id="cropWrap" style="display:none;margin-top:10px">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Şəkli dairənin içərisində sürüşdürün və tənzimləyin</p>
+      <div class="crop-container" id="cropContainer">
+        <img id="cropImg" draggable="false">
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin:18px auto;max-width:280px">
+        <span style="font-size:12px;color:var(--muted)">Kiçilt</span>
+        <input type="range" id="zoomSlider" min="0.5" max="3" step="0.01" value="1" oninput="applyZoom(this.value)" style="flex:1;accent-color:#007b52">
+        <span style="font-size:12px;color:var(--muted)">Böyüt</span>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;max-width:280px;margin:0 auto">
+        <button type="button" class="btn btn-outline" style="flex:1" onclick="resetAll()">Ləğv et</button>
+        <button type="button" class="btn btn-primary" style="flex:1" onclick="cropImage()">Kəs və Bax</button>
+      </div>
+    </div>
+
+    <!-- 3. İlkin Baxış və Təsdiq -->
+    <div id="previewWrap" style="display:none;margin-top:10px">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Profilinizdə belə görünəcək:</p>
+      <img id="previewImg" class="preview-img">
+      <form method="post" action="{% url 'profil_foto' %}" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        <input type="file" id="finalInput" name="avatar" style="display:none">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:280px;margin:0 auto">
+          <button class="btn btn-primary btn-block btn-lg" type="button" onclick="submitForm()">
+            {% include 'partials/ui_icon.html' with name='check' %}
+            Təsdiqlə və Saxla
+          </button>
+          <button class="btn btn-outline btn-block" type="button" onclick="resetAll()">Yenidən seç</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -83,12 +85,12 @@ function loadImage(input) {
     img.onload = () => {
       naturalW = img.naturalWidth;
       naturalH = img.naturalHeight;
-      const minScale = 300 / Math.min(naturalW, naturalH);
+      const minScale = 280 / Math.min(naturalW, naturalH);
       currentScale = minScale;
       document.getElementById('zoomSlider').min = minScale;
       document.getElementById('zoomSlider').value = minScale;
-      posX = (300 - naturalW * currentScale) / 2;
-      posY = (300 - naturalH * currentScale) / 2;
+      posX = (280 - naturalW * currentScale) / 2;
+      posY = (280 - naturalH * currentScale) / 2;
       updatePos();
       document.getElementById('uploadArea').style.display = 'none';
       document.getElementById('cropWrap').style.display = 'block';
@@ -112,7 +114,6 @@ function applyZoom(val) {
   updatePos();
 }
 
-// Mouse drag
 container.addEventListener('mousedown', e => {
   isDragging = true;
   startX = e.clientX - posX;
@@ -127,7 +128,6 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseup', () => isDragging = false);
 
-// Touch drag
 container.addEventListener('touchstart', e => {
   isDragging = true;
   startX = e.touches[0].clientX - posX;
@@ -149,7 +149,7 @@ function cropImage() {
   ctx.beginPath();
   ctx.arc(150, 150, 150, 0, Math.PI * 2);
   ctx.clip();
-  ctx.drawImage(img, posX, posY, naturalW * currentScale, naturalH * currentScale);
+  ctx.drawImage(img, posX * (300/280), posY * (300/280), (naturalW * currentScale) * (300/280), (naturalH * currentScale) * (300/280));
   canvas.toBlob(blob => {
     croppedBlob = blob;
     const url = URL.createObjectURL(blob);

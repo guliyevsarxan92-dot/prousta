@@ -1,0 +1,16 @@
+<nav class="site-nav" aria-label="Əsas naviqasiya">
+ <div class="nav-inner">
+  {% include 'partials/brand_logo.html' %}
+  <div class="main-links">
+   <details class="nav-dropdown"><summary>Kateqoriyalar {% include 'partials/ui_icon.html' with name='down' %}</summary><div class="nav-dropdown-panel"><a href="/xidmet/elektrik/">Elektrik</a><a href="/xidmet/santexnik/">Santexnika</a><a href="/xidmet/kombi-ustasi/">Kombi ustası</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner</a><a href="/xidmet/mebel-interyer/">Mebel ustası</a><a href="{% url 'elan_siyahi' %}">Bütün kateqoriyalar →</a></div></details>
+   <a href="{% url 'elan_siyahi' %}">Ustalar {% include 'partials/ui_icon.html' with name='down' %}</a>
+   <a href="{% url 'index' %}#nece-isleyir">Necə işləyir?</a>
+   <a href="{% url 'problemler_siyahi' %}">Bloq</a>
+  </div>
+  <div class="nav-actions">
+   {% if user.is_authenticated %}<a href="{% url 'mesajlar' %}" class="nav-messages" aria-label="Mesajlar">{% include 'partials/ui_icon.html' with name='chat' %}{% if oxunmamis_mesaj %}<span>{{ oxunmamis_mesaj }}</span>{% endif %}</a><a href="{% url 'profil' %}" class="btn btn-outline">Profilim</a>{% else %}<a href="{% url 'giris' %}" class="btn btn-outline">Daxil ol</a>{% endif %}
+   <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Elan yerləşdir</a>
+  </div>
+  <button class="hamburger" onclick="toggleMenu(this)" id="hamburger" type="button" aria-label="Menyunu aç" aria-controls="mobilMenu" aria-expanded="false"><span></span><span></span><span></span></button>
+ </div>
+</nav>

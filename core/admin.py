@@ -11,11 +11,11 @@ class KategoriAdmin(admin.ModelAdmin):
 
 @admin.register(Elan)
 class ElanAdmin(admin.ModelAdmin):
-    list_display = ['nomre_link', 'istifadeci', 'kategori', 'status', 'vip_status']
+    list_display = ['nomre_link', 'istifadeci', 'kategori', 'status', 'vip_status', 'vip_bitis']
     list_filter = ['status', 'vip_status', 'kategori']
     list_editable = ['status', 'vip_status']
-    readonly_fields = ['nomre', 'yaradildi', 'baxish_sayi']
-    ordering = ['-yaradildi']
+    readonly_fields = ['nomre', 'yaradildi', 'baxish_sayi', 'vip_siralama', 'vip_yenilendi']
+    ordering = ['-vip_siralama', '-yaradildi']
     list_per_page = 20
 
     def nomre_link(self, obj):

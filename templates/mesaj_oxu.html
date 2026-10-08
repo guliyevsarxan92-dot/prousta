@@ -1,37 +1,64 @@
 {% extends 'base.html' %}
 {% block title %}Mesaj — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:600px;margin:40px auto;padding:0 20px}
-.mesaj-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px}
-.mesaj-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.avatar{width:46px;height:46px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:18px}
-.mesaj-ad{font-weight:700;font-size:16px}
-.mesaj-tarix{font-size:13px;color:var(--muted)}
-.elan-link{background:var(--pl);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--p);font-weight:600;margin-bottom:16px;display:block}
-.mesaj-metn{font-size:15px;line-height:1.8;color:var(--tx)}
-.cavab-btn{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:10px 20px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600;font-size:14px}
-.geri{font-size:14px;color:var(--muted);margin-bottom:16px;display:block}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <a href="/mesajlar/" class="geri">← Mesajlara qayıt</a>
-  <div class="mesaj-box">
-    <div class="mesaj-header">
-      <div class="avatar">{% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad|first|upper }}{% elif mesaj.gonderici.first_name %}{{ mesaj.gonderici.first_name|first|upper }}{% else %}U{% endif %}</div>
-      <div>
-        <div class="mesaj-ad">{% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad }} {{ mesaj.gonderici.profil.soyad }}{% elif mesaj.gonderici.first_name %}{{ mesaj.gonderici.first_name }} {{ mesaj.gonderici.last_name }}{% else %}Usta{% endif %}</div>
-        <div class="mesaj-tarix">{{ mesaj.yaradildi|date:"d.m.Y H:i" }}</div>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'mesajlar' %}">Mesajlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Yazışma</span>
+  </nav>
+
+  <div class="panel">
+    <!-- Mesaj Başlığı və Göndərən -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap">
+      <div class="person">
+        <div class="avatar">
+          {% if mesaj.gonderici.profil.avatar %}
+            <img src="{{ mesaj.gonderici.profil.avatar.url }}" alt="{{ mesaj.gonderici.username }}" loading="lazy">
+          {% else %}
+            {% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad|first|upper }}{% elif mesaj.gonderici.first_name %}{{ mesaj.gonderici.first_name|first|upper }}{% else %}U{% endif %}
+          {% endif %}
+        </div>
+        <div>
+          <h1 style="font-size:16px;font-weight:700;margin:0 0 2px">
+            {% if mesaj.gonderici.profil.ad %}{{ mesaj.gonderici.profil.ad }} {{ mesaj.gonderici.profil.soyad }}{% elif mesaj.gonderici.first_name %}{{ mesaj.gonderici.first_name }} {{ mesaj.gonderici.last_name }}{% else %}{{ mesaj.gonderici.username }}{% endif %}
+          </h1>
+          <small style="color:var(--muted)">{{ mesaj.yaradildi|date:"d.m.Y H:i" }}</small>
+        </div>
+      </div>
+      <a href="{% url 'mesajlar' %}" class="btn btn-outline btn-sm">
+        ← Bütün mesajlar
+      </a>
+    </div>
+
+    <!-- Əlaqəli Elan -->
+    {% if mesaj.elan %}
+    <div class="notice" style="margin-bottom:18px">
+      {% include 'partials/ui_icon.html' with name='tag' %}
+      <div style="flex:1">
+        <strong>Əlaqəli elan:</strong>
+        <a href="{{ mesaj.elan.get_absolute_url }}" style="color:#007b52;font-weight:700;text-decoration:underline">
+          {{ mesaj.elan.bashliq }}
+        </a>
       </div>
     </div>
-    {% if mesaj.elan %}
-    <a href="{{ mesaj.elan.get_absolute_url }}" class="elan-link">📋 {{ mesaj.elan.bashliq }}</a>
     {% endif %}
-    <div class="mesaj-metn">{{ mesaj.metn|linebreaksbr }}</div>
+
+    <!-- Mesaj Mətni -->
+    <div style="font-size:15px;line-height:1.75;color:var(--tx);padding:8px 4px 20px">
+      {{ mesaj.metn|linebreaksbr }}
+    </div>
+
+    <!-- Cavab Vermə Düyməsi -->
     {% if request.user != mesaj.gonderici and mesaj.elan %}
-    <a href="{% url 'mesaj_yeni' mesaj.elan.pk %}" class="cavab-btn">↩ Cavab ver</a>
+    <div style="padding-top:16px;border-top:1px solid var(--border)">
+      <a href="{% url 'mesaj_yeni' mesaj.elan.pk %}" class="btn btn-primary">
+        {% include 'partials/ui_icon.html' with name='send' %}
+        Cavab yaz
+      </a>
+    </div>
     {% endif %}
   </div>
 </div>

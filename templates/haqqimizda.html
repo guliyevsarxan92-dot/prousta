@@ -32,200 +32,122 @@
       "name": "Azerbaijan"
     },
     "description": "Azərbaycanda peşəkar usta və xidmət elanları platforması. Elektrik, santexnik, kombi, kondisioner, məişət texnikası, mebel, tikinti, avtomobil, gözəllik, IT və digər xidmətlər.",
-    "slogan": "Peşəkar Usta Tapın",
-    "knowsAbout": [
-      "Elektrik xidmətləri",
-      "Santexnik xidmətləri",
-      "Kombi və kondisioner təmiri",
-      "Məişət texnikası təmiri",
-      "Mebel və interyer",
-      "Tikinti və təmir",
-      "Avtomobil təmiri",
-      "Gözəllik və sağlamlıq",
-      "IT və biznes xidmətləri",
-      "Reklam və dizayn"
-    ]
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+994515888884",
-    "contactType": "customer service",
-    "email": "info@prousta.az",
-    "url": "https://wa.me/994515888884",
-    "availableLanguage": ["Azerbaijani", "Russian"],
-    "areaServed": "AZ",
-    "hoursAvailable": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      "opens": "00:00",
-      "closes": "23:59"
-    }
-  },
-  "mainEntity": {
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Prousta.az nədir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Prousta.az — Azərbaycanda peşəkar usta və xidmət sahiblərini istifadəçilərlə birləşdirən onlayn elan platformasıdır. Elektrik, santexnik, kombi, kondisioner, təmir, mebel, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə aktiv elan yer alır."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Prousta.az-da elan yerləşdirmək pulsuzdur?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bəli, Prousta.az-da adi elan yerləşdirmək tamamilə pulsuzdur. Əlavə olaraq VIP və Super VIP reklam paketləri də mövcuddur ki, elanınız daha çox istifadəçiyə çatsın."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Prousta.az hansı şəhərləri əhatə edir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Prousta.az bütün Azərbaycanı əhatə edir: Bakı, Sumqayıt, Gəncə, Mingəçevir, Şəki, Lənkəran, Şirvan və digər şəhər və rayonlar."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Usta ilə necə əlaqə saxlaya bilərəm?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Hər elan səhifəsində ustanın telefon nömrəsinə birbaşa zəng edə bilərsiniz, həmçinin daxili mesajlaşma sistemi vasitəsilə yazılı əlaqə saxlamaq da mümkündür."
-        }
-      }
-    ]
+    "slogan": "Peşəkar Usta Tapın"
   }
 }
 </script>
 {% endblock %}
-{% block style %}
-<style>
-.haqqimizda{background:linear-gradient(180deg,#f8fafc,#eef2ff);padding:60px 20px 50px}
-.haqqimizda-wrap{max-width:1100px;margin:0 auto}
-.haqqimizda-head{text-align:center;margin-bottom:32px}
-.haqqimizda-head h1{font-size:32px;font-weight:800;color:var(--tx);margin-bottom:10px}
-.haqqimizda-lead{font-size:15px;color:var(--muted);max-width:720px;margin:0 auto;line-height:1.7}
-.haqqimizda-about{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:24px;line-height:1.85;color:#334155;font-size:14px}
-.haqqimizda-about p{margin-bottom:14px}
-.haqqimizda-about p:last-child{margin-bottom:0}
-.haqqimizda-about strong{color:var(--p);font-weight:700}
-.haqqimizda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:24px}
-.haq-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:.2s}
-.haq-card:hover{border-color:var(--p);box-shadow:0 6px 20px rgba(26,71,200,.08);transform:translateY(-2px)}
-.haq-card h2{font-size:16px;font-weight:700;color:var(--p);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.haq-card h2::before{content:'';width:4px;height:18px;background:var(--p);border-radius:4px}
-.haq-card p{font-size:13px;line-height:1.75;color:#475569}
-.haqqimizda-keywords{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
-.haqqimizda-keywords h2{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:12px}
-.haqqimizda-keywords p{font-size:13px;line-height:1.9;color:#64748b}
-.haqqimizda-keywords strong{color:var(--p)}
-.haqqimizda-contact{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px}
-.haqqimizda-contact h2{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:12px}
-.haqqimizda-contact ul{list-style:none;padding:0;margin:0}
-.haqqimizda-contact li{padding:8px 0;border-bottom:1px dashed var(--border);font-size:13px;color:#475569}
-.haqqimizda-contact li:last-child{border-bottom:none}
-.haqqimizda-contact a{color:var(--p);font-weight:600}
-.haqqimizda-contact a:hover{text-decoration:underline}
-@media(max-width:768px){
-  .haqqimizda{padding:40px 12px 30px}
-  .haqqimizda-head h1{font-size:24px}
-  .haqqimizda-about{padding:20px}
-  .haq-card{padding:18px}
-}
-</style>
-{% endblock %}
+
 {% block content %}
-<section class="haqqimizda" aria-labelledby="haqqimizda-title">
-  <div class="haqqimizda-wrap">
-    <header class="haqqimizda-head">
-      <h1 id="haqqimizda-title">Prousta.az haqqında</h1>
-      <p class="haqqimizda-lead">
-        Azərbaycanın ən böyük peşəkar xidmət elanları platforması. Bakıda və bütün regionlarda
-        yoxlanılmış ustalar, sürətli əlaqə və şəffaf qiymətlər bir yerdə.
-      </p>
-    </header>
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Haqqımızda</span>
+  </nav>
 
-    <div class="haqqimizda-about">
-      <p>
-        <strong>Prousta.az</strong> — Azərbaycanda ev, ofis və biznes üçün peşəkar xidmət axtaranlarla
-        təcrübəli ustaları birləşdirən onlayn elan platformasıdır. Saytımızda <strong>elektrik ustası</strong>,
-        <strong>santexnik</strong>, <strong>kombi ustası</strong>, <strong>kondisioner quraşdırılması və təmiri</strong>,
-        <strong>məişət texnikası təmiri</strong>, <strong>mebel yığılması</strong>, <strong>tikinti və təmir briqadaları</strong>,
-        <strong>avtomobil təmiri</strong>, <strong>gözəllik və sağlamlıq xidmətləri</strong>, <strong>IT və biznes həlləri</strong>
-        üzrə minlərlə elan yer alır. Hər bir kateqoriyada 120-dən çox alt-xidmət mövcuddur və istifadəçilər
-        birbaşa ustanın telefon nömrəsinə və ya daxili mesajlaşma sisteminə keçid etmək imkanına malikdir.
-      </p>
-      <p>
-        Platformamızın məqsədi — Azərbaycanda pərakəndə və yerli xidmət bazarını bir araya gətirmək,
-        istifadəçilərə <strong>pulsuz elan yerləşdirmək</strong>, ustaların isə müştərilərinə sürətli çatmasına imkan
-        yaratmaqdır. Prousta.az Bakı, Sumqayıt, Gəncə, Mingəçevir, Şəki, Lənkəran və bütün digər şəhər və
-        rayonlardan olan xidmət təminatçılarını əhatə edir.
-      </p>
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='users' %} Biz kimik?</span>
+    <h1>Prousta.az <span>haqqında</span></h1>
+    <p>Azərbaycanın usta və xidmət platforması. Bakıda və bütün regionlarda peşəkar ustalarla müştəriləri birbaşa əlaqələndiririk.</p>
+  </div>
+
+  <div class="home-stats pg-section">
+    <div>
+      {% include 'partials/ui_icon.html' with name='users' %}
+      <span><strong>100+</strong><small>xidmət sahəsi</small></span>
     </div>
-
-    <div class="haqqimizda-grid">
-      <div class="haq-card">
-        <h2>Biz kimik?</h2>
-        <p>
-          Prousta.az — Azərbaycanda yerli bazar üçün qurulmuş müstəqil elan platformasıdır. Komandamız ölkədə
-          peşəkar xidmət axtarışını sadə, sürətli və etibarlı etmək üçün çalışır. Biz heç bir usta və ya müştəri
-          arasında vasitəçi deyilik — sadəcə onları birləşdirən açıq və şəffaf meydançayıq.
-        </p>
-      </div>
-      <div class="haq-card">
-        <h2>Nə təklif edirik?</h2>
-        <p>
-          Pulsuz elan yerləşdirmə, VIP və Super VIP reklam paketləri, daxili mesajlaşma, favoritlərə əlavə etmə,
-          SEO-friendly xidmət kateqoriyaları, mobil uyğun dizayn və Azərbaycan dilində tam dəstək. Hər elan
-          moderasiyadan keçir və yalnız təsdiqdən sonra yayımlanır.
-        </p>
-      </div>
-      <div class="haq-card">
-        <h2>Niyə Prousta.az?</h2>
-        <p>
-          Çünki Prousta.az Azərbaycan istifadəçisi üçün qurulub: yerli kateqoriyalar, yerli şəhərlər, yerli ödəniş
-          üsulları və 24/7 müştəri dəstəyi. Platformada hər bir elan əlaqə nömrəsi ilə birbaşa ustaya yönləndirir,
-          vasitəçi komissiyası yoxdur.
-        </p>
-      </div>
-      <div class="haq-card">
-        <h2>Necə işləyir?</h2>
-        <p>
-          1) Lazım olan xidməti kateqoriyadan seçin və ya axtarışdan istifadə edin.
-          2) Elana daxil olub peşəkar usta ilə telefon və ya mesaj vasitəsilə əlaqə saxlayın.
-          3) İşi müzakirə edin, qiyməti razılaşdırın və xidməti sifariş edin — tam şəffaf və pulsuz.
-        </p>
-      </div>
+    <div>
+      {% include 'partials/ui_icon.html' with name='user' %}
+      <span><strong>Birbaşa</strong><small>usta ilə əlaqə</small></span>
     </div>
-
-    <div class="haqqimizda-keywords">
-      <h2>Populyar axtarışlar</h2>
-      <p>
-        Bakıda elektrik ustası, santexnik xidməti, kombi təmiri, kondisioner quraşdırılması, soyuducu təmiri,
-        paltaryuyan təmiri, mətbəx mebeli, dolab yığılması, hamam təmiri, kafel döşənməsi, boyama və mala işləri,
-        tavan quraşdırılması, qapı və pəncərə təmiri, alüminium işləri, taxta işi, dekor və interyer,
-        pərdə tikilməsi, uşaq otağı dizaynı, yuyulma xidməti, ev köçürülməsi, sürücü ilə yük daşınması,
-        avtomobil diaqnostikası, avtoelektrik, avtomobil yuma və polirovka, kompüter təmiri, printer təmiri,
-        kamera sistemi quraşdırılması, veb sayt hazırlanması, SMM və reklam xidmətləri, fotoqraf və
-        videoqraf xidmətləri, toy və tədbir təşkili, gözəllik salonu, bərbər, masaj, fitnes təlimatçısı,
-        özəl müəllim və daha yüzlərlə peşəkar xidmət — hamısı bir ünvanda: <strong>Prousta.az</strong>.
-      </p>
+    <div>
+      {% include 'partials/ui_icon.html' with name='shield' %}
+      <span><strong>Etibarlı</strong><small>yoxlanılmış elanlar</small></span>
     </div>
-
-    <div class="haqqimizda-contact">
-      <h2>Əlaqə məlumatları</h2>
-      <ul>
-        <li><strong>Brend:</strong> Prousta.az</li>
-        <li><strong>Fəaliyyət sahəsi:</strong> Peşəkar xidmət elanları platforması</li>
-        <li><strong>Əhatə dairəsi:</strong> Bütün Azərbaycan — Bakı, Sumqayıt, Gəncə və digər şəhərlər</li>
-        <li><strong>Telefon:</strong> <a href="tel:+994515888884">+994 51 588 88 84</a></li>
-        <li><strong>E-poçt:</strong> <a href="mailto:info@prousta.az">info@prousta.az</a></li>
-        <li><strong>Veb sayt:</strong> <a href="https://prousta.az">https://prousta.az</a></li>
-      </ul>
+    <div>
+      {% include 'partials/ui_icon.html' with name='check' %}
+      <span><strong>Pulsuz</strong><small>elan yerləşdirmə</small></span>
     </div>
   </div>
-</section>
+
+  <div class="panel prose pg-section">
+    <h2 style="font-size:20px;font-weight:750;margin-top:0">Platformanın Missiyası</h2>
+    <p>
+      <strong>Prousta.az</strong> — Azərbaycanda ev, ofis və biznes üçün peşəkar xidmət axtaranlarla
+      təcrübəli ustaları birləşdirən müasir onlayn elan platformasıdır. Saytımızda elektrik ustası,
+      santexnik, kombi ustası, kondisioner quraşdırılması və təmiri, məişət texnikası təmiri,
+      mebel yığılması, tikinti və təmir briqadaları, avtomobil təmiri, gözəllik və sağlamlıq xidmətləri,
+      IT və digər sahələr üzrə minlərlə elan yer alır.
+    </p>
+    <p>
+      Biz heç bir usta və ya müştəri arasında vasitəçilik komissiyası tutmuruq. Hər elanda ustanın əlaqə
+      məlumatları və WhatsApp birbaşa təqdim olunur ki, işin detallarını və qiyməti öz aranızda asanlıqla razılaşdırasınız.
+    </p>
+  </div>
+
+  <!-- Üstünlüklər Grid -->
+  <div class="pg-section" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+    <div class="panel">
+      <h3 style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin:0 0 8px;color:#007b52">
+        {% include 'partials/ui_icon.html' with name='search' %}
+        Sürətli və Rahat Axtarış
+      </h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0">
+        100-dən çox kateqoriya və alt kateqoriya üzrə istədiyiniz ustanı bir neçə saniyəyə tapın və müqayisə edin.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3 style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin:0 0 8px;color:#007b52">
+        {% include 'partials/ui_icon.html' with name='phone' %}
+        Birbaşa Əlaqə
+      </h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0">
+        Heç bir zəng mərkəzi və ya vasitəçi olmadan birbaşa usta ilə zəng və ya WhatsApp vasitəsilə danışın.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3 style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin:0 0 8px;color:#007b52">
+        {% include 'partials/ui_icon.html' with name='star' %}
+        Şəffaf Qiymətlər
+      </h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0">
+        Elanlarda təqdim olunan qiymətlər və şəkillərlə tanış olaraq büdcənizə ən uyğun olanı sərbəst seçin.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3 style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin:0 0 8px;color:#007b52">
+        {% include 'partials/ui_icon.html' with name='globe' %}
+        Bütün Azərbaycan
+      </h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0">
+        Bakı, Sumqayıt, Gəncə, Mingəçevir, Şəki və digər bütün şəhər və rayonlarımızda xidmət təminatı.
+      </p>
+    </div>
+  </div>
+
+  <!-- Əlaqə Paneli -->
+  <div class="panel pg-section">
+    <h2 class="panel-title">
+      {% include 'partials/ui_icon.html' with name='chat' %}
+      Bizimlə Əlaqə
+    </h2>
+    <div class="meta-list" style="font-size:13px">
+      <div>{% include 'partials/ui_icon.html' with name='phone' %} <strong>Telefon:</strong> <a href="tel:+994515888884" style="color:#007b52;font-weight:700">+994 51 588 88 84</a></div>
+      <div>{% include 'partials/ui_icon.html' with name='whatsapp' %} <strong>WhatsApp:</strong> <a href="https://wa.me/994515888884" target="_blank" style="color:#007b52;font-weight:700">+994 51 588 88 84</a></div>
+      <div>{% include 'partials/ui_icon.html' with name='mail' %} <strong>E-poçt:</strong> <a href="mailto:info@prousta.az" style="color:#007b52">info@prousta.az</a></div>
+      <div>{% include 'partials/ui_icon.html' with name='pin' %} <strong>Ünvan:</strong> Bakı şəhəri, Azərbaycan</div>
+    </div>
+  </div>
+
+  <section class="join-banner pg-section">
+    <div class="join-copy">
+      <h2>Sən də usta kimi qoşul</h2>
+      <p>Xidmətlərini minlərlə potensial müştəriyə təqdim et. Qeydiyyat tamamilə pulsuzdur!</p>
+    </div>
+    <a href="{% url 'elan_yarat' %}" class="join-button" style="margin-right:0">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+  </section>
+</div>
 {% endblock %}

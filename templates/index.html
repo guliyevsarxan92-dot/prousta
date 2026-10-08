@@ -1,135 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Prousta.az — Bakıda Usta Tap | Elektrik, Santexnik, Kombi, Kondisioner Ustası{% endblock %}
-{% block description %}Bakıda və Azərbaycanda peşəkar usta axtarırsınız? Elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri və 100+ xidmət. Pulsuz elan yerləşdirin, ən yaxın ustanı tapın!{% endblock %}
-{% block keywords %}usta tap Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası Bakı, kondisioner ustası Bakı, havalandırma ustası Bakı, soyuducu ustası Bakı, paltaryuyan ustası, ev təmiri Bakı, mebel ustası, avtomobil ustası Bakı, Azərbaycan usta, Prousta.az{% endblock %}
-{% block canonical %}/{% endblock %}
-{% block canonical2 %}/{% endblock %}
-{% block nav_index %}aktiv{% endblock %}
-{% block extra_head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://prousta.az/#business",
-  "name": "Prousta.az",
-  "url": "https://prousta.az",
-  "logo": "https://prousta.az/static/og-image.jpg",
-  "image": "https://prousta.az/static/og-image.jpg",
-  "description": "Azərbaycanda peşəkar ustalar və xidmət sahiblərini tapın.",
-  "telephone": "+994515888884",
-  "email": "info@prousta.az"
-}
-</script>
-{% endblock %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-{% endblock %}
+{% block title %}Prousta.az — Etibarlı ustanı asan tap{% endblock %}
+{% block description %}Elektrik, santexnika, kombi, kondisioner, təmir və yüzlərlə xidmət elanı bir platformada. Azərbaycanda ustanı Prousta.az-da tapın.{% endblock %}
+{% block canonical %}/{% endblock %}{% block canonical2 %}/{% endblock %}{% block og_url %}/{% endblock %}{% block nav_index %}aktiv{% endblock %}
+{% block extra_head %}<link rel="preload" as="image" href="{% static 'img/home/hero.png' %}">{% endblock %}
 {% block content %}
-<div class="hero">
-  <h1>Azərbaycanda Peşəkar Usta və Xidmət Elanları</h1>
-  <p>Bakı və bütün bölgələrdə etibarlı ustalar bir ünvanda — Prousta.az</p>
-  <form class="search-box" action="/elanlar/" method="get">
-    <input name="q" type="search" placeholder="Hansı ustanı axtarırsınız?" autocomplete="off">
-    <button type="submit">Axtar</button>
-  </form>
-  <div class="hero-promos">
-    <a href="{% url 'qeydiyyat' %}" class="hero-promo-pill">
-      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-      Qeydiyyatdan keç — <span class="pill-amount">20 ₼</span> balans hədiyyə!
-    </a>
-    <a href="{% url 'qeydiyyat' %}" class="hero-promo-pill">
-      <span class="pill-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
-      İlk elanını VIP et — xərc bizdan!
-    </a>
+<section class="market-hero" aria-labelledby="hero-title">
+ <div class="hero-photo" role="img" aria-label="Kondisioner və santexnika ustaları iş başında"></div>
+ <div class="home-container hero-inner">
+  <div class="hero-copy"><h1 id="hero-title">Etibarlı ustanı <span>asan tap</span></h1><p class="hero-intro">Elektrik, santexnika, kombi, kondisioner, təmir və yüzlərlə<br class="desktop-break"> xidmət elanı bir platformada.</p>
+   <form class="hero-search" action="{% url 'elan_siyahi' %}" method="get" role="search"><label class="search-input">{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" aria-label="Usta və ya xidmət axtar" placeholder="Usta və ya xidmət axtar" required></label><span class="search-city">{% include 'partials/ui_icon.html' with name='pin' %} Bakı</span><button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button></form>
+   <div class="quick-services"><a href="/xidmet/elektrik/">Elektrikçi</a><a href="/xidmet/santexnik/">Santexnik</a><a href="/xidmet/kombi-ustasi/">Kombi ustası</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner</a><a href="/xidmet/mebel-interyer/">Mebel</a><a href="/xidmet/temir-tikinti/">Təmir</a></div>
+   <div class="hero-benefits"><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='check' %}</span><span><strong>Peşəkar ustalar</strong><small>Eviniz üçün doğru seçim</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='chat' %}</span><span><strong>Birbaşa əlaqə</strong><small>Zəng və ya WhatsApp</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='star' %}</span><span><strong>Rahat seçim</strong><small>Xidmətləri müqayisə edin</small></span></div></div>
   </div>
+  <div class="hero-handwriting">Eviniz<br>peşəkar əllərdə!<span>⤶</span></div><div class="hero-note"><svg width="39" height="39" viewBox="0 0 40 40" fill="currentColor" aria-hidden="true"><path d="M4 34V16L20 3l16 13v18h-8V21l-8-7-8 7v13H4Z"/></svg><strong>Ustalar və<br>xidmət elanları<br>sizi gözləyir!</strong></div>
+ </div>
+</section>
+<div class="home-container home-content">
+ <section class="home-section category-section" id="kateqoriyalar"><div class="home-section-heading"><h2>Populyar kateqoriyalar</h2><a href="{% url 'elan_siyahi' %}">Bütün kateqoriyalar {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="category-grid">{% for name, slug, icon in home_categories %}<a href="{% url 'xidmet_detail' slug %}" class="category-tile"><span class="category-emoji category-{{ slug }}" aria-hidden="true">{{ icon }}</span><span>{{ name }}</span></a>{% endfor %}</div></section>
+ <section class="home-section" id="elanlar"><div class="home-section-heading"><h2>{% if vip_elanlar or home_is_demo %}Premium elanlar{% else %}Son elanlar{% endif %}</h2><a href="{% url 'elan_siyahi' %}">Bütün elanlara bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></div>
+ {% if home_is_demo %}<p class="design-note">Dizayn nümunəsi · Aşağıdakı elanlar, profillər, rəylər və rəqəmlər nümayiş üçündür.</p>{% endif %}
+ <div class="service-grid">{% for elan in home_cards %}{% include 'partials/home_service_card.html' %}{% empty %}{% for service in example_services %}<article class="service-card"><div class="service-photo"><a class="example-photo example-photo-{{ forloop.counter }}" href="{% url 'xidmet_detail' service.slug %}" aria-label="{{ service.title }} xidmətləri"></a>{% if forloop.counter < 3 %}<span class="premium-label">{% include 'partials/ui_icon.html' with name='star' %} Premium</span>{% endif %}<button type="button" class="favorite-button" data-demo-favorite aria-label="Nümunə elanı seç" aria-pressed="false">{% include 'partials/ui_icon.html' with name='heart' %}</button></div><div class="service-info"><h3><a href="{% url 'xidmet_detail' service.slug %}">{{ service.title }}</a></h3><p class="service-description">{{ service.description }}</p><p class="service-location">{% include 'partials/ui_icon.html' with name='pin' %} Bakı, {{ service.district }}</p><div class="service-meta"><span><span class="rating-star">★</span> <b>{{ service.rating }}</b> <span class="muted">({{ service.reviews }} rəy)</span></span><span class="verified-label">{% include 'partials/ui_icon.html' with name='shield' %} Doğrulanmış usta</span></div><p class="service-price">{{ service.price }} AZN<small>-dən</small></p><div class="service-actions"><button class="call-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='phone' %} Zəng et</button><button class="whatsapp-button" type="button" data-demo-contact>{% include 'partials/ui_icon.html' with name='whatsapp' %} WhatsApp</button></div></div></article>{% endfor %}{% endfor %}</div></section>
+ <section class="home-section" id="ustalar"><div class="home-section-heading"><h2>{% if home_is_demo %}Tövsiyə olunan ustalar{% else %}Ustalarla tanış olun{% endif %}</h2><a href="{% url 'elan_siyahi' %}">Bütün ustalara bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="professional-grid">{% for elan in home_professionals %}<article class="professional-card"><a class="professional-avatar" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">{% if elan.istifadeci.profil.avatar %}<img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}" loading="lazy">{% else %}{% include 'partials/ui_icon.html' with name='user' %}{% endif %}</a><div class="professional-info"><h3>{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}</h3><p>{{ elan.kategori.ad }}</p><small>{% include 'partials/ui_icon.html' with name='pin' %} {{ elan.sheher }}</small></div><a class="profile-button" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">Profilə bax</a></article>{% empty %}{% for pro in example_professionals %}<article class="professional-card"><span class="professional-avatar example-avatar portrait-{{ forloop.counter }}" role="img" aria-label="Nümunə usta portreti"></span><div class="professional-info"><h3>{{ pro.name }} {% include 'partials/ui_icon.html' with name='shield' class='verified-icon' %}</h3><p>{{ pro.job }}</p><small><span class="rating-star">★</span> <b>{{ pro.rating }}</b> ({{ pro.reviews }} rəy)</small><small>{% include 'partials/ui_icon.html' with name='clock' %} {{ pro.jobs }} tamamlanmış iş</small></div><a class="profile-button" href="{% url 'xidmet_detail' pro.slug %}">Ustaları tap</a></article>{% endfor %}{% endfor %}</div></section>
+ <section class="home-section how-section" id="nece-isleyir"><div class="home-section-heading"><h2>Necə işləyir?</h2></div><div class="steps-grid"><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">1</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='search' %}</span><span><strong>Axtar</strong><small>Xidmət və ya usta axtarın</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">2</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='list' %}</span><span><strong>Müqayisə et</strong><small>Elanlara, qiymətlərə və<br>xidmətlərə baxın</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'elan_siyahi' %}"><span class="step-number">3</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='phone' %}</span><span><strong>Əlaqə saxla</strong><small>Usta ilə birbaşa zəng və ya<br>WhatsApp ilə danışın</small></span></a></div></section>
+ <div class="home-stats" aria-label="{% if home_is_demo %}Nümunə statistika{% else %}Platformanın üstünlükləri{% endif %}"><div>{% include 'partials/ui_icon.html' with name='users' %}<span><strong>{% if home_is_demo %}10,000+{% else %}Bir platforma{% endif %}</strong><small>{% if home_is_demo %}elan{% else %}müxtəlif xidmətlər{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='user' %}<span><strong>{% if home_is_demo %}2,500+{% else %}Birbaşa{% endif %}</strong><small>{% if home_is_demo %}aktiv usta{% else %}usta ilə əlaqə{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='eye' %}<span><strong>{% if home_is_demo %}50,000+{% else %}Rahat seçim{% endif %}</strong><small>{% if home_is_demo %}aylıq baxış{% else %}ətraflı elanlar{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='star' %}<span><strong>{% if home_is_demo %}4.8{% else %}Pulsuz{% endif %}</strong><small>{% if home_is_demo %}orta reytinq{% else %}usta axtarışı{% endif %}</small></span></div></div>
+ <section class="home-section reviews-section" id="reyler"><div class="home-section-heading"><h2>{% if home_is_demo %}İstifadəçilər nə deyir?{% else %}Eviniz üçün doğru seçim{% endif %}</h2>{% if home_is_demo %}<span class="sample-label">Nümunə rəylər</span>{% else %}<a href="{% url 'haqqimizda' %}">Haqqımızda {% include 'partials/ui_icon.html' with name='arrow' %}</a>{% endif %}</div><div class="review-grid">{% if home_is_demo %}{% for review in example_reviews %}<article class="review-card"><div class="review-person"><span class="review-avatar example-avatar portrait-review-{{ forloop.counter }}" role="img" aria-label="Nümunə müştəri portreti"></span><div><h3>{{ review.name }}</h3><p><span class="review-stars" aria-label="5 ulduz">★★★★★</span><small> · {{ review.when }}</small></p></div></div><blockquote>“{{ review.text }}”</blockquote></article>{% endfor %}{% else %}<article class="review-card"><h3>İstədiyiniz xidməti tapın</h3><p>Elektrikdən mebel təmirinə qədər müxtəlif xidmətlərə bir yerdə baxın.</p></article><article class="review-card"><h3>Qərarı özünüz verin</h3><p>Ustaların elanlarını, iş şəkillərini və qiymətlərini müqayisə edin.</p></article><article class="review-card"><h3>Birbaşa danışın</h3><p>İşin detallarını və vaxtını seçdiyiniz usta ilə razılaşdırın.</p></article>{% endif %}</div></section>
+ <section class="join-banner"><div class="join-copy"><h2>Sən də usta kimi qoşul</h2><p>Xidmətlərini minlərlə potensial müştəriyə təqdim et.<br>Prousta.az-da qeydiyyat pulsuzdur!</p></div><a href="{% url 'elan_yarat' %}" class="join-button">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a><div class="join-person" aria-hidden="true"></div><span class="join-handwriting">Daha çox<br>müştəri qazan!<span>⤶</span></span></section>
 </div>
-<div class="hero-mobile-promo">
-  <a href="{% url 'qeydiyyat' %}">Qeydiyyatdan keç — <span class="mob-badge">20 ₼ hədiyyə!</span></a>
-</div>
-
-<section class="cats-section" data-reveal>
-  <div class="cats-head">
-    <h2 class="cats-title">Xidmət Kateqoriyaları</h2>
-    <p class="cats-sub">Bütün xidmətlər avtomatik sürüşür — siçanla dayandırıb idarə edə bilərsiniz</p>
-  </div>
-
-  <div class="xidmet-slider" id="xidmetSlider">
-    <button type="button" class="xidmet-arrow xidmet-arrow-prev" aria-label="Əvvəlki xidmətlər" disabled>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
-    </button>
-
-    <div class="xidmet-viewport" tabindex="0" aria-label="Bütün xidmətlər">
-      <div class="xidmet-track">
-        {% for kat in kateqoriyalar %}
-        {% for alt in kat.alt_kateqoriyalar.all %}
-        <a href="{% url 'xidmet_detail' alt.slug %}" class="xidmet-chip" data-kat="{{ kat.slug }}">
-          <span class="xidmet-chip-kat">{{ kat.ad }}</span>
-          <span class="xidmet-chip-name">{{ alt.ad }}</span>
-        </a>
-        {% endfor %}
-        {% endfor %}
-      </div>
-    </div>
-
-    <button type="button" class="xidmet-arrow xidmet-arrow-next" aria-label="Növbəti xidmətlər">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
-    </button>
-  </div>
-</section>
-
-{% if vip_elanlar %}
-<section class="vip-section" data-reveal>
-  <div class="section-header">
-    <div class="section-title">VIP Elanlar</div>
-  </div>
-  <div class="grid" data-stagger>
-  {% for elan in vip_elanlar %}
-    <a href="{{ elan.get_absolute_url }}" class="kart">
-      <div class="kart-img">
-        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">{% else %}Şəkil yoxdur{% endif %}{% endwith %}
-      </div>
-      <div class="vip-badge {{ elan.vip_status }}">{% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}</div>
-      <div class="kart-body">
-        <div class="kart-title">{{ elan.bashliq }}</div>
-        <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-      </div>
-    </a>
-  {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-<section class="section" data-reveal>
-  <div class="section-header">
-    <div class="section-title">Bütün Elanlar</div>
-    <a href="/elanlar/" class="section-link">Kateqoriyalar üzrə →</a>
-  </div>
-  <div class="grid" data-stagger>
-  {% for elan in elanlar %}
-    <a href="{{ elan.get_absolute_url }}" class="kart">
-      <div class="kart-img">
-        {% with elan.shekillar.all as sh %}{% if sh %}<img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">{% else %}Şəkil yoxdur{% endif %}{% endwith %}
-      </div>
-      <div class="kart-body">
-        <div class="kart-title">{{ elan.bashliq }}</div>
-        <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-      </div>
-    </a>
-  {% empty %}
-    <p style="color:var(--muted);grid-column:1/-1">Hələ elan yoxdur.</p>
-  {% endfor %}
-  </div>
-  {% if elanlar.paginator.num_pages > 1 %}
-  <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:32px;flex-wrap:wrap">
-    {% if elanlar.has_previous %}
-      <a href="?page={{ elanlar.previous_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">← Əvvəlki</a>
-    {% endif %}
-    <span style="padding:8px 16px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600">{{ elanlar.number }} / {{ elanlar.paginator.num_pages }}</span>
-    {% if elanlar.has_next %}
-      <a href="?page={{ elanlar.next_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">Sonrakı →</a>
-    {% endif %}
-  </div>
-  {% endif %}
-</section>
+<dialog id="demoContact" class="contact-dialog"><button type="button" class="dialog-close" aria-label="Pəncərəni bağla">×</button><span class="dialog-icon">{% include 'partials/ui_icon.html' with name='phone' %}</span><h2>Bu, dizayn nümunəsidir</h2><p>Bu kart real ustaya aid deyil. Mövcud xidmətlərə baxaraq usta seçə bilərsiniz.</p><a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Xidmətlərə bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></dialog>
+<script src="{% static 'js/home.js' %}" defer></script>
 {% endblock %}

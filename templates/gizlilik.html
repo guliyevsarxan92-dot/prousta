@@ -6,87 +6,82 @@
 {% block og_url %}/gizlilik/{% endblock %}
 {% block og_title %}Gizlilik Siyasəti — Prousta.az{% endblock %}
 {% block og_description %}Prousta.az istifadəçi məlumatlarını necə qoruyur və istifadə edir.{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:800px;margin:40px auto;padding:0 20px}
-.page-header{margin-bottom:36px}
-.page-header h1{font-size:32px;font-weight:800;color:var(--tx);margin-bottom:8px}
-.page-header p{font-size:15px;color:var(--muted)}
-.section-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px;margin-bottom:20px}
-.section-box h2{font-size:18px;font-weight:700;color:var(--p);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.section-box p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:12px}
-.section-box ul{padding-left:20px;margin-bottom:12px}
-.section-box ul li{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:6px}
-.last-update{font-size:13px;color:var(--muted);margin-top:24px;text-align:center}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <div class="page-header">
-    <h1>Gizlilik Siyasəti</h1>
-    <p>Son yenilənmə: Mart 2026</p>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Gizlilik siyasəti</span>
+  </nav>
+
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='shield' %} Təhlükəsizlik və Məxfilik</span>
+    <h1>Gizlilik <span>Siyasəti</span></h1>
+    <p>Prousta.az istifadəçilərinin fərdi məlumatlarının qorunması və emalı qaydaları.</p>
   </div>
 
-  <div class="section-box">
-    <h2>📋 Giriş</h2>
-    <p>Prousta.az olaraq istifadəçilərimizin məxfiliyini qorumağı əsas prioritetimiz hesab edirik. Bu Gizlilik Siyasəti saytımızı istifadə edərkən hansı məlumatları topladığımızı, necə istifadə etdiyimizi və necə qoruduğumuzu izah edir.</p>
-  </div>
+  <article class="panel prose">
+    <h2>1. Giriş</h2>
+    <p>
+      Prousta.az olaraq istifadəçilərimizin məxfiliyini qorumağı əsas prioritetimiz hesab edirik.
+      Bu Gizlilik Siyasəti saytımızı istifadə edərkən hansı məlumatları topladığımızı, necə istifadə
+      etdiyimizi və necə qoruduğumuzu izah edir.
+    </p>
 
-  <div class="section-box">
-    <h2>📊 Topladığımız Məlumatlar</h2>
-    <p>Saytımızdan istifadə zamanı aşağıdakı məlumatları toplaya bilərik:</p>
+    <h2>2. Topladığımız Məlumatlar</h2>
+    <p>Platformadan istifadə zamanı xidmət keyfiyyətini təmin etmək üçün aşağıdakı məlumatlar toplanır:</p>
     <ul>
-      <li>Ad, soyad, istifadəçi adı</li>
+      <li>Ad, soyad və istifadəçi adı</li>
       <li>Email ünvanı</li>
-      <li>Telefon nömrəsi</li>
-      <li>Yerləşdirdiyiniz elanlar</li>
-      <li>Profil şəkli</li>
-      <li>Sayt istifadə məlumatları (baxış sayı, axtarış tarixi)</li>
+      <li>Əlaqə nömrəsi (telefon / WhatsApp)</li>
+      <li>Yerləşdirdiyiniz elanlar, şəkillər və xidmət təsvirləri</li>
+      <li>Profil şəkli və yerləşdiyiniz bölgə</li>
+      <li>Texniki məlumatlar (IP ünvanı, brauzer növü, səhifə baxışları)</li>
     </ul>
-  </div>
 
-  <div class="section-box">
-    <h2>🔐 Məlumatların İstifadəsi</h2>
-    <p>Topladığımız məlumatlar aşağıdakı məqsədlər üçün istifadə olunur:</p>
+    <h2>3. Məlumatların İstifadə Məqsədi</h2>
+    <p>Toplanan məlumatlar yalnız aşağıdakı zəruri məqsədlər üçün istifadə edilir:</p>
     <ul>
-      <li>Hesabınızı idarə etmək və xidmət göstərmək</li>
-      <li>Elanlarınızı nümayiş etdirmək</li>
-      <li>Digər istifadəçilərlə əlaqə saxlamağınıza imkan vermək</li>
-      <li>Saytın təhlükəsizliyini təmin etmək</li>
-      <li>Texniki problemləri həll etmək</li>
+      <li>Hesabınızın yaradılması və idarə edilməsi</li>
+      <li>Elanlarınızın saytda dərc edilməsi və axtarışda tapılması</li>
+      <li>Müştəri ilə usta arasında birbaşa əlaqənin təmin olunması</li>
+      <li>Daxili mesajlaşma və bildirişlərin göndərilməsi</li>
+      <li>Fırıldaqçılıq və spam hallarının qarşısının alınması</li>
     </ul>
-  </div>
 
-  <div class="section-box">
-    <h2>🔒 Məlumatların Qorunması</h2>
-    <p>İstifadəçi məlumatlarının təhlükəsizliyini təmin etmək üçün müasir şifrələmə texnologiyalarından istifadə edirik. Şifrələriniz heç vaxt açıq formada saxlanmır.</p>
-    <p>Məlumatlarınız üçüncü şəxslərə satılmır və paylaşılmır.</p>
-  </div>
+    <h2>4. Məlumatların Qorunması</h2>
+    <p>
+      İstifadəçi məlumatlarının təhlükəsizliyini təmin etmək üçün müasir şifrələmə protokollarından (HTTPS, SSL)
+      və təhlükəsiz verilənlər bazası infrastrukturundan istifadə edirik. Şifrələriniz sistemdə təkistiqamətli
+      kriptoqrafik hash şəklində saxlanılır və heç kim tərəfindən açıq oxuna bilməz.
+    </p>
+    <div class="notice">
+      {% include 'partials/ui_icon.html' with name='shield' %}
+      <span>Fərdi məlumatlarınız heç vaxt üçüncü tərəflərə satılmır və kommersiya məqsədilə ötürülmür.</span>
+    </div>
 
-  <div class="section-box">
-    <h2>🍪 Cookies</h2>
-    <p>Saytımız sessiya məlumatlarını saxlamaq üçün cookies istifadə edir. Brauzerdə cookies-i söndürə bilərsiniz, lakin bu saytın bəzi funksiyalarına təsir edə bilər.</p>
-  </div>
+    <h2>5. Kukilər (Cookies)</h2>
+    <p>
+      Saytımız sessiya məlumatlarını yadda saxlamaq, daxil olma vəziyyətinizi qorumaq və istifadə təcrübəsini
+      yaxşılaşdırmaq üçün kuki fayllarından istifadə edir. Brauzerinizin parametrlərindən kukiləri məhdudlaşdıra
+      bilərsiniz.
+    </p>
 
-  <div class="section-box">
-    <h2>👤 İstifadəçi Hüquqları</h2>
+    <h2>6. İstifadəçi Hüquqları</h2>
     <p>Siz istənilən vaxt aşağıdakı hüquqlara maliksiniz:</p>
     <ul>
-      <li>Məlumatlarınıza baxmaq və redaktə etmək</li>
-      <li>Hesabınızı silmək</li>
-      <li>Elanlarınızı silmək</li>
-      <li>Bizimlə əlaqə saxlayaraq məlumatlarınızın silinməsini tələb etmək</li>
+      <li>Şəxsi məlumatlarınıza baxmaq və profil bölməsindən redaktə etmək</li>
+      <li>Yerləşdirdiyiniz elanları silmək və ya deaktiv etmək</li>
+      <li>Bizimlə əlaqə saxlayaraq hesabınızın tam silinməsini tələb etmək</li>
     </ul>
-  </div>
 
-  <div class="section-box">
-    <h2>📞 Əlaqə</h2>
-    <p>Gizlilik siyasəti ilə bağlı suallarınız üçün bizimlə əlaqə saxlaya bilərsiniz:</p>
-    <p>📧 info@prousta.az</p>
-    <p>📞 <a href="tel:+994515888884" style="color:var(--p)">+994 51 588 88 84</a></p>
-    <p>💬 <a href="https://wa.me/994515888884" target="_blank" style="color:var(--p)">WhatsApp ilə yazın</a></p>
-  </div>
-
-  <p class="last-update">© 2026 Prousta.az — Bütün hüquqlar qorunur.</p>
+    <h2>7. Əlaqə</h2>
+    <p>Gizlilik siyasəti ilə bağlı hər hansı sual və ya təklifiniz üçün bizimlə əlaqə saxlaya bilərsiniz:</p>
+    <ul>
+      <li>E-poçt: <a href="mailto:info@prousta.az">info@prousta.az</a></li>
+      <li>Telefon: <a href="tel:+994515888884">+994 51 588 88 84</a></li>
+      <li>WhatsApp: <a href="https://wa.me/994515888884" target="_blank">051 588 88 84</a></li>
+    </ul>
+  </article>
 </div>
 {% endblock %}

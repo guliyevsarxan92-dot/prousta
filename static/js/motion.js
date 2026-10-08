@@ -21,6 +21,8 @@
     var open = menu && menu.classList.toggle('aktiv');
     if (overlay) overlay.classList.toggle('aktiv', open);
     document.body.style.overflow = open ? 'hidden' : '';
+    el.setAttribute('aria-expanded', String(Boolean(open)));
+    el.setAttribute('aria-label', open ? 'Menyunu bağla' : 'Menyunu aç');
   };
 
   document.addEventListener('click', function (e) {
@@ -30,9 +32,17 @@
     if (!menu || !menu.classList.contains('aktiv')) return;
     if (menu.contains(e.target) || (hamburger && hamburger.contains(e.target))) return;
     menu.classList.remove('aktiv');
-    if (hamburger) hamburger.classList.remove('aktiv');
+    if (hamburger) { hamburger.classList.remove('aktiv'); hamburger.setAttribute('aria-expanded', 'false'); }
     if (overlay) overlay.classList.remove('aktiv');
     document.body.style.overflow = '';
+  });
+
+  document.addEventListener('keydown', function (event) {
+    var button = document.getElementById('hamburger');
+    if (event.key === 'Escape' && button && button.classList.contains('aktiv')) {
+      window.toggleMenu(button);
+      button.focus();
+    }
   });
 
   /* Alt nav aktiv */

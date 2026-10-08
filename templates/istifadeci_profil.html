@@ -1,58 +1,60 @@
 {% extends 'base.html' %}
 {% block robots %}noindex, nofollow{% endblock %}
 {% block title %}{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}Usta{% endif %} — Prousta.az{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:1000px;margin:40px auto;padding:0 20px}
-.profil-header{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:30px}
-.avatar{width:72px;height:72px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--p);overflow:hidden;flex-shrink:0}
-.avatar img{width:72px;height:72px;object-fit:cover}
-.ad{font-size:22px;font-weight:700}
-.tarix{font-size:14px;color:var(--muted)}
-.elan-say{font-size:14px;color:var(--muted);margin-top:4px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s}
-.kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.kart-img{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
-.kart-img img{width:100%;height:180px;object-fit:cover}
-.kart-body{padding:14px}
-.kart-title{font-weight:600;font-size:15px;margin-bottom:6px}
-.kart-price{color:var(--p);font-weight:700;font-size:16px}
-@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <div class="profil-header">
-    <div class="avatar">
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'elan_siyahi' %}">Ustalar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{{ sahib.username }}{% endif %}</span>
+  </nav>
+
+  <!-- Usta Kartı -->
+  <div class="panel" style="display:flex;align-items:center;gap:22px;margin-bottom:24px;flex-wrap:wrap">
+    <div class="avatar avatar--xl" style="background:#eaf7f1;color:#007b52">
       {% if sahib.profil.avatar %}
         <img src="{{ sahib.profil.avatar.url }}" alt="{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}Usta{% endif %}">
       {% else %}
         {% if sahib.profil.ad %}{{ sahib.profil.ad|first|upper }}{% elif sahib.first_name %}{{ sahib.first_name|first|upper }}{% else %}U{% endif %}
       {% endif %}
     </div>
-    <div>
-      <div class="ad">{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}Usta{% endif %}</div>
-      <div class="tarix">{{ sahib.date_joined|date:"d.m.Y" }}-dən üzv</div>
-      <div class="elan-say">{{ elanlar.count }} aktiv elan</div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+        <h1 style="font-size:22px;font-weight:800;letter-spacing:-.4px;margin:0">
+          {% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{{ sahib.username }}{% endif %}
+        </h1>
+        <span class="badge" style="background:#eaf7f1;color:#007b52">
+          {% include 'partials/ui_icon.html' with name='shield' %} Doğrulanmış Usta
+        </span>
+      </div>
+      <div class="meta-row">
+        <span>{% include 'partials/ui_icon.html' with name='calendar' %} {{ sahib.date_joined|date:"d.m.Y" }}-dən aktiv üzv</span>
+        <span>{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.count }} aktiv elan</span>
+        {% if sahib.profil.sheher %}<span>{% include 'partials/ui_icon.html' with name='pin' %} {{ sahib.profil.sheher }}</span>{% endif %}
+      </div>
     </div>
   </div>
-  <div class="grid">
-  {% for elan in elanlar %}
-    <a href="{{ elan.get_absolute_url }}" class="kart">
-      <div class="kart-img">
-        {% if elan.shekillar.first %}
-          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}">
-        {% else %}Şəkil yoxdur{% endif %}
-      </div>
-      <div class="kart-body">
-        <div class="kart-title">{{ elan.bashliq }}</div>
-        <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-      </div>
-    </a>
-  {% empty %}
-    <p style="color:var(--muted);grid-column:1/-1">Aktiv elan yoxdur.</p>
-  {% endfor %}
-  </div>
+
+  <!-- Ustanın Elanları -->
+  <section class="pg-section">
+    <div class="sec-head">
+      <h2>Ustanın aktiv elanları</h2>
+      <small>{{ elanlar.count }} elan</small>
+    </div>
+
+    <div class="service-grid">
+      {% for elan in elanlar %}
+        {% include 'partials/home_service_card.html' %}
+      {% empty %}
+        <div class="empty-state">
+          <span class="empty-ico">{% include 'partials/ui_icon.html' with name='list' %}</span>
+          <h3>Bu ustanın hazırda aktiv elanı yoxdur</h3>
+          <p>Digər peşəkar ustaların elanlarına baxa bilərsiniz.</p>
+          <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Bütün elanlar</a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
 </div>
 {% endblock %}

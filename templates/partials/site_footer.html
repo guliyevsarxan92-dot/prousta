@@ -1,0 +1,10 @@
+<footer class="site-footer">
+ <div class="footer-top">
+  <div class="footer-brand">{% include 'partials/brand_logo.html' with variant='light' %}<p>Azərbaycanın usta və xidmət<br>elanları platforması.</p><div class="footer-social"><a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener" aria-label="Facebook">f</a><a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener" aria-label="Instagram">◎</a><a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener" aria-label="YouTube">▶</a><a href="{% url 'mobil_app' %}" aria-label="Mobil tətbiq">▣</a></div></div>
+  <div class="footer-col"><h4>Şirkət</h4><a href="{% url 'haqqimizda' %}">Haqqımızda</a><a href="mailto:info@prousta.az">Əlaqə</a><a href="{% url 'istifade_sertleri' %}">İstifadə qaydaları</a><a href="{% url 'gizlilik' %}">Məxfilik siyasəti</a></div>
+  <div class="footer-col footer-categories"><h4>Kateqoriyalar</h4><div><a href="/xidmet/elektrik/">Elektrik</a><a href="/xidmet/mebel-interyer/">Mebel ustası</a><a href="/xidmet/santexnik/">Santexnika</a><a href="/xidmet/malyar-ustasi/">Boya</a><a href="/xidmet/kombi-ustasi/">Kombi</a><a href="/xidmet/telefon-ustasi/">Telefon təmiri</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner</a><a href="/xidmet/temir-tikinti/">Tikinti</a></div></div>
+  <div class="footer-col"><h4>Dəstək</h4><a href="{% url 'index' %}#nece-isleyir">Necə işləyir?</a><a href="{% url 'problemler_siyahi' %}">Bloq</a><a href="https://wa.me/994515888884" target="_blank" rel="noopener">Bizimlə əlaqə</a><a href="{% url 'mobil_app' %}">Mobil tətbiq</a></div>
+  <div class="footer-col"><h4>Sosial media</h4><a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener">Facebook</a><a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener">Instagram</a><a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener">YouTube</a></div>
+ </div>
+ <div class="footer-bottom"><span>© {% now 'Y' %} Prousta.az. Bütün hüquqlar qorunur.</span><span>Azərbaycanın peşəkar ustaları bir ünvanda. 🇦🇿</span></div>
+</footer>

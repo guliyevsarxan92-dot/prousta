@@ -1,31 +1,44 @@
 {% extends 'base.html' %}
 {% block title %}Mesaj Göndər — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:580px;margin:40px auto;padding:0 20px}
-.form-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px}
-.form-box h2{font-size:20px;font-weight:700;margin-bottom:6px}
-.elan-info{background:var(--pl);border-radius:8px;padding:12px;margin-bottom:20px;font-size:14px;color:var(--p);font-weight:600}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;height:140px;resize:vertical;transition:.2s}
-.field textarea:focus{border-color:var(--p);outline:none}
-.submit-btn{width:100%;padding:13px;background:var(--p);color:#fff;border-radius:var(--r);font-size:15px;font-weight:700;border:none;cursor:pointer;margin-top:12px}
-.submit-btn:hover{background:var(--pd)}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <div class="form-box">
-    <h2>Mesaj Göndər</h2>
-    <div class="elan-info">📋 {{ elan.bashliq }} — {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}</div>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'elan_siyahi' %}">Elanlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    {% if elan %}
+      <a href="{{ elan.get_absolute_url }}">{{ elan.bashliq|truncatechars:25 }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    {% endif %}
+    <span aria-current="page">Mesaj yaz</span>
+  </nav>
+
+  <div class="panel">
+    <h1 style="font-size:20px;font-weight:800;letter-spacing:-.3px;margin:0 0 14px">Mesaj Göndər</h1>
+
+    <div class="notice" style="margin-bottom:18px">
+      {% include 'partials/ui_icon.html' with name='user' %}
+      <div>
+        <strong>Usta:</strong>
+        {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}{{ elan.istifadeci.username }}{% endif %}
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Elan: {{ elan.bashliq }}</div>
+      </div>
+    </div>
+
     <form method="post">
       {% csrf_token %}
       <div class="field">
-        <label>Mesajınız</label>
-        <textarea name="metn" placeholder="Xidmət haqqında sualınızı yazın..." required></textarea>
+        <label for="id_metn">Mesajınız <span class="req">*</span></label>
+        <textarea id="id_metn" name="metn" placeholder="Xidmət, qiymət və ya işin detalları haqqında sualınızı yazın..." required style="min-height:140px"></textarea>
       </div>
-      <button class="submit-btn" type="submit">Göndər</button>
+
+      <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn btn-primary btn-lg" type="submit" style="min-width:160px">
+          {% include 'partials/ui_icon.html' with name='send' %}
+          Göndər
+        </button>
+        <a href="{{ elan.get_absolute_url }}" class="btn btn-outline">Ləğv et</a>
+      </div>
     </form>
   </div>
 </div>

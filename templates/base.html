@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1a47c8">
+<meta name="theme-color" content="#007b52">
 <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
 <link rel="icon" type="image/png" sizes="64x64" href="{% static 'img/favicon-64.png' %}">
 <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
@@ -161,41 +161,15 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .msgs{left:16px;right:16px;max-width:100%}
 }
 </style>
+<link rel="stylesheet" href="{% static 'css/marketplace.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages.css' %}">
 {% block style %}{% endblock %}
 {% block extra_head %}{% endblock %}
 </head>
 <body>
-<nav>
-  {% include 'partials/brand_logo.html' %}
-  <div class="nav-links">
-    <a href="{% url 'mobil_app' %}" style="display:inline-flex;align-items:center;gap:6px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
-      Mobil Tətbiq
-    </a>
-    <a href="{% url 'elan_siyahi' %}">Elanlar</a>
-    {% if user.is_authenticated %}
-      <a href="{% url 'mesajlar' %}" class="mesaj-link">
-        Mesajlar
-        {% if oxunmamis_mesaj %}
-          <span class="mesaj-dot">{{ oxunmamis_mesaj }}</span>
-        {% endif %}
-      </a>
-      <a href="{% url 'odenis' %}" class="balans-chip" title="Balansı artır">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-        Balans: {{ user_balans }} ₼
-      </a>
-      <a href="{% url 'profil' %}">Profil</a>
-      <a href="{% url 'elan_yarat' %}" class="btn btn-primary">+ Elan Yerləşdir</a>
-      <form method="post" action="{% url 'cixis' %}" style="display:inline;margin:0">{% csrf_token %}<button type="submit" class="btn btn-outline" style="cursor:pointer">Çıxış</button></form>
-    {% else %}
-      <a href="{% url 'giris' %}" class="btn btn-outline">Giriş</a>
-      <a href="{% url 'qeydiyyat' %}" class="btn btn-primary">Qeydiyyat</a>
-    {% endif %}
-  </div>
-  <div class="hamburger" onclick="toggleMenu(this)" id="hamburger">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
+{% include 'partials/ui_symbols.html' %}
+{% include 'partials/site_header.html' %}
 
 <div class="mobil-menu-overlay" id="mobilMenuOverlay" onclick="toggleMenu(document.getElementById('hamburger'))"></div>
 <div class="mobil-menu" id="mobilMenu">
@@ -226,71 +200,7 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 {% block content %}{% endblock %}
 </main>
 
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      {% include 'partials/brand_logo.html' with variant='light' %}
-      <p>Azərbaycanda peşəkar ustalar və xidmət sahibləri üçün ən böyük elanlar platforması.</p>
-      <div class="footer-social">
-        <a href="https://www.facebook.com/61568796886691" target="_blank" title="Facebook">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-        </a>
-        <a href="https://www.instagram.com/prousta.az" target="_blank" title="Instagram">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
-        </a>
-        <a href="https://www.tiktok.com/@prousta.az" target="_blank" title="TikTok">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
-        </a>
-        <a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" title="YouTube">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
-        </a>
-        <a href="https://www.x.com/prousta.az" target="_blank" title="X (Twitter)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <a href="{% url 'mobil_app' %}" title="Android Tətbiqi" style="background:#3ddc84">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
-        </a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Xidmətlər</h4>
-      <a href="{% url 'xidmet_detail' 'temir-tikinti' %}">Təmir & Tikinti</a>
-      <a href="{% url 'xidmet_detail' 'elektronika' %}">Elektronika</a>
-      <a href="{% url 'xidmet_detail' 'meiset-texnikasi' %}">Məişət texnikası</a>
-      <a href="{% url 'xidmet_detail' 'avtomobil-temiri' %}">Avtomobil təmiri</a>
-      <a href="{% url 'xidmet_detail' 'gozellik-saglamliq' %}">Gözəllik</a>
-    </div>
-    <div class="footer-col">
-      <h4>Hesab</h4>
-      <a href="{% url 'qeydiyyat' %}">Qeydiyyat</a>
-      <a href="{% url 'giris' %}">Giriş</a>
-      <a href="{% url 'elan_yarat' %}">Elan Yerləşdir</a>
-      <a href="{% url 'profil' %}">Profil</a>
-      <a href="{% url 'odenis' %}">Balans Artır</a>
-      <a href="{% url 'mobil_app' %}">Android Tətbiqi</a>
-    </div>
-    <div class="footer-col">
-      <h4>Əlaqə</h4>
-      <a href="mailto:info@prousta.az">info@prousta.az</a>
-      <a href="tel:+994515888884">+994 51 588 88 84</a>
-      <a href="https://www.google.com/maps/place/Baku,+Azerbaijan" target="_blank" rel="noopener">Bakı, Azərbaycan</a>
-      <a href="https://wa.me/994515888884" target="_blank" rel="noopener">7/24 Dəstək</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%">
-      <span>© {% now "Y" %} Prousta.az — Bütün hüquqlar qorunur. | Bir <a href="https://kodnex.store" target="_blank" rel="noopener" style="color:var(--p,#38bdf8);font-weight:700;text-decoration:none">Kodnex</a> məhsuludur.</span>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
-        <a href="{% url 'haqqimizda' %}">Haqqımızda</a>
-        <a href="{% url 'problemler_siyahi' %}">Problemlər və Həllər</a>
-        <a href="{% url 'gizlilik' %}">Gizlilik Siyasəti</a>
-        <a href="{% url 'istifade_sertleri' %}">İstifadə Şərtləri</a>
-        <a href="https://kodnex.store" target="_blank" rel="noopener" style="font-weight:600">kodnex.store</a>
-        <a href="https://wa.me/994515888884" target="_blank">Bizə yazın</a>
-      </div>
-    </div>
-  </div>
-</footer>
+{% include 'partials/site_footer.html' %}
 
 <script src="{% static 'js/motion.js' %}" defer></script>
 <!-- MOBİL ALT NAVİQASİYA -->

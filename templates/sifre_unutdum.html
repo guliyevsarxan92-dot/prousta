@@ -1,32 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Şifrəni Unutdum — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block style %}
-<style>
-.auth-wrap{max-width:420px;margin:60px auto;padding:0 20px}
-.auth-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:36px}
-.auth-box h2{font-size:22px;font-weight:700;margin-bottom:8px;text-align:center}
-.auth-box p{font-size:14px;color:var(--muted);text-align:center;margin-bottom:24px}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
-.field input:focus{border-color:var(--p);outline:none}
-.auth-btn{width:100%;padding:13px;background:var(--p);color:#fff;border-radius:var(--r);font-size:15px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
-.auth-link{text-align:center;margin-top:16px;font-size:14px;color:var(--muted)}
-.auth-link a{color:var(--p);font-weight:600}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="auth-wrap">
-  <div class="auth-box">
-    <h2>Şifrəni Unutdum</h2>
-    <p>Email ünvanınızı daxil edin, yeni şifrə göndərəcəyik.</p>
+<div class="auth">
+  <div class="auth-card">
+    <div class="auth-ico">
+      {% include 'partials/ui_icon.html' with name='mail' %}
+    </div>
+    <h1>Şifrəni unutmusunuz?</h1>
+    <p class="auth-sub">Qeydiyyatdan keçdiyiniz email ünvanını daxil edin. Yeni şifrə göndərəcəyik.</p>
+
     <form method="post">
       {% csrf_token %}
-      <div class="field"><label>Email</label><input name="email" type="email" required placeholder="example@gmail.com"></div>
-      <button class="auth-btn" type="submit">Şifrə Göndər</button>
+      <div class="field">
+        <label for="id_email">Email ünvanı</label>
+        <input id="id_email" name="email" type="email" required placeholder="example@mail.com">
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">Şifrə Göndər</button>
     </form>
-    <div class="auth-link"><a href="/giris/">← Girişə qayıt</a></div>
+
+    <div class="auth-foot">
+      <a href="{% url 'giris' %}">← Giriş səhifəsinə qayıt</a>
+    </div>
   </div>
 </div>
 {% endblock %}

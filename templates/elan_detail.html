@@ -68,132 +68,169 @@
 {% block og_url %}{{ elan.get_absolute_url }}{% endblock %}
 {% block canonical %}{{ elan.get_absolute_url }}{% endblock %}
 {% block canonical2 %}{{ elan.get_absolute_url }}{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:1000px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:1fr 320px;gap:30px}
-.shekillar{display:flex;flex-direction:column;gap:10px}
-.ana-shekil{width:100%;height:400px;border-radius:var(--r);background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden}
-.ana-shekil img{width:100%;height:400px;object-fit:cover;border-radius:var(--r)}
-.kicik-shekillar{display:flex;gap:8px;flex-wrap:wrap}
-.kicik-shekillar img{width:70px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:.2s}
-.kicik-shekillar img:hover{border-color:var(--p)}
-.info-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:24px;height:fit-content;position:sticky;top:80px}
-.nomre{font-size:12px;color:var(--muted);margin-bottom:8px}
-.qiymet{font-size:28px;font-weight:800;color:var(--p);margin-bottom:12px}
-.bashliq{font-size:20px;font-weight:700;margin-bottom:12px}
-.meta{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.meta-item{font-size:13px;color:var(--muted)}
-.elaqe-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#1a47c8;color:#fff;border-radius:var(--r);font-weight:700;font-size:16px;transition:.2s;margin-bottom:10px}
-.elaqe-btn:hover{background:#1238a8}
-.mesaj-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:1.5px solid var(--border);color:var(--tx);border-radius:var(--r);font-weight:600;font-size:14px;transition:.2s;margin-bottom:16px;background:var(--white)}
-.mesaj-btn:hover{border-color:var(--p);color:var(--p)}
-.satici{display:flex;align-items:center;gap:12px;padding:16px 0;border-top:1px solid var(--border)}
-.satici-avatar{width:44px;height:44px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:18px;overflow:hidden;flex-shrink:0}
-.satici-avatar img{width:44px;height:44px;object-fit:cover}
-.satici-ad{font-weight:600;font-size:15px}
-.satici-tarix{font-size:12px;color:var(--muted)}
-.btn-fav{width:100%;padding:11px;border-radius:var(--r);font-weight:600;font-size:14px;margin-top:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:.2s}
-.btn-fav:hover{border-color:#ef4444;color:#ef4444}
-.btn-fav.aktiv{background:#fee2e2;border-color:#ef4444;color:#ef4444}
-.acaqlama{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-top:0}
-.acaqlama h3{font-size:16px;font-weight:700;margin-bottom:12px}
-.acaqlama p{color:var(--muted);line-height:1.8}
 
-/* MOBİL ÜZEN BUTON */
-.mobil-elaqe{display:none;position:fixed;bottom:20px;right:20px;z-index:100;background:#1a47c8;color:#fff;border-radius:50px;padding:14px 24px;font-weight:700;font-size:15px;box-shadow:0 4px 20px rgba(26,71,200,.4);align-items:center;gap:8px;animation:floatBtn 3s ease-in-out infinite}
-@keyframes floatBtn{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-@media(max-width:768px){
-  .page-wrap{grid-template-columns:1fr}
-  .info-box{position:static}
-  .ana-shekil{height:280px}
-  .ana-shekil img{height:280px}
-  .elaqe-btn{display:none}
-  .mobil-elaqe{display:flex}
-}
-</style>
-{% endblock %}
 {% block content %}
-<div class="page-wrap">
-  <div>
-    <div class="shekillar">
-      <div class="ana-shekil">
-        {% if elan.shekillar.first %}
-          <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" id="anaImg">
-        {% else %}Şəkil yoxdur{% endif %}
+<div class="pg has-mobile-cta">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'elan_siyahi' %}">Elanlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    {% if elan.kategori %}
+      <a href="{% url 'xidmet_detail' elan.kategori.slug %}">{{ elan.kategori.ad }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    {% endif %}
+    <span aria-current="page">{{ elan.bashliq|truncatechars:35 }}</span>
+  </nav>
+
+  <div class="pg-grid">
+    <!-- Sol tərəf: Şəkillər və Açıqlama -->
+    <div class="stack">
+      <div class="panel" style="padding:12px">
+        <div class="gallery-main" style="max-height:480px">
+          {% if elan.shekillar.first %}
+            <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" id="anaImg">
+          {% else %}
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              {% include 'partials/ui_icon.html' with name='image' %}
+              <span>Şəkil əlavə edilməyib</span>
+            </div>
+          {% endif %}
+        </div>
+        {% if elan.shekillar.count > 1 %}
+        <div class="gallery-thumbs">
+          {% for s in elan.shekillar.all %}
+            <button type="button" class="{% if forloop.first %}is-active{% endif %}" onclick="selectThumb(this, '{{ s.shekil.url }}')">
+              <img src="{{ s.shekil.url }}" alt="{{ elan.bashliq }} - {{ forloop.counter }}" loading="lazy">
+            </button>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
-      {% if elan.shekillar.count > 1 %}
-      <div class="kicik-shekillar">
-        {% for s in elan.shekillar.all %}
-          <img src="{{ s.shekil.url }}" onclick="document.getElementById('anaImg').src=this.src" loading="lazy">
-        {% endfor %}
+
+      <div class="panel prose">
+        <h2 class="panel-title" style="margin-bottom:14px">
+          {% include 'partials/ui_icon.html' with name='list' %}
+          Xidmət haqqında ətraflı
+        </h2>
+        <p style="white-space:pre-line;line-height:1.7">{{ elan.acaqlama }}</p>
+      </div>
+
+      {% if user == elan.istifadeci %}
+      <div class="panel panel--soft" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>Bu elanın sahibisiniz</strong>
+          <small style="display:block;color:var(--muted)">Elana düzəliş edə və ya VIP edə bilərsiniz</small>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a href="{% url 'elan_duzelis' elan.pk %}" class="btn btn-outline btn-sm">{% include 'partials/ui_icon.html' with name='edit' %} Düzəliş et</a>
+          <a href="{% url 'vip_et' elan.pk %}" class="btn btn-gold btn-sm">{% include 'partials/ui_icon.html' with name='crown' %} VIP et</a>
+        </div>
       </div>
       {% endif %}
     </div>
-    <div class="acaqlama" style="margin-top:20px">
-      <h3>Açıqlama</h3>
-      <p>{{ elan.acaqlama|linebreaksbr }}</p>
+
+    <!-- Sağ tərəf: Əlaqə və Satıcı Məlumatı -->
+    <div>
+      <aside class="panel panel--sticky stack">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="badge badge--gray">Elan #{{ elan.nomre }}</span>
+            {% if elan.vip_status != 'normal' %}
+              <span class="badge badge--gold">
+                {% include 'partials/ui_icon.html' with name='star' %}
+                {% if elan.vip_status == 'super_vip' %}Super VIP{% else %}VIP{% endif %}
+              </span>
+            {% endif %}
+          </div>
+
+          <div style="font-size:26px;font-weight:800;color:#00734b;letter-spacing:-.8px;margin-bottom:6px">
+            {% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} ₼{% else %}Razılaşma ilə{% endif %}
+          </div>
+          <h1 style="font-size:18px;font-weight:800;line-height:1.3;letter-spacing:-.3px;margin:0 0 14px">{{ elan.bashliq }}</h1>
+
+          <div class="meta-list" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <div>{% include 'partials/ui_icon.html' with name='pin' %} <span>{{ elan.sheher }}</span></div>
+            <div>{% include 'partials/ui_icon.html' with name='tag' %} <span>{{ elan.kategori.ad }}</span></div>
+            <div>{% include 'partials/ui_icon.html' with name='eye' %} <span>{{ elan.baxish_sayi }} baxış</span></div>
+            <div>{% include 'partials/ui_icon.html' with name='calendar' %} <span>{{ elan.yaradildi|date:"d.m.Y" }}</span></div>
+          </div>
+        </div>
+
+        <!-- Əlaqə Düymələri -->
+        <div class="stack" style="gap:8px">
+          {% if elan.telefon %}
+            <a href="tel:{{ elan.telefon }}" class="btn btn-primary btn-block btn-lg">
+              {% include 'partials/ui_icon.html' with name='phone' %}
+              Zəng et ({{ elan.telefon }})
+            </a>
+            <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa btn-block" target="_blank" rel="noopener">
+              {% include 'partials/ui_icon.html' with name='whatsapp' %}
+              WhatsApp ilə yaz
+            </a>
+          {% endif %}
+
+          {% if user.is_authenticated and user != elan.istifadeci %}
+            <a href="{% url 'mesaj_yeni' elan.pk %}" class="btn btn-outline btn-block">
+              {% include 'partials/ui_icon.html' with name='chat' %}
+              Saytda mesaj göndər
+            </a>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'favorit_toggle' elan.pk %}" style="margin:0">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline btn-block btn-sm" style="{% if favorit %}color:#ef4444;border-color:#ef4444;background:#fef2f2{% endif %}">
+                {% include 'partials/ui_icon.html' with name='heart' %}
+                {% if favorit %}Favoritlərdən çıxart{% else %}Favoritlərə əlavə et{% endif %}
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'giris' %}?next={{ elan.get_absolute_url|urlencode }}" class="btn btn-outline btn-block btn-sm">
+              {% include 'partials/ui_icon.html' with name='heart' %}
+              Favoritlərə əlavə et
+            </a>
+          {% endif %}
+        </div>
+
+        <hr class="divider-line" style="margin:4px 0">
+
+        <!-- Usta / Satıcı Kartı -->
+        <a href="{% url 'istifadeci_profil' elan.istifadeci.pk %}" class="person" style="padding:4px 0">
+          <div class="avatar">
+            {% if elan.istifadeci.profil.avatar %}
+              <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}" loading="lazy">
+            {% else %}
+              {% include 'partials/ui_icon.html' with name='user' %}
+            {% endif %}
+          </div>
+          <div style="flex:1;min-width:0">
+            <strong>{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}</strong>
+            <small style="color:var(--p);font-weight:600">Ustaya bax →</small>
+          </div>
+        </a>
+      </aside>
     </div>
-  </div>
-
-  <div class="info-box">
-    <div class="nomre">Elan #{{ elan.nomre }}</div>
-    <div class="qiymet">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-    <div class="bashliq">{{ elan.bashliq }}</div>
-    <div class="meta">
-      <div class="meta-item">📍 {{ elan.sheher }}</div>
-      <div class="meta-item">🏷 {{ elan.kategori }}</div>
-      <div class="meta-item">👁 {{ elan.baxish_sayi }} baxış</div>
-      <div class="meta-item">📅 {{ elan.yaradildi|date:"d.m.Y" }}</div>
-    </div>
-
-    {% if elan.telefon %}
-    <a href="tel:{{ elan.telefon }}" class="elaqe-btn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      {{ elan.telefon }}
-    </a>
-    {% endif %}
-
-    {% if user.is_authenticated and user != elan.istifadeci %}
-    <a href="/mesaj/yeni/{{ elan.pk }}/" class="mesaj-btn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Mesaj Göndər
-    </a>
-    {% endif %}
-
-    {% if user.is_authenticated %}
-    <form method="post" action="/favorit/{{ elan.pk }}/" style="margin:0">
-      {% csrf_token %}
-      <button type="submit" class="btn-fav {% if favorit %}aktiv{% endif %}">
-        {% if favorit %}Favoritden cixar{% else %}Favorite elave et{% endif %}
-      </button>
-    </form>
-    {% endif %}
-
-    <a href="/istifadeci/{{ elan.istifadeci.pk }}/" class="satici">
-      <div class="satici-avatar">
-        {% if elan.istifadeci.profil.avatar %}
-          <img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}" loading="lazy">
-        {% else %}
-          {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad|first|upper }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name|first|upper }}{% else %}U{% endif %}
-        {% endif %}
-      </div>
-      <div>
-        <div class="satici-ad">{% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}Usta{% endif %}</div>
-        <div class="satici-tarix">Digər elanlarına bax →</div>
-      </div>
-    </a>
   </div>
 </div>
 
+<!-- Mobil üçün alt sabit əlaqə paneli -->
 {% if elan.telefon %}
-<a href="tel:{{ elan.telefon }}" class="mobil-elaqe">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-  Zəng Et
-</a>
+<div class="mobile-cta">
+  <a href="tel:{{ elan.telefon }}" class="btn btn-primary">
+    {% include 'partials/ui_icon.html' with name='phone' %}
+    Zəng et
+  </a>
+  <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa" target="_blank" rel="noopener">
+    {% include 'partials/ui_icon.html' with name='whatsapp' %}
+    WhatsApp
+  </a>
+</div>
 {% endif %}
 
 <script>
-function showImg(src){ document.getElementById('anaImg').src = src; }
+function selectThumb(btn, src) {
+  var main = document.getElementById('anaImg');
+  if (main) main.src = src;
+  document.querySelectorAll('.gallery-thumbs button').forEach(function(b){ b.classList.remove('is-active'); });
+  btn.classList.add('is-active');
+}
 </script>
 {% endblock %}

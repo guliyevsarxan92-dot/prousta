@@ -73,6 +73,7 @@ class Elan(models.Model):
     vip_status = models.CharField(max_length=20, choices=VIP_STATUS, default='normal', db_index=True)
     vip_siralama = models.PositiveSmallIntegerField(default=0, db_index=True)
     vip_bitis = models.DateTimeField(null=True, blank=True)
+    vip_yenilendi = models.DateTimeField(null=True, blank=True, db_index=True)
     bitis_tarixi = models.DateTimeField(null=True, blank=True)
     sheher = models.CharField(max_length=100, default='Bakı')
     telefon = models.CharField(max_length=20, blank=True)
@@ -89,17 +90,27 @@ class Elan(models.Model):
                     break
             else:
                 self.nomre = uuid.uuid4().hex[:10].upper()
-        self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 0)
+        now = timezone.now()
+        if self.vip_status in ('vip', 'super_vip'):
+            if not self.vip_bitis or self.vip_bitis <= now:
+                days = 30 if self.vip_status == 'super_vip' else 10
+                self.vip_bitis = now + timedelta(days=days)
+            if not self.vip_yenilendi:
+                self.vip_yenilendi = now
+            self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 0)
+        else:
+            self.vip_status = 'normal'
+            self.vip_siralama = 0
         super().save(*args, **kwargs)
         if not self.bitis_tarixi and self.status == 'aktiv':
-            now = timezone.now() + timedelta(days=30)
-            Elan.objects.filter(pk=self.pk).update(bitis_tarixi=now)
-            self.bitis_tarixi = now
+            now_plus_30 = timezone.now() + timedelta(days=30)
+            Elan.objects.filter(pk=self.pk).update(bitis_tarixi=now_plus_30)
+            self.bitis_tarixi = now_plus_30
 
     def is_vip_aktiv(self):
         if self.vip_status == 'normal':
             return False
-        if self.vip_bitis and self.vip_bitis < timezone.now():
+        if not self.vip_bitis or self.vip_bitis <= timezone.now():
             return False
         return True
 

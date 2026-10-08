@@ -34,26 +34,69 @@ def _aciqlama_qadaga_yoxla(metn):
 
 
 def _update_elan_status():
-    # NOTE: With default LocMemCache and multiple Gunicorn workers, each worker
-    # has its own cache, so this may run more often than every 300s across workers.
-    # This is acceptable because the underlying UPDATE queries are idempotent.
-    # For true single-execution, switch to Redis or database-based caching.
     if not cache.get('elan_status_update'):
-        cache.set('elan_status_update', True, 300)
-        Elan.objects.filter(status='aktiv', bitis_tarixi__lt=timezone.now()).update(status='muddeti_bitmis')
-        Elan.objects.filter(vip_status__in=['vip', 'super_vip'], vip_bitis__lt=timezone.now()).update(vip_status='normal')
+        cache.set('elan_status_update', True, 60)
+        now = timezone.now()
+        Elan.objects.filter(status='aktiv', bitis_tarixi__lt=now).update(status='muddeti_bitmis')
+        Elan.objects.filter(
+            vip_status__in=['vip', 'super_vip']
+        ).filter(
+            Q(vip_bitis__lte=now) | Q(vip_bitis__isnull=True)
+        ).update(vip_status='normal', vip_siralama=0)
+        Elan.objects.filter(vip_status='normal', vip_siralama__gt=0).update(vip_siralama=0)
 
 def index(request):
     _update_elan_status()
-    vip_elanlar = list(Elan.objects.filter(status='aktiv', vip_status__in=['vip','super_vip']).prefetch_related('shekillar'))
-    elanlar_qs = Elan.objects.filter(status='aktiv', vip_status='normal').order_by('-yaradildi').prefetch_related('shekillar')
+    now = timezone.now()
+
+    # Bütün aktiv Super VIP və VIP elanlar (vaxtı keçməmiş)
+    super_vips = list(
+        Elan.objects.filter(status='aktiv', vip_status='super_vip', vip_bitis__gt=now)
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(F('vip_yenilendi').desc(nulls_last=True), '-yaradildi')
+    )
+    vips = list(
+        Elan.objects.filter(status='aktiv', vip_status='vip', vip_bitis__gt=now)
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(F('vip_yenilendi').desc(nulls_last=True), '-yaradildi')
+    )
+
+    # Ədalətli rotasiya: Super VIP və VIP elanları bərabər nümayiş şansı üçün qarışdırırıq
+    random_super = list(super_vips)
+    random.shuffle(random_super)
+    random_vip = list(vips)
+    random.shuffle(random_vip)
+
+    selected_paid = (random_super + random_vip)[:4]
+
+    # Əgər 4-dən az ödənişli elan varsa, qalan yerləri ən son aktiv elanlarla tamamla
+    if len(selected_paid) < 4:
+        needed = 4 - len(selected_paid)
+        exclude_pks = [e.pk for e in selected_paid]
+        recent = list(
+            Elan.objects.filter(status='aktiv')
+            .exclude(pk__in=exclude_pks)
+            .select_related('kategori')
+            .prefetch_related('shekillar')
+            .order_by('-yaradildi')[:needed]
+        )
+        home_cards = selected_paid + recent
+    else:
+        home_cards = selected_paid
+
+    elanlar_qs = (
+        Elan.objects.filter(status='aktiv', vip_status='normal')
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by('-yaradildi')
+    )
     paginator = Paginator(elanlar_qs, 20)
     elanlar = paginator.get_page(request.GET.get('page', 1))
     kateqoriyalar = list(
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     )
-    # Hər əsas kateqoriya üçün son 6 aktiv elan (öz və alt kateqoriyalarından)
-    # Bütün aktiv elanları bir sorğu ilə çəkib Python-da paylamaq — N+1 problemi aradan qaldırır
     from collections import defaultdict
     kat_elanlar = defaultdict(list)
     kat_pks = {kat.pk for kat in kateqoriyalar}
@@ -62,7 +105,11 @@ def index(request):
         .filter(Q(kategori__in=kat_pks) | Q(kategori__ust_kategori__in=kat_pks))
         .select_related('kategori', 'kategori__ust_kategori')
         .prefetch_related('shekillar')
-        .order_by('-vip_siralama', '-yaradildi')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc()
+        )
     )
     for elan in all_aktiv:
         ust_pk = (elan.kategori.ust_kategori_id or elan.kategori_id) if elan.kategori else None
@@ -70,10 +117,12 @@ def index(request):
             kat_elanlar[ust_pk].append(elan)
     for kat in kateqoriyalar:
         kat.son_elanlar = kat_elanlar.get(kat.pk, [])
+    from .homepage import presentation_context
     return render(request, 'index.html', {
         'elanlar': elanlar,
-        'vip_elanlar': vip_elanlar,
-        'kateqoriyalar': kateqoriyalar
+        'vip_elanlar': super_vips + vips,
+        'kateqoriyalar': kateqoriyalar,
+        **presentation_context(home_cards),
     })
 
 
@@ -94,7 +143,16 @@ def elan_siyahi(request):
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     axtaris = request.GET.get('q', '').strip()
 
-    elanlar = Elan.objects.filter(status='aktiv').prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
+    elanlar = (
+        Elan.objects.filter(status='aktiv')
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc(),
+        )
+    )
     if axtaris:
         elanlar = elanlar.filter(
             Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
@@ -117,9 +175,17 @@ def xidmet_detail(request, slug):
     _update_elan_status()
     aktiv_kategori = get_object_or_404(Kategori, slug=slug)
 
-    elanlar = Elan.objects.filter(status='aktiv').filter(
-        Q(kategori__slug=slug) | Q(kategori__ust_kategori__slug=slug)
-    ).prefetch_related('shekillar').order_by('-vip_siralama', '-yaradildi')
+    elanlar = (
+        Elan.objects.filter(status='aktiv')
+        .filter(Q(kategori__slug=slug) | Q(kategori__ust_kategori__slug=slug))
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc(),
+        )
+    )
 
     axtaris = request.GET.get('q', '').strip()
     if axtaris:
@@ -617,6 +683,7 @@ def vip_et(request, pk):
             return redirect('profil')
         qiymet = 3 if nov == 'vip' else 8
         gun = 10 if nov == 'vip' else 30
+        now = timezone.now()
         with transaction.atomic():
             updated = Profil.objects.filter(
                 pk=profil.pk, balans__gte=qiymet
@@ -624,11 +691,19 @@ def vip_et(request, pk):
             if not updated:
                 messages.error(request, f'Balansınız kifayət deyil! Lazım olan: {qiymet} ₼')
                 return redirect('profil')
+            # Ədalətli müddət: Əgər elanın VIP vaxtı hələ bitməyibsə, yeni günləri mövcud bitişin üzərinə əlavə et
+            if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
+                yeni_bitis = elan.vip_bitis + timedelta(days=gun)
+            else:
+                yeni_bitis = now + timedelta(days=gun)
+
             elan.vip_status = nov
-            elan.vip_bitis = timezone.now() + timedelta(days=gun)
+            elan.vip_bitis = yeni_bitis
+            elan.vip_yenilendi = now
             elan.save()
             Odenis.objects.create(istifadeci=request.user, elan=elan, nov=nov, mebleg=qiymet, status='tesdiq_edildi')
-        messages.success(request, f'Elanınız VIP edildi! {gun} gün aktivdir.')
+        status_label = 'Super VIP' if nov == 'super_vip' else 'VIP'
+        messages.success(request, f'Elanınız {status_label} edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.')
         return redirect('profil')
     return render(request, 'vip.html', {'elan': elan, 'profil': profil})
 
@@ -706,11 +781,20 @@ def problemler_siyahi(request):
 
 
 def problem_detail(request, slug):
+    _update_elan_status()
     problem = get_object_or_404(Problem, slug=slug, aktiv=True)
-    elanlar = Elan.objects.filter(
-        status='aktiv',
-        kategori=problem.kategori
-    ).order_by('-vip_siralama', '-yaradildi')[:6] if problem.kategori else []
+    elanlar = (
+        Elan.objects.filter(status='aktiv', kategori=problem.kategori)
+        .select_related('kategori')
+        .prefetch_related('shekillar')
+        .order_by(
+            F('vip_siralama').desc(),
+            F('vip_yenilendi').desc(nulls_last=True),
+            F('yaradildi').desc(),
+        )[:6]
+        if problem.kategori
+        else []
+    )
     oxsar = Problem.objects.filter(
         aktiv=True,
         kategori=problem.kategori

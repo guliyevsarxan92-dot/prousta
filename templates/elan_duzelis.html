@@ -1,116 +1,129 @@
 {% extends 'base.html' %}
-{% block title %}Elanı Düzəlt — Prousta.az{% endblock %}
+{% block title %}Elanı Düzəlt — #{{ elan.nomre }} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
+
 {% block style %}
 <style>
-.page-wrap{max-width:680px;margin:40px auto;padding:0 20px}
-.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
-.form-box{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:32px}
-.field{margin-bottom:18px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;transition:.2s}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);outline:none}
-.field textarea{height:140px;resize:vertical}
-.submit-btn{width:100%;padding:14px;background:var(--p);color:#fff;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer}
-.phone-wrap{display:flex;gap:8px}
-.phone-prefix{padding:11px 14px;background:#f1f5f9;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--muted);white-space:nowrap}
 .photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:8px}
-.photo-item{position:relative;border-radius:10px;overflow:hidden;border:2px solid var(--border);transition:.2s}
-.photo-item.esas{border-color:var(--p);box-shadow:0 0 0 2px rgba(26,71,200,.2)}
+.photo-item{position:relative;border-radius:10px;overflow:hidden;border:2px solid var(--border);transition:.2s;background:#edf2ef}
+.photo-item.esas{border-color:#007b52;box-shadow:0 0 0 2px rgba(0,123,82,.2)}
 .photo-item img{width:100%;height:100px;object-fit:cover;display:block}
-.photo-actions{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:4px}
-.photo-btn{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;opacity:.85}
-.photo-btn:hover{opacity:1;transform:scale(1.1)}
-.btn-esas{background:#fff;color:var(--p)}
-.btn-esas.aktiv{background:var(--p);color:#fff}
-.btn-sil{background:rgba(239,68,68,.9);color:#fff}
-.photo-label{position:absolute;bottom:0;left:0;right:0;background:var(--p);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:2px;text-transform:uppercase}
+.photo-actions{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:4px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)}
+.photo-btn{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;background:#ffffffcc;color:var(--tx)}
+.photo-btn:hover{background:#fff;transform:scale(1.08)}
+.btn-esas.aktiv{background:#007b52;color:#fff}
+.btn-sil{color:#dc2626}
+.btn-sil:hover{background:#fee2e2;color:#b91c1c}
+.photo-label{position:absolute;bottom:0;left:0;right:0;background:#007b52;color:#fff;font-size:10px;font-weight:700;text-align:center;padding:2px;text-transform:uppercase}
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <h2>Elanı Düzəlt — #{{ elan.nomre }}</h2>
-  <div class="form-box">
+<div class="pg pg--form">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Elana düzəliş</span>
+  </nav>
+
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='edit' %} Redaktə</span>
+    <h1>Elana düzəliş et — <span>#{{ elan.nomre }}</span></h1>
+    <p>Elanın məlumatlarını və şəkillərini yeniləyə bilərsiniz.</p>
+  </div>
+
+  <div class="panel">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      
       <div class="field">
-        <label>Xidmətin adı</label>
-        <input name="bashliq" value="{{ elan.bashliq }}" required>
+        <label for="id_bashliq">Xidmətin adı <span class="req">*</span></label>
+        <input id="id_bashliq" name="bashliq" value="{{ elan.bashliq }}" required>
       </div>
-      <div class="field">
-        <label>Kateqoriya</label>
-        <select name="kategori" required>
-          {% for kat in kateqoriyalar %}
-            {% if not kat.ust_kategori %}
-              <optgroup label="{{ kat.ad }}">
-                {% for alt in kat.alt_kateqoriyalar.all %}
-                  <option value="{{ alt.pk }}" {% if elan.kategori == alt %}selected{% endif %}>{{ alt.ad }}</option>
-                {% endfor %}
-              </optgroup>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-      <div class="field">
-        <label>Qiymət (₼)</label>
-        <input name="qiymet" type="number" value="{{ elan.qiymet|default:'' }}">
-      </div>
-      <div class="field">
-        <label>Mobil nömrə</label>
-        <div class="phone-wrap">
-          <span class="phone-prefix">+994</span>
-          <input name="telefon" type="tel" value="{{ elan.telefon|slice:'4:' }}" maxlength="9">
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_kategori">Kateqoriya <span class="req">*</span></label>
+          <select id="id_kategori" name="kategori" required>
+            {% for kat in kateqoriyalar %}
+              {% if not kat.ust_kategori %}
+                <optgroup label="{{ kat.ad }}">
+                  {% for alt in kat.alt_kateqoriyalar.all %}
+                    <option value="{{ alt.pk }}" {% if elan.kategori == alt %}selected{% endif %}>{{ alt.ad }}</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="id_qiymet">Qiymət (₼)</label>
+          <input id="id_qiymet" name="qiymet" type="number" step="any" value="{{ elan.qiymet|default:'' }}">
         </div>
       </div>
-      <div class="field">
-        <label>Bölgə</label>
-        <select name="sheher" required>
-          <option value="">Seçin...</option>
-          <optgroup label="Bakı">
-            <option {% if elan.sheher == 'Bakı' %}selected{% endif %}>Bakı</option>
-            <option {% if elan.sheher == 'Bakı — Binəqədi' %}selected{% endif %}>Bakı — Binəqədi</option>
-            <option {% if elan.sheher == 'Bakı — Xəzər' %}selected{% endif %}>Bakı — Xəzər</option>
-            <option {% if elan.sheher == 'Bakı — Xətai' %}selected{% endif %}>Bakı — Xətai</option>
-            <option {% if elan.sheher == 'Bakı — Nərimanov' %}selected{% endif %}>Bakı — Nərimanov</option>
-            <option {% if elan.sheher == 'Bakı — Nəsimi' %}selected{% endif %}>Bakı — Nəsimi</option>
-            <option {% if elan.sheher == 'Bakı — Nizami' %}selected{% endif %}>Bakı — Nizami</option>
-            <option {% if elan.sheher == 'Bakı — Sabail' %}selected{% endif %}>Bakı — Sabail</option>
-            <option {% if elan.sheher == 'Bakı — Sabunçu' %}selected{% endif %}>Bakı — Sabunçu</option>
-            <option {% if elan.sheher == 'Bakı — Suraxanı' %}selected{% endif %}>Bakı — Suraxanı</option>
-            <option {% if elan.sheher == 'Bakı — Abşeron' %}selected{% endif %}>Bakı — Abşeron</option>
-          </optgroup>
-          <optgroup label="Digər şəhər və rayonlar">
-            <option {% if elan.sheher == 'Abşeron' %}selected{% endif %}>Abşeron</option><option {% if elan.sheher == 'Xırdalan' %}selected{% endif %}>Xırdalan</option>
-            <option {% if elan.sheher == 'Sumqayıt' %}selected{% endif %}>Sumqayıt</option><option {% if elan.sheher == 'Gəncə' %}selected{% endif %}>Gəncə</option>
-            <option {% if elan.sheher == 'Lənkəran' %}selected{% endif %}>Lənkəran</option><option {% if elan.sheher == 'Mingəçevir' %}selected{% endif %}>Mingəçevir</option>
-            <option {% if elan.sheher == 'Naxçıvan' %}selected{% endif %}>Naxçıvan</option><option {% if elan.sheher == 'Şirvan' %}selected{% endif %}>Şirvan</option>
-            <option {% if elan.sheher == 'Ağcabədi' %}selected{% endif %}>Ağcabədi</option><option {% if elan.sheher == 'Ağdam' %}selected{% endif %}>Ağdam</option>
-            <option {% if elan.sheher == 'Ağdaş' %}selected{% endif %}>Ağdaş</option><option {% if elan.sheher == 'Ağstafa' %}selected{% endif %}>Ağstafa</option>
-            <option {% if elan.sheher == 'Astara' %}selected{% endif %}>Astara</option><option {% if elan.sheher == 'Balakən' %}selected{% endif %}>Balakən</option>
-            <option {% if elan.sheher == 'Bərdə' %}selected{% endif %}>Bərdə</option><option {% if elan.sheher == 'Beyləqan' %}selected{% endif %}>Beyləqan</option>
-            <option {% if elan.sheher == 'Biləsuvar' %}selected{% endif %}>Biləsuvar</option><option {% if elan.sheher == 'Cəlilabad' %}selected{% endif %}>Cəlilabad</option>
-            <option {% if elan.sheher == 'Daşkəsən' %}selected{% endif %}>Daşkəsən</option><option {% if elan.sheher == 'Füzuli' %}selected{% endif %}>Füzuli</option>
-            <option {% if elan.sheher == 'Gədəbəy' %}selected{% endif %}>Gədəbəy</option><option {% if elan.sheher == 'Goranboy' %}selected{% endif %}>Goranboy</option>
-            <option {% if elan.sheher == 'Göyçay' %}selected{% endif %}>Göyçay</option><option {% if elan.sheher == 'Hacıqabul' %}selected{% endif %}>Hacıqabul</option>
-            <option {% if elan.sheher == 'İmişli' %}selected{% endif %}>İmişli</option><option {% if elan.sheher == 'İsmayıllı' %}selected{% endif %}>İsmayıllı</option>
-            <option {% if elan.sheher == 'Kürdəmir' %}selected{% endif %}>Kürdəmir</option><option {% if elan.sheher == 'Lerik' %}selected{% endif %}>Lerik</option>
-            <option {% if elan.sheher == 'Masallı' %}selected{% endif %}>Masallı</option><option {% if elan.sheher == 'Neftçala' %}selected{% endif %}>Neftçala</option>
-            <option {% if elan.sheher == 'Oğuz' %}selected{% endif %}>Oğuz</option><option {% if elan.sheher == 'Qax' %}selected{% endif %}>Qax</option>
-            <option {% if elan.sheher == 'Qazax' %}selected{% endif %}>Qazax</option><option {% if elan.sheher == 'Qəbələ' %}selected{% endif %}>Qəbələ</option>
-            <option {% if elan.sheher == 'Quba' %}selected{% endif %}>Quba</option><option {% if elan.sheher == 'Qusar' %}selected{% endif %}>Qusar</option>
-            <option {% if elan.sheher == 'Saatlı' %}selected{% endif %}>Saatlı</option><option {% if elan.sheher == 'Sabirabad' %}selected{% endif %}>Sabirabad</option>
-            <option {% if elan.sheher == 'Salyan' %}selected{% endif %}>Salyan</option><option {% if elan.sheher == 'Şamaxı' %}selected{% endif %}>Şamaxı</option>
-            <option {% if elan.sheher == 'Şəki' %}selected{% endif %}>Şəki</option><option {% if elan.sheher == 'Şəmkir' %}selected{% endif %}>Şəmkir</option>
-            <option {% if elan.sheher == 'Tovuz' %}selected{% endif %}>Tovuz</option><option {% if elan.sheher == 'Ucar' %}selected{% endif %}>Ucar</option>
-            <option {% if elan.sheher == 'Yardımlı' %}selected{% endif %}>Yardımlı</option><option {% if elan.sheher == 'Zaqatala' %}selected{% endif %}>Zaqatala</option>
-            <option {% if elan.sheher == 'Zərdab' %}selected{% endif %}>Zərdab</option>
-          </optgroup>
-        </select>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_telefon">Mobil nömrə <span class="req">*</span></label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="padding:10px 14px;background:#f6fbf9;border:1px solid #d7e2de;border-radius:8px;font-size:13px;font-weight:700;color:#007b52">+994</span>
+            <input id="id_telefon" name="telefon" type="tel" value="{{ elan.telefon|slice:'4:' }}" maxlength="9" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="id_sheher">Bölgə / Şəhər <span class="req">*</span></label>
+          <select id="id_sheher" name="sheher" required>
+            <option value="">Seçin...</option>
+            <optgroup label="Bakı">
+              <option {% if elan.sheher == 'Bakı' %}selected{% endif %}>Bakı</option>
+              <option {% if elan.sheher == 'Bakı — Binəqədi' %}selected{% endif %}>Bakı — Binəqədi</option>
+              <option {% if elan.sheher == 'Bakı — Xəzər' %}selected{% endif %}>Bakı — Xəzər</option>
+              <option {% if elan.sheher == 'Bakı — Xətai' %}selected{% endif %}>Bakı — Xətai</option>
+              <option {% if elan.sheher == 'Bakı — Nərimanov' %}selected{% endif %}>Bakı — Nərimanov</option>
+              <option {% if elan.sheher == 'Bakı — Nəsimi' %}selected{% endif %}>Bakı — Nəsimi</option>
+              <option {% if elan.sheher == 'Bakı — Nizami' %}selected{% endif %}>Bakı — Nizami</option>
+              <option {% if elan.sheher == 'Bakı — Sabail' %}selected{% endif %}>Bakı — Sabail</option>
+              <option {% if elan.sheher == 'Bakı — Sabunçu' %}selected{% endif %}>Bakı — Sabunçu</option>
+              <option {% if elan.sheher == 'Bakı — Suraxanı' %}selected{% endif %}>Bakı — Suraxanı</option>
+              <option {% if elan.sheher == 'Bakı — Abşeron' %}selected{% endif %}>Bakı — Abşeron</option>
+            </optgroup>
+            <optgroup label="Digər şəhər və rayonlar">
+              <option {% if elan.sheher == 'Abşeron' %}selected{% endif %}>Abşeron</option><option {% if elan.sheher == 'Xırdalan' %}selected{% endif %}>Xırdalan</option>
+              <option {% if elan.sheher == 'Sumqayıt' %}selected{% endif %}>Sumqayıt</option><option {% if elan.sheher == 'Gəncə' %}selected{% endif %}>Gəncə</option>
+              <option {% if elan.sheher == 'Lənkəran' %}selected{% endif %}>Lənkəran</option><option {% if elan.sheher == 'Mingəçevir' %}selected{% endif %}>Mingəçevir</option>
+              <option {% if elan.sheher == 'Naxçıvan' %}selected{% endif %}>Naxçıvan</option><option {% if elan.sheher == 'Şirvan' %}selected{% endif %}>Şirvan</option>
+              <option {% if elan.sheher == 'Ağcabədi' %}selected{% endif %}>Ağcabədi</option><option {% if elan.sheher == 'Ağdam' %}selected{% endif %}>Ağdam</option>
+              <option {% if elan.sheher == 'Ağdaş' %}selected{% endif %}>Ağdaş</option><option {% if elan.sheher == 'Ağstafa' %}selected{% endif %}>Ağstafa</option>
+              <option {% if elan.sheher == 'Astara' %}selected{% endif %}>Astara</option><option {% if elan.sheher == 'Balakən' %}selected{% endif %}>Balakən</option>
+              <option {% if elan.sheher == 'Bərdə' %}selected{% endif %}>Bərdə</option><option {% if elan.sheher == 'Beyləqan' %}selected{% endif %}>Beyləqan</option>
+              <option {% if elan.sheher == 'Biləsuvar' %}selected{% endif %}>Biləsuvar</option><option {% if elan.sheher == 'Cəlilabad' %}selected{% endif %}>Cəlilabad</option>
+              <option {% if elan.sheher == 'Daşkəsən' %}selected{% endif %}>Daşkəsən</option><option {% if elan.sheher == 'Füzuli' %}selected{% endif %}>Füzuli</option>
+              <option {% if elan.sheher == 'Gədəbəy' %}selected{% endif %}>Gədəbəy</option><option {% if elan.sheher == 'Goranboy' %}selected{% endif %}>Goranboy</option>
+              <option {% if elan.sheher == 'Göyçay' %}selected{% endif %}>Göyçay</option><option {% if elan.sheher == 'Hacıqabul' %}selected{% endif %}>Hacıqabul</option>
+              <option {% if elan.sheher == 'İmişli' %}selected{% endif %}>İmişli</option><option {% if elan.sheher == 'İsmayıllı' %}selected{% endif %}>İsmayıllı</option>
+              <option {% if elan.sheher == 'Kürdəmir' %}selected{% endif %}>Kürdəmir</option><option {% if elan.sheher == 'Lerik' %}selected{% endif %}>Lerik</option>
+              <option {% if elan.sheher == 'Masallı' %}selected{% endif %}>Masallı</option><option {% if elan.sheher == 'Neftçala' %}selected{% endif %}>Neftçala</option>
+              <option {% if elan.sheher == 'Oğuz' %}selected{% endif %}>Oğuz</option><option {% if elan.sheher == 'Qax' %}selected{% endif %}>Qax</option>
+              <option {% if elan.sheher == 'Qazax' %}selected{% endif %}>Qazax</option><option {% if elan.sheher == 'Qəbələ' %}selected{% endif %}>Qəbələ</option>
+              <option {% if elan.sheher == 'Quba' %}selected{% endif %}>Quba</option><option {% if elan.sheher == 'Qusar' %}selected{% endif %}>Qusar</option>
+              <option {% if elan.sheher == 'Saatlı' %}selected{% endif %}>Saatlı</option><option {% if elan.sheher == 'Sabirabad' %}selected{% endif %}>Sabirabad</option>
+              <option {% if elan.sheher == 'Salyan' %}selected{% endif %}>Salyan</option><option {% if elan.sheher == 'Şamaxı' %}selected{% endif %}>Şamaxı</option>
+              <option {% if elan.sheher == 'Şəki' %}selected{% endif %}>Şəki</option><option {% if elan.sheher == 'Şəmkir' %}selected{% endif %}>Şəmkir</option>
+              <option {% if elan.sheher == 'Tovuz' %}selected{% endif %}>Tovuz</option><option {% if elan.sheher == 'Ucar' %}selected{% endif %}>Ucar</option>
+              <option {% if elan.sheher == 'Yardımlı' %}selected{% endif %}>Yardımlı</option><option {% if elan.sheher == 'Zaqatala' %}selected{% endif %}>Zaqatala</option>
+              <option {% if elan.sheher == 'Zərdab' %}selected{% endif %}>Zərdab</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
+
       <div class="field">
-        <label>Açıqlama</label>
-        <textarea name="acaqlama" required>{{ elan.acaqlama }}</textarea>
+        <label for="id_acaqlama">Açıqlama <span class="req">*</span></label>
+        <textarea id="id_acaqlama" name="acaqlama" required>{{ elan.acaqlama }}</textarea>
       </div>
+
       {% with elan.shekillar.all as shekillar %}
       {% if shekillar %}
       <div class="field">
@@ -118,15 +131,15 @@
         <div class="photos-grid">
           {% for sh in shekillar %}
           <div class="photo-item {% if sh.esas %}esas{% endif %}" id="photo-{{ sh.pk }}">
-            <img src="{{ sh.shekil.url }}" alt="Şəkil">
+            <img src="{{ sh.shekil.url }}" alt="Şəkil" loading="lazy">
             <div class="photo-actions">
               <button type="button" class="photo-btn btn-esas {% if sh.esas %}aktiv{% endif %}" title="Əsas şəkil et"
                       data-esas-url="{% url 'shekil_esas' sh.pk %}" data-pk="{{ sh.pk }}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="{% if sh.esas %}#fff{% else %}none{% endif %}" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {% include 'partials/ui_icon.html' with name='star' %}
               </button>
               <button type="button" class="photo-btn btn-sil" title="Şəkli sil"
                       data-sil-url="{% url 'shekil_sil' sh.pk %}" data-pk="{{ sh.pk }}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                {% include 'partials/ui_icon.html' with name='trash' %}
               </button>
             </div>
             {% if sh.esas %}<div class="photo-label">Əsas</div>{% endif %}
@@ -136,14 +149,25 @@
       </div>
       {% endif %}
       {% endwith %}
+
       <div class="field">
-        <label>Yeni şəkil əlavə et</label>
+        <label>Yeni şəkillər əlavə et</label>
         <input type="file" name="shekillar" multiple accept="image/*">
       </div>
-      <button class="submit-btn" type="submit">Yadda Saxla</button>
+
+      <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" type="submit" style="min-width:180px">
+          {% include 'partials/ui_icon.html' with name='check' %}
+          Yadda Saxla
+        </button>
+        <a href="{% url 'elan_detail' elan.pk elan.slug %}" class="btn btn-outline">
+          Elana bax
+        </a>
+      </div>
     </form>
   </div>
 </div>
+
 <script>
 (function(){
   function csrf(){
@@ -171,17 +195,13 @@
       post(btn.getAttribute('data-esas-url')).then(function(r){
         if(!r.ok){ alert('Xəta baş verdi'); return; }
         document.querySelectorAll('.photo-item').forEach(function(pi){ pi.classList.remove('esas'); var lbl=pi.querySelector('.photo-label'); if(lbl) lbl.remove(); });
-        document.querySelectorAll('.btn-esas').forEach(function(b){
-          b.classList.remove('aktiv');
-          var svg=b.querySelector('svg'); if(svg) svg.setAttribute('fill','none');
-        });
+        document.querySelectorAll('.btn-esas').forEach(function(b){ b.classList.remove('aktiv'); });
         var item=document.getElementById('photo-'+pk);
         if(item){
           item.classList.add('esas');
           var lbl=document.createElement('div'); lbl.className='photo-label'; lbl.textContent='Əsas'; item.appendChild(lbl);
         }
         btn.classList.add('aktiv');
-        var svg=btn.querySelector('svg'); if(svg) svg.setAttribute('fill','#fff');
       });
     });
   });

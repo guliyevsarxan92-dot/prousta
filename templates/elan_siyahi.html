@@ -48,122 +48,57 @@
 }
 </script>
 {% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:1200px;margin:30px auto;padding:0 20px}
-.page-title{font-size:28px;font-weight:800;text-align:center;margin-bottom:8px}
-.page-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:30px}
-.filter-bar{display:flex;gap:12px;margin:0 auto 30px;max-width:680px;flex-wrap:wrap}
-.filter-bar input{flex:1;padding:13px 18px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;min-width:220px}
-.filter-bar input:focus{border-color:var(--p);outline:none}
-.filter-bar button{padding:13px 26px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:700;font-size:15px;border:none;cursor:pointer}
-
-.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:30px}
-.kat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.2s}
-.kat-card[open]{border-color:var(--p);box-shadow:0 8px 24px rgba(26,71,200,.12)}
-.kat-card summary{list-style:none;cursor:pointer;padding:18px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;color:var(--tx);user-select:none;transition:.2s}
-.kat-card summary::-webkit-details-marker{display:none}
-.kat-card summary:hover{background:var(--pl)}
-.kat-card[open] summary{background:var(--pl);color:var(--p);border-bottom:1px solid var(--border)}
-.kat-icon{width:44px;height:44px;border-radius:12px;background:var(--pl);display:flex;align-items:center;justify-content:center;color:var(--p);flex-shrink:0;transition:.2s}
-.kat-icon svg{width:24px;height:24px;stroke-width:2}
-.kat-card[open] .kat-icon{background:var(--p);color:#fff;transform:scale(1.05)}
-.kat-card:hover .kat-icon{background:var(--p);color:#fff}
-.kat-info{flex:1;min-width:0}
-.kat-name{display:block;font-size:14px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kat-count{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
-.kat-card[open] .kat-count{color:var(--p)}
-.kat-arrow{flex-shrink:0;transition:.3s;color:var(--muted)}
-.kat-card[open] .kat-arrow{transform:rotate(180deg);color:var(--p)}
-.alt-list{padding:8px;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow-y:auto}
-.alt-list a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--tx);font-weight:500;transition:.15s}
-.alt-list a:hover{background:var(--pl);color:var(--p);padding-left:16px}
-.alt-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:.15s}
-.alt-list a:hover::before{background:var(--p);width:6px;height:6px}
-.kat-view-all{margin-top:6px;padding:10px 12px !important;border-top:1px solid var(--border);color:var(--p) !important;font-weight:700 !important;font-size:13px}
-.kat-view-all::before{display:none !important}
-
-.search-title{font-size:20px;font-weight:700;margin-bottom:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.kart{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:.2s;position:relative}
-.kart:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.kart-img{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden}
-.kart-img img{width:100%;height:180px;object-fit:cover}
-.kart-body{padding:14px}
-.kart-title{font-weight:600;font-size:15px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kart-price{color:var(--p);font-weight:700;font-size:16px;margin-bottom:6px}
-.kart-meta{font-size:12px;color:var(--muted)}
-.vip-badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
-.vip-badge.vip{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
-.vip-badge.super_vip{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
-
-@media(max-width:768px){
-  .page-wrap{padding:0 12px}
-  .page-title{font-size:22px}
-  .cats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .kat-card summary{padding:12px 10px;gap:8px;font-size:13px}
-  .kat-icon{width:38px;height:38px;border-radius:10px}
-  .kat-icon svg{width:20px;height:20px}
-  .kat-name{font-size:12px}
-  .kat-count{font-size:10px}
-  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
-  .kart-img{height:140px}
-  .kart-img img{height:140px}
-  .kart-body{padding:10px}
-  .kart-title{font-size:13px}
-  .kart-price{font-size:14px}
-  .filter-bar input{min-width:0}
-}
-</style>
-{% endblock %}
 {% block content %}
-<div class="page-wrap">
-  {% if axtaris %}
-    <h1 class="page-title">Axtarış Nəticələri</h1>
-    <p class="page-sub">"<strong>{{ axtaris }}</strong>" üçün tapılan elanlar</p>
-  {% else %}
-    <h1 class="page-title">Bütün Elanlar</h1>
-    <p class="page-sub">VIP elanlar ilk sırada göstərilir</p>
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}<span aria-current="page">{% if axtaris %}Axtarış{% else %}Bütün elanlar{% endif %}</span></nav>
+
+  <section class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.paginator.count }} aktiv elan</span>
+    {% if axtaris %}
+      <h1>“{{ axtaris }}” üçün <span>nəticələr</span></h1>
+      <p>Axtarışınıza uyğun usta və xidmət elanları. Premium elanlar ilk sırada göstərilir.</p>
+    {% else %}
+      <h1>Bütün <span>elanlar</span></h1>
+      <p>Elektrikdən mebelə qədər yüzlərlə xidmət. Premium elanlar ilk sırada göstərilir.</p>
+    {% endif %}
+    <form class="search-bar" method="get" role="search">
+      <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Elan axtar (məs: kombi ustası)" aria-label="Elan axtar"></label>
+      <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
+    </form>
+  </section>
+
+  {% if kateqoriyalar and not axtaris %}
+  <section class="pg-section">
+    <div class="sec-head"><h2>Kateqoriyalar</h2></div>
+    <div class="cat-grid">
+      {% for kat in kateqoriyalar %}
+      <details class="cat-card">
+        <summary>{% include 'partials/kat_icon.html' %}<span class="cat-info"><span class="cat-name">{{ kat.ad }}</span><span class="cat-count">{{ kat.alt_kateqoriyalar.all|length }} alt kateqoriya</span></span>{% include 'partials/ui_icon.html' with name='down' class='cat-arrow' %}</summary>
+        <div class="cat-sub">
+          {% for alt in kat.alt_kateqoriyalar.all %}<a href="{% url 'xidmet_detail' alt.slug %}">{{ alt.ad }}</a>{% endfor %}
+          <a href="{% url 'xidmet_detail' kat.slug %}" class="cat-all">Hamısına bax →</a>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+  </section>
   {% endif %}
 
-  <form class="filter-bar" method="get">
-    <input name="q" value="{{ axtaris }}" placeholder="Elan axtar (məs: kombi ustası)...">
-    <button type="submit">Axtar</button>
-  </form>
-
-    <h2 class="search-title">{{ elanlar.paginator.count }} elan</h2>
-    <div class="grid">
-    {% for elan in elanlar %}
-      <a href="{{ elan.get_absolute_url }}" class="kart">
-        <div class="kart-img">
-          {% with elan.shekillar.all as sh %}{% if sh %}
-            <img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
-          {% else %}Şəkil yoxdur{% endif %}{% endwith %}
+  <section class="pg-section">
+    <div class="sec-head"><h2>{% if axtaris %}Tapılan elanlar{% else %}Son elanlar{% endif %}</h2><small>{{ elanlar.paginator.count }} elan</small></div>
+    <div class="service-grid">
+      {% for elan in elanlar %}
+        {% include 'partials/home_service_card.html' %}
+      {% empty %}
+        <div class="empty-state">
+          <span class="empty-ico">{% include 'partials/ui_icon.html' with name='search' %}</span>
+          <h3>Heç bir elan tapılmadı</h3>
+          <p>Başqa açar söz yoxlayın və ya kateqoriyalara baxın.</p>
+          <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Bütün elanlar</a>
         </div>
-        {% if elan.vip_status != 'normal' %}
-          <div class="vip-badge {{ elan.vip_status }}">
-            {% if elan.vip_status == 'vip' %}VIP{% else %}Super VIP{% endif %}
-          </div>
-        {% endif %}
-        <div class="kart-body">
-          <div class="kart-title">{{ elan.bashliq }}</div>
-          <div class="kart-price">{% if elan.qiymet %}{{ elan.qiymet }} ₼{% else %}Razılaşma ilə{% endif %}</div>
-        </div>
-      </a>
-    {% empty %}
-      <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px">Heç bir elan tapılmadı.</p>
-    {% endfor %}
+      {% endfor %}
     </div>
-    {% if elanlar.paginator.num_pages > 1 %}
-    <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:32px;flex-wrap:wrap">
-      {% if elanlar.has_previous %}
-        <a href="?q={{ axtaris }}&page={{ elanlar.previous_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">← Əvvəlki</a>
-      {% endif %}
-      <span style="padding:8px 16px;background:var(--p);color:#fff;border-radius:var(--r);font-weight:600">{{ elanlar.number }} / {{ elanlar.paginator.num_pages }}</span>
-      {% if elanlar.has_next %}
-        <a href="?q={{ axtaris }}&page={{ elanlar.next_page_number }}" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-weight:600;color:var(--muted)">Sonrakı →</a>
-      {% endif %}
-    </div>
-    {% endif %}
+    {% include 'partials/pager.html' with page=elanlar q=axtaris %}
+  </section>
 </div>
 {% endblock %}

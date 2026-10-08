@@ -1,74 +1,121 @@
 {% extends 'base.html' %}
 {% block title %}Mesajlar — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block style %}
-<style>
-.page-wrap{max-width:800px;margin:40px auto;padding:0 20px}
-.page-wrap h2{font-size:22px;font-weight:700;margin-bottom:24px}
-.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:2px solid var(--border)}
-.tab{padding:10px 20px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s}
-.tab.aktiv{color:var(--p);border-bottom-color:var(--p)}
-.tab-content{display:none}
-.tab-content.aktiv{display:block}
-.mesaj-kart{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;transition:.2s}
-.mesaj-kart:hover{border-color:var(--p)}
-.avatar{width:42px;height:42px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--p);font-size:16px;flex-shrink:0}
-.mesaj-info{flex:1}
-.mesaj-ad{font-weight:600;font-size:14px}
-.mesaj-elan{font-size:12px;color:var(--muted);margin-bottom:4px}
-.mesaj-metn{font-size:14px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:500px}
-.mesaj-tarix{font-size:12px;color:var(--muted);white-space:nowrap}
-.yeni-badge{background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
-.bosh{color:var(--muted);font-size:14px;padding:20px 0}
-</style>
-{% endblock %}
+
 {% block content %}
-<div class="page-wrap">
-  <h2>Mesajlar</h2>
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Mesajlar</span>
+  </nav>
+
+  <div class="pg-hero">
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='chat' %} Daxili poçt</span>
+    <h1>Mənim <span>mesajlarım</span></h1>
+    <p>Müştərilər və ustalarla birbaşa yazışmalarınız.</p>
+  </div>
+
   <div class="tabs">
-    <div class="tab aktiv" onclick="showTab('qelen', this)">Gələn ({{ qelen_say }})</div>
-    <div class="tab" onclick="showTab('gonderilenler', this)">Göndərilən ({{ gonderilenler_say }})</div>
+    <button type="button" class="is-active" onclick="showTab('qelen', this)">
+      Gələn mesajlar ({{ qelen_say }})
+    </button>
+    <button type="button" onclick="showTab('gonderilenler', this)">
+      Göndərilənlər ({{ gonderilenler_say }})
+    </button>
   </div>
-  <div id="qelen" class="tab-content aktiv">
-    {% for m in qelen %}
-    <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
-      <div class="avatar">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad|first|upper }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name|first|upper }}{% else %}U{% endif %}</div>
-      <div class="mesaj-info">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span class="mesaj-ad">{% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad }} {{ m.gonderici.profil.soyad }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name }} {{ m.gonderici.last_name }}{% else %}Usta{% endif %}</span>
-          {% if not m.oxundu %}<span class="yeni-badge">Yeni</span>{% endif %}
+
+  <!-- Gələn Mesajlar -->
+  <div id="qelen" class="tab-pane">
+    {% if qelen %}
+    <div class="list">
+      {% for m in qelen %}
+      <a href="{% url 'mesaj_oxu' m.pk %}" class="list-row {% if not m.oxundu %}is-unread{% endif %}">
+        <div class="avatar">
+          {% if m.gonderici.profil.avatar %}
+            <img src="{{ m.gonderici.profil.avatar.url }}" alt="{{ m.gonderici.username }}" loading="lazy">
+          {% else %}
+            {% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad|first|upper }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name|first|upper }}{% else %}U{% endif %}
+          {% endif %}
         </div>
-        {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
-        <div class="mesaj-metn">{{ m.metn }}</div>
-      </div>
-      <div class="mesaj-tarix">{{ m.yaradildi|date:"d.m.Y H:i" }}</div>
-    </a>
-    {% empty %}
-    <p class="bosh">Heç bir mesaj yoxdur.</p>
-    {% endfor %}
+        <div class="row-main">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+            <span class="row-title">
+              {% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad }} {{ m.gonderici.profil.soyad }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name }} {{ m.gonderici.last_name }}{% else %}{{ m.gonderici.username }}{% endif %}
+            </span>
+            {% if not m.oxundu %}
+              <span class="badge badge--green">Yeni</span>
+            {% endif %}
+          </div>
+          {% if m.elan %}
+            <div style="font-size:11px;color:#007b52;font-weight:600;margin-bottom:2px">
+              {% include 'partials/ui_icon.html' with name='tag' %} {{ m.elan.bashliq }}
+            </div>
+          {% endif %}
+          <div class="row-sub">{{ m.metn }}</div>
+        </div>
+        <div class="row-side">
+          {{ m.yaradildi|date:"d.m.Y H:i" }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-ico">{% include 'partials/ui_icon.html' with name='chat' %}</span>
+      <h3>Gələn mesajınız yoxdur</h3>
+      <p>Yeni mesajlar gəldikdə burada görünəcək.</p>
+    </div>
+    {% endif %}
   </div>
-  <div id="gonderilenler" class="tab-content">
-    {% for m in gonderilenler %}
-    <a href="/mesaj/{{ m.pk }}/" class="mesaj-kart" style="text-decoration:none;color:inherit">
-      <div class="avatar">{% if m.alici.profil.ad %}{{ m.alici.profil.ad|first|upper }}{% elif m.alici.first_name %}{{ m.alici.first_name|first|upper }}{% else %}U{% endif %}</div>
-      <div class="mesaj-info">
-        <div style="margin-bottom:4px"><span class="mesaj-ad">{% if m.alici.profil.ad %}{{ m.alici.profil.ad }} {{ m.alici.profil.soyad }}{% elif m.alici.first_name %}{{ m.alici.first_name }} {{ m.alici.last_name }}{% else %}Usta{% endif %}</span></div>
-        {% if m.elan %}<div class="mesaj-elan">📋 {{ m.elan.bashliq }}</div>{% endif %}
-        <div class="mesaj-metn">{{ m.metn }}</div>
-      </div>
-      <div class="mesaj-tarix">{{ m.yaradildi|date:"d.m.Y H:i" }}</div>
-    </a>
-    {% empty %}
-    <p class="bosh">Heç bir mesaj göndərməmisiniz.</p>
-    {% endfor %}
+
+  <!-- Göndərilən Mesajlar -->
+  <div id="gonderilenler" class="tab-pane" style="display:none">
+    {% if gonderilenler %}
+    <div class="list">
+      {% for m in gonderilenler %}
+      <a href="{% url 'mesaj_oxu' m.pk %}" class="list-row">
+        <div class="avatar">
+          {% if m.alici.profil.avatar %}
+            <img src="{{ m.alici.profil.avatar.url }}" alt="{{ m.alici.username }}" loading="lazy">
+          {% else %}
+            {% if m.alici.profil.ad %}{{ m.alici.profil.ad|first|upper }}{% elif m.alici.first_name %}{{ m.alici.first_name|first|upper }}{% else %}U{% endif %}
+          {% endif %}
+        </div>
+        <div class="row-main">
+          <div class="row-title">
+            {% if m.alici.profil.ad %}{{ m.alici.profil.ad }} {{ m.alici.profil.soyad }}{% elif m.alici.first_name %}{{ m.alici.first_name }} {{ m.alici.last_name }}{% else %}{{ m.alici.username }}{% endif %}
+          </div>
+          {% if m.elan %}
+            <div style="font-size:11px;color:#007b52;font-weight:600;margin-bottom:2px">
+              {% include 'partials/ui_icon.html' with name='tag' %} {{ m.elan.bashliq }}
+            </div>
+          {% endif %}
+          <div class="row-sub">{{ m.metn }}</div>
+        </div>
+        <div class="row-side">
+          {{ m.yaradildi|date:"d.m.Y H:i" }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-ico">{% include 'partials/ui_icon.html' with name='send' %}</span>
+      <h3>Göndərilmiş mesajınız yoxdur</h3>
+      <p>Ustaların elanlarına baxaraq sual verə bilərsiniz.</p>
+    </div>
+    {% endif %}
   </div>
 </div>
+
 <script>
-function showTab(id, el){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('aktiv'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktiv'));
-  document.getElementById(id).classList.add('aktiv');
-  el.classList.add('aktiv');
+function showTab(id, btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.style.display = 'none'; });
+  document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('is-active'); });
+  var target = document.getElementById(id);
+  if (target) target.style.display = 'block';
+  btn.classList.add('is-active');
 }
 </script>
 {% endblock %}
