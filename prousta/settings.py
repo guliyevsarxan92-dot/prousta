@@ -20,6 +20,10 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 INSTALLED_APPS = [
+    'unfold',
+    'unfold.contrib.filters',
+    'unfold.contrib.forms',
+    'unfold.contrib.inlines',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,13 +72,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prousta.wsgi.application'
 
-_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
+_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:5432/postgres"
 
 _raw_db_url = os.getenv('DATABASE_URL', '').strip()
 if not _raw_db_url or 'frankfurt-postgres.render.com' in _raw_db_url or 'dpg-' in _raw_db_url or 'prousta-db' in _raw_db_url:
     _active_db_url = _SUPABASE_DB_URL
 else:
     _active_db_url = _raw_db_url
+
+# Supabase pooler 6543 portu transaction/read-only ola bilər, 5432 oxuma-yazma üçün işlədilir
+if 'pooler.supabase.com:6543' in _active_db_url:
+    _active_db_url = _active_db_url.replace(':6543', ':5432')
 
 DATABASES = {
     'default': dj_database_url.parse(
@@ -182,3 +190,155 @@ SOCIAL_AUTH_PIPELINE = (
     # Google hesabındakı dəyərlərə geri qaytarırdı.
     'core.pipeline.create_profil',
 )
+
+# ============================================================
+# Unfold Admin Configuration
+# ============================================================
+from django.urls import reverse_lazy
+
+UNFOLD = {
+    "SITE_TITLE": "Prousta İdarəetmə Paneli",
+    "SITE_HEADER": "Prousta Admin",
+    "SITE_SUBHEADER": "Elan və Usta Xidmətləri Platforması",
+    "SITE_URL": "/",
+    "SITE_ICON": {
+        "light": lambda request: "/static/brand-logo.svg",
+        "dark": lambda request: "/static/brand-logo.svg",
+    },
+    "SITE_LOGO": {
+        "light": lambda request: "/static/brand-logo.svg",
+        "dark": lambda request: "/static/brand-logo.svg",
+    },
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "type": "image/svg+xml",
+            "href": lambda request: "/static/favicon.svg",
+        },
+    ],
+    "DASHBOARD_CALLBACK": "core.admin.dashboard_callback",
+    "COLORS": {
+        "primary": {
+            "50": "240 253 244",
+            "100": "220 252 231",
+            "200": "187 247 208",
+            "300": "134 239 172",
+            "400": "74 222 128",
+            "500": "34 197 94",
+            "600": "22 163 74",
+            "700": "21 128 61",
+            "800": "22 101 52",
+            "900": "20 83 45",
+            "950": "5 46 22",
+        },
+    },
+    "COMMAND": {
+        "search_models": True,
+        "show_history": True,
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "İdarəetmə Mərkəzi",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Dashboard / Statistika",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": "Elanlar və Xidmətlər",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Elanlar",
+                        "icon": "campaign",
+                        "link": reverse_lazy("admin:core_elan_changelist"),
+                        "badge": "core.admin.badge_elan_gozlemede",
+                    },
+                    {
+                        "title": "Kateqoriyalar",
+                        "icon": "category",
+                        "link": reverse_lazy("admin:core_kategori_changelist"),
+                    },
+                    {
+                        "title": "Problemlər (Bloq / FAQ)",
+                        "icon": "help_center",
+                        "link": reverse_lazy("admin:core_problem_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Maliyyə və Ödənişlər",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Ödənişlər",
+                        "icon": "payments",
+                        "link": reverse_lazy("admin:core_odenis_changelist"),
+                        "badge": "core.admin.badge_odenis_gozlemede",
+                    },
+                    {
+                        "title": "Bank Məlumatları",
+                        "icon": "account_balance",
+                        "link": reverse_lazy("admin:core_bankmelumat_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Marketinq və Reklam",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Reklam Bannerləri",
+                        "icon": "ad_units",
+                        "link": reverse_lazy("admin:core_reklambanner_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "İstifadəçilər və Əlaqə",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "İstifadəçilər",
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": "Profillər",
+                        "icon": "badge",
+                        "link": reverse_lazy("admin:core_profil_changelist"),
+                    },
+                    {
+                        "title": "Mesajlar",
+                        "icon": "chat",
+                        "link": reverse_lazy("admin:core_mesaj_changelist"),
+                    },
+                    {
+                        "title": "Favoritlər",
+                        "icon": "favorite",
+                        "link": reverse_lazy("admin:core_favorit_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Sistem və Təhlükəsizlik",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Qruplar və Hüquqlar",
+                        "icon": "shield_person",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}
+
