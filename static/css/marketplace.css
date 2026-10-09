@@ -7,9 +7,9 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 @media(min-width:769px) and (max-width:1100px){.nav-inner{gap:24px}.main-links{gap:18px}.site-footer .footer-top,.site-footer .footer-bottom{margin:0 24px}.site-footer .footer-top{gap:20px}.brand-wordmark{font-size:18px}}
 @media(max-width:768px){.site-nav{height:64px;padding:0 18px;position:sticky;top:0;z-index:100}.nav-inner{gap:12px}.main-links{display:none}.brand-mark{width:30px;height:30px}.brand-wordmark{font-size:18px}.main-links{display:none}.nav-actions{gap:8px}.nav-actions>.btn-outline,.nav-messages{display:none}.nav-actions .btn{font-size:11px;padding:9px 12px;min-height:34px}.hamburger{display:flex;background:none;margin-left:3px;padding:6px}.hamburger span{width:21px}.mobil-menu{top:64px}.site-footer .footer-top{grid-template-columns:1fr 1fr;padding:28px 20px;gap:25px}.site-footer .footer-brand{grid-column:1/-1}.site-footer .footer-categories{grid-column:auto}.site-footer .footer-categories>div{display:block}.site-footer .footer-bottom{padding:18px 20px;font-size:10px;align-items:flex-start;text-align:left;gap:6px}.site-footer .footer-bottom span:last-child{text-align:left}.site-footer{margin-top:24px}.msgs{top:74px}.brand{gap:6px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-.brand-logo-img{height:46px;width:auto;max-width:185px;object-fit:contain;display:block}
-.brand--light .brand-logo-img{filter:brightness(0) invert(1)}
-@media(max-width:768px){.brand-logo-img{height:38px;max-width:145px}}
+.brand-logo-img{height:32px;width:auto;max-width:170px;object-fit:contain;display:block;transition:opacity .15s ease}
+.brand:hover .brand-logo-img{opacity:.85}
+@media(max-width:768px){.brand-logo-img{height:26px;max-width:135px}}
 
 .side-ad-banner{display:none;position:fixed;top:var(--side-ad-top, 84px);height:calc(100vh - var(--side-ad-top, 84px) - 16px);max-height:620px;z-index:40;pointer-events:none;box-sizing:border-box;transition:top .08s ease-out}
 @media(min-width:1200px){

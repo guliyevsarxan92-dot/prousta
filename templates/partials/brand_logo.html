@@ -1,4 +1,9 @@
 {% load static %}
 <a href="{% url 'index' %}" class="brand{% if variant == 'light' %} brand--light{% endif %}" aria-label="Prousta.az — Ana səhifə">
-  <img src="{% static 'img/logo.png' %}" alt="Prousta.az" class="brand-logo-img" width="168" height="49">
+  {% if variant == 'light' %}
+    <img src="{% static 'img/logo_text_light.png' %}" alt="Prousta.az" class="brand-logo-img" width="160" height="32" loading="eager">
+  {% else %}
+    <img src="{% static 'img/logo_text_only.png' %}" alt="Prousta.az" class="brand-logo-img" width="160" height="32" loading="eager">
+  {% endif %}
 </a>
+
