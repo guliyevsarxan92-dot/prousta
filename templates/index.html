@@ -27,10 +27,13 @@
    <a href="{% url 'elan_siyahi' %}">Bütün kateqoriyalar {% include 'partials/ui_icon.html' with name='arrow' %}</a>
   </div>
   {% if home_is_demo %}<p class="design-note">Dizayn nümunəsi · Aşağıdakı elanlar nümayiş üçündür.</p>{% endif %}
-  <div class="service-grid" id="elanlar-grid">
-   {% for elan in elanlar %}
-    {% include 'partials/home_service_card.html' %}
-   {% empty %}
+   <div class="service-grid" id="elanlar-grid">
+    {% for elan in elanlar %}
+     {% include 'partials/home_service_card.html' %}
+     {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
+       {% include 'partials/in_grid_ad_banner.html' %}
+     {% endif %}
+    {% empty %}
     {% for service in example_services %}
      <article class="service-card">
       <div class="service-photo">

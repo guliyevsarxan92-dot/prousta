@@ -209,6 +209,19 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   {% include 'partials/side_ad_right.html' %}
 </aside>
 {% endif %}
+<script>
+(function(){
+  function p(){
+    var n = document.querySelector('.site-nav');
+    if(!n) return;
+    var b = n.getBoundingClientRect().bottom;
+    document.documentElement.style.setProperty('--side-ad-top', Math.max(Math.round(b + 12), 84) + 'px');
+  }
+  p();
+  window.addEventListener('scroll', p, {passive:true});
+  window.addEventListener('resize', p);
+})();
+</script>
 
 <main class="page-shell">
 {% block content %}{% endblock %}

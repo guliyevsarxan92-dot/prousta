@@ -308,4 +308,17 @@
     img.style.transition = 'opacity 0.5s ease';
     img.addEventListener('load', function () { img.style.opacity = '1'; });
   });
+
+  /* Sol və sağ yan reklamların üst menyunun altına düşməsinin qarşısını al */
+  function updateSideBannersPosition() {
+    var nav = document.querySelector('.site-nav');
+    if (!nav) return;
+    var rect = nav.getBoundingClientRect();
+    var targetTop = Math.max(Math.round(rect.bottom + 12), 84);
+    document.documentElement.style.setProperty('--side-ad-top', targetTop + 'px');
+  }
+  window.addEventListener('scroll', updateSideBannersPosition, { passive: true });
+  window.addEventListener('resize', updateSideBannersPosition);
+  window.addEventListener('load', updateSideBannersPosition);
+  updateSideBannersPosition();
 })();

@@ -250,7 +250,7 @@ class ReklamBanner(models.Model):
         ('ust', 'Üst Banner (Tam Enli - Ekran Boyu)'),
         ('sol', 'Sol Yan Banner (Desktop)'),
         ('sag', 'Sağ Yan Banner (Desktop)'),
-        ('orta', 'Orta / Horizontal Banner'),
+        ('orta', 'Orta / Elanlar Arası Horizontal Banner (Mobil və Veb)'),
     ]
 
     ANIMASIYA_CHOICES = [

@@ -89,6 +89,9 @@
     <div class="service-grid">
       {% for elan in elanlar %}
         {% include 'partials/home_service_card.html' %}
+        {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
+          {% include 'partials/in_grid_ad_banner.html' %}
+        {% endif %}
       {% empty %}
         <div class="empty-state">
           <span class="empty-ico">{% include 'partials/ui_icon.html' with name='search' %}</span>
