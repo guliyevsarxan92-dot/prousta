@@ -26,17 +26,22 @@
     {{ reklam_orta.html_kod|safe }}
   </div>
 </div>
-{% elif reklam_orta and not reklam_orta.bos_olduqda_gizlet %}
+{% elif not reklam_orta or not reklam_orta.bos_olduqda_gizlet %}
 <div class="in-grid-ad-banner in-grid-ad-banner--placeholder" aria-label="Elanlar Arası Reklam Yeri">
   <div class="in-grid-placeholder">
     <div class="in-grid-placeholder-left">
       <span class="in-grid-badge-title">REKLAM YERİ</span>
       <span class="in-grid-badge-size">1120 × 160</span>
-      <span class="in-grid-desc">Elanlar arasında xüsusi reklam yerləşdirmək üçün</span>
+      <span class="in-grid-desc">Reklam üçün müraciət edin: <strong style="color:#007b52">051 588 88 84</strong></span>
     </div>
-    <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Elanlar%20arasi%20banner)" class="in-grid-btn">
-      Əlaqə saxlayın
-    </a>
+    <div class="in-grid-placeholder-actions">
+      <a href="tel:0515888884" class="in-grid-btn in-grid-btn--phone">
+        📞 051 588 88 84
+      </a>
+      <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20elanlar%20aras%C4%B1%20reklam%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="in-grid-btn in-grid-btn--wp">
+        💬 WhatsApp
+      </a>
+    </div>
   </div>
 </div>
 {% endif %}

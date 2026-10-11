@@ -3,21 +3,23 @@ from django.contrib.auth import login, logout, authenticate, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Q, F, Case, When, IntegerField
-from django.db import transaction
+from django.db.models import Q, F, Case, When, IntegerField, TextField, Value
+from django.db.models.functions import MD5, Cast, Concat
+from django.db import connection, transaction
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 import random
 import secrets
 import re
 from datetime import timedelta
 from decimal import Decimal
 from django.core.paginator import Paginator
-from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem
+from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem, VipPaket
 
 def _aciqlama_qadaga_yoxla(metn):
     """Açıqlamada telefon nömrəsi və ya sayt adı varsa xəta mesajı qaytarır."""
@@ -44,21 +46,73 @@ def _update_elan_status():
             Q(vip_bitis__lte=now) | Q(vip_bitis__isnull=True)
         ).update(vip_status='normal', vip_siralama=0)
         Elan.objects.filter(vip_status='normal', vip_siralama__gt=0).update(vip_siralama=0)
+        Elan.objects.filter(vip_status__in=['vip', 'super_vip']).exclude(vip_siralama=1).update(vip_siralama=1)
+
+
+def get_or_create_listing_seed(request, session_key='elan_seed'):
+    """
+    Ədalətli rotasiya üçün seed təyin edir:
+    - URL-dəki ?seed= prioriteti var (səhifələmə və AJAX üçün ardıcıllığı qoruyur).
+    - Səhifələmə (page > 1) və ya AJAX sorğusunda mövcud sessiya seed-i saxlanılır.
+    - Səhifə 1-in təzə açılışında və ya yenilənməsində (F5) yeni təsadüfi seed generasiya olunur,
+      beləliklə daimi eyni elanlar üstdə qalmır, bütün elanlar bərabər göstərim şansı qazanır.
+    """
+    param_seed = request.GET.get('seed', '').strip()
+    if param_seed and re.match(r'^[a-zA-Z0-9_\-]+$', param_seed):
+        if hasattr(request, 'session'):
+            request.session[session_key] = param_seed
+        return param_seed
+
+    is_paging = bool(request.GET.get('page') and request.GET.get('page') != '1')
+    is_ajax = bool(request.GET.get('ajax') == '1' or request.headers.get('x-requested-with') == 'XMLHttpRequest')
+
+    if is_paging or is_ajax:
+        if hasattr(request, 'session'):
+            existing = request.session.get(session_key)
+            if existing:
+                return existing
+
+    new_seed = secrets.token_hex(4)
+    if hasattr(request, 'session'):
+        request.session[session_key] = new_seed
+    return new_seed
+
+
+def apply_fair_rotation(qs, seed):
+    """
+    Ədalətli göstərim / rotasiya sistemi:
+    1. Super VIP (vip_siralama=2) ən öndə
+    2. VIP (vip_siralama=1) növbəti
+    3. Normal elanlar (vip_siralama=0) sonra
+    Hər status daxilində elanlar seed əsasında psövdo-təsadüfi (MD5 hash)
+    ədalətli rotasiya ilə paylanır.
+    """
+    if connection.vendor == 'postgresql':
+        return qs.annotate(
+            _seed_hash=MD5(Concat(Cast('id', TextField()), Value(f':{seed}'), output_field=TextField()))
+        ).order_by(
+            F('vip_siralama').desc(),
+            '_seed_hash',
+            F('yaradildi').desc(),
+        )
+    return qs.order_by(
+        F('vip_siralama').desc(),
+        F('vip_yenilendi').desc(nulls_last=True),
+        F('yaradildi').desc(),
+    )
+
 
 def index(request):
     _update_elan_status()
+    seed = get_or_create_listing_seed(request, session_key='home_elan_seed')
 
-    # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar
+    # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar (ədalətli rotasiya ilə)
     elanlar_qs = (
         Elan.objects.filter(status='aktiv')
         .select_related('kategori')
         .prefetch_related('shekillar')
-        .order_by(
-            F('vip_siralama').desc(),
-            F('vip_yenilendi').desc(nulls_last=True),
-            F('yaradildi').desc(),
-        )
     )
+    elanlar_qs = apply_fair_rotation(elanlar_qs, seed)
 
     paginator = Paginator(elanlar_qs, 20)
     page_number = request.GET.get('page', 1)
@@ -83,26 +137,6 @@ def index(request):
     kateqoriyalar = list(
         Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     )
-    from collections import defaultdict
-    kat_elanlar = defaultdict(list)
-    kat_pks = {kat.pk for kat in kateqoriyalar}
-    all_aktiv = (
-        Elan.objects.filter(status='aktiv')
-        .filter(Q(kategori__in=kat_pks) | Q(kategori__ust_kategori__in=kat_pks))
-        .select_related('kategori', 'kategori__ust_kategori')
-        .prefetch_related('shekillar')
-        .order_by(
-            F('vip_siralama').desc(),
-            F('vip_yenilendi').desc(nulls_last=True),
-            F('yaradildi').desc()
-        )
-    )
-    for elan in all_aktiv:
-        ust_pk = (elan.kategori.ust_kategori_id or elan.kategori_id) if elan.kategori else None
-        if ust_pk and len(kat_elanlar[ust_pk]) < 6:
-            kat_elanlar[ust_pk].append(elan)
-    for kat in kateqoriyalar:
-        kat.son_elanlar = kat_elanlar.get(kat.pk, [])
 
     from .homepage import presentation_context
     return render(request, 'index.html', {
@@ -110,6 +144,7 @@ def index(request):
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
         'next_page_number': elanlar.next_page_number() if elanlar.has_next() else '',
+        'elan_seed': seed,
         **presentation_context(list(elanlar)[:6]),
     })
 
@@ -128,6 +163,7 @@ def elan_siyahi(request):
     if kategori_slug:
         return redirect('xidmet_detail', slug=kategori_slug, permanent=True)
 
+    seed = get_or_create_listing_seed(request, session_key='siyahi_elan_seed')
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     axtaris = request.GET.get('q', '').strip()
 
@@ -135,16 +171,13 @@ def elan_siyahi(request):
         Elan.objects.filter(status='aktiv')
         .select_related('kategori')
         .prefetch_related('shekillar')
-        .order_by(
-            F('vip_siralama').desc(),
-            F('vip_yenilendi').desc(nulls_last=True),
-            F('yaradildi').desc(),
-        )
     )
     if axtaris:
         elanlar = elanlar.filter(
             Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
         )
+    elanlar = apply_fair_rotation(elanlar, seed)
+
     paginator = Paginator(elanlar, 20)
     elanlar_page = paginator.get_page(request.GET.get('page', 1))
     page_range = list(paginator.get_elided_page_range(elanlar_page.number, on_each_side=2, on_ends=1))
@@ -154,6 +187,7 @@ def elan_siyahi(request):
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
         'axtaris': axtaris,
+        'elan_seed': seed,
     })
 
 
@@ -164,17 +198,13 @@ def xidmet_detail(request, slug):
     """
     _update_elan_status()
     aktiv_kategori = get_object_or_404(Kategori, slug=slug)
+    seed = get_or_create_listing_seed(request, session_key=f'kat_elan_seed_{slug}')
 
     elanlar = (
         Elan.objects.filter(status='aktiv')
         .filter(Q(kategori__slug=slug) | Q(kategori__ust_kategori__slug=slug))
         .select_related('kategori')
         .prefetch_related('shekillar')
-        .order_by(
-            F('vip_siralama').desc(),
-            F('vip_yenilendi').desc(nulls_last=True),
-            F('yaradildi').desc(),
-        )
     )
 
     axtaris = request.GET.get('q', '').strip()
@@ -182,6 +212,7 @@ def xidmet_detail(request, slug):
         elanlar = elanlar.filter(
             Q(bashliq__icontains=axtaris) | Q(acaqlama__icontains=axtaris) | Q(nomre__icontains=axtaris)
         )
+    elanlar = apply_fair_rotation(elanlar, seed)
 
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
     paginator = Paginator(elanlar, 20)
@@ -195,6 +226,7 @@ def xidmet_detail(request, slug):
         'aktiv_kategori': aktiv_kategori,
         'axtaris': axtaris,
         'elan_var': elanlar_page.paginator.count > 0,
+        'elan_seed': seed,
     })
 
 def elan_detail(request, pk, slug=None):
@@ -516,17 +548,35 @@ def sifre_unutdum(request):
             messages.error(request, 'Bu email ilə qeydiyyat tapılmadı!')
     return render(request, 'sifre_unutdum.html')
 
+@csrf_exempt
+def elan_klik_artir(request, pk, nov):
+    """Telefon zəngi və WhatsApp kliklərini asinxron qeydə alır."""
+    if request.method in ('POST', 'GET'):
+        if nov == 'zeng':
+            Elan.objects.filter(pk=pk).update(zeng_sayi=F('zeng_sayi') + 1)
+        elif nov in ('wp', 'whatsapp'):
+            Elan.objects.filter(pk=pk).update(wp_sayi=F('wp_sayi') + 1)
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'invalid'}, status=400)
+
+
 @login_required
 def profil(request):
     elanlar = Elan.objects.filter(istifadeci=request.user).prefetch_related('shekillar')
     favoritler = Favorit.objects.filter(istifadeci=request.user).prefetch_related('elan__shekillar')
     oxunmamis = Mesaj.objects.filter(alici=request.user, oxundu=False).count()
     muddeti_bitmis = elanlar.filter(status='muddeti_bitmis')
+    cemi_baxish = sum(e.baxish_sayi for e in elanlar)
+    cemi_zeng = sum(e.zeng_sayi for e in elanlar)
+    cemi_wp = sum(e.wp_sayi for e in elanlar)
     return render(request, 'profil.html', {
         'elanlar': elanlar,
         'favoritler': favoritler,
         'oxunmamis': oxunmamis,
         'muddeti_bitmis': muddeti_bitmis,
+        'cemi_baxish': cemi_baxish,
+        'cemi_zeng': cemi_zeng,
+        'cemi_wp': cemi_wp,
     })
 
 @login_required
@@ -668,13 +718,15 @@ def mesaj_yeni(request, elan_pk):
 def vip_et(request, pk):
     elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
     profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
+    paketler = VipPaket.get_all_aktiv()
     if request.method == 'POST':
         nov = request.POST.get('nov')
         if nov not in ('vip', 'super_vip'):
             messages.error(request, 'Yanlış VIP növü!')
             return redirect('profil')
-        qiymet = 3 if nov == 'vip' else 8
-        gun = 10 if nov == 'vip' else 30
+        paket = VipPaket.get_paket(nov)
+        qiymet = paket.qiymet
+        gun = paket.muddet_gun
         now = timezone.now()
         with transaction.atomic():
             updated = Profil.objects.filter(
@@ -692,12 +744,13 @@ def vip_et(request, pk):
             elan.vip_status = nov
             elan.vip_bitis = yeni_bitis
             elan.vip_yenilendi = now
+            elan.vip_siralama = 1
             elan.save()
             Odenis.objects.create(istifadeci=request.user, elan=elan, nov=nov, mebleg=qiymet, status='tesdiq_edildi')
-        status_label = 'Super VIP' if nov == 'super_vip' else 'VIP'
+        status_label = paket.ad
         messages.success(request, f'Elanınız {status_label} edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.')
         return redirect('profil')
-    return render(request, 'vip.html', {'elan': elan, 'profil': profil})
+    return render(request, 'vip.html', {'elan': elan, 'profil': profil, 'paketler': paketler})
 
 @login_required
 def odenis(request):
@@ -775,18 +828,15 @@ def problemler_siyahi(request):
 def problem_detail(request, slug):
     _update_elan_status()
     problem = get_object_or_404(Problem, slug=slug, aktiv=True)
-    elanlar = (
-        Elan.objects.filter(status='aktiv', kategori=problem.kategori)
-        .select_related('kategori')
-        .prefetch_related('shekillar')
-        .order_by(
-            F('vip_siralama').desc(),
-            F('vip_yenilendi').desc(nulls_last=True),
-            F('yaradildi').desc(),
-        )[:6]
-        if problem.kategori
-        else []
-    )
+    if problem.kategori:
+        elanlar_qs = (
+            Elan.objects.filter(status='aktiv', kategori=problem.kategori)
+            .select_related('kategori')
+            .prefetch_related('shekillar')
+        )
+        elanlar = list(apply_fair_rotation(elanlar_qs, secrets.token_hex(4))[:6])
+    else:
+        elanlar = []
     oxsar = Problem.objects.filter(
         aktiv=True,
         kategori=problem.kategori

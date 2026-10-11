@@ -58,7 +58,7 @@
   </div>
 
   <!-- Balans Kartı -->
-  <div class="panel panel--soft" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+  <div class="panel panel--soft" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:12px">
     <div style="display:flex;align-items:center;gap:14px">
       <div style="width:46px;height:46px;border-radius:50%;background:#007b52;color:#fff;display:flex;align-items:center;justify-content:center">
         {% include 'partials/ui_icon.html' with name='wallet' %}
@@ -72,6 +72,46 @@
       {% include 'partials/ui_icon.html' with name='plus' %}
       Balans Artır
     </a>
+  </div>
+
+  <!-- Texnik Müraciət Statistikası -->
+  <div class="panel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;padding:14px 18px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:10px;background:#f0fdf4;color:#007b52;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        {% include 'partials/ui_icon.html' with name='list' %}
+      </div>
+      <div>
+        <small style="color:var(--muted);font-size:11px;display:block">Elan Sayı</small>
+        <strong style="font-size:17px;font-weight:800">{{ elanlar.count }}</strong>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:10px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        {% include 'partials/ui_icon.html' with name='eye' %}
+      </div>
+      <div>
+        <small style="color:var(--muted);font-size:11px;display:block">Cəmi Baxış</small>
+        <strong style="font-size:17px;font-weight:800">{{ cemi_baxish|default:0 }}</strong>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:10px;background:#ecfdf5;color:#047857;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        {% include 'partials/ui_icon.html' with name='phone' %}
+      </div>
+      <div>
+        <small style="color:#047857;font-size:11px;display:block">Zəng Tıklamaları</small>
+        <strong style="font-size:17px;font-weight:800;color:#047857">{{ cemi_zeng|default:0 }}</strong>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:10px;background:#f0fdf4;color:#15803d;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        {% include 'partials/ui_icon.html' with name='whatsapp' %}
+      </div>
+      <div>
+        <small style="color:#15803d;font-size:11px;display:block">WhatsApp Tıklamaları</small>
+        <strong style="font-size:17px;font-weight:800;color:#15803d">{{ cemi_wp|default:0 }}</strong>
+      </div>
+    </div>
   </div>
 
   <!-- Tablar -->
@@ -120,13 +160,25 @@
           <div style="font-size:10px;color:var(--muted);margin-bottom:2px">#{{ elan.nomre }} · {{ elan.sheher }}</div>
           <h3><a href="{{ elan.get_absolute_url }}">{{ elan.bashliq }}</a></h3>
           <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}Razılaşma ilə{% endif %}</p>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
             <span class="badge {% if elan.status == 'aktiv' %}badge--green{% else %}badge--gold{% endif %}">
               {{ elan.get_status_display }}
             </span>
             {% if elan.is_vip_aktiv and elan.vip_bitis %}
               <small style="font-size:10px;color:var(--muted)">{{ elan.vip_bitis|date:"d.m.Y" }}-dək VIP</small>
             {% endif %}
+          </div>
+          <!-- Tıklama Statistikası -->
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px;flex-wrap:wrap;font-size:11px">
+            <span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px" title="Baxış sayı">
+              {% include 'partials/ui_icon.html' with name='eye' %} {{ elan.baxish_sayi }}
+            </span>
+            <span style="background:#ecfdf5;color:#047857;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #a7f3d0" title="Zəng düyməsinə tıklama">
+              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> zəng
+            </span>
+            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp düyməsinə tıklama">
+              {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
+            </span>
           </div>
           <div class="service-actions" style="flex-wrap:wrap">
             <a href="{% url 'elan_duzelis' elan.pk %}" class="call-button" style="font-size:10px">
@@ -180,6 +232,18 @@
         <div class="service-info">
           <h3>{{ elan.bashliq }}</h3>
           <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}Razılaşma ilə{% endif %}</p>
+          <!-- Tıklama Statistikası -->
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;font-size:11px">
+            <span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px" title="Baxış sayı">
+              {% include 'partials/ui_icon.html' with name='eye' %} {{ elan.baxish_sayi }}
+            </span>
+            <span style="background:#ecfdf5;color:#047857;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #a7f3d0" title="Zəng düyməsinə tıklama">
+              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> zəng
+            </span>
+            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp düyməsinə tıklama">
+              {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
+            </span>
+          </div>
           <div class="service-actions" style="margin-top:8px">
             <form method="post" action="{% url 'elan_aktivlesdir' elan.pk %}" style="flex:1;margin:0">
               {% csrf_token %}

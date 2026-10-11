@@ -198,12 +198,12 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 </div>
 
 <!-- Sol və Sağ Reklam Bannerləri (Yalnız Web/Desktop) -->
-{% if reklam_sol and reklam_sol.shekil or reklam_sol and reklam_sol.video or reklam_sol and reklam_sol.video_url or reklam_sol and reklam_sol.html_kod or reklam_sol and not reklam_sol.bos_olduqda_gizlet %}
+{% if not reklam_sol or reklam_sol.shekil or reklam_sol.video or reklam_sol.video_url or reklam_sol.html_kod or not reklam_sol.bos_olduqda_gizlet %}
 <aside class="side-ad-banner side-ad-banner--left" id="sideAdLeft" aria-label="Sol Reklam">
   {% include 'partials/side_ad_left.html' %}
 </aside>
 {% endif %}
-{% if reklam_sag and reklam_sag.shekil or reklam_sag and reklam_sag.video or reklam_sag and reklam_sag.video_url or reklam_sag and reklam_sag.html_kod or reklam_sag and not reklam_sag.bos_olduqda_gizlet %}
+{% if not reklam_sag or reklam_sag.shekil or reklam_sag.video or reklam_sag.video_url or reklam_sag.html_kod or not reklam_sag.bos_olduqda_gizlet %}
 <aside class="side-ad-banner side-ad-banner--right" id="sideAdRight" aria-label="Sağ Reklam">
   {% include 'partials/side_ad_right.html' %}
 </aside>
@@ -289,5 +289,22 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .mobil-elaqe{bottom:80px;right:12px;padding:10px 18px;font-size:13px}
 }
 </style>
+<script>
+// Elan zəng və WhatsApp kliklərinin izlənməsi
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-track-elan]');
+  if (!btn) return;
+  var elanId = btn.getAttribute('data-track-elan');
+  var trackType = btn.getAttribute('data-track-type');
+  if (elanId && trackType) {
+    var url = '/elan/' + encodeURIComponent(elanId) + '/klik/' + encodeURIComponent(trackType) + '/';
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url);
+    } else {
+      fetch(url, {method: 'POST', keepalive: true});
+    }
+  }
+}, {passive: true});
+</script>
 </body>
 </html>

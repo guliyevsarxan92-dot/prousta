@@ -114,14 +114,28 @@
       </div>
 
       {% if user == elan.istifadeci %}
-      <div class="panel panel--soft" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-        <div>
-          <strong>Bu elanın sahibisiniz</strong>
-          <small style="display:block;color:var(--muted)">Elana düzəliş edə və ya VIP edə bilərsiniz</small>
+      <div class="panel panel--soft" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div>
+            <strong>Bu elanın sahibisiniz</strong>
+            <small style="display:block;color:var(--muted)">Elana düzəliş edə və ya VIP edə bilərsiniz</small>
+          </div>
+          <div style="display:flex;gap:8px">
+            <a href="{% url 'elan_duzelis' elan.pk %}" class="btn btn-outline btn-sm">{% include 'partials/ui_icon.html' with name='edit' %} Düzəliş et</a>
+            <a href="{% url 'vip_et' elan.pk %}" class="btn btn-gold btn-sm">{% include 'partials/ui_icon.html' with name='crown' %} VIP et</a>
+          </div>
         </div>
-        <div style="display:flex;gap:8px">
-          <a href="{% url 'elan_duzelis' elan.pk %}" class="btn btn-outline btn-sm">{% include 'partials/ui_icon.html' with name='edit' %} Düzəliş et</a>
-          <a href="{% url 'vip_et' elan.pk %}" class="btn btn-gold btn-sm">{% include 'partials/ui_icon.html' with name='crown' %} VIP et</a>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid #e5ebe9;flex-wrap:wrap;font-size:12px">
+          <span style="color:var(--muted);font-weight:600">Statistika:</span>
+          <span style="background:#f3f4f6;color:#374151;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px">
+            {% include 'partials/ui_icon.html' with name='eye' %} <b>{{ elan.baxish_sayi }}</b> baxış
+          </span>
+          <span style="background:#ecfdf5;color:#047857;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;border:1px solid #a7f3d0">
+            {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> zəng kliklənməsi
+          </span>
+          <span style="background:#f0fdf4;color:#15803d;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;border:1px solid #bbf7d0">
+            {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WhatsApp kliklənməsi
+          </span>
         </div>
       </div>
       {% endif %}
@@ -157,11 +171,11 @@
         <!-- Əlaqə Düymələri -->
         <div class="stack" style="gap:8px">
           {% if elan.telefon %}
-            <a href="tel:{{ elan.telefon }}" class="btn btn-primary btn-block btn-lg">
+            <a href="tel:{{ elan.telefon }}" class="btn btn-primary btn-block btn-lg" data-track-elan="{{ elan.pk }}" data-track-type="zeng">
               {% include 'partials/ui_icon.html' with name='phone' %}
               Zəng et ({{ elan.telefon }})
             </a>
-            <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa btn-block" target="_blank" rel="noopener">
+            <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa btn-block" target="_blank" rel="noopener" data-track-elan="{{ elan.pk }}" data-track-type="wp">
               {% include 'partials/ui_icon.html' with name='whatsapp' %}
               WhatsApp ilə yaz
             </a>
@@ -214,11 +228,11 @@
 <!-- Mobil üçün alt sabit əlaqə paneli -->
 {% if elan.telefon %}
 <div class="mobile-cta">
-  <a href="tel:{{ elan.telefon }}" class="btn btn-primary">
+  <a href="tel:{{ elan.telefon }}" class="btn btn-primary" data-track-elan="{{ elan.pk }}" data-track-type="zeng">
     {% include 'partials/ui_icon.html' with name='phone' %}
     Zəng et
   </a>
-  <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa" target="_blank" rel="noopener">
+  <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa" target="_blank" rel="noopener" data-track-elan="{{ elan.pk }}" data-track-type="wp">
     {% include 'partials/ui_icon.html' with name='whatsapp' %}
     WhatsApp
   </a>

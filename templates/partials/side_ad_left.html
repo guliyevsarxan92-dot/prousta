@@ -19,7 +19,7 @@
     <div class="side-ad-custom-html">
       {{ reklam_sol.html_kod|safe }}
     </div>
-  {% elif reklam_sol and not reklam_sol.bos_olduqda_gizlet %}
+  {% elif not reklam_sol or not reklam_sol.bos_olduqda_gizlet %}
     <div class="side-ad-placeholder">
       <div class="side-ad-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -30,10 +30,16 @@
       </div>
       <div class="side-ad-title">Reklam Yeri</div>
       <div class="side-ad-dim">160 × 600</div>
-      <p class="side-ad-text">Saytda reklam və banner yerləşdirmək üçün</p>
-      <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Sol%20banner)" class="side-ad-btn">
-        Əlaqə saxlayın
-      </a>
+      <p class="side-ad-text">Reklam üçün müraciət edin:</p>
+      <div class="side-ad-contact-num">051 588 88 84</div>
+      <div class="side-ad-actions">
+        <a href="tel:0515888884" class="side-ad-btn side-ad-btn--phone" title="Zəng et">
+          📞 051 588 88 84
+        </a>
+        <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20yan%20banner%20reklam%C4%B1%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="side-ad-btn side-ad-btn--wp" title="WhatsApp ilə yaz">
+          💬 WhatsApp
+        </a>
+      </div>
     </div>
   {% endif %}
 </div>

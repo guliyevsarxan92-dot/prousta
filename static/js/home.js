@@ -12,6 +12,7 @@
     var nextPage = rawNext ? parseInt(rawNext, 10) : null;
     var totalPages = parseInt(statusBox.getAttribute('data-total-pages'), 10) || 1;
     var ajaxUrl = statusBox.getAttribute('data-ajax-url') || window.location.pathname;
+    var seed = statusBox.getAttribute('data-seed') || '';
     var isLoading = false;
 
     function loadNext() {
@@ -21,7 +22,7 @@
       if (spinner) spinner.style.display = 'inline-flex';
 
       var sep = ajaxUrl.indexOf('?') === -1 ? '?' : '&';
-      var url = ajaxUrl + sep + 'page=' + nextPage + '&ajax=1';
+      var url = ajaxUrl + sep + 'page=' + nextPage + '&ajax=1' + (seed ? '&seed=' + encodeURIComponent(seed) : '');
 
       fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(function (res) { return res.json(); })

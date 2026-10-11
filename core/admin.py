@@ -26,6 +26,7 @@ from .models import (
     BankMelumat,
     Problem,
     ReklamBanner,
+    VipPaket,
 )
 
 
@@ -162,6 +163,7 @@ class ElanAdmin(ModelAdmin):
         'qiymet_display',
         'status_badge',
         'vip_badge',
+        'statistika_display',
         'saytda_bax',
         'yaradildi_display',
     ]
@@ -186,6 +188,8 @@ class ElanAdmin(ModelAdmin):
         'yaradildi',
         'yenilendi',
         'baxish_sayi',
+        'zeng_sayi',
+        'wp_sayi',
         'vip_siralama',
         'vip_yenilendi',
         'saytda_bax_btn',
@@ -220,7 +224,8 @@ class ElanAdmin(ModelAdmin):
         }),
         ('Statistika və Tarixçə', {
             'fields': (
-                ('baxish_sayi', 'yaradildi', 'yenilendi'),
+                ('baxish_sayi', 'zeng_sayi', 'wp_sayi'),
+                ('yaradildi', 'yenilendi'),
             ),
             'classes': ('collapse',),
         }),
@@ -295,6 +300,20 @@ class ElanAdmin(ModelAdmin):
     )
     def vip_badge(self, obj):
         return obj.vip_status, obj.get_vip_status_display()
+
+    @display(description='Statistika')
+    def statistika_display(self, obj):
+        return format_html(
+            '<div style="font-size:11px;line-height:1.4" title="Baxış: {} | Zəng: {} | WhatsApp: {}">'
+            '👁 <b>{}</b> <span class="text-slate-400">baxış</span><br>'
+            '📞 <b>{}</b> <span class="text-slate-400">zəng</span> · '
+            '💬 <b>{}</b> <span class="text-slate-400">wp</span>'
+            '</div>',
+            obj.baxish_sayi, obj.zeng_sayi, obj.wp_sayi,
+            obj.baxish_sayi,
+            obj.zeng_sayi,
+            obj.wp_sayi,
+        )
 
     def saytda_bax(self, obj):
         url = obj.get_absolute_url()
@@ -847,6 +866,60 @@ class FavoritAdmin(ModelAdmin):
     search_fields = ['istifadeci__username', 'elan__nomre', 'elan__bashliq']
     ordering = ['-yaradildi']
     list_per_page = 25
+
+
+@admin.register(VipPaket)
+class VipPaketAdmin(ModelAdmin):
+    list_display = [
+        'ad',
+        'nov_badge',
+        'qiymet_display',
+        'muddet_display',
+        'aktiv_badge',
+        'siralama',
+        'yenilendi_display',
+    ]
+    list_editable = ['siralama']
+    list_filter = ['nov', 'aktiv']
+    search_fields = ['ad', 'nov', 'ustunlukler']
+    ordering = ['siralama', 'qiymet']
+
+    fieldsets = (
+        ('Paket Məlumatları', {
+            'fields': (
+                ('ad', 'nov'),
+                ('qiymet', 'muddet_gun'),
+                'ustunlukler',
+            ),
+            'description': 'Saytda istifadəçilərə təklif olunan VIP paketinin adı, qiyməti və aktivlik müddəti.',
+        }),
+        ('Status və Göstərilmə Sırası', {
+            'fields': (
+                ('aktiv', 'siralama'),
+            ),
+        }),
+    )
+
+    @display(description='Növ', label=True)
+    def nov_badge(self, obj):
+        color = 'warning' if obj.nov == 'vip' else 'success'
+        return obj.get_nov_display(), color
+
+    @display(description='Qiymət (AZN)')
+    def qiymet_display(self, obj):
+        return f"{obj.qiymet} ₼"
+
+    @display(description='Müddət')
+    def muddet_display(self, obj):
+        return f"{obj.muddet_gun} gün"
+
+    @display(description='Status', label=True)
+    def aktiv_badge(self, obj):
+        return ('Aktiv', 'success') if obj.aktiv else ('Deaktiv', 'danger')
+
+    @display(description='Yeniləndi')
+    def yenilendi_display(self, obj):
+        return obj.yenilendi.strftime('%d.%m.%Y %H:%M') if obj.yenilendi else '—'
 
 
 # ==============================================================================

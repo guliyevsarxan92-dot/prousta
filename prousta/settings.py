@@ -274,9 +274,14 @@ UNFOLD = {
                 ],
             },
             {
-                "title": "Maliyyə və Ödənişlər",
+                "title": "Maliyyə və VIP Tarifləri",
                 "separator": True,
                 "items": [
+                    {
+                        "title": "VIP Tarifləri və Qiymətlər",
+                        "icon": "workspace_premium",
+                        "link": reverse_lazy("admin:core_vippaket_changelist"),
+                    },
                     {
                         "title": "Ödənişlər",
                         "icon": "payments",

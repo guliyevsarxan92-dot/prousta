@@ -1,5 +1,6 @@
 import re
 import uuid
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -54,11 +55,11 @@ class Elan(models.Model):
     ]
     VIP_STATUS = [
         ('normal', 'Normal'),
-        ('vip', 'VIP — 10 gün'),
-        ('super_vip', 'Super VIP — 30 gün'),
+        ('vip', 'VIP'),
+        ('super_vip', 'Super VIP'),
     ]
     VIP_ORDER = {
-        'super_vip': 2,
+        'super_vip': 1,
         'vip': 1,
         'normal': 0,
     }
@@ -77,7 +78,9 @@ class Elan(models.Model):
     bitis_tarixi = models.DateTimeField(null=True, blank=True)
     sheher = models.CharField(max_length=100, default='Bakı')
     telefon = models.CharField(max_length=20, blank=True)
-    baxish_sayi = models.PositiveIntegerField(default=0)
+    baxish_sayi = models.PositiveIntegerField('Baxış Sayı', default=0)
+    zeng_sayi = models.PositiveIntegerField('Zəng Klikləri', default=0)
+    wp_sayi = models.PositiveIntegerField('WhatsApp Klikləri', default=0)
     yaradildi = models.DateTimeField(auto_now_add=True)
     yenilendi = models.DateTimeField(auto_now=True)
 
@@ -94,10 +97,16 @@ class Elan(models.Model):
         if self.vip_status in ('vip', 'super_vip'):
             if not self.vip_bitis or self.vip_bitis <= now:
                 days = 30 if self.vip_status == 'super_vip' else 10
+                try:
+                    p = VipPaket.objects.filter(nov=self.vip_status, aktiv=True).first()
+                    if p:
+                        days = p.muddet_gun
+                except Exception:
+                    pass
                 self.vip_bitis = now + timedelta(days=days)
             if not self.vip_yenilendi:
                 self.vip_yenilendi = now
-            self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 0)
+            self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 1)
         else:
             self.vip_status = 'normal'
             self.vip_siralama = 0
@@ -300,4 +309,75 @@ class ReklamBanner(models.Model):
             cache.delete('reklam_bannerleri')
         except Exception:
             pass
+
+
+class VipPaket(models.Model):
+    PAKET_CHOICES = [
+        ('vip', 'VIP'),
+        ('super_vip', 'Super VIP'),
+    ]
+
+    nov = models.CharField('VIP Növü', max_length=20, choices=PAKET_CHOICES, unique=True)
+    ad = models.CharField('Paket Başlığı', max_length=100)
+    qiymet = models.DecimalField('Aylıq / Paket Qiyməti (AZN)', max_digits=10, decimal_places=2, default=Decimal('5.00'))
+    muddet_gun = models.PositiveIntegerField('Aktivlik Müddəti (gün)', default=30, help_text='Məsələn: 30 gün (1 ay), 10 gün və s.')
+    ustunlukler = models.TextField('Üstünlüklər (hər sətirdə bir maddə)', blank=True, help_text='Hər sətrə bir üstünlük yazın')
+    aktiv = models.BooleanField('Aktivdir', default=True)
+    siralama = models.PositiveSmallIntegerField('Sıralama', default=1)
+    yenilendi = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'VIP Tarifi'
+        verbose_name_plural = 'VIP Tarifləri və Qiymətlər'
+        ordering = ['siralama', 'qiymet']
+
+    def __str__(self):
+        return f"{self.ad} ({self.get_nov_display()}) — {self.qiymet} ₼ / {self.muddet_gun} gün"
+
+    @property
+    def ustunlukler_list(self):
+        if not self.ustunlukler:
+            return []
+        return [s.strip() for s in self.ustunlukler.splitlines() if s.strip()]
+
+    @classmethod
+    def get_paket(cls, nov):
+        defaults = {
+            'vip': {
+                'ad': 'VIP Elan',
+                'qiymet': Decimal('3.00'),
+                'muddet_gun': 10,
+                'siralama': 1,
+                'ustunlukler': 'Bütün elanlar siyahısında və axtarışlarda ən öndə\nXüsusi qızılı nişan ilə fərqlənmə\nDaha çox baxış və zəng',
+            },
+            'super_vip': {
+                'ad': 'Super VIP Elan',
+                'qiymet': Decimal('8.00'),
+                'muddet_gun': 30,
+                'siralama': 2,
+                'ustunlukler': 'Ana səhifədə və bütün kateqoriyalarda ən öndə\n30 gün (1 ay) fasiləsiz aktivlik\nƏn yüksək müştəri axını və zənglər',
+            },
+        }
+        try:
+            p = cls.objects.filter(nov=nov, aktiv=True).first()
+            if p:
+                return p
+            p, _ = cls.objects.get_or_create(nov=nov, defaults=defaults.get(nov, {}))
+            return p
+        except Exception:
+            d = defaults.get(nov, {'qiymet': Decimal('5.00'), 'muddet_gun': 30, 'ad': nov.upper()})
+            return cls(nov=nov, **d)
+
+    @classmethod
+    def get_all_aktiv(cls):
+        try:
+            paketler = list(cls.objects.filter(aktiv=True).order_by('siralama'))
+            if not paketler:
+                for nov in ('vip', 'super_vip'):
+                    cls.get_paket(nov)
+                paketler = list(cls.objects.filter(aktiv=True).order_by('siralama'))
+            return paketler
+        except Exception:
+            return []
+
 

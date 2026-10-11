@@ -43,42 +43,37 @@
   <form method="post">
     {% csrf_token %}
     <div class="plan-grid" style="margin-bottom:20px">
-      <!-- VIP -->
-      <label class="plan vip-choice is-selected" id="plan-vip">
-        <input type="radio" name="nov" value="vip" checked onchange="updateChoice()">
-        <span class="badge badge--gold">
-          {% include 'partials/ui_icon.html' with name='star' %} VIP
-        </span>
-        <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
-          {% include 'partials/ui_icon.html' with name='star' %}
-        </div>
-        <h3>VIP Elan</h3>
-        <div class="plan-price">3 ₼ <small>/ 10 gün</small></div>
+      {% for paket in paketler %}
+      <label class="plan vip-choice {% if forloop.first %}is-selected{% endif %}{% if paket.nov == 'super_vip' %} is-featured{% endif %}" id="plan-{{ paket.nov }}">
+        <input type="radio" name="nov" value="{{ paket.nov }}" {% if forloop.first %}checked{% endif %} onchange="updateChoice()">
+        {% if paket.nov == 'super_vip' %}
+          <span class="badge" style="background:linear-gradient(135deg,#008f60,#00714c);color:#fff">
+            {% include 'partials/ui_icon.html' with name='crown' %} Ən Yaxşı Seçim
+          </span>
+          <div style="width:40px;height:40px;border-radius:10px;background:#eaf7f1;color:#007b52;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
+            {% include 'partials/ui_icon.html' with name='crown' %}
+          </div>
+        {% else %}
+          <span class="badge badge--gold">
+            {% include 'partials/ui_icon.html' with name='star' %} VIP
+          </span>
+          <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
+            {% include 'partials/ui_icon.html' with name='star' %}
+          </div>
+        {% endif %}
+        <h3>{{ paket.ad }}</h3>
+        <div class="plan-price">{{ paket.qiymet|floatformat:'-2' }} ₼ <small>/ {{ paket.muddet_gun }} gün</small></div>
         <ul>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Elanlar siyahısında öndə görünür</li>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Xüsusi qızılı nişan ilə fərqlənir</li>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Daha çox baxış və zəng</li>
+          {% for item in paket.ustunlukler_list %}
+            <li>{% include 'partials/ui_icon.html' with name='check' %} {{ item }}</li>
+          {% empty %}
+            <li>{% include 'partials/ui_icon.html' with name='check' %} Bütün elanlar siyahısında və axtarışlarda öndə</li>
+            <li>{% include 'partials/ui_icon.html' with name='check' %} Xüsusi fərqlənmə nişanı</li>
+            <li>{% include 'partials/ui_icon.html' with name='check' %} {{ paket.muddet_gun }} gün aktivlik</li>
+          {% endfor %}
         </ul>
       </label>
-
-      <!-- Super VIP -->
-      <label class="plan vip-choice is-featured" id="plan-super_vip">
-        <input type="radio" name="nov" value="super_vip" onchange="updateChoice()">
-        <span class="badge" style="background:linear-gradient(135deg,#008f60,#00714c);color:#fff">
-          {% include 'partials/ui_icon.html' with name='crown' %} Ən Yaxşı Seçim
-        </span>
-        <div style="width:40px;height:40px;border-radius:10px;background:#eaf7f1;color:#007b52;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
-          {% include 'partials/ui_icon.html' with name='crown' %}
-        </div>
-        <h3>Super VIP Elan</h3>
-        <div class="plan-price">8 ₼ <small>/ 30 gün</small></div>
-        <ul>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Ana səhifədə birbaşa görünür</li>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Ən üst sırada yerləşir</li>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} 30 gün fasiləsiz aktivlik</li>
-          <li>{% include 'partials/ui_icon.html' with name='check' %} Maksimum müştəri axını</li>
-        </ul>
-      </label>
+      {% endfor %}
     </div>
 
     <button class="btn btn-primary btn-block btn-lg" type="submit">

@@ -20,6 +20,7 @@ urlpatterns = [
     path('shekil/<int:pk>/sil/', views.shekil_sil, name='shekil_sil'),
     path('shekil/<int:pk>/esas/', views.shekil_esas, name='shekil_esas'),
     path('elan/<int:pk>/aktivlesdir/', views.elan_aktivlesdir, name='elan_aktivlesdir'),
+    path('elan/<int:pk>/klik/<str:nov>/', views.elan_klik_artir, name='elan_klik_artir'),
     path('profil/', views.profil, name='profil'),
     path('profil/foto/', views.profil_foto, name='profil_foto'),
     path('profil/foto/crop/', views.profil_foto_crop, name='profil_foto_crop'),

@@ -2,7 +2,7 @@
 {% if page.paginator.num_pages > 1 %}
 <nav class="pager" aria-label="Səhifələr">
   {% if page.has_previous %}
-    <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page.previous_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="prev" class="pager-nav pager-prev">
+    <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}{% if elan_seed %}seed={{ elan_seed }}&{% endif %}page={{ page.previous_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="prev" class="pager-nav pager-prev">
       {% include 'partials/ui_icon.html' with name='chevron' class='flip' %} Əvvəlki
     </a>
   {% endif %}
@@ -13,14 +13,14 @@
     {% elif p == page.number %}
       <span class="is-current" aria-current="page">{{ p }}</span>
     {% else %}
-      <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ p }}{% if fragment %}#{{ fragment }}{% endif %}">{{ p }}</a>
+      <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}{% if elan_seed %}seed={{ elan_seed }}&{% endif %}page={{ p }}{% if fragment %}#{{ fragment }}{% endif %}">{{ p }}</a>
     {% endif %}
   {% empty %}
     <span class="is-current" aria-current="page">{{ page.number }} / {{ page.paginator.num_pages }}</span>
   {% endfor %}
 
   {% if page.has_next %}
-    <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page.next_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="next" class="pager-nav pager-next">
+    <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}{% if elan_seed %}seed={{ elan_seed }}&{% endif %}page={{ page.next_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="next" class="pager-nav pager-next">
       Sonrakı {% include 'partials/ui_icon.html' with name='chevron' %}
     </a>
   {% endif %}

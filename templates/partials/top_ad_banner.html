@@ -34,18 +34,23 @@
     </div>
   </div>
 </aside>
-{% elif reklam_ust and not reklam_ust.bos_olduqda_gizlet %}
+{% elif not reklam_ust or not reklam_ust.bos_olduqda_gizlet %}
 <aside class="top-ad-banner top-ad-banner--placeholder" id="topAdBanner" aria-label="Üst Reklam Yeri">
   <div class="top-ad-container">
     <div class="top-ad-placeholder">
       <div class="top-ad-placeholder-left">
         <span class="top-ad-badge-title">ÜST REKLAM BANNERİ</span>
         <span class="top-ad-badge-size">1920 × 400</span>
-        <span class="top-ad-desc">Saytda tam enli video, animasiya və ya şəkil banner yerləşdirmək üçün</span>
+        <span class="top-ad-desc">Reklam üçün müraciət edin: <strong style="color:#007b52">051 588 88 84</strong></span>
       </div>
-      <a href="mailto:info@prousta.az?subject=Reklam%20haqqinda%20(Ust%20banner)" class="top-ad-btn">
-        Əlaqə saxlayın
-      </a>
+      <div class="top-ad-placeholder-actions">
+        <a href="tel:0515888884" class="top-ad-btn top-ad-btn--phone">
+          📞 051 588 88 84
+        </a>
+        <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20%C3%BCst%20banner%20reklam%C4%B1%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="top-ad-btn top-ad-btn--wp">
+          💬 WhatsApp
+        </a>
+      </div>
     </div>
   </div>
 </aside>

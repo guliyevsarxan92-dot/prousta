@@ -61,22 +61,22 @@
   </div>
 
   <!-- Aşağı getdikcə / Load more avtomatik yükləmə -->
-  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{% if elanlar.has_next %}{{ elanlar.next_page_number }}{% endif %}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'index' %}">
+  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{% if elanlar.has_next %}{{ elanlar.next_page_number }}{% endif %}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'index' %}" data-seed="{{ elan_seed }}">
    {% if elanlar.has_next %}
     <button type="button" class="btn load-more-btn" id="loadMoreBtn">
-     {% include 'partials/ui_icon.html' with name='arrow' %}
-     Daha çox elan göstər
+      {% include 'partials/ui_icon.html' with name='arrow' %}
+      Daha çox elan göstər
     </button>
     <div class="scroll-spinner" id="scrollSpinner" style="display:none">
-     <span class="spinner-ring"></span>
-     <span>Daha çox elan yüklənir...</span>
+      <span class="spinner-ring"></span>
+      <span>Daha çox elan yüklənir...</span>
     </div>
    {% endif %}
   </div>
 
   <!-- Keçid səhifələr (1, 2, 3 ... 26) -->
   <div id="elanlar-pager">
-   {% include 'partials/pager.html' with page=elanlar fragment='elanlar' page_range=page_range %}
+   {% include 'partials/pager.html' with page=elanlar fragment='elanlar' page_range=page_range elan_seed=elan_seed %}
   </div>
  </section>
  <section class="home-section" id="ustalar"><div class="home-section-heading"><h2>{% if home_is_demo %}Tövsiyə olunan ustalar{% else %}Ustalarla tanış olun{% endif %}</h2><a href="{% url 'elan_siyahi' %}">Bütün ustalara bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="professional-grid">{% for elan in home_professionals %}<article class="professional-card"><a class="professional-avatar" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">{% if elan.istifadeci.profil.avatar %}<img src="{{ elan.istifadeci.profil.avatar.url }}" alt="{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}" loading="lazy">{% else %}{% include 'partials/ui_icon.html' with name='user' %}{% endif %}</a><div class="professional-info"><h3>{{ elan.istifadeci.get_full_name|default:elan.istifadeci.username }}</h3><p>{{ elan.kategori.ad }}</p><small>{% include 'partials/ui_icon.html' with name='pin' %} {{ elan.sheher }}</small></div><a class="profile-button" href="{% url 'istifadeci_profil' elan.istifadeci_id %}">Profilə bax</a></article>{% empty %}{% for pro in example_professionals %}<article class="professional-card"><span class="professional-avatar example-avatar portrait-{{ forloop.counter }}" role="img" aria-label="Nümunə usta portreti"></span><div class="professional-info"><h3>{{ pro.name }} {% include 'partials/ui_icon.html' with name='shield' class='verified-icon' %}</h3><p>{{ pro.job }}</p><small><span class="rating-star">★</span> <b>{{ pro.rating }}</b> ({{ pro.reviews }} rəy)</small><small>{% include 'partials/ui_icon.html' with name='clock' %} {{ pro.jobs }} tamamlanmış iş</small></div><a class="profile-button" href="{% url 'xidmet_detail' pro.slug %}">Ustaları tap</a></article>{% endfor %}{% endfor %}</div></section>
