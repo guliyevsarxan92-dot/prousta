@@ -97,7 +97,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none}
 input,select,textarea{font-family:inherit;outline:none}
-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:200}
+.site-nav{height:70px;padding:0 28px;background:#ffffff;position:sticky;top:10px;z-index:200;max-width:var(--content-w,1120px);width:calc(100% - 32px);margin:10px auto 14px auto;border-radius:40px;border:1px solid #dce8e2;box-shadow:0 10px 28px -4px rgba(16,24,25,.13),0 4px 10px -2px rgba(0,123,82,.08);display:flex;align-items:center}
 
 .nav-links{display:flex;align-items:center;gap:16px}
 .nav-links a{color:var(--muted);font-weight:500;font-size:14px;transition:.2s}
@@ -154,14 +154,14 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .footer-top{grid-template-columns:1fr 1fr;padding:30px 20px;gap:24px}
   .footer-brand{grid-column:1/-1}
   .footer-bottom{flex-direction:column;gap:12px;text-align:center;padding:20px}
-  nav{height:58px;padding:0 14px}
-  .mobil-menu{top:58px}
+  .site-nav{height:64px;padding:0 16px;position:sticky;top:8px;z-index:200;width:calc(100% - 20px);margin:8px auto 10px auto;border-radius:32px;border:1px solid #dce8e2;box-shadow:0 8px 22px -3px rgba(16,24,25,.14),0 3px 8px -2px rgba(0,123,82,.08);display:flex;align-items:center}
+  .mobil-menu{top:78px;left:10px;right:10px;bottom:auto;max-height:calc(100vh - 95px);border-radius:20px;box-shadow:0 12px 32px rgba(16,24,25,.15);border:1px solid #dce8e2}
   .nav-links{display:none}
   .hamburger{display:flex}
   .msgs{left:16px;right:16px;max-width:100%}
 }
 </style>
-<link rel="stylesheet" href="{% static 'css/marketplace.css' %}">
+<link rel="stylesheet" href="{% static 'css/marketplace.css' %}?v=3.2">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <link rel="stylesheet" href="{% static 'css/pages.css' %}">
 {% block style %}{% endblock %}
