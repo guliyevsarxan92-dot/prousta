@@ -1,4 +1,5 @@
 from django.urls import path, re_path
+from django.views.generic.base import RedirectView
 from . import views
 from . import mobile_auth
 
@@ -12,6 +13,8 @@ urlpatterns = [
     path('sifre-unutdum/', views.sifre_unutdum, name='sifre_unutdum'),
     path('elanlar/', views.elan_siyahi, name='elan_siyahi'),
     path('xidmet/<slug:slug>/', views.xidmet_detail, name='xidmet_detail'),
+    path('kateqoriya/<slug:slug>/', RedirectView.as_view(url='/xidmet/%(slug)s/', permanent=True)),
+    path('kateqoriyalar/<slug:slug>/', RedirectView.as_view(url='/xidmet/%(slug)s/', permanent=True)),
     path('elan/yeni/', views.elan_yarat, name='elan_yarat'),
     re_path(r'^elan/(?P<pk>\d+)-(?P<slug>[a-z0-9-]+)/$', views.elan_detail, name='elan_detail'),
     path('elan/<int:pk>/', views.elan_detail),  # legacy → 301 redirect
