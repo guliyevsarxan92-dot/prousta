@@ -37,6 +37,7 @@ urlpatterns = [
     path('odenis/', views.odenis, name='odenis'),
     path('odenis/tesdiq/<int:pk>/', views.odenis_tesdiq, name='odenis_tesdiq'),
     path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('llms.txt', views.llms_txt, name='llms_txt'),
     path('gizlilik/', views.gizlilik, name='gizlilik'),
     path('istifade-sertleri/', views.istifade_sertleri, name='istifade_sertleri'),
     path('haqqimizda/', views.haqqimizda, name='haqqimizda'),
