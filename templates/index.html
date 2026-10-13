@@ -1,16 +1,59 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Prousta.az — Etibarlı ustanı asan tap{% endblock %}
-{% block description %}Elektrik, santexnika, kombi, kondisioner, təmir və yüzlərlə xidmət elanı bir platformada. Azərbaycanda ustanı Prousta.az-da tapın.{% endblock %}
+{% block title %}Prousta.az — Bakıda Usta Tap | Peşəkar Usta Xidmətləri və Elanlar{% endblock %}
+{% block description %}Bakıda və Azərbaycanda elektrik, santexnik, kombi, kondisioner, mebel və 100+ usta xidməti. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və WhatsApp ilə əlaqə saxlayın!{% endblock %}
 {% block canonical %}/{% endblock %}{% block canonical2 %}/{% endblock %}{% block og_url %}/{% endblock %}{% block nav_index %}aktiv{% endblock %}
-{% block extra_head %}<link rel="preload" as="image" href="{% static 'img/home/hero.png' %}">{% endblock %}
+{% block extra_head %}
+<link rel="preload" as="image" href="{% static 'img/home/hero.webp' %}" type="image/webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://prousta.az/#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Prousta.az-da usta necə tapılır?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Saytda axtardığınız xidmət kateqoriyasını seçin və ya axtarış bölməsinə ehtiyacınız olan ustanı (məs: kombi ustası, elektrik, santexnik) yazın. Çıxan elanlarda qiymətlərə, şəkillərə və usta məlumatlarına baxaraq birbaşa zəng və ya WhatsApp vasitəsilə əlaqə saxlayın."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Usta ilə əlaqə saxlamaq üçün ödəniş tələb olunurmu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Xeyr! Prousta.az müştərilər üçün tamamilə pulsuzdur. Platformada heç bir vasitəçi komissiyası yoxdur, usta ilə birbaşa əlaqə saxlayırsınız."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Prousta.az-da hansı xidmətlər mövcuddur?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kombi və kondisioner təmiri, santexnik, elektrik, mebel yığılması, məişət texnikası təmiri (soyuducu, paltaryuyan), ev təmiri və 100-dən çox kateqoriyada peşəkar usta xidmətləri mövcuddur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Usta kimi necə elan yerləşdirmək olar?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Saytda pulsuz qeydiyyatdan keçərək «Elan yerləşdir» düyməsinə klikləyin. Göstərdiyiniz xidməti, qiyməti, əlaqə nömrənizi və gördüyünüz işlərin şəkillərini əlavə edərək minlərlə potensial müştəriyə çatın."
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <section class="market-hero" aria-labelledby="hero-title">
  <div class="hero-photo" role="img" aria-label="Kondisioner və santexnika ustaları iş başında"></div>
  <div class="home-container hero-inner">
-  <div class="hero-copy"><h1 id="hero-title">Etibarlı ustanı <span>asan tap</span></h1><p class="hero-intro">Elektrik, santexnika, kombi, kondisioner, təmir və yüzlərlə<br class="desktop-break"> xidmət elanı bir platformada.</p>
-   <form class="hero-search" action="{% url 'elan_siyahi' %}" method="get" role="search"><label class="search-input">{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" aria-label="Usta və ya xidmət axtar" placeholder="Usta və ya xidmət axtar" required></label><span class="search-city">{% include 'partials/ui_icon.html' with name='pin' %} Bakı</span><button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button></form>
-   <div class="quick-services"><a href="/xidmet/elektrik/">Elektrikçi</a><a href="/xidmet/santexnik/">Santexnik</a><a href="/xidmet/kombi-ustasi/">Kombi ustası</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner</a><a href="/xidmet/mebel-interyer/">Mebel</a><a href="/xidmet/temir-tikinti/">Təmir</a></div>
+  <div class="hero-copy"><h1 id="hero-title">Etibarlı ustanı <span>asan tap</span></h1><p class="hero-intro">Elektrik, santexnika, kombi, kondisioner, təmir və 100+ usta xidməti bir platformada.</p>
+   <form class="hero-search" action="{% url 'elan_siyahi' %}" method="get" role="search"><label class="search-input">{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" aria-label="Usta və ya xidmət axtar" placeholder="Usta və ya xidmət axtar (məs: kombi ustası)" required></label><span class="search-city">{% include 'partials/ui_icon.html' with name='pin' %} Bakı</span><button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button></form>
+   <div class="quick-services"><a href="/xidmet/elektrik/">Elektrikçi</a><a href="/xidmet/santexnik/">Santexnik</a><a href="/xidmet/kombi-ustasi/">Kombi ustası</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner</a><a href="/xidmet/mebel-interyer/">Mebel ustası</a><a href="/xidmet/temir-tikinti/">Təmir ustası</a></div>
    <div class="hero-benefits"><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='check' %}</span><span><strong>Peşəkar ustalar</strong><small>Eviniz üçün doğru seçim</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='chat' %}</span><span><strong>Birbaşa əlaqə</strong><small>Zəng və ya WhatsApp</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='star' %}</span><span><strong>Rahat seçim</strong><small>Xidmətləri müqayisə edin</small></span></div></div>
   </div>
   <div class="hero-handwriting">Eviniz<br>peşəkar əllərdə!<span>⤶</span></div><div class="hero-note"><svg width="39" height="39" viewBox="0 0 40 40" fill="currentColor" aria-hidden="true"><path d="M4 34V16L20 3l16 13v18h-8V21l-8-7-8 7v13H4Z"/></svg><strong>Ustalar və<br>xidmət elanları<br>sizi gözləyir!</strong></div>
@@ -84,6 +127,51 @@
  <div class="home-stats" aria-label="{% if home_is_demo %}Nümunə statistika{% else %}Platformanın üstünlükləri{% endif %}"><div>{% include 'partials/ui_icon.html' with name='users' %}<span><strong>{% if home_is_demo %}10,000+{% else %}Bir platforma{% endif %}</strong><small>{% if home_is_demo %}elan{% else %}müxtəlif xidmətlər{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='user' %}<span><strong>{% if home_is_demo %}2,500+{% else %}Birbaşa{% endif %}</strong><small>{% if home_is_demo %}aktiv usta{% else %}usta ilə əlaqə{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='eye' %}<span><strong>{% if home_is_demo %}50,000+{% else %}Rahat seçim{% endif %}</strong><small>{% if home_is_demo %}aylıq baxış{% else %}ətraflı elanlar{% endif %}</small></span></div><div>{% include 'partials/ui_icon.html' with name='star' %}<span><strong>{% if home_is_demo %}4.8{% else %}Pulsuz{% endif %}</strong><small>{% if home_is_demo %}orta reytinq{% else %}usta axtarışı{% endif %}</small></span></div></div>
  <section class="home-section reviews-section" id="reyler"><div class="home-section-heading"><h2>{% if home_is_demo %}İstifadəçilər nə deyir?{% else %}Eviniz üçün doğru seçim{% endif %}</h2>{% if home_is_demo %}<span class="sample-label">Nümunə rəylər</span>{% else %}<a href="{% url 'haqqimizda' %}">Haqqımızda {% include 'partials/ui_icon.html' with name='arrow' %}</a>{% endif %}</div><div class="review-grid">{% if home_is_demo %}{% for review in example_reviews %}<article class="review-card"><div class="review-person"><span class="review-avatar example-avatar portrait-review-{{ forloop.counter }}" role="img" aria-label="Nümunə müştəri portreti"></span><div><h3>{{ review.name }}</h3><p><span class="review-stars" aria-label="5 ulduz">★★★★★</span><small> · {{ review.when }}</small></p></div></div><blockquote>“{{ review.text }}”</blockquote></article>{% endfor %}{% else %}<article class="review-card"><h3>İstədiyiniz xidməti tapın</h3><p>Elektrikdən mebel təmirinə qədər müxtəlif xidmətlərə bir yerdə baxın.</p></article><article class="review-card"><h3>Qərarı özünüz verin</h3><p>Ustaların elanlarını, iş şəkillərini və qiymətlərini müqayisə edin.</p></article><article class="review-card"><h3>Birbaşa danışın</h3><p>İşin detallarını və vaxtını seçdiyiniz usta ilə razılaşdırın.</p></article>{% endif %}</div></section>
  <section class="join-banner"><div class="join-copy"><h2>Sən də usta kimi qoşul</h2><p>Xidmətlərini minlərlə potensial müştəriyə təqdim et.<br>Prousta.az-da qeydiyyat pulsuzdur!</p></div><a href="{% url 'elan_yarat' %}" class="join-button">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a><div class="join-person" aria-hidden="true"></div><span class="join-handwriting">Daha çox<br>müştəri qazan!<span>⤶</span></span></section>
+ <section class="home-section" id="faq-bolmesi" style="margin-top:36px">
+   <div class="home-section-heading"><h2>Tez-tez verilən suallar (FAQ)</h2></div>
+   <div style="display:flex;flex-direction:column;gap:10px">
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Prousta.az-da usta necə tapılır?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Saytda axtardığınız xidmət kateqoriyasını seçin və ya axtarış bölməsinə ehtiyacınız olan xidməti yazın (məs: kombi ustası, santexnik, elektrik). Elanlarda qiymətlərə və usta məlumatlarına baxaraq birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.
+       </p>
+     </details>
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Usta ilə əlaqə saxlamaq üçün ödəniş tələb olunurmu?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Xeyr! Prousta.az müştərilər üçün tamamilə pulsuzdur. Platformada heç bir vasitəçi komissiyası yoxdur, usta ilə birbaşa əlaqə saxlayırsınız.
+       </p>
+     </details>
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Prousta.az-da hansı xidmətlər mövcuddur?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Kombi və kondisioner servisi, santexnika, elektrik, mebel yığılması və təmiri, məişət texnikası təmiri (soyuducu, paltaryuyan), ev təmiri və tikinti daxil olmaqla 100-dən çox kateqoriyada usta elanları mövcuddur.
+       </p>
+     </details>
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Usta kimi necə elan yerləşdirmək olar?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Saytda pulsuz qeydiyyatdan keçərək «Elan yerləşdir» düyməsinə klikləyin. Göstərdiyiniz xidməti, qiyməti, əlaqə nömrənizi və gördüyünüz işlərin şəkillərini əlavə edərək minlərlə potensial müştəriyə çatın.
+       </p>
+     </details>
+   </div>
+ </section>
+ <section class="panel prose" style="padding:28px 32px;margin-top:28px;border-radius:14px;border:1px solid var(--border);background:#fff">
+   <h2>Azərbaycanda və Bakıda Peşəkar Usta Xidmətləri — Prousta.az</h2>
+   <p>Evinizdə və ya iş yerinizdə yaranan təmir, quraşdırma və servis ehtiyacları üçün etibarlı usta tapmaq artıq çox asandır. <strong>Prousta.az</strong> — Bakıda və Azərbaycanın bütün bölgələrində fəaliyyət göstərən peşəkar ustaları bir araya gətirən elan platformasıdır.</p>
+   <h3>Ən çox tələb olunan usta xidmətləri:</h3>
+   <p style="line-height:2">
+     <a href="/xidmet/kombi-ustasi/" style="color:var(--p);font-weight:600">Kombi ustası</a> · 
+     <a href="/xidmet/kondisioner-ustasi/" style="color:var(--p);font-weight:600">Kondisioner ustası</a> · 
+     <a href="/xidmet/santexnik/" style="color:var(--p);font-weight:600">Santexnik Bakı</a> · 
+     <a href="/xidmet/elektrik/" style="color:var(--p);font-weight:600">Elektrik ustası</a> · 
+     <a href="/xidmet/paltaryuyan-ustasi/" style="color:var(--p);font-weight:600">Paltaryuyan ustası</a> · 
+     <a href="/xidmet/soyuducu-ustasi/" style="color:var(--p);font-weight:600">Soyuducu təmiri</a> · 
+     <a href="/xidmet/mebel-interyer/" style="color:var(--p);font-weight:600">Mebel yığılması</a> · 
+     <a href="/xidmet/temir-tikinti/" style="color:var(--p);font-weight:600">Ev təmiri və tikinti</a>
+   </p>
+   <p style="margin-top:14px">Vasitəçisiz, komissiyasız və birbaşa əlaqə ilə eviniz üçün doğru ustanı indi seçin!</p>
+ </section>
 </div>
 <dialog id="demoContact" class="contact-dialog"><button type="button" class="dialog-close" aria-label="Pəncərəni bağla">×</button><span class="dialog-icon">{% include 'partials/ui_icon.html' with name='phone' %}</span><h2>Bu, dizayn nümunəsidir</h2><p>Bu kart real ustaya aid deyil. Mövcud xidmətlərə baxaraq usta seçə bilərsiniz.</p><a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Xidmətlərə bax {% include 'partials/ui_icon.html' with name='arrow' %}</a></dialog>
 <script src="{% static 'js/home.js' %}" defer></script>

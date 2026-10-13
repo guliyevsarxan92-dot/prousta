@@ -53,12 +53,15 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Elanlar", "item": "https://prousta.az/elanlar/"},
-    {"@type": "ListItem", "position": 3, "name": "{{ elan.bashliq|escapejs }}"}
+    {"@type": "ListItem", "position": 2, "name": "Elanlar", "item": "https://prousta.az/elanlar/"}{% if elan.kategori %},
+    {"@type": "ListItem", "position": 3, "name": "{{ elan.kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ elan.kategori.slug }}/"},
+    {"@type": "ListItem", "position": 4, "name": "{{ elan.bashliq|escapejs }}", "item": "https://prousta.az{{ elan.get_absolute_url }}"}{% else %},
+    {"@type": "ListItem", "position": 3, "name": "{{ elan.bashliq|escapejs }}", "item": "https://prousta.az{{ elan.get_absolute_url }}"}{% endif %}
   ]
 }
 </script>
 {% endblock %}
+{% block robots %}{% if is_inactive or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
 {% block description %}{{ elan.bashliq }} — {{ elan.sheher }}{% if elan.sheher != "Bakı" %}, Azərbaycan{% endif %}. {% if elan.qiymet %}Qiymət: {{ elan.qiymet }} ₼. {% endif %}{{ elan.acaqlama|truncatechars:120 }} Prousta.az-da peşəkar usta tapın!{% endblock %}
 {% block keywords %}{{ elan.bashliq }}, {{ elan.kategori }} {{ elan.sheher }}, {{ elan.kategori|lower }} usta, {{ elan.kategori|lower }} qiymət, {{ elan.sheher }} usta tap, Prousta.az{% endblock %}
 {% block og_title %}{{ elan.bashliq }} — {{ elan.sheher }}{% endblock %}
@@ -79,6 +82,12 @@
     {% endif %}
     <span aria-current="page">{{ elan.bashliq|truncatechars:35 }}</span>
   </nav>
+
+  {% if is_inactive %}
+  <div class="panel" style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:14px 18px;margin-bottom:16px;border-radius:12px;font-size:14px">
+    ⚠️ <strong>Diqqət:</strong> Bu elanın aktivlik müddəti bitib və ya deaktiv edilib. Digər aktiv ustalara aşağıdakı bölmədən baxa bilərsiniz.
+  </div>
+  {% endif %}
 
   <div class="pg-grid">
     <!-- Sol tərəf: Şəkillər və Açıqlama -->
@@ -223,6 +232,20 @@
       </aside>
     </div>
   </div>
+
+  {% if oxsar_elanlar %}
+  <section class="pg-section" style="margin-top:36px">
+    <div class="sec-head">
+      <h2>Oxşar elanlar və digər {{ elan.kategori.ad }} ustaları</h2>
+      {% if elan.kategori %}<a href="{% url 'xidmet_detail' elan.kategori.slug %}">Bütün {{ elan.kategori.ad }} elanları {% include 'partials/ui_icon.html' with name='arrow' %}</a>{% endif %}
+    </div>
+    <div class="service-grid">
+      {% for elan in oxsar_elanlar %}
+        {% include 'partials/home_service_card.html' %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 </div>
 
 <!-- Mobil üçün alt sabit əlaqə paneli -->

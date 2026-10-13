@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Səhifə Tapılmadı (404) — Prousta.az{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+<div class="pg" style="text-align:center;padding:60px 20px 80px;max-width:720px;margin:0 auto">
+  <div style="font-size:72px;font-weight:800;color:var(--p);line-height:1;margin-bottom:12px">404</div>
+  <h1 style="font-size:26px;font-weight:800;margin-bottom:12px;color:var(--tx)">Axtardığınız səhifə tapılmadı</h1>
+  <p style="font-size:15px;color:var(--muted);max-width:520px;margin:0 auto 28px;line-height:1.6">
+    Daxil etdiyiniz keçid dəyişdirilmiş və ya silinmiş ola bilər. Aşağıdakı axtarış bölməsindən istifadə edərək və ya populyar kateqoriyalara keçərək istədiyiniz ustanı tapa bilərsiniz.
+  </p>
+
+  <form class="hero-search" action="{% url 'elan_siyahi' %}" method="get" role="search" style="max-width:540px;margin:0 auto 32px">
+    <label class="search-input">
+      {% include 'partials/ui_icon.html' with name='search' %}
+      <input type="search" name="q" placeholder="Usta və ya xidmət axtar (məs: kombi ustası)" required>
+    </label>
+    <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
+  </form>
+
+  <div class="panel" style="padding:24px;border-radius:14px;background:#fff;border:1px solid var(--border);text-align:left">
+    <h2 style="font-size:16px;font-weight:700;margin-bottom:14px;color:var(--tx)">Populyar xidmət kateqoriyaları:</h2>
+    <div class="chips">
+      <a class="chip" href="/xidmet/kombi-ustasi/">♨ Kombi ustası</a>
+      <a class="chip" href="/xidmet/kondisioner-ustasi/">❄ Kondisioner ustası</a>
+      <a class="chip" href="/xidmet/santexnik/">🚰 Santexnik Bakı</a>
+      <a class="chip" href="/xidmet/elektrik/">⚡ Elektrik ustası</a>
+      <a class="chip" href="/xidmet/paltaryuyan-ustasi/">🌀 Paltaryuyan təmiri</a>
+      <a class="chip" href="/xidmet/soyuducu-ustasi/">🧊 Soyuducu ustası</a>
+      <a class="chip" href="/xidmet/mebel-interyer/">🛋️ Mebel ustası</a>
+      <a class="chip" href="/xidmet/temir-tikinti/">🧱 Ev təmiri</a>
+    </div>
+  </div>
+
+  <div style="margin-top:28px">
+    <a href="{% url 'index' %}" class="btn btn-primary" style="display:inline-flex;padding:12px 28px;font-size:15px">
+      Ana səhifəyə qayıt
+    </a>
+  </div>
+</div>
+{% endblock %}

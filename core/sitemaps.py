@@ -3,12 +3,51 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from .models import Kategori, Elan, Problem
+from .seo import indexable_kategori_ids
+
+
+class AnaSehifeSitemap(Sitemap):
+    """Əsas səhifə — ən yüksək prioritet."""
+    changefreq = 'daily'
+    priority = 1.0
+
+    def items(self):
+        return ['index']
+
+    def location(self, item):
+        return reverse(item)
+
+
+class KategoriSitemap(Sitemap):
+    """Əsas kateqoriyalar — yalnız məzmunlu və indekslənə bilən səhifələr."""
+    changefreq = 'daily'
+    priority = 0.9
+
+    def items(self):
+        valid_ids = indexable_kategori_ids()
+        return Kategori.objects.filter(ust_kategori__isnull=True, pk__in=valid_ids).order_by('pk')
+
+    def location(self, obj):
+        return reverse('xidmet_detail', args=[obj.slug])
+
+
+class AltKategoriSitemap(Sitemap):
+    """Alt xidmət kateqoriyaları — axtarış tələbatı yüksək olan xidmətlər."""
+    changefreq = 'daily'
+    priority = 0.9
+
+    def items(self):
+        valid_ids = indexable_kategori_ids()
+        return Kategori.objects.filter(ust_kategori__isnull=False, pk__in=valid_ids).order_by('pk')
+
+    def location(self, obj):
+        return reverse('xidmet_detail', args=[obj.slug])
 
 
 class ElanSitemap(Sitemap):
-    """Aktiv və müddəti bitməmiş elanlar üçün sitemap."""
+    """Aktiv və müddəti bitməmiş elanlar."""
     changefreq = 'daily'
-    priority = 0.6
+    priority = 0.8
     limit = 5000
 
     def items(self):
@@ -26,30 +65,8 @@ class ElanSitemap(Sitemap):
         return obj.get_absolute_url()
 
 
-class KategoriSitemap(Sitemap):
-    """Əsas kateqoriyalar — SEO mətni olan və ya aktiv elanları olan."""
-    changefreq = 'weekly'
-    priority = 0.7
-
-    def items(self):
-        return Kategori.objects.filter(ust_kategori__isnull=True).order_by('pk')
-
-    def location(self, obj):
-        return reverse('xidmet_detail', args=[obj.slug])
-
-
-class AltKategoriSitemap(Sitemap):
-    """Alt xidmət kateqoriyaları — hamısı sitemap-a daxildir."""
-    changefreq = 'weekly'
-    priority = 0.8
-
-    def items(self):
-        return Kategori.objects.filter(ust_kategori__isnull=False).order_by('pk')
-
-    def location(self, obj):
-        return reverse('xidmet_detail', args=[obj.slug])
-
 class ProblemSitemap(Sitemap):
+    """Məlumatlandırıcı bloq və problem həlli məqalələri."""
     changefreq = 'weekly'
     priority = 0.7
 
@@ -64,11 +81,12 @@ class ProblemSitemap(Sitemap):
 
 
 class StatikSitemap(Sitemap):
+    """Statik köməkçi səhifələr."""
     changefreq = 'monthly'
-    priority = 0.5
+    priority = 0.4
 
     def items(self):
-        return ['index', 'elan_siyahi', 'haqqimizda', 'mobil_app', 'problemler_siyahi', 'gizlilik', 'istifade_sertleri']
+        return ['elan_siyahi', 'haqqimizda', 'mobil_app', 'problemler_siyahi', 'gizlilik', 'istifade_sertleri']
 
     def location(self, item):
         return reverse(item)

@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Q, F, Case, When, IntegerField, TextField, Value
+from django.db.models import Q, F, Case, When, IntegerField, TextField, Value, Min, Max
 from django.db.models.functions import MD5, Cast, Concat
 from django.db import connection, transaction
 from django.utils import timezone
@@ -20,6 +20,7 @@ from datetime import timedelta
 from decimal import Decimal
 from django.core.paginator import Paginator
 from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem, VipPaket
+from .seo import indexable_kategori_ids
 
 def _aciqlama_qadaga_yoxla(metn):
     """Açıqlamada telefon nömrəsi və ya sayt adı varsa xəta mesajı qaytarır."""
@@ -219,6 +220,25 @@ def xidmet_detail(request, slug):
     elanlar_page = paginator.get_page(request.GET.get('page', 1))
     page_range = list(paginator.get_elided_page_range(elanlar_page.number, on_each_side=2, on_ends=1))
 
+    # SEO: daxili linkləmə — eyni qrupdan digər xidmətlər və əlaqəli bələdçilər
+    indexable_ids = indexable_kategori_ids()
+    if aktiv_kategori.ust_kategori_id:
+        oxsar_kateqoriyalar = [
+            k for k in Kategori.objects.filter(ust_kategori_id=aktiv_kategori.ust_kategori_id)
+            .exclude(pk=aktiv_kategori.pk).order_by('pk')
+            if k.pk in indexable_ids
+        ]
+    else:
+        oxsar_kateqoriyalar = [
+            k for k in Kategori.objects.filter(ust_kategori__isnull=True)
+            .exclude(pk=aktiv_kategori.pk).order_by('pk')
+            if k.pk in indexable_ids
+        ]
+    problemler = Problem.objects.filter(aktiv=True).filter(
+        Q(kategori=aktiv_kategori) | Q(kategori__ust_kategori=aktiv_kategori)
+    )[:6]
+    qiymet_aralig = elanlar.order_by().aggregate(min_q=Min('qiymet'), max_q=Max('qiymet'))
+
     return render(request, 'xidmet_detail.html', {
         'elanlar': elanlar_page,
         'page_range': page_range,
@@ -226,6 +246,11 @@ def xidmet_detail(request, slug):
         'aktiv_kategori': aktiv_kategori,
         'axtaris': axtaris,
         'elan_var': elanlar_page.paginator.count > 0,
+        'kat_indexable': aktiv_kategori.pk in indexable_ids,
+        'oxsar_kateqoriyalar': oxsar_kateqoriyalar,
+        'problemler': problemler,
+        'min_qiymet': qiymet_aralig['min_q'],
+        'max_qiymet': qiymet_aralig['max_q'],
         'elan_seed': seed,
     })
 
@@ -243,7 +268,32 @@ def elan_detail(request, pk, slug=None):
     favorit = False
     if request.user.is_authenticated:
         favorit = Favorit.objects.filter(istifadeci=request.user, elan=elan).exists()
-    return render(request, 'elan_detail.html', {'elan': elan, 'favorit': favorit})
+
+    oxsar_elanlar = []
+    if elan.kategori:
+        oxsar_qs = (
+            Elan.objects.filter(status='aktiv', kategori=elan.kategori)
+            .exclude(pk=elan.pk)
+            .select_related('kategori')
+            .prefetch_related('shekillar')[:6]
+        )
+        oxsar_elanlar = list(oxsar_qs)
+        if len(oxsar_elanlar) < 4 and elan.kategori.ust_kategori:
+            elave = list(
+                Elan.objects.filter(status='aktiv', kategori__ust_kategori=elan.kategori.ust_kategori)
+                .exclude(pk=elan.pk)
+                .exclude(pk__in=[e.pk for e in oxsar_elanlar])
+                .select_related('kategori')
+                .prefetch_related('shekillar')[:6 - len(oxsar_elanlar)]
+            )
+            oxsar_elanlar.extend(elave)
+
+    return render(request, 'elan_detail.html', {
+        'elan': elan,
+        'favorit': favorit,
+        'oxsar_elanlar': oxsar_elanlar,
+        'is_inactive': elan.status != 'aktiv',
+    })
 
 @login_required
 def elan_yarat(request):
@@ -863,11 +913,45 @@ Disallow: /elan/yeni/
 Disallow: /elan/duzelis/
 Disallow: /elan/sil/
 Disallow: /elan/aktivlesdir/
+Disallow: /shekil/
 Disallow: /vip/
 Disallow: /cixis/
 Disallow: /sifre-unutdum/
 Disallow: /giris/
 Disallow: /qeydiyyat/
+Disallow: /mobile/
+Disallow: /social-auth/
+Disallow: /*?*q=
+Disallow: /*?*seed=
+Disallow: /*?*ajax=
+Disallow: /*?*sort=
+
+User-agent: Googlebot
+Allow: /static/
+Allow: /media/
+Allow: /
+Disallow: /admin/
+Disallow: /profil/
+Disallow: /mesajlar/
+Disallow: /mesaj/
+Disallow: /odenis/
+Disallow: /favorit/
+Disallow: /elan/yeni/
+Disallow: /elan/duzelis/
+Disallow: /elan/sil/
+Disallow: /elan/aktivlesdir/
+Disallow: /shekil/
+Disallow: /vip/
+Disallow: /cixis/
+Disallow: /sifre-unutdum/
+Disallow: /giris/
+Disallow: /qeydiyyat/
+Disallow: /mobile/
+Disallow: /social-auth/
+Disallow: /*?*q=
+Disallow: /*?*seed=
+Disallow: /*?*ajax=
+Disallow: /*?*sort=
 
 User-agent: Yandex
 Allow: /static/
@@ -882,6 +966,20 @@ Disallow: /favorit/
 Disallow: /elan/yeni/
 Disallow: /elan/duzelis/
 Disallow: /elan/sil/
+Disallow: /elan/aktivlesdir/
+Disallow: /shekil/
+Disallow: /vip/
+Disallow: /cixis/
+Disallow: /sifre-unutdum/
+Disallow: /giris/
+Disallow: /qeydiyyat/
+Disallow: /mobile/
+Disallow: /social-auth/
+Disallow: /*?*q=
+Disallow: /*?*seed=
+Disallow: /*?*ajax=
+Disallow: /*?*sort=
 
-Sitemap: https://prousta.az/sitemap.xml"""
-    return HttpResponse(content, content_type='text/plain')
+Sitemap: https://prousta.az/sitemap.xml
+"""
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')

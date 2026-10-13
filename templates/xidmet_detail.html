@@ -1,59 +1,112 @@
 {% extends 'base.html' %}
-{% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Qiymət və Elanlar | Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları, qiymətlər və peşəkar ustalar. Elə indi ən yaxın ustanı tapın!{% endif %}{% endblock %}
-{% block keywords %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} qiymət, {{ aktiv_kategori.ad|lower }} elanları, {{ aktiv_kategori.ad|lower }} Azərbaycan, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endblock %}
-{% block robots %}{% if not elan_var %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
-{% block canonical %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
-{% block canonical2 %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
-{% block og_url %}/xidmet/{{ aktiv_kategori.slug }}/{% endblock %}
-{% block og_title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} — Prousta.az{% endif %}{% endblock %}
-{% block og_description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}{% endblock %}
+{% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar və Qiymətlər | Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları{% if min_qiymet %}, qiymətlər {{ min_qiymet|floatformat:'-2' }} ₼-dən başlayır{% endif %}. Peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın!{% endif %}{% endblock %}
+{% block keywords %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} ustası, {{ aktiv_kategori.ad|lower }} qiyməti, {{ aktiv_kategori.ad|lower }} elanları, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endblock %}
+{% block robots %}{% if not kat_indexable or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
+{% block canonical %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block canonical2 %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block og_url %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block og_title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar | Prousta.az{% endif %}{% endblock %}
+{% block og_description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə peşəkar usta elanları və qiymətlər Prousta.az-da.{% endif %}{% endblock %}
 {% block og_image %}{% with elanlar.0 as ilk %}{% if ilk and ilk.shekillar.first %}{{ ilk.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endwith %}{% endblock %}
+
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "{{ aktiv_kategori.ad|escapejs }} — Prousta.az",
-  "description": "{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}",
-  "url": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/",
-  "inLanguage": "az-AZ",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Prousta.az",
-    "url": "https://prousta.az"
-  },
-  "mainEntity": {
-    "@type": "ItemList",
-    "name": "{{ aktiv_kategori.ad|escapejs }} elanları",
-    "numberOfItems": {{ elanlar.paginator.count|default:0 }},
-    "itemListElement": [
-      {% for elan in elanlar %}{
-        "@type": "ListItem",
-        "position": {{ forloop.counter }},
-        "url": "https://prousta.az{{ elan.get_absolute_url }}",
-        "name": "{{ elan.bashliq|escapejs }}"
-      }{% if not forloop.last %},{% endif %}{% endfor %}
-    ]
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Xidmətlər", "item": "https://prousta.az/elanlar/"}{% if aktiv_kategori.ust_kategori %},
-    {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ust_kategori.ad }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.ust_kategori.slug }}/"},
-    {"@type": "ListItem", "position": 4, "name": "{{ aktiv_kategori.ad }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% else %},
-    {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ad }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% endif %}
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#webpage",
+      "name": "{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} Bakıda — Prousta.az{% endif %}",
+      "description": "{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}",
+      "url": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/",
+      "inLanguage": "az-AZ",
+      "isPartOf": {"@type": "WebSite", "@id": "https://prousta.az/#website"},
+      "mainEntity": {
+        "@type": "ItemList",
+        "name": "{{ aktiv_kategori.ad|escapejs }} elanları",
+        "numberOfItems": {{ elanlar.paginator.count|default:0 }},
+        "itemListElement": [
+          {% for elan in elanlar %}{
+            "@type": "ListItem",
+            "position": {{ forloop.counter }},
+            "url": "https://prousta.az{{ elan.get_absolute_url }}",
+            "name": "{{ elan.bashliq|escapejs }}"
+          }{% if not forloop.last %},{% endif %}{% endfor %}
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#breadcrumb",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
+        {"@type": "ListItem", "position": 2, "name": "Xidmətlər", "item": "https://prousta.az/elanlar/"}{% if aktiv_kategori.ust_kategori %},
+        {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ust_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.ust_kategori.slug }}/"},
+        {"@type": "ListItem", "position": 4, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% else %},
+        {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% endif %}
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "{{ aktiv_kategori.ad|escapejs }}",
+      "serviceType": "{{ aktiv_kategori.ad|escapejs }}",
+      "provider": {
+        "@type": "Organization",
+        "name": "Prousta.az",
+        "url": "https://prousta.az/"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Bakı",
+        "addressCountry": "AZ"
+      }{% if min_qiymet %},
+      "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "{{ min_qiymet }}",
+        {% if max_qiymet %}"highPrice": "{{ max_qiymet }}",{% endif %}
+        "priceCurrency": "AZN",
+        "offerCount": {{ elanlar.paginator.count|default:1 }}
+      }{% endif %}
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Bakıda {{ aktiv_kategori.ad|lower|escapejs }} qiyməti nə qədərdir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} xidməti üzrə elanlarda qiymətlər təxminən {{ min_qiymet|floatformat:'-2' }} AZN-dən başlayır.{% else %}Qiymət görüləcək işin həcminə, detal və ehtiyat hissələrinin dəyərinə görə dəyişir.{% endif %} Ən sərfəli təklifi tapmaq üçün elanları müqayisə edib birbaşa ustalarla əlaqə saxlaya bilərsiniz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "{{ aktiv_kategori.ad|escapejs }} ustasını necə çağırmaq olar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Prousta.az-da heç bir vasitəçi və komissiya yoxdur. Bəyəndiyiniz elandakı «Zəng et» və ya «WhatsApp» düyməsinə klikləyərək birbaşa usta ilə əlaqə qura və vaxt təyin edə bilərsiniz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "{{ aktiv_kategori.ad|escapejs }} xidmətinə zəmanət verilirmi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ustaların çoxu gördükləri təmir və quraşdırma işlərinə zəmanət verir. İşə başlamazdan əvvəl seçdiyiniz usta ilə zəmanət şərtlərini və görüləcək işləri dəqiqləşdirməyiniz tövsiyə olunur."
+          }
+        }
+      ]
+    }
   ]
 }
 </script>
 {% endblock %}
+
 {% block content %}
 <div class="pg">
   <nav class="crumbs" aria-label="Breadcrumb">
@@ -66,7 +119,7 @@
   <section class="pg-hero">
     <span class="eyebrow">{% include 'partials/ui_icon.html' with name='tool' %} {{ elanlar.paginator.count }} aktiv elan</span>
     <h1>{{ aktiv_kategori.ad }} <span>Bakıda</span></h1>
-    <p>{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.</p>
+    <p>{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.</p>
     <form class="search-bar" method="get" role="search">
       <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Bu kateqoriyada axtar" aria-label="Bu kateqoriyada axtar"></label>
       <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
@@ -74,7 +127,7 @@
   </section>
 
   {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}
-  <div class="chips pg-section">
+  <div class="chips pg-section" style="margin-top:-10px">
     {% for alt in alts %}<a class="chip" href="{% url 'xidmet_detail' alt.slug %}">{{ alt.ad }}</a>{% endfor %}
   </div>
   {% endif %}{% endwith %}
@@ -91,7 +144,7 @@
         <div class="empty-state">
           <span class="empty-ico">{% include 'partials/ui_icon.html' with name='search' %}</span>
           <h3>Bu kateqoriyada hələ aktiv elan yoxdur</h3>
-          <p>{{ aktiv_kategori.ad }} üzrə ilk elanı yerləşdirən siz olun!</p>
+          <p>{{ aktiv_kategori.ad }} üzrə ilk elanı yerləşdirən siz olun və müştərilər sizi dərhal tapsın!</p>
           <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a>
         </div>
       {% endfor %}
@@ -99,15 +152,79 @@
     {% include 'partials/pager.html' with page=elanlar q=axtaris page_range=page_range elan_seed=elan_seed %}
   </section>
 
-  <section class="join-banner pg-section">
+  <!-- Əlaqəli Xidmətlər (SEO Daxili Linklər) -->
+  {% if oxsar_kateqoriyalar %}
+  <section class="pg-section" style="margin-top:20px">
+    <div class="sec-head"><h3>Digər əlaqəli xidmətlər</h3></div>
+    <div class="chips">
+      {% for k in oxsar_kateqoriyalar %}
+      <a class="chip" href="{% url 'xidmet_detail' k.slug %}" title="{{ k.ad }} Bakı">{{ k.ad }}</a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Əlaqəli Bloq / Problemlər (SEO Informational Intent) -->
+  {% if problemler %}
+  <section class="pg-section" style="margin-top:28px">
+    <div class="sec-head"><h3>{{ aktiv_kategori.ad }} üzrə tez-tez rast gəlinən problemlər və həlləri</h3></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+      {% for pr in problemler %}
+      <a href="{{ pr.get_absolute_url }}" class="panel" style="padding:16px 18px;display:block;border-radius:12px;border:1px solid var(--border);transition:.2s;background:#fff">
+        <strong style="color:var(--tx);font-size:14px;display:block;margin-bottom:6px">{{ pr.bashliq }}</strong>
+        <span style="color:var(--p);font-size:12px;font-weight:600">Səbəbi və həll yolunu oxu →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Tez-tez Verilən Suallar (FAQ Accordion) -->
+  <section class="pg-section" style="margin-top:28px">
+    <div class="sec-head"><h3>Tez-tez verilən suallar (FAQ)</h3></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
+        <summary style="font-weight:700;font-size:15px;color:var(--tx)">Bakıda {{ aktiv_kategori.ad|lower }} xidmətinin qiyməti nə qədərdir?</summary>
+        <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+          {% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} xidməti üzrə elanlarda qiymətlər təxminən <strong>{{ min_qiymet|floatformat:'-2' }} AZN</strong>-dən başlayır.{% else %}Qiymət görüləcək işin həcminə və mürəkkəbliyinə görə dəyişir.{% endif %} Bir neçə ustanın elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.
+        </p>
+      </details>
+      <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
+        <summary style="font-weight:700;font-size:15px;color:var(--tx)">{{ aktiv_kategori.ad }} ustası ilə necə əlaqə saxlamaq olar?</summary>
+        <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+          Prousta.az-da heç bir vasitəçi yoxdur. Elan kartındakı «Zəng et» və ya «WhatsApp» düymələrinə toxunaraq birbaşa usta ilə əlaqə saxlaya və sifarişinizi qeydiyyatdan keçirə bilərsiniz.
+        </p>
+      </details>
+      <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
+        <summary style="font-weight:700;font-size:15px;color:var(--tx)">Xidmətə və görülən işə zəmanət verilirmi?</summary>
+        <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+          Təmir və servis xidmətləri göstərən ustaların əksəriyyəti işlərinə zəmanət verir. İşə başlamazdan öncə usta ilə zəmanət müddətini dəqiqləşdirmək tövsiyə olunur.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  <section class="join-banner pg-section" style="margin-top:30px">
     <div class="join-copy"><h2>{{ aktiv_kategori.ad }} ustasısınız?</h2><p>Xidmətlərinizi minlərlə potensial müştəriyə təqdim edin. Qeydiyyat pulsuzdur!</p></div>
     <a href="{% url 'elan_yarat' %}" class="join-button" style="margin-right:0">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a>
   </section>
 
-  {% if aktiv_kategori.seo_metn %}
-  <section class="panel prose" style="padding:26px 28px">
-    {{ aktiv_kategori.seo_metn|safe }}
+  <!-- Kateqoriyanın Ətraflı SEO Mətni -->
+  <section class="panel prose" style="padding:28px 32px;margin-top:24px;border-radius:14px;border:1px solid var(--border);background:#fff">
+    {% if aktiv_kategori.seo_metn %}
+      {{ aktiv_kategori.seo_metn|safe }}
+    {% else %}
+      <h2>Bakıda Peşəkar {{ aktiv_kategori.ad }} Xidməti</h2>
+      <p>Ev və ofislərdə baş verən nasazlıqların aradan qaldırılması və keyfiyyətli təmir işləri üçün təcrübəli {{ aktiv_kategori.ad|lower }} tapmaq vacibdir. <strong>Prousta.az</strong> platforması vasitəsilə Bakının bütün rayonlarında (Yasamal, Nərimanov, Xətai, Nəsimi, Binəqədi, Sabunçu və s.) və Abşeron ərazisində fəaliyyət göstərən peşəkar ustaları bir məkanda tapa bilərsiniz.</p>
+      <h3>Niyə Prousta.az-da usta axtarmalısınız?</h3>
+      <ul style="padding-left:20px;line-height:1.8">
+        <li><strong>Birbaşa əlaqə:</strong> Heç bir vasitəçi komissiyası olmadan birbaşa usta ilə zəng və ya WhatsApp vasitəsilə danışın.</li>
+        <li><strong>Şəffaf qiymətlər:</strong> Fərqli ustaların qiymət təkliflərini və təqdim etdikləri şərtləri müqayisə edin.</li>
+        <li><strong>Real iş nümunələri:</strong> Ustaların əvvəlki işlərinin fotoşəkillərinə baxaraq dəqiq qərar verin.</li>
+        <li><strong>Geniş əhatə dairəsi:</strong> Təcili usta çağırışı üçün sizə ən yaxın ünvanda olan peşəkarı seçin.</li>
+      </ul>
+      <p style="margin-top:12px">Siz də {{ aktiv_kategori.ad|lower }} üzrə xidmət göstərirsinizsə, dərhal platformada <strong>pulsuz elan yerləşdirərək</strong> yeni müştərilər qazana bilərsiniz.</p>
+    {% endif %}
   </section>
-  {% endif %}
 </div>
 {% endblock %}

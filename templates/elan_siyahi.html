@@ -2,9 +2,10 @@
 {% block title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
 {% block description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda və Azərbaycanda usta elanları. Ən yaxşı qiymətlər və etibarlı ustalar Prousta.az-da.{% else %}Bakıda və Azərbaycanda bütün usta elanları: elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri, mebel ustası və daha çox. Prousta.az-da tapın!{% endif %}{% endblock %}
 {% block keywords %}usta elanları Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri Bakı, mebel ustası, peşəkar xidmət Bakı, Prousta.az{% endblock %}
-{% block canonical %}/elanlar/{% endblock %}
-{% block canonical2 %}/elanlar/{% endblock %}
-{% block og_url %}/elanlar/{% endblock %}
+{% block robots %}{% if axtaris or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
+{% block canonical %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
+{% block canonical2 %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
+{% block og_url %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
 {% block og_title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
 {% block og_description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda usta elanları Prousta.az-da.{% else %}Bakıda elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası və 100+ xidmət elanı.{% endif %}{% endblock %}
 {% block extra_head %}

@@ -19,24 +19,22 @@
 <meta name="description" content="{% block description %}Prousta.az — Bakıda və bütün Azərbaycanda peşəkar usta tapın. Elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası və 100+ xidmət kateqoriyası. Pulsuz elan yerləşdirin!{% endblock %}">
 <meta name="keywords" content="{% block keywords %}usta Bakı, usta tap Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası Bakı, kondisioner ustası Bakı, havalandırma ustası Bakı, ev təmiri Bakı, soyuducu ustası, paltaryuyan ustası, mebel ustası Bakı, Azərbaycan usta xidməti, Prousta.az{% endblock %}">
 <meta name="author" content="Prousta.az">
-<meta name="robots" content="{% block robots %}index, follow, max-image-preview:large, max-snippet:-1{% endblock %}">
+<meta name="robots" content="{% block robots %}{% if seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endif %}{% endblock %}">
 <meta name="language" content="Azerbaijani">
-<link rel="canonical" href="https://prousta.az{% block canonical %}{% endblock %}">
+<link rel="canonical" href="https://prousta.az{% block canonical %}{{ seo_canonical }}{% endblock %}">
 
-<meta name="geo.region" content="AZ">
+<meta name="geo.region" content="AZ-BA">
 <meta name="geo.country" content="Azerbaijan">
 <meta name="geo.placename" content="Bakı, Azərbaycan">
 <meta name="geo.position" content="40.4093;49.8671">
 <meta name="ICBM" content="40.4093, 49.8671">
-<meta name="DC.title" content="Prousta.az">
-<meta name="DC.language" content="az">
-<meta name="DC.coverage" content="Azerbaijan">
+{% if GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}">{% endif %}
 {% if YANDEX_VERIFICATION %}<meta name="yandex-verification" content="{{ YANDEX_VERIFICATION }}">{% endif %}
 
-<link rel="alternate" hreflang="az" href="https://prousta.az{% block canonical2 %}{% endblock %}">
-<link rel="alternate" hreflang="x-default" href="https://prousta.az">
+<link rel="alternate" hreflang="az" href="https://prousta.az{% block canonical2 %}{{ seo_canonical }}{% endblock %}">
+<link rel="alternate" hreflang="x-default" href="https://prousta.az{% block canonical3 %}{{ seo_canonical }}{% endblock %}">
 
-<meta property="og:type" content="website">
+<meta property="og:type" content="{% block og_type %}website{% endblock %}">
 <meta property="og:site_name" content="Prousta.az">
 <meta property="og:title" content="{% block og_title %}Prousta.az — Bakıda Usta Tap | Peşəkar Xidmət Elanları{% endblock %}">
 <meta property="og:description" content="{% block og_description %}Bakıda və Azərbaycanda elektrik ustası, santexnik, kombi ustası, kondisioner ustası tapın. 100+ xidmət kateqoriyası Prousta.az-da.{% endblock %}">
@@ -44,7 +42,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Prousta.az — Azərbaycanda Peşəkar Usta Tapın">
-<meta property="og:url" content="https://prousta.az{% block og_url %}{% endblock %}">
+<meta property="og:url" content="https://prousta.az{% block og_url %}{{ seo_canonical }}{% endblock %}">
 <meta property="og:locale" content="az_AZ">
 
 <meta name="twitter:card" content="summary_large_image">
@@ -52,6 +50,51 @@
 <meta name="twitter:title" content="{% block tw_title %}Prousta.az — Bakıda Usta Tap | Peşəkar Xidmət Elanları{% endblock %}">
 <meta name="twitter:description" content="{% block tw_description %}Bakıda və Azərbaycanda elektrik ustası, santexnik, kombi ustası, kondisioner ustası tapın. Prousta.az{% endblock %}">
 <meta name="twitter:image" content="{% block tw_image %}https://prousta.az/static/og-image.jpg{% endblock %}">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://prousta.az/#organization",
+      "name": "Prousta.az",
+      "url": "https://prousta.az/",
+      "logo": {"@type": "ImageObject", "url": "https://prousta.az/static/img/icon_512.png", "width": 512, "height": 512},
+      "image": "https://prousta.az/static/og-image.jpg",
+      "email": "info@prousta.az",
+      "areaServed": {"@type": "Country", "name": "Azərbaycan"},
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "telephone": "+994515888884",
+        "contactType": "customer support",
+        "areaServed": "AZ",
+        "availableLanguage": ["az", "ru"]
+      }],
+      "sameAs": [
+        "https://www.facebook.com/61568796886691",
+        "https://www.instagram.com/prousta.az",
+        "https://www.youtube.com/@prousta.servis.merkezi"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://prousta.az/#website",
+      "name": "Prousta.az",
+      "alternateName": ["Prousta", "Pro Usta", "Prousta az"],
+      "url": "https://prousta.az/",
+      "inLanguage": "az-AZ",
+      "publisher": {"@id": "https://prousta.az/#organization"},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {"@type": "EntryPoint", "urlTemplate": "https://prousta.az/elanlar/?q={search_term_string}"},
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
