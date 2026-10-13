@@ -152,8 +152,29 @@ class ElanShekilInline(TabularInline):
     shekil_preview.short_description = 'Önbaxış'
 
 
+class ElanVipListFilter(admin.SimpleListFilter):
+    title = 'VIP Statusu'
+    parameter_name = 'vip'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', '⭐ VIP və Super VIP'),
+            ('super_vip', '💎 Yalnız Super VIP'),
+            ('vip', '⭐ Yalnız VIP'),
+            ('normal', 'Normal'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            return queryset.filter(vip_status__in=['vip', 'super_vip'])
+        if self.value() in ('super_vip', 'vip', 'normal'):
+            return queryset.filter(vip_status=self.value())
+        return queryset
+
+
 @admin.register(Elan)
 class ElanAdmin(ModelAdmin):
+    change_list_template = "admin/core/elan/change_list.html"
     list_display = [
         'shekil_thumb',
         'nomre_link',
@@ -170,6 +191,7 @@ class ElanAdmin(ModelAdmin):
     list_display_links = ['nomre_link', 'bashliq_display']
     list_filter = [
         ('status', ChoicesDropdownFilter),
+        ElanVipListFilter,
         ('vip_status', ChoicesDropdownFilter),
         ('kategori', RelatedDropdownFilter),
         'sheher',
@@ -197,6 +219,42 @@ class ElanAdmin(ModelAdmin):
     inlines = [ElanShekilInline]
     ordering = ['-vip_siralama', '-yaradildi']
     list_per_page = 25
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        say_gozlemede = Elan.objects.filter(status='gozlemede').count()
+        say_aktiv = Elan.objects.filter(status='aktiv').count()
+        say_vip = Elan.objects.filter(vip_status__in=['vip', 'super_vip']).count()
+        say_muddeti_bitmis = Elan.objects.filter(status='muddeti_bitmis').count()
+        say_deaktiv = Elan.objects.filter(status='deaktiv').count()
+        say_hamisi = Elan.objects.count()
+
+        cur_status = request.GET.get('status__exact', '')
+        cur_vip = request.GET.get('vip', '')
+
+        if cur_status == 'gozlemede':
+            cur_tab = 'gozlemede'
+        elif cur_status == 'aktiv':
+            cur_tab = 'aktiv'
+        elif cur_vip == '1':
+            cur_tab = 'vip'
+        elif cur_status == 'muddeti_bitmis':
+            cur_tab = 'muddeti_bitmis'
+        elif cur_status == 'deaktiv':
+            cur_tab = 'deaktiv'
+        else:
+            cur_tab = 'hamisi'
+
+        extra_context.update({
+            'say_gozlemede': say_gozlemede,
+            'say_aktiv': say_aktiv,
+            'say_vip': say_vip,
+            'say_muddeti_bitmis': say_muddeti_bitmis,
+            'say_deaktiv': say_deaktiv,
+            'say_hamisi': say_hamisi,
+            'cur_tab': cur_tab,
+        })
+        return super().changelist_view(request, extra_context=extra_context)
 
     fieldsets = (
         ('Əsas Məlumatlar', {
@@ -499,20 +557,13 @@ class OdenisAdmin(ModelAdmin):
     @action(description='✅ Seçilmiş ödənişləri TƏSDİQLƏ (Balans/VIP aktiv et)')
     def tesdiq_et_action(self, request, queryset):
         count = 0
-        for odenis in queryset:
-            if odenis.status != 'tesdiq_edildi':
-                odenis.status = 'tesdiq_edildi'
-                odenis.save()  # pre_save balansı artırır, post_save bildiriş mesajı göndərir
-                if odenis.elan and odenis.nov in ('vip', 'super_vip'):
-                    now = timezone.now()
-                    days = 30 if odenis.nov == 'super_vip' else 10
-                    odenis.elan.vip_status = odenis.nov
-                    odenis.elan.vip_bitis = now + timedelta(days=days)
-                    odenis.elan.vip_yenilendi = now
-                    odenis.elan.vip_siralama = 2 if odenis.nov == 'super_vip' else 1
-                    odenis.elan.save()
-                count += 1
-        self.message_user(request, f"{count} ödəniş təsdiqləndi və xidmətlər aktiv edildi.")
+        with transaction.atomic():
+            for odenis in queryset:
+                if odenis.status != 'tesdiq_edildi':
+                    odenis.status = 'tesdiq_edildi'
+                    odenis.save()
+                    count += 1
+        self.message_user(request, f"{count} ödəniş uğurla təsdiqləndi.")
 
     @action(description='❌ Seçilmiş ödənişləri LƏĞV ET')
     def legv_et_action(self, request, queryset):

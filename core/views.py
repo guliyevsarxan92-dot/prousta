@@ -21,6 +21,7 @@ from decimal import Decimal
 from django.core.paginator import Paginator
 from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem, VipPaket
 from .seo import indexable_kategori_ids
+from .watermark import filigran_yoxla
 
 def _aciqlama_qadaga_yoxla(metn):
     """Açıqlamada telefon nömrəsi və ya sayt adı varsa xəta mesajı qaytarır."""
@@ -344,6 +345,14 @@ def elan_yarat(request):
             if not shekil.content_type.startswith('image/'):
                 messages.error(request, 'Yalnız şəkil faylları yüklənə bilər!')
                 return render(request, 'elan_yarat.html', ctx)
+            var_filigran, xeta_mesaji = filigran_yoxla(shekil)
+            if var_filigran:
+                messages.error(
+                    request,
+                    f'"{shekil.name}" şəklində kənar platformanın loqosu və ya filiqran (watermark) aşkar edildi ({xeta_mesaji}). '
+                    'Qaydalara əsasən filiqranlı şəkillər qəbul edilmir. Zəhmət olmasa filiqransız orijinal şəkillər yükləyin.'
+                )
+                return render(request, 'elan_yarat.html', ctx)
         try:
             kategori = Kategori.objects.get(pk=request.POST.get('kategori'))
         except Kategori.DoesNotExist:
@@ -371,6 +380,7 @@ def elan_yarat(request):
                     return render(request, 'elan_yarat.html', ctx)
                 profil.balans -= Decimal('1.00')
                 profil.save(update_fields=['balans'])
+            now = timezone.now()
             elan = Elan.objects.create(
                 istifadeci=request.user,
                 kategori=kategori,
@@ -379,11 +389,12 @@ def elan_yarat(request):
                 qiymet=qiymet_raw or None,
                 sheher=request.POST.get('sheher', 'Bakı'),
                 telefon='+994' + telefon_son,
-                status='gozlemede'
+                status='aktiv',
+                bitis_tarixi=now + timedelta(days=30),
             )
             for i, shekil in enumerate(shekillar):
                 ElanShekil.objects.create(elan=elan, shekil=shekil, esas=(i==0))
-        messages.success(request, 'Elanınız moderasiyaya göndərildi!')
+        messages.success(request, 'Təbriklər! Şəkillər yoxlanıldı və filiqran tapılmadığı üçün elanınız avtomatik təsdiqlənərək dərhal aktivləşdirildi!')
         return redirect('profil')
     return render(request, 'elan_yarat.html', {'kateqoriyalar': kateqoriyalar})
 
@@ -417,6 +428,14 @@ def elan_duzelis(request, pk):
             if not shekil.content_type.startswith('image/'):
                 messages.error(request, 'Yalnız şəkil faylları yüklənə bilər!')
                 return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
+            var_filigran, xeta_mesaji = filigran_yoxla(shekil)
+            if var_filigran:
+                messages.error(
+                    request,
+                    f'"{shekil.name}" şəklində kənar platformanın loqosu və ya filiqran (watermark) aşkar edildi ({xeta_mesaji}). '
+                    'Qaydalara əsasən filiqranlı şəkillər qəbul edilmir.'
+                )
+                return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
         elan.bashliq = bashliq
         elan.acaqlama = acaqlama_yeni
         elan.qiymet = request.POST.get('qiymet') or None
@@ -427,11 +446,16 @@ def elan_duzelis(request, pk):
         except Kategori.DoesNotExist:
             messages.error(request, 'Seçilmiş kateqoriya tapılmadı!')
             return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
+        if elan.status == 'gozlemede':
+            elan.status = 'aktiv'
+            if not elan.bitis_tarixi or elan.bitis_tarixi <= timezone.now():
+                elan.bitis_tarixi = timezone.now() + timedelta(days=30)
         elan.save()
         for i, shekil in enumerate(shekillar):
             ElanShekil.objects.create(elan=elan, shekil=shekil, esas=False)
-        messages.success(request, 'Elan yeniləndi!')
+        messages.success(request, 'Elan yeniləndi və aktivləşdirildi!')
         return redirect('profil')
+
     return render(request, 'elan_duzelis.html', {'elan': elan, 'kateqoriyalar': kateqoriyalar})
 
 @login_required

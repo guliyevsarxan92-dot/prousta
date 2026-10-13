@@ -73,7 +73,7 @@
 {% block canonical2 %}{{ elan.get_absolute_url }}{% endblock %}
 
 {% block content %}
-<div class="pg has-mobile-cta">
+<div class="pg">
   <nav class="crumbs" aria-label="Breadcrumb">
     <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     <a href="{% url 'elan_siyahi' %}">Elanlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
@@ -247,20 +247,6 @@
   </section>
   {% endif %}
 </div>
-
-<!-- Mobil üçün alt sabit əlaqə paneli -->
-{% if elan.telefon %}
-<div class="mobile-cta">
-  <a href="tel:{{ elan.telefon }}" class="btn btn-primary" data-track-elan="{{ elan.pk }}" data-track-type="zeng">
-    {% include 'partials/ui_icon.html' with name='phone' %}
-    Zəng et
-  </a>
-  <a href="https://wa.me/{{ elan.telefon|cut:'+'|cut:' '|cut:'-' }}" class="btn btn-wa" target="_blank" rel="noopener" data-track-elan="{{ elan.pk }}" data-track-type="wp">
-    {% include 'partials/ui_icon.html' with name='whatsapp' %}
-    WhatsApp
-  </a>
-</div>
-{% endif %}
 
 <script>
 function selectThumb(btn, src) {

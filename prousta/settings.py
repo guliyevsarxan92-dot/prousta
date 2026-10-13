@@ -265,10 +265,15 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
-                        "title": "Elanlar",
+                        "title": "🆕 Yeni Elanlar (Gözləmədə)",
+                        "icon": "mark_email_unread",
+                        "link": "/admin/core/elan/?status__exact=gozlemede",
+                        "badge": "core.admin.badge_elan_gozlemede",
+                    },
+                    {
+                        "title": "📋 Bütün Elanlar",
                         "icon": "campaign",
                         "link": reverse_lazy("admin:core_elan_changelist"),
-                        "badge": "core.admin.badge_elan_gozlemede",
                     },
                     {
                         "title": "Kateqoriyalar",
