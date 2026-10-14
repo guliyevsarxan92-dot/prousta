@@ -41,6 +41,27 @@ def _aciqlama_qadaga_yoxla(metn):
     return None
 
 
+BOT_PATTERNS = re.compile(
+    r'(bot|crawl|spider|slurp|facebookexternalhit|meta-externalagent|bytespider|googlebot|'
+    r'bingbot|yandex|duckduckbot|baiduspider|twitterbot|linkedinbot|embedly|quora|'
+    r'pinterest|ahrefs|semrush|petalbot|curl|wget|python-requests|urllib|scrapy|postman|'
+    r'headlesschrome|phantomjs|chatgpt|claudebot|gptbot)',
+    re.IGNORECASE
+)
+
+def _is_bot(request) -> bool:
+    ua = request.META.get('HTTP_USER_AGENT', '')
+    if not ua or BOT_PATTERNS.search(ua):
+        return True
+    return False
+
+def _get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR')
+
+
 def _update_elan_status():
     if not cache.get('elan_status_update'):
         cache.set('elan_status_update', True, 60)
@@ -293,10 +314,14 @@ def elan_detail(request, pk, slug=None):
     if slug != elan.slug:
         return redirect(elan.get_absolute_url(), permanent=True)
     is_owner = request.user.is_authenticated and request.user == elan.istifadeci
-    viewed_key = f'viewed_elan_{pk}'
-    if not is_owner and not request.session.get(viewed_key):
-        Elan.objects.filter(pk=pk).update(baxish_sayi=F('baxish_sayi') + 1)
-        request.session[viewed_key] = True
+    if not is_owner and not _is_bot(request):
+        ip = _get_client_ip(request)
+        cache_key = f'viewed_elan_ip_{pk}_{ip}'
+        viewed_key = f'viewed_elan_{pk}'
+        if not request.session.get(viewed_key) and not cache.get(cache_key):
+            Elan.objects.filter(pk=pk).update(baxish_sayi=F('baxish_sayi') + 1)
+            request.session[viewed_key] = True
+            cache.set(cache_key, 1, 3600 * 6)
     elan.refresh_from_db()
     favorit = False
     if request.user.is_authenticated:
@@ -657,11 +682,18 @@ def sifre_unutdum(request):
 @csrf_exempt
 def elan_klik_artir(request, pk, nov):
     """Telefon zəngi və WhatsApp kliklərini asinxron qeydə alır."""
+    if _is_bot(request):
+        return JsonResponse({'status': 'ignored_bot'})
+
     if request.method in ('POST', 'GET'):
-        if nov == 'zeng':
-            Elan.objects.filter(pk=pk).update(zeng_sayi=F('zeng_sayi') + 1)
-        elif nov in ('wp', 'whatsapp'):
-            Elan.objects.filter(pk=pk).update(wp_sayi=F('wp_sayi') + 1)
+        ip = _get_client_ip(request)
+        cache_key = f"elan_click_{nov}_{pk}_{ip}"
+        if not cache.get(cache_key):
+            cache.set(cache_key, 1, 1800)
+            if nov == 'zeng':
+                Elan.objects.filter(pk=pk).update(zeng_sayi=F('zeng_sayi') + 1)
+            elif nov in ('wp', 'whatsapp'):
+                Elan.objects.filter(pk=pk).update(wp_sayi=F('wp_sayi') + 1)
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'invalid'}, status=400)
 
@@ -1138,19 +1170,17 @@ def _detect_device(user_agent: str) -> str:
     return 'desktop'
 
 
-def _get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        return x_forwarded_for.split(',')[0].strip()
-    return request.META.get('REMOTE_ADDR')
-
-
 def banner_klik(request, banner_id):
     """
     Banner kliklərini izləyir, statistikada qeydə alır və
     müştərinin keçid linkinə yönləndirir.
     """
     banner = get_object_or_404(ReklamBanner, id=banner_id)
+    target_url = banner.link.strip() if banner.link else request.META.get('HTTP_REFERER', '') or '/'
+
+    if _is_bot(request):
+        return HttpResponseRedirect(target_url)
+
     ip = _get_client_ip(request)
     ua = request.META.get('HTTP_USER_AGENT', '')
     referer = request.META.get('HTTP_REFERER', '')
@@ -1172,8 +1202,6 @@ def banner_klik(request, banner_id):
         except Exception:
             pass
 
-    target_url = banner.link.strip() if banner.link else referer or '/'
-
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or 'application/json' in request.headers.get('accept', ''):
         return JsonResponse({'status': 'ok', 'url': target_url})
 
@@ -1184,6 +1212,9 @@ def banner_baxis(request, banner_id):
     """
     Bannerin saytda nümayiş sayını (impressions) asinxron olaraq artırır.
     """
+    if _is_bot(request):
+        return JsonResponse({'status': 'ignored_bot'})
+
     ip = _get_client_ip(request)
     cache_key = f"b_view_spam_{banner_id}_{ip}"
     if not cache.get(cache_key):
