@@ -1,11 +1,15 @@
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from core.sitemaps import AnaSehifeSitemap, KategoriSitemap, AltKategoriSitemap, StatikSitemap, ElanSitemap, ProblemSitemap
+from core.sitemaps import (
+    AnaSehifeSitemap, KategoriSitemap, AltKategoriSitemap, StatikSitemap,
+    ElanSitemap, ProblemSitemap, XidmetLokasiyaSitemap
+)
 
 sitemaps = {
     'ana_sehife': AnaSehifeSitemap,
     'kateqoriyalar': KategoriSitemap,
     'alt_kateqoriyalar': AltKategoriSitemap,
+    'lokasiyalar': XidmetLokasiyaSitemap,
     'elanlar': ElanSitemap,
     'problemler': ProblemSitemap,
     'statik': StatikSitemap,

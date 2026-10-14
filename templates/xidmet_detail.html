@@ -1,33 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar və Qiymətlər | Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları{% if min_qiymet %}, qiymətlər {{ min_qiymet|floatformat:'-2' }} ₼-dən başlayır{% endif %}. Peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın!{% endif %}{% endblock %}
-{% block keywords %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} ustası, {{ aktiv_kategori.ad|lower }} qiyməti, {{ aktiv_kategori.ad|lower }} elanları, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endblock %}
+{% block title %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }} — Peşəkar Ustalar və Qiymətlər | Prousta.az{% elif aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar və Qiymətlər | Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üzrə {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ lokasiya_melumat.ad }} və ətrafında ({{ lokasiya_melumat.erazi }}) peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% elif aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları{% if min_qiymet %}, qiymətlər {{ min_qiymet|floatformat:'-2' }} ₼-dən başlayır{% endif %}. Peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın!{% endif %}{% endblock %}
+{% block keywords %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} ustasi {{ lokasiya_melumat.slug }}, {{ lokasiya_melumat.tam_ad }} ustalar, Prousta.az{% else %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} ustası, {{ aktiv_kategori.ad|lower }} qiyməti, {{ aktiv_kategori.ad|lower }} elanları, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endif %}{% endblock %}
 {% block robots %}{% if not kat_indexable or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
-{% block canonical %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
-{% block canonical2 %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
-{% block og_url %}{% if seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
-{% block og_title %}{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar | Prousta.az{% endif %}{% endblock %}
-{% block og_description %}{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə peşəkar usta elanları və qiymətlər Prousta.az-da.{% endif %}{% endblock %}
+{% block canonical %}{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% if seo_page > 1 %}?page={{ seo_page }}{% endif %}{% elif seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block canonical2 %}{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% if seo_page > 1 %}?page={{ seo_page }}{% endif %}{% elif seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block og_url %}{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% if seo_page > 1 %}?page={{ seo_page }}{% endif %}{% elif seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
+{% block og_title %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }} — Peşəkar Ustalar | Prousta.az{% elif aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar | Prousta.az{% endif %}{% endblock %}
+{% block og_description %}{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üzrə {{ aktiv_kategori.ad|lower }} elanları, qiymətlər və əlaqə.{% elif aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}{{ aktiv_kategori.ad }} üzrə peşəkar usta elanları və qiymətlər Prousta.az-da.{% endif %}{% endblock %}
 {% block og_image %}{% with elanlar.0 as ilk %}{% if ilk and ilk.shekillar.first %}{{ ilk.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endwith %}{% endblock %}
 
 {% block extra_head %}
-{% if elanlar.has_previous %}<link rel="prev" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
-{% if elanlar.has_next %}<link rel="next" href="/xidmet/{{ aktiv_kategori.slug }}/?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
+{% if elanlar.has_previous %}<link rel="prev" href="{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
+{% if elanlar.has_next %}<link rel="next" href="{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#webpage",
-      "name": "{% if aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} Bakıda — Prousta.az{% endif %}",
-      "description": "{% if aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}",
-      "url": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/",
+      "@id": "https://prousta.az{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}#webpage",
+      "name": "{% if lokasiya_melumat %}{{ aktiv_kategori.ad|escapejs }} {{ lokasiya_melumat.ad|escapejs }} — Prousta.az{% elif aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} Bakıda — Prousta.az{% endif %}",
+      "description": "{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad|escapejs }} üzrə {{ aktiv_kategori.ad|lower|escapejs }} elanları Prousta.az-da.{% elif aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description|escapejs }}{% else %}{{ aktiv_kategori.ad|escapejs }} üzrə elanlar və peşəkar ustalar Prousta.az-da.{% endif %}",
+      "url": "https://prousta.az{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}",
       "inLanguage": "az-AZ",
       "isPartOf": {"@type": "WebSite", "@id": "https://prousta.az/#website"},
       "mainEntity": {
         "@type": "ItemList",
-        "name": "{{ aktiv_kategori.ad|escapejs }} elanları",
+        "name": "{{ aktiv_kategori.ad|escapejs }}{% if lokasiya_melumat %} ({{ lokasiya_melumat.ad|escapejs }}){% endif %} elanları",
         "numberOfItems": {{ elanlar.paginator.count|default:0 }},
         "itemListElement": [
           {% for elan in elanlar %}{
@@ -41,29 +41,35 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#breadcrumb",
+      "@id": "https://prousta.az{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}#breadcrumb",
       "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
         {"@type": "ListItem", "position": 2, "name": "Xidmətlər", "item": "https://prousta.az/elanlar/"}{% if aktiv_kategori.ust_kategori %},
         {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ust_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.ust_kategori.slug }}/"},
-        {"@type": "ListItem", "position": 4, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% else %},
-        {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% endif %}
+        {"@type": "ListItem", "position": 4, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% if lokasiya_melumat %},
+        {"@type": "ListItem", "position": 5, "name": "{{ lokasiya_melumat.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/"}{% endif %}{% else %},
+        {"@type": "ListItem", "position": 3, "name": "{{ aktiv_kategori.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/"}{% if lokasiya_melumat %},
+        {"@type": "ListItem", "position": 4, "name": "{{ lokasiya_melumat.ad|escapejs }}", "item": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/"}{% endif %}{% endif %}
       ]
     },
     {
       "@type": "Service",
-      "name": "{{ aktiv_kategori.ad|escapejs }}",
+      "name": "{{ aktiv_kategori.ad|escapejs }}{% if lokasiya_melumat %} ({{ lokasiya_melumat.tam_ad|escapejs }}){% endif %}",
       "serviceType": "{{ aktiv_kategori.ad|escapejs }}",
       "provider": {
         "@type": "Organization",
         "name": "Prousta.az",
         "url": "https://prousta.az/"
       },
-      "areaServed": {
+      "areaServed": {% if lokasiya_melumat %}{
+        "@type": "AdministrativeArea",
+        "name": "{{ lokasiya_melumat.tam_ad|escapejs }}",
+        "containedInPlace": {"@type": "City", "name": "Bakı"}
+      }{% else %}{
         "@type": "City",
         "name": "Bakı",
         "addressCountry": "AZ"
-      }{% if min_qiymet %},
+      }{% endif %}{% if min_qiymet %},
       "offers": {
         "@type": "AggregateOffer",
         "lowPrice": "{{ min_qiymet }}",
@@ -74,11 +80,11 @@
     },
     {
       "@type": "FAQPage",
-      "@id": "https://prousta.az/xidmet/{{ aktiv_kategori.slug }}/#faq",
+      "@id": "https://prousta.az{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}#faq",
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Bakıda {{ aktiv_kategori.ad|lower|escapejs }} qiyməti nə qədərdir?",
+          "name": "{% if lokasiya_melumat %}{{ lokasiya_melumat.ad|escapejs }} ərazisində{% else %}Bakıda{% endif %} {{ aktiv_kategori.ad|lower|escapejs }} qiyməti nə qədərdir?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "{% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} xidməti üzrə elanlarda qiymətlər təxminən {{ min_qiymet|floatformat:'-2' }} AZN-dən başlayır.{% else %}Qiymət görüləcək işin həcminə, detal və ehtiyat hissələrinin dəyərinə görə dəyişir.{% endif %} Ən sərfəli təklifi tapmaq üçün elanları müqayisə edib birbaşa ustalarla əlaqə saxlaya bilərsiniz."
@@ -113,13 +119,18 @@
     <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     <a href="{% url 'elan_siyahi' %}">Xidmətlər</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     {% if aktiv_kategori.ust_kategori %}<a href="{% url 'xidmet_detail' aktiv_kategori.ust_kategori.slug %}">{{ aktiv_kategori.ust_kategori.ad }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}{% endif %}
-    <span aria-current="page">{{ aktiv_kategori.ad }}</span>
+    {% if lokasiya_melumat %}
+      <a href="{% url 'xidmet_detail' aktiv_kategori.slug %}">{{ aktiv_kategori.ad }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+      <span aria-current="page">{{ lokasiya_melumat.ad }}</span>
+    {% else %}
+      <span aria-current="page">{{ aktiv_kategori.ad }}</span>
+    {% endif %}
   </nav>
 
   <section class="pg-hero">
     <span class="eyebrow">{% include 'partials/ui_icon.html' with name='tool' %} {{ elanlar.paginator.count }} aktiv elan</span>
-    <h1>{{ aktiv_kategori.ad }} <span>Bakıda</span></h1>
-    <p>{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.</p>
+    <h1>{{ aktiv_kategori.ad }} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
+    <p>{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} və ətraf ərazilərdə ({{ lokasiya_melumat.erazi }}) {{ aktiv_kategori.ad|lower }} üzrə fəaliyyət göstərən peşəkar ustalar və qiymətlər. Usta ilə birbaşa əlaqə saxlayın.{% else %}{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% endif %}</p>
     <form class="search-bar" method="get" role="search">
       <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Bu kateqoriyada axtar" aria-label="Bu kateqoriyada axtar"></label>
       <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
@@ -128,9 +139,22 @@
 
   {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}
   <div class="chips pg-section" style="margin-top:-10px">
-    {% for alt in alts %}<a class="chip" href="{% url 'xidmet_detail' alt.slug %}">{{ alt.ad }}</a>{% endfor %}
+    {% for alt in alts %}<a class="chip" href="{% if lokasiya %}{% url 'xidmet_lokasiya_detail' alt.slug lokasiya %}{% else %}{% url 'xidmet_detail' alt.slug %}{% endif %}">{{ alt.ad }}</a>{% endfor %}
   </div>
   {% endif %}{% endwith %}
+
+  <!-- Rayon və Qəsəbələr üzrə Lokal SEO Keçidləri -->
+  <div class="pg-section" style="margin-top:-6px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--tx)">
+      {% include 'partials/ui_icon.html' with name='map-pin' %} <span>Rayon və Qəsəbə üzrə ustalar:</span>
+    </div>
+    <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
+      <a class="chip" href="{% url 'xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Bütün Bakı</a>
+      {% for lok in butun_lokasiyalar %}
+      <a class="chip" href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori.ad }} {{ lok.ad }}">{{ lok.ad }}</a>
+      {% endfor %}
+    </div>
+  </div>
 
   <section class="pg-section">
     <div class="sec-head"><h2>{% if axtaris %}“{{ axtaris }}” üzrə nəticələr{% else %}{{ aktiv_kategori.ad }} elanları{% endif %}</h2><small>{{ elanlar.paginator.count }} elan</small></div>
@@ -211,7 +235,17 @@
 
   <!-- Kateqoriyanın Ətraflı SEO Mətni -->
   <section class="panel prose" style="padding:28px 32px;margin-top:24px;border-radius:14px;border:1px solid var(--border);background:#fff">
-    {% if aktiv_kategori.seo_metn %}
+    {% if lokasiya_melumat %}
+      <h2>{{ lokasiya_melumat.tam_ad }} üzrə Peşəkar {{ aktiv_kategori.ad }} Xidməti</h2>
+      <p><strong>{{ lokasiya_melumat.ad }}</strong> və ətraf ərazilərdə ({{ lokasiya_melumat.erazi }}) operativ və etibarlı {{ aktiv_kategori.ad|lower }} axtarırsınızsa, <strong>Prousta.az</strong> ən doğru ünvandır. Platformamızda {{ lokasiya_melumat.ad }} ərazisində fəaliyyət göstərən, çağırışlara ən qısa müddətdə (30-60 dəqiqə ərzində) gələn təcrübəli ustaların elanları toplanmışdır.</p>
+      <h3>{{ lokasiya_melumat.ad }} ərazisində usta çağırmağın üstünlükləri</h3>
+      <ul style="padding-left:20px;line-height:1.8">
+        <li><strong>Sürətli çatdırılma və operativ gəliş:</strong> Usta sizinlə eyni rayonda və ya qonşu mikrorayonda olduğu üçün tıxaclarda vaxt itirmədən qısa zamanda ünvana çatır.</li>
+        <li><strong>Heç bir komissiya olmadan birbaşa qiymət:</strong> Arada şirkət və ya vasitəçi faizi olmadan birbaşa usta ilə əlaqə saxlayıb qiyməti razılaşdırırsınız.</li>
+        <li><strong>Bütün məhəllə və mikrorayonlara xidmət:</strong> {{ lokasiya_melumat.erazi }} daxil olmaqla bütün yaxın ərazilərdə yerində təmir, diaqnostika və quraşdırma.</li>
+      </ul>
+      <p style="margin-top:12px">Əgər siz də {{ lokasiya_melumat.ad }} və ətrafında {{ aktiv_kategori.ad|lower }} kimi xidmət göstərirsinizsə, dərhal <strong>pulsuz elan yerləşdirərək</strong> yerli müştərilərin sizə birbaşa zəng etməsini təmin edin.</p>
+    {% elif aktiv_kategori.seo_metn %}
       {{ aktiv_kategori.seo_metn|safe }}
     {% else %}
       <h2>Bakıda Peşəkar {{ aktiv_kategori.ad }} Xidməti</h2>

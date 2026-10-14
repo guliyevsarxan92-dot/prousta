@@ -80,6 +80,31 @@ class ProblemSitemap(Sitemap):
         return obj.get_absolute_url()
 
 
+from .locations import LOKASIYALAR
+
+
+class XidmetLokasiyaSitemap(Sitemap):
+    """
+    Bakı və Abşeron rayonları üzrə lokal xidmət səhifələri (/xidmet/<slug>/<lokasiya>/).
+    Lokal SEO və Google axtarışları üçün yüksək dəyərli açar söz səhifələri.
+    """
+    changefreq = 'weekly'
+    priority = 0.8
+
+    def items(self):
+        valid_ids = indexable_kategori_ids()
+        kats = list(Kategori.objects.filter(pk__in=valid_ids).values_list('slug', flat=True))
+        lokasiya_slugs = list(LOKASIYALAR.keys())
+        results = []
+        for kat_slug in kats:
+            for lok_slug in lokasiya_slugs:
+                results.append((kat_slug, lok_slug))
+        return results
+
+    def location(self, item):
+        return reverse('xidmet_lokasiya_detail', args=[item[0], item[1]])
+
+
 class StatikSitemap(Sitemap):
     """Statik köməkçi səhifələr."""
     changefreq = 'monthly'

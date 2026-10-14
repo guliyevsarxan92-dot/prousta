@@ -13,8 +13,11 @@ urlpatterns = [
     path('sifre-unutdum/', views.sifre_unutdum, name='sifre_unutdum'),
     path('elanlar/', views.elan_siyahi, name='elan_siyahi'),
     path('xidmet/<slug:slug>/', views.xidmet_detail, name='xidmet_detail'),
+    path('xidmet/<slug:slug>/<slug:lokasiya>/', views.xidmet_detail, name='xidmet_lokasiya_detail'),
     path('kateqoriya/<slug:slug>/', RedirectView.as_view(url='/xidmet/%(slug)s/', permanent=True)),
+    path('kateqoriya/<slug:slug>/<slug:lokasiya>/', RedirectView.as_view(url='/xidmet/%(slug)s/%(lokasiya)s/', permanent=True)),
     path('kateqoriyalar/<slug:slug>/', RedirectView.as_view(url='/xidmet/%(slug)s/', permanent=True)),
+    path('kateqoriyalar/<slug:slug>/<slug:lokasiya>/', RedirectView.as_view(url='/xidmet/%(slug)s/%(lokasiya)s/', permanent=True)),
     path('elan/yeni/', views.elan_yarat, name='elan_yarat'),
     re_path(r'^elan/(?P<pk>\d+)-(?P<slug>[a-z0-9-]+)/$', views.elan_detail, name='elan_detail'),
     path('elan/<int:pk>/', views.elan_detail),  # legacy → 301 redirect
