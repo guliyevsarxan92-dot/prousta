@@ -1,10 +1,58 @@
 <footer class="site-footer">
  <div class="footer-top">
-  <div class="footer-brand">{% include 'partials/brand_logo.html' with variant='light' %}<p>Azərbaycanın usta və xidmət<br>elanları platforması.</p><div class="footer-social"><a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener" aria-label="Facebook">f</a><a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener" aria-label="Instagram">◎</a><a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener" aria-label="YouTube">▶</a><a href="{% url 'mobil_app' %}" aria-label="Mobil tətbiq">▣</a></div></div>
-  <div class="footer-col"><h4>Şirkət</h4><a href="{% url 'haqqimizda' %}">Haqqımızda</a><a href="mailto:info@prousta.az">Əlaqə</a><a href="{% url 'istifade_sertleri' %}">İstifadə qaydaları</a><a href="{% url 'gizlilik' %}">Məxfilik siyasəti</a></div>
-  <div class="footer-col footer-categories"><h4>Populyar xidmətlər</h4><div><a href="/xidmet/kombi-ustasi/">Kombi ustası</a><a href="/xidmet/kondisioner-ustasi/">Kondisioner ustası</a><a href="/xidmet/santexnik/">Santexnik Bakı</a><a href="/xidmet/elektrik/">Elektrik ustası</a><a href="/xidmet/paltaryuyan-ustasi/">Paltaryuyan təmiri</a><a href="/xidmet/soyuducu-ustasi/">Soyuducu ustası</a><a href="/xidmet/mebel-interyer/">Mebel ustası</a><a href="/xidmet/temir-tikinti/">Ev təmiri</a></div></div>
-  <div class="footer-col"><h4>Dəstək</h4><a href="{% url 'index' %}#nece-isleyir">Necə işləyir?</a><a href="{% url 'problemler_siyahi' %}">Bloq</a><a href="https://wa.me/994515888884" target="_blank" rel="noopener">Bizimlə əlaqə</a><a href="{% url 'mobil_app' %}">Mobil tətbiq</a></div>
-  <div class="footer-col"><h4>Sosial media</h4><a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener">Facebook</a><a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener">Instagram</a><a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener">YouTube</a></div>
+  <div class="footer-brand">
+    {% include 'partials/brand_logo.html' with variant='light' %}
+    <p>Azərbaycanın usta və xidmət<br>elanları platforması.</p>
+    <div class="footer-social">
+      <a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+      <a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener" aria-label="Instagram">◎</a>
+      <a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+      <a href="{% url 'mobil_app' %}" aria-label="Mobil tətbiq">▣</a>
+    </div>
+  </div>
+
+  <div class="footer-col">
+    <h4>Şirkət</h4>
+    <a href="{% url 'haqqimizda' %}">Haqqımızda</a>
+    <a href="tel:+994515888884" style="color:#4ade80;font-weight:700">Əlaqə: 051 588 88 84</a>
+    <a href="{% url 'istifade_sertleri' %}">İstifadə qaydaları</a>
+    <a href="{% url 'gizlilik' %}">Məxfilik siyasəti</a>
+  </div>
+
+  <div class="footer-col footer-categories">
+    <h4>Populyar xidmətlər</h4>
+    <div>
+      <a href="/xidmet/kombi-ustasi/">Kombi ustası</a>
+      <a href="/xidmet/kondisioner-ustasi/">Kondisioner ustası</a>
+      <a href="/xidmet/santexnik/">Santexnik Bakı</a>
+      <a href="/xidmet/elektrik/">Elektrik ustası</a>
+      <a href="/xidmet/paltaryuyan-ustasi/">Paltaryuyan təmiri</a>
+      <a href="/xidmet/soyuducu-ustasi/">Soyuducu ustası</a>
+      <a href="/xidmet/mebel-interyer/">Mebel ustası</a>
+      <a href="/xidmet/temir-tikinti/">Ev təmiri</a>
+    </div>
+  </div>
+
+  <div class="footer-col">
+    <h4>Dəstək və Əlaqə</h4>
+    <a href="{% url 'index' %}#nece-isleyir">Necə işləyir?</a>
+    <a href="{% url 'problemler_siyahi' %}">Bloq</a>
+    <a href="tel:+994515888884" style="color:#4ade80;font-weight:700">📞 051 588 88 84</a>
+    <a href="https://wa.me/994515888884" target="_blank" rel="noopener" style="color:#25d366;font-weight:600">💬 WhatsApp ilə yaz</a>
+    <a href="mailto:info@prousta.az">✉️ info@prousta.az</a>
+    <a href="{% url 'mobil_app' %}">Mobil tətbiq</a>
+  </div>
+
+  <div class="footer-col">
+    <h4>Sosial media</h4>
+    <a href="https://www.facebook.com/61568796886691" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://www.instagram.com/prousta.az" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.youtube.com/@prousta.servis.merkezi" target="_blank" rel="noopener">YouTube</a>
+  </div>
  </div>
- <div class="footer-bottom"><span>© {% now 'Y' %} Prousta.az. Bütün hüquqlar qorunur. · Bir <a href="https://kodnex.store" target="_blank" rel="noopener" style="color:#4ade80;font-weight:700;text-decoration:none">Kodnex</a> məhsuludur</span><span>Azərbaycanın peşəkar ustaları bir ünvanda. 🇦🇿</span></div>
+
+ <div class="footer-bottom">
+   <span>© {% now 'Y' %} Prousta.az. Bütün hüquqlar qorunur. · Bir <a href="https://kodnex.store" target="_blank" rel="noopener" style="color:#4ade80;font-weight:700;text-decoration:none">Kodnex</a> məhsuludur</span>
+   <span>Azərbaycanın peşəkar ustaları bir ünvanda. 🇦🇿</span>
+ </div>
 </footer>
