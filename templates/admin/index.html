@@ -11,38 +11,47 @@
 <div class="flex flex-col gap-6 mb-8">
 
     <!-- Hero / Header Section -->
-    <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 text-white rounded-2xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
-            <span class="material-symbols-outlined text-[240px]">handyman</span>
+    <div class="p-6 sm:p-7 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 opacity-5 dark:opacity-10 pointer-events-none select-none text-slate-800 dark:text-white">
+            <span class="material-symbols-outlined text-[180px]">handyman</span>
         </div>
         
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/40 text-emerald-200 text-xs font-semibold backdrop-blur-sm mb-3">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Prousta.az İdarəetmə Mərkəzi
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/80 text-xs font-semibold mb-3">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Prousta.az İdarəetmə Mərkəzi</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                     Xoş gəlmisiniz, {{ request.user.username }}!
                 </h1>
-                <p class="text-emerald-100/90 text-sm mt-1 max-w-xl">
+                <p class="text-slate-600 dark:text-base-400 text-sm mt-1.5 max-w-xl">
                     Saytın bütün elanları, daxil olan ödənişləri, reklam bannerlərini və istifadəçilərini bir nöqtədən rahatlıqla idarə edin.
                 </p>
             </div>
 
             <!-- Quick Action Links -->
             <div class="flex flex-wrap items-center gap-2.5">
-                <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-sm transition-all border border-white/15">
-                    <span class="material-symbols-outlined text-base">open_in_new</span>
-                    Sayta Baxış
+                <a href="/" target="_blank"
+                   class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-800 dark:text-white border border-slate-300 dark:border-base-700 text-xs font-bold transition-all shadow-xs">
+                    <span class="material-symbols-outlined text-base text-slate-600 dark:text-base-300">open_in_new</span>
+                    <span>Sayta Baxış</span>
                 </a>
-                <a href="{% url 'admin:core_elan_add' %}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold shadow-sm transition-all">
-                    <span class="material-symbols-outlined text-base text-emerald-700">add_circle</span>
-                    Yeni Elan
+                <a href="{% url 'admin:core_elan_add' %}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all border border-emerald-600"
+                   style="background-color: #059669; color: #ffffff;">
+                    <span class="material-symbols-outlined text-base text-white">add_circle</span>
+                    <span>Yeni Elan</span>
                 </a>
-                <a href="{% url 'admin:core_reklambanner_changelist' %}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-900/60 hover:bg-emerald-900/80 text-emerald-100 text-xs font-semibold transition-all border border-emerald-500/30">
-                    <span class="material-symbols-outlined text-base">ad_units</span>
-                    Bannerlər
+                <a href="{% url 'admin:core_reklambanner_changelist' %}"
+                   class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-800 dark:text-white border border-slate-300 dark:border-base-700 text-xs font-bold transition-all shadow-xs">
+                    <span class="material-symbols-outlined text-base text-emerald-600 dark:text-emerald-400">ad_units</span>
+                    <span>Bannerlər</span>
+                </a>
+                <a href="{% url 'admin:core_odenis_changelist' %}"
+                   class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-800 dark:text-white border border-slate-300 dark:border-base-700 text-xs font-bold transition-all shadow-xs">
+                    <span class="material-symbols-outlined text-base text-amber-600 dark:text-amber-400">payments</span>
+                    <span>Ödənişlər</span>
                 </a>
             </div>
         </div>
