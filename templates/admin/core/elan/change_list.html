@@ -58,6 +58,12 @@
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'deaktiv' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_deaktiv }}
                     </span>
+                <a href="{% url 'admin:core_elan_cixaris' %}" 
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                   style="background-color:#059669;color:#ffffff;"
+                   title="Bütün ustaların nömrələri və toplu mesaj aləti">
+                    <span class="material-symbols-outlined text-sm text-white">contacts</span>
+                    <span>Ustalar Bazası / Toplu Mesaj</span>
                 </a>
             </div>
 

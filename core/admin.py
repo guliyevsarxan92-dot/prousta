@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.shortcuts import render, redirect
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -300,6 +301,7 @@ class ElanAdmin(ModelAdmin):
         'vip_10_gun_action',
         'super_vip_30_gun_action',
         'vip_legv_action',
+        'cixaris_action',
     ]
 
     def shekil_thumb(self, obj):
@@ -451,6 +453,236 @@ class ElanAdmin(ModelAdmin):
     def vip_legv_action(self, request, queryset):
         count = queryset.update(vip_status='normal', vip_siralama=0, vip_bitis=None)
         self.message_user(request, f"{count} elanın VIP statusu ləğv edildi.")
+
+    @action(description='📤 Seçilmiş elanlardan Usta Nömrələrini Çıxar (Toplu Mesaj / CSV)')
+    def cixaris_action(self, request, queryset):
+        ids = ",".join(str(pk) for pk in queryset.values_list('pk', flat=True))
+        url = reverse('admin:core_elan_cixaris') + f'?ids={ids}'
+        return redirect(url)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('cixaris/', self.admin_site.admin_view(self.cixaris_view), name='core_elan_cixaris'),
+        ]
+        return custom_urls + urls
+
+    def cixaris_view(self, request):
+        import csv
+        import re
+        from django.http import HttpResponse
+
+        def clean_az_phone(raw):
+            if not raw:
+                return None, None, None
+            digits = re.sub(r'\D', '', str(raw))
+            if not digits:
+                return None, None, None
+            if digits.startswith('994') and len(digits) == 12:
+                return '0' + digits[3:], '+' + digits, digits
+            if digits.startswith('0') and len(digits) == 10:
+                return digits, '+994' + digits[1:], '994' + digits[1:]
+            if len(digits) == 9 and digits[0] in ('1', '5', '7', '9'):
+                return '0' + digits, '+994' + digits, '994' + digits
+            if digits.startswith('994') and len(digits) >= 10:
+                return '0' + digits[3:], '+' + digits, digits
+            if digits.startswith('0') and len(digits) >= 9:
+                return digits, '+994' + digits[1:], '994' + digits[1:]
+            return '0' + digits, '+994' + digits, '994' + digits
+
+        # URL Filters
+        kat_id = request.GET.get('kategori', '').strip()
+        sheher_filter = request.GET.get('sheher', '').strip()
+        status_filter = request.GET.get('status', '').strip()
+        q = request.GET.get('q', '').strip()
+        ids_param = request.GET.get('ids', '').strip()
+        is_export = request.GET.get('export', '') == 'csv'
+
+        elan_qs = Elan.objects.select_related('istifadeci', 'istifadeci__profil', 'kategori')
+
+        selected_ids = []
+        if ids_param:
+            try:
+                selected_ids = [int(x) for x in ids_param.split(',') if x.strip().isdigit()]
+                if selected_ids:
+                    elan_qs = elan_qs.filter(pk__in=selected_ids)
+            except Exception:
+                pass
+
+        if kat_id.isdigit():
+            elan_qs = elan_qs.filter(models.Q(kategori_id=int(kat_id)) | models.Q(kategori__ust_kategori_id=int(kat_id)))
+
+        if sheher_filter:
+            elan_qs = elan_qs.filter(sheher__iexact=sheher_filter)
+
+        if status_filter == 'aktiv':
+            elan_qs = elan_qs.filter(status='aktiv')
+        elif status_filter == 'vip':
+            elan_qs = elan_qs.filter(vip_status__in=['vip', 'super_vip'])
+
+        masters = {}
+
+        for e in elan_qs:
+            raw_phone = e.telefon or (hasattr(e.istifadeci, 'profil') and e.istifadeci.profil.telefon)
+            local, intl, wa = clean_az_phone(raw_phone)
+            if not local:
+                continue
+
+            if local not in masters:
+                name = ''
+                if hasattr(e.istifadeci, 'profil'):
+                    p = e.istifadeci.profil
+                    name = f'{p.ad} {p.soyad}'.strip()
+                if not name:
+                    name = e.istifadeci.get_full_name() or e.istifadeci.username
+
+                masters[local] = {
+                    'ad': name,
+                    'username': e.istifadeci.username,
+                    'user_id': e.istifadeci.id,
+                    'local_phone': local,
+                    'intl_phone': intl,
+                    'wa_digits': wa,
+                    'wa_link': f'https://wa.me/{wa}',
+                    'categories': set(),
+                    'cities': set(),
+                    'elan_sayi': 0,
+                    'has_active': False,
+                    'has_vip': False,
+                    'email': e.istifadeci.email or '',
+                }
+
+            m = masters[local]
+            m['elan_sayi'] += 1
+            if e.kategori:
+                m['categories'].add(e.kategori.ad)
+            if e.sheher:
+                m['cities'].add(e.sheher)
+            if e.status == 'aktiv':
+                m['has_active'] = True
+            if e.vip_status in ('vip', 'super_vip'):
+                m['has_vip'] = True
+
+        # If not filtering by specific elans or category, also include profiles with phone
+        if not selected_ids and not kat_id:
+            profil_qs = Profil.objects.exclude(telefon='').select_related('istifadeci')
+            if sheher_filter:
+                profil_qs = profil_qs.filter(sheher__iexact=sheher_filter)
+            for p in profil_qs:
+                local, intl, wa = clean_az_phone(p.telefon)
+                if not local:
+                    continue
+                if local not in masters:
+                    name = f'{p.ad} {p.soyad}'.strip() or p.istifadeci.get_full_name() or p.istifadeci.username
+                    masters[local] = {
+                        'ad': name,
+                        'username': p.istifadeci.username,
+                        'user_id': p.istifadeci.id,
+                        'local_phone': local,
+                        'intl_phone': intl,
+                        'wa_digits': wa,
+                        'wa_link': f'https://wa.me/{wa}',
+                        'categories': set(),
+                        'cities': {p.sheher} if p.sheher else set(),
+                        'elan_sayi': 0,
+                        'has_active': False,
+                        'has_vip': False,
+                        'email': p.istifadeci.email or '',
+                    }
+
+        # Search filter
+        master_list = list(masters.values())
+        if q:
+            ql = q.lower()
+            filtered = []
+            for m in master_list:
+                cat_str = " ".join(m['categories']).lower()
+                city_str = " ".join(m['cities']).lower()
+                if (ql in m['ad'].lower() or
+                    ql in m['username'].lower() or
+                    ql in m['local_phone'] or
+                    ql in m['intl_phone'] or
+                    ql in m['email'].lower() or
+                    ql in cat_str or
+                    ql in city_str):
+                    filtered.append(m)
+            master_list = filtered
+
+        # Order by elan count desc, then name
+        master_list.sort(key=lambda x: (-x['elan_sayi'], x['ad']))
+
+        # CSV Export
+        if is_export:
+            response = HttpResponse(content_type='text/csv; charset=utf-8')
+            filename = f"prousta_ustalar_{timezone.now().strftime('%Y%m%d_%H%M')}.csv"
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
+            response.write('\ufeff')  # UTF-8 BOM for Microsoft Excel
+            writer = csv.writer(response)
+            writer.writerow([
+                '№',
+                'Usta / Ad Soyad',
+                'İstifadəçi Adı',
+                'Telefon (Yerli / SMS)',
+                'Telefon (Beynəlxalq)',
+                'WhatsApp Linki',
+                'Xidmət Kateqoriyaları',
+                'Şəhər',
+                'Elan Sayı',
+                'Aktiv Elanı Var?',
+                'VIP Elanı Var?',
+                'E-poçt'
+            ])
+            for i, m in enumerate(master_list, start=1):
+                writer.writerow([
+                    i,
+                    m['ad'],
+                    m['username'],
+                    m['local_phone'],
+                    m['intl_phone'],
+                    m['wa_link'],
+                    ", ".join(sorted(m['categories'])) if m['categories'] else '—',
+                    ", ".join(sorted(m['cities'])) if m['cities'] else '—',
+                    m['elan_sayi'],
+                    'Bəli' if m['has_active'] else 'Xeyr',
+                    'Bəli' if m['has_vip'] else 'Xeyr',
+                    m['email']
+                ])
+            return response
+
+        # Bulk copy formatted strings
+        sms_vergul = ", ".join(m['local_phone'] for m in master_list if m['local_phone'])
+        sms_setir = "\n".join(m['local_phone'] for m in master_list if m['local_phone'])
+        intl_setir = "\n".join(m['intl_phone'] for m in master_list if m['intl_phone'])
+
+        kateqoriyalar = Kategori.objects.all().order_by('ad')
+        sheherler = sorted(list(set(Elan.objects.exclude(sheher='').values_list('sheher', flat=True).distinct())))
+
+        total_masters = len(master_list)
+        active_masters = sum(1 for m in master_list if m['has_active'])
+        vip_masters = sum(1 for m in master_list if m['has_vip'])
+        total_ads = sum(m['elan_sayi'] for m in master_list)
+
+        context = {
+            **self.admin_site.each_context(request),
+            'title': 'Ustalar Bazası & Toplu Mesaj Çıxarışı',
+            'master_list': master_list,
+            'total_masters': total_masters,
+            'active_masters': active_masters,
+            'vip_masters': vip_masters,
+            'total_ads': total_ads,
+            'sms_vergul': sms_vergul,
+            'sms_setir': sms_setir,
+            'intl_setir': intl_setir,
+            'kateqoriyalar': kateqoriyalar,
+            'sheherler': sheherler,
+            'kat_id': kat_id,
+            'sheher_filter': sheher_filter,
+            'status_filter': status_filter,
+            'q': q,
+            'ids_param': ids_param,
+            'selected_ids_count': len(selected_ids),
+        }
+        return render(request, 'admin/ustalar_cixaris.html', context)
 
 
 # ==============================================================================

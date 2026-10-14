@@ -1,0 +1,410 @@
+{% extends 'admin/base.html' %}
+{% load i18n unfold %}
+
+{% block title %}Ustalar Bazası & Toplu Mesaj Çıxarışı | {{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6 mb-8 max-w-7xl mx-auto print:max-w-none print:m-0">
+
+  <!-- Header & Actions Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs print:border-none print:shadow-none print:p-0">
+    <div class="flex items-center gap-3">
+      <a href="{% url 'admin:core_elan_changelist' %}" class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-700 dark:text-base-300 transition-colors print:hidden" title="Elanlara Qayıt">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+      </a>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
+            <span class="material-symbols-outlined text-xs">contacts</span>
+            <span>Toplu Mesaj & Çıxarış Mərkəzi</span>
+          </span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-base-800 dark:text-base-300">
+            {{ total_masters }} Usta Tapıldı
+          </span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Ustalar Bazası və Nömrə Çıxarışı
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-base-400 mt-0.5">
+          SMS şlüzləri, WhatsApp kampaniyaları və Excel hesabatları üçün unikal təmizlənmiş nömrələr.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap items-center gap-2.5 print:hidden">
+      <a href="?{% if ids_param %}ids={{ ids_param }}&{% endif %}{% if kat_id %}kategori={{ kat_id }}&{% endif %}{% if sheher_filter %}sheher={{ sheher_filter }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}export=csv" 
+         class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all border border-emerald-600"
+         style="background-color: #059669; color: #ffffff;"
+         title="Bütün məlumatları Excel/CSV faylı olaraq kompüterə yükləyin">
+        <span class="material-symbols-outlined text-base">file_download</span>
+        <span>Excel / CSV Yüklə</span>
+      </a>
+      <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-800 dark:text-white border border-slate-300 dark:border-base-700 text-xs font-bold transition-all shadow-xs">
+        <span class="material-symbols-outlined text-base">print</span>
+        <span>Çap Et</span>
+      </button>
+    </div>
+  </div>
+
+  {% if selected_ids_count > 0 %}
+  <!-- Selected Ads Warning Banner -->
+  <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-amber-600 text-2xl">info</span>
+      <div>
+        <p class="text-xs font-bold text-amber-900 dark:text-amber-200">
+          Hazırda yalnız elanlar cədvəlində seçdiyiniz <strong>{{ selected_ids_count }} ədəd elanın</strong> ustaları göstərilir.
+        </p>
+        <p class="text-[11px] text-amber-700 dark:text-amber-300">
+          Bütün sayt üzrə hər kəsi görmək üçün filtri sıfırlaya bilərsiniz.
+        </p>
+      </div>
+    </div>
+    <a href="{% url 'admin:core_elan_cixaris' %}" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold whitespace-nowrap transition-colors">
+      Bütün Ustalara Keç ↗
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- KPI Overview Stats -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-base-400">Unikal Ustalar</span>
+        <span class="material-symbols-outlined text-lg text-emerald-600">groups</span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+        {{ total_masters }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Deduplikasiya edilmiş nömrə</div>
+    </div>
+
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1">
+        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Aktiv Elanlı</span>
+        <span class="material-symbols-outlined text-lg text-emerald-600">verified</span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+        {{ active_masters }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Saytda hazırda aktiv</div>
+    </div>
+
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1">
+        <span class="text-xs font-semibold uppercase tracking-wider text-purple-700 dark:text-purple-400">VIP Ustalar</span>
+        <span class="material-symbols-outlined text-lg text-purple-600">workspace_premium</span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400">
+        {{ vip_masters }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">VIP və ya Super VIP</div>
+    </div>
+
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1">
+        <span class="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400">Toplam Elanlar</span>
+        <span class="material-symbols-outlined text-lg text-sky-600">campaign</span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-extrabold text-sky-600 dark:text-sky-400">
+        {{ total_ads }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Bu ustaların elan sayı</div>
+    </div>
+  </div>
+
+  <!-- Bulk Messaging & Copy Boxes -->
+  <div class="p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs print:hidden">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-emerald-600">send_to_mobile</span>
+        <h2 class="text-base font-bold text-slate-900 dark:text-white">Toplu Mesaj və Nömrə Paneli</h2>
+      </div>
+      <span class="text-xs text-slate-500">Düyməyə klikləyərək nömrələri dərhal kopyalayın</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Format 1: Comma Separated (SMS Gateways) -->
+      <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 dark:bg-base-800/50 border border-slate-200 dark:border-base-700">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-emerald-600">sms</span>
+            <span>SMS Şlüzü (Vergüllə)</span>
+          </span>
+          <span class="text-[11px] font-semibold text-slate-500">050XXXXXXX</span>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-base-400">Toplu SMS provayderlərinin (məs. MSMS) qəbul etdiyi format:</p>
+        <textarea id="smsVergulText" readonly rows="3" class="w-full text-xs font-mono p-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-900 text-slate-800 dark:text-slate-200 resize-none focus:outline-none select-all">{{ sms_vergul }}</textarea>
+        <button type="button" onclick="copyBox('smsVergulText', this)" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs" style="background-color:#059669;color:#ffffff;">
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          <span>Nömrələri Kopyala (Vergüllə)</span>
+        </button>
+      </div>
+
+      <!-- Format 2: Newline Separated (Excel / WhatsApp Bulk) -->
+      <div class="flex flex-col gap-2 p-4 rounded-xl bg-slate-50 dark:bg-base-800/50 border border-slate-200 dark:border-base-700">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-sky-600">format_list_numbered</span>
+            <span>Sətirbəsətir (+994)</span>
+          </span>
+          <span class="text-[11px] font-semibold text-slate-500">+994XXXXXXXXX</span>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-base-400">Excel, CSV və ya WhatsApp toplu göndəriş proqramları üçün:</p>
+        <textarea id="smsSetirText" readonly rows="3" class="w-full text-xs font-mono p-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-900 text-slate-800 dark:text-slate-200 resize-none focus:outline-none select-all">{{ intl_setir }}</textarea>
+        <button type="button" onclick="copyBox('smsSetirText', this)" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition-all shadow-xs">
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          <span>Sətirbəsətir Kopyala</span>
+        </button>
+      </div>
+
+      <!-- Format 3: WhatsApp Live Campaign Template -->
+      <div class="flex flex-col gap-2 p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-emerald-600">chat</span>
+            <span>WhatsApp Şablon Mesajı</span>
+          </span>
+          <span class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Cədvəldə canlı tətbiq</span>
+        </div>
+        <p class="text-[11px] text-slate-600 dark:text-base-400">Mesajı yazın, cədvəldəki hər bir ustanın WhatsApp düyməsi yenilənəcək:</p>
+        <textarea id="wpTemplateText" rows="3" class="w-full text-xs p-2 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-white dark:bg-base-900 text-slate-800 dark:text-slate-200 resize-none focus:outline-none" placeholder="Salam hörmətli usta! Prousta.az saytında elanınızı yeniləmək və ya yeni müştərilər tapmaq üçün sayta daxil olun.">Salam hörmətli usta! Prousta.az saytından müraciət edirik. Profil və elanlarınızın aktivliyini artırmaq üçün saytımıza daxil olun: https://prousta.az</textarea>
+        <button type="button" onclick="copyBox('wpTemplateText', this)" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all shadow-xs">
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          <span>Şablon Mətni Kopyala</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Controls -->
+  <form method="get" class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs flex flex-wrap items-center gap-3 print:hidden">
+    {% if ids_param %}<input type="hidden" name="ids" value="{{ ids_param }}">{% endif %}
+    
+    <!-- Search -->
+    <div class="flex-1 min-w-[200px]">
+      <input type="text" name="q" value="{{ q }}" placeholder="Usta adı, nömrə, kateqoriya və ya şəhər axtar..." 
+             class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-800 text-slate-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-emerald-500">
+    </div>
+
+    <!-- Category -->
+    <div class="min-w-[160px]">
+      <select name="kategori" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-800 text-slate-800 dark:text-white focus:outline-none">
+        <option value="">Bütün Kateqoriyalar</option>
+        {% for kat in kateqoriyalar %}
+        <option value="{{ kat.id }}" {% if kat_id == kat.id|stringformat:"s" %}selected{% endif %}>{{ kat.ad }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- City -->
+    <div class="min-w-[140px]">
+      <select name="sheher" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-800 text-slate-800 dark:text-white focus:outline-none">
+        <option value="">Bütün Şəhərlər</option>
+        {% for sh in sheherler %}
+        <option value="{{ sh }}" {% if sheher_filter == sh %}selected{% endif %}>{{ sh }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Status -->
+    <div class="min-w-[130px]">
+      <select name="status" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-base-700 bg-white dark:bg-base-800 text-slate-800 dark:text-white focus:outline-none">
+        <option value="">Status: Hamısı</option>
+        <option value="aktiv" {% if status_filter == 'aktiv' %}selected{% endif %}>Yalnız Aktiv Elanlı</option>
+        <option value="vip" {% if status_filter == 'vip' %}selected{% endif %}>Yalnız VIP Ustalar</option>
+      </select>
+    </div>
+
+    <!-- Submit & Clear -->
+    <div class="flex items-center gap-2">
+      <button type="submit" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs" style="background-color:#059669;color:#ffffff;">
+        <span class="material-symbols-outlined text-sm">filter_alt</span>
+        <span>Filtrlə</span>
+      </button>
+      {% if q or kat_id or sheher_filter or status_filter or ids_param %}
+      <a href="{% url 'admin:core_elan_cixaris' %}" class="inline-flex items-center px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-700 dark:text-base-300 text-xs font-semibold transition-all" title="Filtri Təmizlə">
+        Təmizlə ✕
+      </a>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- Master Details Table -->
+  <div class="bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 rounded-2xl shadow-xs overflow-hidden">
+    <div class="p-4 border-b border-base-200 dark:border-base-800 flex items-center justify-between">
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-emerald-600">table_rows</span>
+        <span>Ustalar Cədvəli ({{ master_list|length }} nəfər)</span>
+      </h3>
+      <span class="text-xs text-slate-500">Unikal telefon nömrəsi üzrə qruplaşdırılıb</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-slate-50 dark:bg-base-800/60 border-b border-base-200 dark:border-base-800 text-slate-600 dark:text-base-400 font-bold uppercase tracking-wider text-[11px]">
+            <th class="py-3 px-4 w-12 text-center">№</th>
+            <th class="py-3 px-4">Usta / Ad Soyad</th>
+            <th class="py-3 px-4">Əlaqə Nömrəsi</th>
+            <th class="py-3 px-4 text-center">WhatsApp</th>
+            <th class="py-3 px-4">Xidmət Sahələri</th>
+            <th class="py-3 px-4">Şəhər</th>
+            <th class="py-3 px-4 text-center">Elan Sayı</th>
+            <th class="py-3 px-4">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-base-200 dark:divide-base-800">
+          {% for u in master_list %}
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-base-800/40 transition-colors">
+            <td class="py-3 px-4 text-center font-bold text-slate-400">{{ forloop.counter }}</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 font-extrabold flex items-center justify-center text-xs flex-shrink-0">
+                  {{ u.ad|slice:":1"|upper }}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white text-xs">
+                    {{ u.ad }}
+                  </div>
+                  <div class="text-[11px] text-slate-500">
+                    @{{ u.username }} {% if u.email %}· {{ u.email }}{% endif %}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <a href="tel:{{ u.local_phone }}" class="font-mono font-bold text-slate-800 dark:text-white hover:text-emerald-600 transition-colors">
+                  {{ u.local_phone }}
+                </a>
+                <button type="button" onclick="navigator.clipboard.writeText('{{ u.local_phone }}'); showToast('Nömrə kopyalandı: {{ u.local_phone }}');" class="text-slate-400 hover:text-emerald-600 transition-colors" title="Nömrəni Kopyala">
+                  <span class="material-symbols-outlined text-sm">content_copy</span>
+                </button>
+              </div>
+              <div class="text-[10px] text-slate-400 font-mono">{{ u.intl_phone }}</div>
+            </td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <a href="{{ u.wa_link }}" target="_blank" rel="noopener" data-wa-base="{{ u.wa_link }}" class="dynamic-wa-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-bold text-xs transition-colors" title="WhatsApp çatı aç">
+                <span class="material-symbols-outlined text-sm text-emerald-600">chat</span>
+                <span>Yaz</span>
+              </a>
+            </td>
+            <td class="py-3 px-4">
+              <div class="flex flex-wrap gap-1 max-w-xs">
+                {% for c in u.categories %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 dark:bg-base-800 text-slate-700 dark:text-base-300 text-[11px] font-medium">
+                  {{ c }}
+                </span>
+                {% empty %}
+                <span class="text-slate-400">—</span>
+                {% endfor %}
+              </div>
+            </td>
+            <td class="py-3 px-4 text-slate-700 dark:text-base-300 whitespace-nowrap">
+              {% for s in u.cities %}
+                <span class="inline-block">{{ s }}</span>{% if not forloop.last %}, {% endif %}
+              {% empty %}
+                <span class="text-slate-400">—</span>
+              {% endfor %}
+            </td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              {% if u.elan_sayi > 0 %}
+              <a href="{% url 'admin:core_elan_changelist' %}?q={{ u.local_phone }}" target="_blank" class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 font-bold hover:underline" title="Bu ustanın elanlarına bax">
+                {{ u.elan_sayi }} elan ↗
+              </a>
+              {% else %}
+              <span class="text-slate-400">0</span>
+              {% endif %}
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <div class="flex items-center gap-1">
+                {% if u.has_vip %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-400">
+                  ⭐ VIP
+                </span>
+                {% endif %}
+                {% if u.has_active %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-400">
+                  Aktiv
+                </span>
+                {% else %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-base-800 dark:text-base-400">
+                  Deaktiv
+                </span>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="py-8 text-center text-slate-500 dark:text-base-400">
+              <span class="material-symbols-outlined text-4xl text-slate-400 block mb-2">person_off</span>
+              Seçilmiş filtrlərə uyğun heç bir usta tapılmadı.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Copy Toast Notification -->
+<div id="copyToast" class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none">
+  <div class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-xl flex items-center gap-2 border border-slate-700">
+    <span class="material-symbols-outlined text-emerald-400 text-base">check_circle</span>
+    <span id="copyToastMsg">Kopyalandı!</span>
+  </div>
+</div>
+
+<script>
+function showToast(msg) {
+  var toast = document.getElementById('copyToast');
+  var toastMsg = document.getElementById('copyToastMsg');
+  if(!toast || !toastMsg) return;
+  toastMsg.innerText = msg;
+  toast.classList.remove('translate-y-16', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
+  setTimeout(function() {
+    toast.classList.remove('translate-y-0', 'opacity-100');
+    toast.classList.add('translate-y-16', 'opacity-0');
+  }, 2400);
+}
+
+function copyBox(id, btn) {
+  var textarea = document.getElementById(id);
+  if(!textarea) return;
+  textarea.select();
+  textarea.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(textarea.value).then(function() {
+    var oldHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm">done</span><span>Kopyalandı!</span>';
+    showToast('Uğurla kopyalandı (' + (textarea.value.split('\n').length || 1) + ' sətir)');
+    setTimeout(function() { btn.innerHTML = oldHtml; }, 2000);
+  });
+}
+
+// Live update WhatsApp links with template message
+(function(){
+  var wpTemplate = document.getElementById('wpTemplateText');
+  var waButtons = document.querySelectorAll('.dynamic-wa-btn');
+  function updateLinks() {
+    if(!wpTemplate) return;
+    var text = encodeURIComponent(wpTemplate.value.trim());
+    waButtons.forEach(function(btn){
+      var base = btn.getAttribute('data-wa-base');
+      if(base) {
+        btn.href = base + (text ? ('?text=' + text) : '');
+      }
+    });
+  }
+  if(wpTemplate) {
+    wpTemplate.addEventListener('input', updateLinks);
+    updateLinks();
+  }
+})();
+</script>
+{% endblock %}

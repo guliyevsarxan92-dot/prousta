@@ -285,6 +285,11 @@ UNFOLD = {
                         "icon": "help_center",
                         "link": reverse_lazy("admin:core_problem_changelist"),
                     },
+                    {
+                        "title": "👥 Ustalar Bazası (Toplu Mesaj)",
+                        "icon": "contacts",
+                        "link": reverse_lazy("admin:core_elan_cixaris"),
+                    },
                 ],
             },
             {
