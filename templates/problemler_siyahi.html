@@ -1,115 +1,229 @@
 {% extends 'base.html' %}
-{% block title %}Ev Problemləri və Həlləri Bakıda — Usta Məsləhətləri | Prousta.az{% endblock %}
-{% block description %}Bakıda evdə problem yaranıb? Kombi yanmır, elektrik keçir, kanalizasiya tıxanıb, kondisioner soyutmur — hər problemin səbəbi və həlli. Peşəkar usta məsləhətləri Prousta.az-da.{% endblock %}
-{% block keywords %}ev problemləri Bakı, kombi yanmır həlli, kombi ustası Bakı, elektrik ustası Bakı, kanalizasiya ustası Bakı, kondisioner ustası Bakı, havalandırma ustası, santexnik Bakı, su sızması həlli, usta çağır Bakı{% endblock %}
+{% block title %}{% if secilmis %}{{ secilmis|title }} Problemləri və Həlləri{% elif axtaris %}“{{ axtaris }}” üzrə texniki məqalələr{% else %}Ev Problemləri, Səbəbləri və Usta Bələdçisi Bakıda{% endif %} | Prousta.az{% endblock %}
+{% block description %}Kombi yanmır, su təzyiqi düşür, kondisioner soyutmur, paltaryuyan sıxmır? Bütün məişət texnikası və ev təmiri problemlərinin səbəbləri və addım-addım həll yolları.{% endblock %}
+{% block keywords %}ev problemləri Bakı, kombi xətaları, kondisioner təmiri, paltaryuyan xətası, usta məsləhətləri, Prousta bloq{% endblock %}
 {% block canonical %}/problemler/{% endblock %}
 {% block canonical2 %}/problemler/{% endblock %}
 {% block og_url %}/problemler/{% endblock %}
-{% block og_title %}Ev Problemləri və Həlləri — Prousta.az{% endblock %}
-{% block og_description %}Ən çox rast gəlinən ev problemləri və peşəkar həll yolları.{% endblock %}
+{% block og_title %}Ev Problemləri və Peşəkar Həllər — Prousta.az Bloq{% endblock %}
+{% block og_description %}Məişət texnikası və ev nasazlıqlarının səbəbi və peşəkar usta həlləri.{% endblock %}
+
 {% block extra_head %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Ev Problemləri və Həlləri",
-  "description": "Evdə yarana biləcək ən çox rast gəlinən problemlər və onların həll yolları.",
-  "url": "https://prousta.az/problemler/",
-  "inLanguage": "az-AZ",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Prousta.az",
-    "url": "https://prousta.az"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Problemlər və Həllər", "item": "https://prousta.az/problemler/"}
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://prousta.az/problemler/#webpage",
+      "name": "Ev Problemləri və Texniki Həllər Bələdçisi",
+      "description": "Evdə yarana biləcək ən çox rast gəlinən problemlər və onların peşəkar həll yolları.",
+      "url": "https://prousta.az/problemler/",
+      "inLanguage": "az-AZ",
+      "isPartOf": {"@type": "WebSite", "@id": "https://prousta.az/#website"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://prousta.az/problemler/#breadcrumb",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
+        {"@type": "ListItem", "position": 2, "name": "Bloq və Problemlər", "item": "https://prousta.az/problemler/"}
+      ]
+    }
   ]
 }
 </script>
 {% endblock %}
+
 {% block style %}
 <style>
-.prob-page{padding:40px 20px 60px;background:linear-gradient(180deg,#f8fafc,#eef2ff);min-height:60vh}
-.prob-wrap{max-width:1100px;margin:0 auto}
-.prob-head{text-align:center;margin-bottom:32px}
-.prob-head h1{font-size:28px;font-weight:800;color:var(--tx);margin-bottom:8px}
-.prob-head p{font-size:14px;color:var(--muted);max-width:600px;margin:0 auto;line-height:1.7}
-.prob-filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
-.prob-filters a{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;background:var(--white);border:1px solid var(--border);color:var(--muted);transition:.2s}
-.prob-filters a:hover{border-color:var(--p);color:var(--p)}
-.prob-filters a.aktiv{background:var(--p);color:#fff;border-color:var(--p)}
-.prob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.prob-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:.2s;display:flex;flex-direction:column}
-.prob-card:hover{border-color:var(--p);box-shadow:0 6px 24px rgba(26,71,200,.08);transform:translateY(-2px)}
-.prob-card-kat{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.prob-card h2{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:10px;line-height:1.4}
-.prob-card h2 a{color:inherit;transition:.2s}
+.prob-page{padding:24px 0 60px;min-height:70vh;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
+.prob-wrap{max-width:var(--content-w,1120px);width:calc(100% - 32px);margin:0 auto;position:relative;z-index:10}
+
+/* Hero */
+.prob-hero{text-align:center;padding:32px 20px 24px;margin-bottom:20px}
+.prob-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--p);background:var(--pl);padding:5px 14px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
+.prob-hero h1{font-size:30px;font-weight:800;color:var(--tx);margin-bottom:10px;line-height:1.25}
+.prob-hero h1 span{color:var(--p)}
+.prob-hero p{font-size:14px;color:var(--muted);max-width:680px;margin:0 auto 20px;line-height:1.6}
+
+/* Search bar */
+.prob-search-wrap{max-width:540px;margin:0 auto 24px}
+.prob-search{display:flex;align-items:center;background:#fff;border:1px solid #d1d5db;border-radius:30px;padding:4px 6px 4px 16px;box-shadow:0 4px 14px rgba(0,0,0,.06);transition:border-color .2s,box-shadow .2s}
+.prob-search:focus-within{border-color:var(--p);box-shadow:0 6px 20px rgba(0,123,82,.12)}
+.prob-search input{flex:1;border:none;outline:none;font-size:14px;color:var(--tx);background:transparent;padding:8px 0}
+.prob-search input::placeholder{color:#94a3b8}
+.prob-search-btn{background:var(--p);color:#fff;border:none;border-radius:24px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
+.prob-search-btn:hover{background:var(--pd)}
+
+/* Category pills */
+.prob-pills-bar{margin-bottom:28px}
+.prob-pills-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.prob-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;flex-wrap:wrap;align-items:center}
+.prob-pill{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;background:#fff;border:1px solid #e2e8f0;color:#475569;text-decoration:none;transition:all .2s;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.prob-pill:hover{border-color:var(--p);color:var(--p);transform:translateY(-1px)}
+.prob-pill.aktiv{background:var(--p);color:#fff;border-color:var(--p);font-weight:700;box-shadow:0 4px 12px rgba(0,123,82,.25)}
+
+/* Grid */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.prob-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:24px;transition:all .25s ease;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.03);position:relative}
+.prob-card:hover{border-color:var(--p);box-shadow:0 10px 28px rgba(0,123,82,.1);transform:translateY(-3px)}
+.prob-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.prob-card-kat{font-size:11px;font-weight:700;color:var(--p);background:var(--pl);padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.3px}
+.prob-card-readtime{font-size:11px;color:#94a3b8;font-weight:500}
+.prob-card h2{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:10px;line-height:1.45}
+.prob-card h2 a{color:inherit;text-decoration:none;transition:color .2s}
 .prob-card h2 a:hover{color:var(--p)}
-.prob-card-desc{font-size:13px;color:#64748b;line-height:1.7;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.prob-card-footer{margin-top:14px;display:flex;align-items:center;justify-content:space-between}
-.prob-card-link{font-size:13px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:4px;transition:.2s}
+.prob-card-desc{font-size:13px;color:#64748b;line-height:1.7;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:16px}
+.prob-card-footer{padding-top:14px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.prob-card-date{font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:4px}
+.prob-card-link{font-size:13px;font-weight:700;color:var(--p);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:gap .2s}
 .prob-card-link:hover{gap:8px}
-.prob-card-date{font-size:11px;color:var(--muted)}
-.prob-empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.prob-empty svg{margin-bottom:12px;opacity:.4}
-.prob-empty p{font-size:15px}
+
+/* Empty State */
+.prob-empty{text-align:center;padding:60px 20px;background:#fff;border-radius:14px;border:1px dashed #cbd5e1}
+.prob-empty-icon{font-size:42px;margin-bottom:12px;color:#94a3b8}
+.prob-empty h3{font-size:18px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.prob-empty p{font-size:14px;color:var(--muted);margin-bottom:16px}
+
+/* Pagination */
+.prob-pagination{margin-top:36px;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.prob-pg-btn{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 12px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;color:#334155;font-size:13px;font-weight:600;text-decoration:none;transition:all .15s}
+.prob-pg-btn:hover{border-color:var(--p);color:var(--p);background:#f8fafc}
+.prob-pg-btn.active{background:var(--p);color:#fff;border-color:var(--p);font-weight:700}
+.prob-pg-ellipsis{padding:0 6px;color:#94a3b8}
+
 @media(max-width:768px){
-  .prob-page{padding:24px 12px 40px}
-  .prob-head h1{font-size:22px}
-  .prob-grid{grid-template-columns:1fr}
+  .prob-hero h1{font-size:24px}
+  .prob-grid{grid-template-columns:1fr;gap:14px}
   .prob-card{padding:18px}
-  .prob-filters{gap:6px}
-  .prob-filters a{padding:7px 14px;font-size:12px}
+  .prob-pills{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 </style>
 {% endblock %}
+
 {% block content %}
 <section class="prob-page">
   <div class="prob-wrap">
-    <header class="prob-head">
-      <h1>Problemlər və Həll Yolları</h1>
-      <p>Evdə ən çox rast gəlinən problemlər, səbəbləri və peşəkar həll yolları. Doğru ustanı tapmaq üçün oxuyun.</p>
+    <!-- Breadcrumb -->
+    <nav class="crumbs" aria-label="Breadcrumb" style="margin-bottom:12px">
+      <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+      <span aria-current="page">Bloq və Texniki Problemlər</span>
+    </nav>
+
+    <!-- Hero Header -->
+    <header class="prob-hero">
+      <span class="prob-eyebrow">{% include 'partials/ui_icon.html' with name='tool' %} {{ total_count }} faydalı bələdçi</span>
+      <h1>Problemlər, Səbəblər və <span>Usta Həlləri</span></h1>
+      <p>Kombi, kondisioner, paltaryuyan, soyuducu, elektrik və santexnika nasazlıqlarını peşəkarcasına öyrənin, evdə ilkin addımları atın və doğru ustanı rahatlıqla tapın.</p>
+
+      <!-- Axtarış Paneli -->
+      <div class="prob-search-wrap">
+        <form class="prob-search" method="get" action="{% url 'problemler_siyahi' %}">
+          {% if secilmis %}<input type="hidden" name="kategori" value="{{ secilmis }}">{% endif %}
+          <input type="search" name="q" value="{{ axtaris }}" placeholder="Nasazlıq və ya xəta kodu üzrə axtar (məs. E01, buzlayır, sıxmır...)" aria-label="Axtar">
+          <button type="submit" class="prob-search-btn">
+            {% include 'partials/ui_icon.html' with name='search' %} Axtar
+          </button>
+        </form>
+      </div>
     </header>
 
+    <!-- Kateqoriya Filtrləri -->
     {% if kateqoriyalar %}
-    <div class="prob-filters">
-      <a href="{% url 'problemler_siyahi' %}" class="{% if not secilmis %}aktiv{% endif %}">Hamısı</a>
-      {% for kat in kateqoriyalar %}
-      <a href="{% url 'problemler_siyahi' %}?kategori={{ kat.slug }}" class="{% if secilmis == kat.slug %}aktiv{% endif %}">{{ kat.ad }}</a>
-      {% endfor %}
+    <div class="prob-pills-bar">
+      <div class="prob-pills-title">
+        <span>Xidmət sahəsi üzrə filtrlə:</span>
+      </div>
+      <div class="prob-pills">
+        <a href="{% url 'problemler_siyahi' %}{% if axtaris %}?q={{ axtaris }}{% endif %}" class="prob-pill {% if not secilmis %}aktiv{% endif %}">
+          Hamısı ({{ total_count }})
+        </a>
+        {% for kat in kateqoriyalar %}
+        <a href="{% url 'problemler_siyahi' %}?kategori={{ kat.slug }}{% if axtaris %}&q={{ axtaris }}{% endif %}" class="prob-pill {% if secilmis == kat.slug %}aktiv{% endif %}">
+          {{ kat.ad }}
+        </a>
+        {% endfor %}
+      </div>
     </div>
     {% endif %}
 
+    <!-- Nəticə Başlığı (əgər axtarış və ya filtr varsa) -->
+    {% if axtaris or secilmis %}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:14px;color:var(--muted)">
+      <span>
+        {% if axtaris %}“<strong>{{ axtaris }}</strong>” üzrə axtarış: {% endif %}
+        <strong>{{ total_count }}</strong> məqalə tapıldı
+      </span>
+      <a href="{% url 'problemler_siyahi' %}" style="color:var(--p);font-weight:600;text-decoration:none">Bütün bələdçilərə qayıt ✕</a>
+    </div>
+    {% endif %}
+
+    <!-- Məqalələr Şəbəkəsi -->
     {% if problemler %}
     <div class="prob-grid">
       {% for p in problemler %}
       <article class="prob-card">
-        {% if p.kategori %}
-        <span class="prob-card-kat">{{ p.kategori.ad }}</span>
-        {% endif %}
+        <div class="prob-card-top">
+          {% if p.kategori %}
+          <span class="prob-card-kat">{{ p.kategori.ad }}</span>
+          {% else %}
+          <span class="prob-card-kat">Məişət Texnikası</span>
+          {% endif %}
+          <span class="prob-card-readtime">⏱️ 3 dəq oxuma</span>
+        </div>
         <h2><a href="{{ p.get_absolute_url }}">{{ p.bashliq }}</a></h2>
-        <div class="prob-card-desc">{{ p.metn|striptags|truncatewords:30 }}</div>
+        <div class="prob-card-desc">{{ p.metn|striptags|truncatewords:26 }}</div>
         <div class="prob-card-footer">
+          <span class="prob-card-date">
+            📅 {{ p.yaradildi|date:"d.m.Y" }}
+          </span>
           <a href="{{ p.get_absolute_url }}" class="prob-card-link">
-            Ətraflı oxu
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Səbəbi və Həlli →
           </a>
-          <span class="prob-card-date">{{ p.yaradildi|date:"d.m.Y" }}</span>
         </div>
       </article>
       {% endfor %}
     </div>
+
+    <!-- Səhifələmə (Pagination) -->
+    {% if problemler.has_other_pages %}
+    <div class="prob-pagination">
+      {% if problemler.has_previous %}
+      <a href="?page={{ problemler.previous_page_number }}{% if secilmis %}&kategori={{ secilmis }}{% endif %}{% if axtaris %}&q={{ axtaris }}{% endif %}" class="prob-pg-btn" title="Əvvəlki">
+        ← Əvvəlki
+      </a>
+      {% endif %}
+
+      {% for pnum in page_range %}
+        {% if pnum == '…' or pnum == '...' %}
+          <span class="prob-pg-ellipsis">…</span>
+        {% elif pnum == problemler.number %}
+          <span class="prob-pg-btn active">{{ pnum }}</span>
+        {% else %}
+          <a href="?page={{ pnum }}{% if secilmis %}&kategori={{ secilmis }}{% endif %}{% if axtaris %}&q={{ axtaris }}{% endif %}" class="prob-pg-btn">
+            {{ pnum }}
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      {% if problemler.has_next %}
+      <a href="?page={{ problemler.next_page_number }}{% if secilmis %}&kategori={{ secilmis }}{% endif %}{% if axtaris %}&q={{ axtaris }}{% endif %}" class="prob-pg-btn" title="Sonrakı">
+        Sonrakı →
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+
     {% else %}
+    <!-- Boş Nəticə -->
     <div class="prob-empty">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <p>Bu kateqoriyada hələlik problem yazılmayıb.</p>
+      <div class="prob-empty-icon">🔍</div>
+      <h3>Axtarışınız üzrə heç bir məqalə tapılmadı</h3>
+      <p>Digər açar sözlərlə axtarmağı və ya kateqoriya filtrini sıfırlamağı sınayın.</p>
+      <a href="{% url 'problemler_siyahi' %}" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px">
+        Bütün Məqalələrə Bax {% include 'partials/ui_icon.html' with name='arrow' %}
+      </a>
     </div>
     {% endif %}
   </div>

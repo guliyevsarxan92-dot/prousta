@@ -913,18 +913,37 @@ def profil_foto_crop(request):
     return render(request, 'profil_foto_crop.html')
 
 def problemler_siyahi(request):
-    problemler = Problem.objects.filter(aktiv=True)
-    kateqoriyalar = Kategori.objects.filter(
-        ust_kategori__isnull=False,
-        problemler__aktiv=True
-    ).distinct()
-    secilmis = request.GET.get('kategori')
+    problemler = Problem.objects.filter(aktiv=True).select_related('kategori')
+    kateqoriyalar = (
+        Kategori.objects.filter(problemler__aktiv=True)
+        .distinct()
+        .order_by('ad')
+    )
+    secilmis = request.GET.get('kategori', '').strip()
     if secilmis:
         problemler = problemler.filter(kategori__slug=secilmis)
+
+    axtaris = request.GET.get('q', '').strip()
+    if axtaris:
+        problemler = problemler.filter(
+            Q(bashliq__icontains=axtaris) | Q(metn__icontains=axtaris) | Q(seo_title__icontains=axtaris)
+        )
+
+    problemler = problemler.order_by('-yaradildi')
+    total_count = problemler.count()
+
+    paginator = Paginator(problemler, 18)
+    page_num = request.GET.get('page', 1)
+    problemler_page = paginator.get_page(page_num)
+    page_range = list(paginator.get_elided_page_range(problemler_page.number, on_each_side=2, on_ends=1))
+
     return render(request, 'problemler_siyahi.html', {
-        'problemler': problemler,
+        'problemler': problemler_page,
         'kateqoriyalar': kateqoriyalar,
         'secilmis': secilmis,
+        'axtaris': axtaris,
+        'page_range': page_range,
+        'total_count': total_count,
     })
 
 

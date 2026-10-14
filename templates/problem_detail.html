@@ -36,72 +36,107 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Problemlər", "item": "https://prousta.az/problemler/"},
+    {"@type": "ListItem", "position": 2, "name": "Bloq və Təlimatlar", "item": "https://prousta.az/problemler/"}{% if problem.kategori %},
+    {"@type": "ListItem", "position": 3, "name": "{{ problem.kategori.ad|escapejs }}", "item": "https://prousta.az/problemler/?k={{ problem.kategori.slug }}"},
+    {"@type": "ListItem", "position": 4, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
+    {% else %},
     {"@type": "ListItem", "position": 3, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
+    {% endif %}
   ]
 }
 </script>
 {% endblock %}
 {% block style %}
 <style>
-.pd-page{padding:40px 20px 60px;background:linear-gradient(180deg,#f8fafc,#eef2ff);min-height:60vh}
-.pd-wrap{max-width:800px;margin:0 auto}
-.pd-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:20px;flex-wrap:wrap}
-.pd-breadcrumb a{color:var(--p);font-weight:500}
-.pd-breadcrumb a:hover{text-decoration:underline}
-.pd-breadcrumb svg{width:12px;height:12px;flex-shrink:0}
-.pd-article{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:36px;margin-bottom:24px}
-.pd-article header{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.pd-article-kat{display:inline-block;font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:.5px;background:var(--pl);padding:4px 12px;border-radius:20px;margin-bottom:12px}
-.pd-article h1{font-size:26px;font-weight:800;color:var(--tx);line-height:1.35;margin-bottom:8px}
-.pd-article-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.pd-article-meta svg{width:14px;height:14px}
-.pd-article-meta span{display:flex;align-items:center;gap:4px}
-.pd-content{font-size:15px;line-height:1.85;color:#334155}
-.pd-content h2{font-size:20px;font-weight:700;color:var(--tx);margin:28px 0 12px;padding-left:14px;border-left:4px solid var(--p);line-height:1.3}
-.pd-content h3{font-size:17px;font-weight:700;color:var(--tx);margin:22px 0 10px}
-.pd-content p{margin-bottom:14px}
-.pd-content ul,.pd-content ol{margin:0 0 16px 20px;padding:0}
-.pd-content li{margin-bottom:8px;line-height:1.7}
-.pd-content strong{color:var(--tx);font-weight:700}
-.pd-content blockquote{margin:16px 0;padding:16px 20px;background:var(--pl);border-left:4px solid var(--p);border-radius:0 var(--r) var(--r) 0;font-style:italic;color:#475569}
-.pd-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
-.pd-content th,.pd-content td{padding:10px 14px;border:1px solid var(--border);text-align:left}
-.pd-content th{background:var(--pl);font-weight:700;color:var(--tx)}
-.pd-content img{max-width:100%;border-radius:var(--r);margin:12px 0}
-.pd-cta{background:linear-gradient(135deg,#1a47c8,#2563eb);border-radius:var(--r);padding:28px;text-align:center;margin-bottom:24px;color:#fff}
-.pd-cta h2{font-size:18px;font-weight:700;margin-bottom:6px;color:#fff}
-.pd-cta p{font-size:14px;opacity:.9;margin-bottom:16px;line-height:1.6}
-.pd-cta-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--p);padding:12px 28px;border-radius:var(--r);font-size:14px;font-weight:700;transition:.2s}
-.pd-cta-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
-.pd-elanlar{margin-bottom:24px}
-.pd-elanlar h2{font-size:18px;font-weight:700;color:var(--tx);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.pd-elanlar h2 svg{color:var(--p)}
-.pd-elan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.pd-elan{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;transition:.2s;display:flex;flex-direction:column}
-.pd-elan:hover{border-color:var(--p);box-shadow:0 4px 16px rgba(26,71,200,.08)}
-.pd-elan h3{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px;line-height:1.4}
-.pd-elan h3 a{color:inherit;transition:.2s}
-.pd-elan h3 a:hover{color:var(--p)}
-.pd-elan-info{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.pd-elan-info span{display:flex;align-items:center;gap:3px}
-.pd-elan-vip{font-size:10px;font-weight:700;color:#f59e0b;background:#fffbeb;padding:2px 8px;border-radius:10px}
-.pd-oxsar{margin-bottom:24px}
-.pd-oxsar h2{font-size:18px;font-weight:700;color:var(--tx);margin-bottom:16px}
-.pd-oxsar-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.pd-oxsar-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:.2s}
-.pd-oxsar-card:hover{border-color:var(--p);box-shadow:0 4px 16px rgba(26,71,200,.08);transform:translateY(-1px)}
-.pd-oxsar-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
-.pd-oxsar-card h3 a{color:var(--tx);transition:.2s}
-.pd-oxsar-card h3 a:hover{color:var(--p)}
-.pd-oxsar-card p{font-size:12px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pd-page{padding:32px 16px 64px;background:#f8fafc;min-height:70vh}
+.pd-wrap{max-width:880px;margin:0 auto;position:relative;z-index:2}
+.pd-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:#64748b;margin-bottom:20px;flex-wrap:wrap}
+.pd-breadcrumb a{color:#007b52;font-weight:600;text-decoration:none;transition:color .2s}
+.pd-breadcrumb a:hover{color:#005c40;text-decoration:underline}
+.pd-breadcrumb svg{width:14px;height:14px;flex-shrink:0;color:#94a3b8}
+.pd-breadcrumb .current{color:#334155;font-weight:500;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.pd-article{background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:40px 42px;margin-bottom:28px;box-shadow:0 4px 20px rgba(15,23,42,.04)}
+.pd-article header{margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid #f1f5f9}
+.pd-top-badges{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pd-article-kat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#007b52;background:#e8f5ee;padding:5px 14px;border-radius:20px;text-decoration:none;transition:.2s}
+.pd-article-kat:hover{background:#d1fae5}
+.pd-read-time{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;padding:5px 12px;border-radius:20px}
+.pd-article h1{font-size:30px;font-weight:800;color:#0f172a;line-height:1.35;margin-bottom:14px;letter-spacing:-0.02em}
+.pd-article-meta{font-size:13px;color:#64748b;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pd-article-meta span{display:inline-flex;align-items:center;gap:6px}
+.pd-article-meta svg{width:15px;height:15px;color:#94a3b8}
+
+.pd-content{font-size:16px;line-height:1.85;color:#334155;word-break:break-word}
+.pd-content h2{font-size:22px;font-weight:800;color:#0f172a;margin:32px 0 14px;padding-left:14px;border-left:4px solid #007b52;line-height:1.35}
+.pd-content h3{font-size:18px;font-weight:700;color:#0f172a;margin:24px 0 12px}
+.pd-content p{margin-bottom:16px}
+.pd-content ul,.pd-content ol{margin:0 0 18px 22px;padding:0}
+.pd-content li{margin-bottom:8px;line-height:1.75}
+.pd-content strong{color:#0f172a;font-weight:700}
+.pd-content blockquote{margin:20px 0;padding:16px 20px;background:#f0fdf4;border-left:4px solid #007b52;border-radius:0 12px 12px 0;font-style:italic;color:#166534}
+.pd-content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;background:#fff;border-radius:8px;overflow:hidden}
+.pd-content th,.pd-content td{padding:12px 16px;border:1px solid #e2e8f0;text-align:left}
+.pd-content th{background:#f8fafc;font-weight:700;color:#0f172a}
+.pd-content img{max-width:100%;height:auto;border-radius:12px;margin:16px 0;border:1px solid #e2e8f0}
+
+/* Emerald Brand CTA */
+.pd-cta{background:linear-gradient(135deg, #007b52 0%, #005c40 100%);border-radius:18px;padding:32px 28px;text-align:center;margin-bottom:32px;color:#fff;box-shadow:0 10px 30px rgba(0,123,82,.22);position:relative;overflow:hidden}
+.pd-cta::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:rgba(255,255,255,.08);border-radius:50%;pointer-events:none}
+.pd-cta-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:12px;letter-spacing:.3px;text-transform:uppercase}
+.pd-cta h2{font-size:22px;font-weight:800;margin-bottom:8px;color:#fff;letter-spacing:-0.01em}
+.pd-cta p{font-size:15px;opacity:.95;margin-bottom:20px;line-height:1.6;max-width:620px;margin-left:auto;margin-right:auto}
+.pd-cta-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.pd-cta-btn-call{display:inline-flex;align-items:center;gap:8px;background:#ffffff;color:#007b52;padding:12px 24px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none;transition:all .2s;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.pd-cta-btn-call:hover{transform:translateY(-2px);background:#f0fdf4;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.pd-cta-btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#ffffff;padding:12px 24px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none;transition:all .2s;box-shadow:0 4px 14px rgba(37,211,102,.35)}
+.pd-cta-btn-wa:hover{transform:translateY(-2px);background:#22bf5b;box-shadow:0 6px 20px rgba(37,211,102,.5)}
+.pd-cta-btn-more{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.3);padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s}
+.pd-cta-btn-more:hover{background:rgba(255,255,255,.24)}
+
+/* Masters Section */
+.pd-elanlar{margin-bottom:32px}
+.pd-elanlar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.pd-elanlar-header h2{font-size:20px;font-weight:800;color:#0f172a;display:flex;align-items:center;gap:8px;margin:0}
+.pd-elanlar-header h2 svg{color:#007b52}
+.pd-elan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.pd-elan{background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;transition:all .2s;display:flex;flex-direction:column;justify-content:space-between}
+.pd-elan:hover{border-color:#007b52;box-shadow:0 6px 20px rgba(0,123,82,.08);transform:translateY(-2px)}
+.pd-elan h3{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;line-height:1.4}
+.pd-elan h3 a{color:inherit;text-decoration:none;transition:color .2s}
+.pd-elan h3 a:hover{color:#007b52}
+.pd-elan-info{font-size:12px;color:#64748b;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.pd-elan-info span{display:inline-flex;align-items:center;gap:4px}
+.pd-elan-price{font-weight:700;color:#007b52}
+.pd-elan-vip{font-size:10px;font-weight:800;color:#b45309;background:#fef3c7;padding:2px 8px;border-radius:10px;letter-spacing:.3px}
+.pd-elan-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#007b52;color:#fff;font-size:13px;font-weight:700;padding:10px 14px;border-radius:10px;text-decoration:none;transition:background .2s}
+.pd-elan-btn:hover{background:#005c40}
+
+/* Related Section */
+.pd-oxsar{margin-bottom:32px}
+.pd-oxsar h2{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:16px}
+.pd-oxsar-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pd-oxsar-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;transition:all .2s;display:flex;flex-direction:column;justify-content:space-between}
+.pd-oxsar-card:hover{border-color:#007b52;box-shadow:0 6px 20px rgba(0,123,82,.08);transform:translateY(-2px)}
+.pd-oxsar-card h3{font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.pd-oxsar-card h3 a{color:#0f172a;text-decoration:none;transition:color .2s}
+.pd-oxsar-card h3 a:hover{color:#007b52}
+.pd-oxsar-card p{font-size:13px;color:#64748b;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.pd-oxsar-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#007b52;text-decoration:none}
+
+.pd-back-link{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:700;color:#475569;text-decoration:none;transition:all .2s;margin-top:10px}
+.pd-back-link:hover{border-color:#007b52;color:#007b52;background:#f0fdf4}
+
 @media(max-width:768px){
-  .pd-page{padding:20px 12px 40px}
-  .pd-article{padding:20px 16px}
-  .pd-article h1{font-size:20px}
-  .pd-content h2{font-size:17px;padding-left:10px}
-  .pd-content{font-size:14px}
-  .pd-cta{padding:22px 16px}
+  .pd-page{padding:16px 12px 40px}
+  .pd-article{padding:22px 18px;border-radius:14px}
+  .pd-article h1{font-size:22px}
+  .pd-content h2{font-size:18px;padding-left:10px}
+  .pd-content{font-size:15px}
+  .pd-cta{padding:24px 18px}
+  .pd-cta h2{font-size:19px}
+  .pd-cta-actions{flex-direction:column;width:100%}
+  .pd-cta-btn-call, .pd-cta-btn-wa, .pd-cta-btn-more{width:100%;justify-content:center}
   .pd-elan-grid{grid-template-columns:1fr}
   .pd-oxsar-list{grid-template-columns:1fr}
 }
@@ -113,16 +148,29 @@
     <nav class="pd-breadcrumb" aria-label="Breadcrumb">
       <a href="{% url 'index' %}">Ana səhifə</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      <a href="{% url 'problemler_siyahi' %}">Problemlər</a>
+      <a href="{% url 'problemler_siyahi' %}">Bloq</a>
+      {% if problem.kategori %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      <span>{{ problem.bashliq }}</span>
+      <a href="{% url 'problemler_siyahi' %}?k={{ problem.kategori.slug }}">{{ problem.kategori.ad }}</a>
+      {% endif %}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current" title="{{ problem.bashliq }}">{{ problem.bashliq }}</span>
     </nav>
 
     <article class="pd-article">
       <header>
-        {% if problem.kategori %}
-        <span class="pd-article-kat">{{ problem.kategori.ad }}</span>
-        {% endif %}
+        <div class="pd-top-badges">
+          {% if problem.kategori %}
+          <a href="{% url 'problemler_siyahi' %}?k={{ problem.kategori.slug }}" class="pd-article-kat">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            {{ problem.kategori.ad }}
+          </a>
+          {% endif %}
+          <span class="pd-read-time">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            3-4 dəq oxu
+          </span>
+        </div>
         <h1>{{ problem.bashliq }}</h1>
         <div class="pd-article-meta">
           <span>
@@ -135,28 +183,35 @@
             Yeniləndi: {{ problem.yenilendi|date:"d.m.Y" }}
           </span>
           {% endif %}
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Prousta Mütəxəssis Rəyi
+          </span>
         </div>
       </header>
+
       <div class="pd-content">
         {{ problem.metn|safe }}
       </div>
     </article>
 
+    <!-- Emerald Brand CTA -->
     <div class="pd-cta">
+      <span class="pd-cta-badge">Prousta Təcili Xidmət</span>
       <h2>Bu problemi həll edən usta lazımdır?</h2>
-      <p>{% if problem.kategori %}{{ problem.kategori.ad }}{% else %}Peşəkar usta{% endif %} xidməti üçün birbaşa zəng edin və ya WhatsApp ilə yazın. Təcili çıxış və zəmanətli təmir.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px">
-        <a href="tel:+994515888884" class="pd-cta-btn" style="background:#10b981;color:#fff;border:none;font-size:15px;padding:12px 24px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 4px 14px rgba(16,185,129,.35)">
+      <p>{% if problem.kategori %}Bakı üzrə peşəkar <strong>{{ problem.kategori.ad }}</strong> ustaları{% else %}Peşəkar usta{% endif %} operativ çıxış və zəmanətlə xidmətinizdədir. Birbaşa zəng edin və ya WhatsApp ilə əlaqə saxlayın.</p>
+      <div class="pd-cta-actions">
+        <a href="tel:+994515888884" class="pd-cta-btn-call">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Zəng et: 051 588 88 84
         </a>
-        <a href="https://wa.me/994515888884" target="_blank" rel="noopener" class="pd-cta-btn" style="background:#25D366;color:#fff;border:none;font-size:15px;padding:12px 24px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 4px 14px rgba(37,211,102,.35)">
+        <a href="https://wa.me/994515888884" target="_blank" rel="noopener" class="pd-cta-btn-wa">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/></svg>
           WhatsApp ilə yaz
         </a>
         {% if problem.kategori %}
-        <a href="{% url 'xidmet_detail' problem.kategori.slug %}" class="pd-cta-btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);font-size:15px;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:600">
-          Digər ustalar →
+        <a href="{% url 'xidmet_detail' problem.kategori.slug %}" class="pd-cta-btn-more">
+          Bütün ustalar →
         </a>
         {% endif %}
       </div>
@@ -164,22 +219,29 @@
 
     {% if elanlar %}
     <div class="pd-elanlar">
-      <h2>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Bu sahədə aktiv ustalar
-      </h2>
+      <div class="pd-elanlar-header">
+        <h2>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Bu sahədə aktiv ustalar
+        </h2>
+        {% if problem.kategori %}
+        <a href="{% url 'xidmet_detail' problem.kategori.slug %}" style="font-size:13px;font-weight:700;color:#007b52;text-decoration:none">
+          Hamısına bax ({{ elanlar|length }}+) →
+        </a>
+        {% endif %}
+      </div>
       <div class="pd-elan-grid">
         {% for elan in elanlar %}
-        <div class="pd-elan" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div class="pd-elan">
           <div>
             <h3><a href="{{ elan.get_absolute_url }}">{{ elan.bashliq }}</a></h3>
             <div class="pd-elan-info">
               <span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 {{ elan.sheher }}
               </span>
               {% if elan.qiymet %}
-              <span>{{ elan.qiymet }} ₼</span>
+              <span class="pd-elan-price">{{ elan.qiymet }} ₼</span>
               {% else %}
               <span>Razılaşma ilə</span>
               {% endif %}
@@ -188,7 +250,7 @@
               {% endif %}
             </div>
           </div>
-          <a href="tel:{% if elan.telefon %}{{ elan.telefon }}{% else %}+994515888884{% endif %}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--p,#1a47c8);color:#fff;font-size:13px;font-weight:700;padding:9px 14px;border-radius:8px;text-decoration:none;margin-top:12px">
+          <a href="tel:{% if elan.telefon %}{{ elan.telefon }}{% else %}+994515888884{% endif %}" class="pd-elan-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             Zəng et: {% if elan.telefon %}{{ elan.telefon }}{% else %}051 588 88 84{% endif %}
           </a>
@@ -200,17 +262,30 @@
 
     {% if oxsar %}
     <div class="pd-oxsar">
-      <h2>Oxşar problemlər</h2>
+      <h2>Oxşar problemlər və həllər</h2>
       <div class="pd-oxsar-list">
         {% for p in oxsar %}
         <div class="pd-oxsar-card">
-          <h3><a href="{{ p.get_absolute_url }}">{{ p.bashliq }}</a></h3>
-          <p>{{ p.metn|striptags|truncatewords:20 }}</p>
+          <div>
+            <h3><a href="{{ p.get_absolute_url }}">{{ p.bashliq }}</a></h3>
+            <p>{{ p.metn|striptags|truncatewords:20 }}</p>
+          </div>
+          <a href="{{ p.get_absolute_url }}" class="pd-oxsar-link">
+            Məqaləni oxu
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
         </div>
         {% endfor %}
       </div>
     </div>
     {% endif %}
+
+    <div style="text-align:center;padding-top:12px">
+      <a href="{% url 'problemler_siyahi' %}" class="pd-back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Bütün bloq məqalələrinə qayıt
+      </a>
+    </div>
   </div>
 </section>
 {% endblock %}

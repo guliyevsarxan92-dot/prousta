@@ -11,13 +11,16 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 .brand:hover .brand-logo-img{opacity:.85}
 @media(max-width:768px){.brand-logo-img{height:26px;max-width:135px}}
 
-.side-ad-banner{display:none;position:fixed;top:var(--side-ad-top, 84px);height:calc(100vh - var(--side-ad-top, 84px) - 16px);max-height:620px;z-index:40;pointer-events:none;box-sizing:border-box;transition:top .08s ease-out}
-@media(min-width:1200px){
+.side-ad-banner{display:none;position:fixed;top:var(--side-ad-top, 84px);height:calc(100vh - var(--side-ad-top, 84px) - 16px);max-height:620px;z-index:20;pointer-events:none;box-sizing:border-box;transition:top .08s ease-out}
+@media(min-width:1480px){
   .side-ad-banner{display:flex!important;visibility:visible!important}
+  .side-ad-banner--left{left:0;width:calc((100vw - var(--content-w, 1120px)) / 2);justify-content:flex-end;padding-right:16px}
+  .side-ad-banner--right{right:0;width:calc((100vw - var(--content-w, 1120px)) / 2);justify-content:flex-start;padding-left:16px}
 }
-.side-ad-banner--left{left:0;width:calc((100vw - var(--content-w, 1120px)) / 2);justify-content:flex-end;padding-right:12px}
-.side-ad-banner--right{right:0;width:calc((100vw - var(--content-w, 1120px)) / 2);justify-content:flex-start;padding-left:12px}
-.side-ad-slot{pointer-events:auto;width:160px;max-width:calc(100% - 8px);height:600px;background:#ffffff;border:1px dashed #b7cdc4;border-radius:10px;box-shadow:0 4px 16px rgba(0,123,82,.06);display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
+@media(max-width:1479px){
+  .side-ad-banner{display:none!important;visibility:hidden!important;pointer-events:none!important;opacity:0!important}
+}
+.side-ad-slot{pointer-events:auto;width:160px;max-width:160px;height:600px;background:#ffffff;border:1px dashed #b7cdc4;border-radius:10px;box-shadow:0 4px 16px rgba(0,123,82,.06);display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
 .side-ad-slot:hover{border-color:#007b52;box-shadow:0 6px 20px rgba(0,123,82,.14)}
 .side-ad-slot:has(.side-ad-custom-img){border:none;background:transparent}
 .side-ad-link{display:block;width:100%;height:100%;text-decoration:none}
@@ -36,9 +39,6 @@ html{scroll-padding-top:90px}button,input,select,textarea{font:inherit}a,button,
 .side-ad-btn:hover{background:#005c40;color:#ffffff!important;transform:translateY(-1px)}
 .side-ad-btn--wp{background:#25d366!important}
 .side-ad-btn--wp:hover{background:#1ebc57!important}
-@media(max-width:1199px){
-  .side-ad-banner{display:none!important;visibility:hidden!important;pointer-events:none!important;opacity:0!important}
-}
 
 /* ÜST REKLAM BANNERİ (Tam Enli - Ekran Boyu) */
 .top-ad-banner{width:100%;max-width:100vw;background:#ffffff;border-bottom:1px solid var(--border);position:relative;z-index:20;box-sizing:border-box}
