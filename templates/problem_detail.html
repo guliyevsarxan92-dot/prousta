@@ -37,7 +37,7 @@
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
     {"@type": "ListItem", "position": 2, "name": "Bloq və Təlimatlar", "item": "https://prousta.az/problemler/"}{% if problem.kategori %},
-    {"@type": "ListItem", "position": 3, "name": "{{ problem.kategori.ad|escapejs }}", "item": "https://prousta.az/problemler/?k={{ problem.kategori.slug }}"},
+    {"@type": "ListItem", "position": 3, "name": "{{ problem.kategori.ad|escapejs }}", "item": "https://prousta.az/problemler/?kategori={{ problem.kategori.slug }}"},
     {"@type": "ListItem", "position": 4, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
     {% else %},
     {"@type": "ListItem", "position": 3, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
@@ -151,7 +151,7 @@
       <a href="{% url 'problemler_siyahi' %}">Bloq</a>
       {% if problem.kategori %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      <a href="{% url 'problemler_siyahi' %}?k={{ problem.kategori.slug }}">{{ problem.kategori.ad }}</a>
+      <a href="{% url 'problemler_siyahi' %}?kategori={{ problem.kategori.slug }}">{{ problem.kategori.ad }}</a>
       {% endif %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       <span class="current" title="{{ problem.bashliq }}">{{ problem.bashliq }}</span>
@@ -161,7 +161,7 @@
       <header>
         <div class="pd-top-badges">
           {% if problem.kategori %}
-          <a href="{% url 'problemler_siyahi' %}?k={{ problem.kategori.slug }}" class="pd-article-kat">
+          <a href="{% url 'problemler_siyahi' %}?kategori={{ problem.kategori.slug }}" class="pd-article-kat">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             {{ problem.kategori.ad }}
           </a>

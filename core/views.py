@@ -919,7 +919,7 @@ def problemler_siyahi(request):
         .distinct()
         .order_by('ad')
     )
-    secilmis = request.GET.get('kategori', '').strip()
+    secilmis = (request.GET.get('kategori') or request.GET.get('k') or '').strip()
     if secilmis:
         problemler = problemler.filter(kategori__slug=secilmis)
 
