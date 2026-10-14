@@ -260,9 +260,25 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 (function(){
   function p(){
     var n = document.querySelector('.site-nav');
-    if(!n) return;
-    var b = n.getBoundingClientRect().bottom;
-    document.documentElement.style.setProperty('--side-ad-top', Math.max(Math.round(b + 12), 84) + 'px');
+    var f = document.querySelector('.site-footer');
+    var topVal = 84;
+    if(n) {
+      var b = n.getBoundingClientRect().bottom;
+      topVal = Math.max(Math.round(b + 12), 84);
+    }
+    document.documentElement.style.setProperty('--side-ad-top', topVal + 'px');
+    if(f) {
+      var ft = f.getBoundingClientRect().top;
+      var availH = ft - topVal - 20;
+      if (availH < 180) {
+        document.documentElement.style.setProperty('--side-ad-opacity', '0');
+        document.documentElement.style.setProperty('--side-ad-pointer', 'none');
+      } else {
+        document.documentElement.style.setProperty('--side-ad-opacity', '1');
+        document.documentElement.style.setProperty('--side-ad-pointer', 'auto');
+        document.documentElement.style.setProperty('--side-ad-max-h', Math.min(availH, 580) + 'px');
+      }
+    }
   }
   p();
   window.addEventListener('scroll', p, {passive:true});
