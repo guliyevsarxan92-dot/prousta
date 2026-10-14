@@ -3,7 +3,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -52,6 +54,55 @@ def badge_odenis_gozlemede(request):
         return str(count) if count > 0 else None
     except Exception:
         return None
+
+
+@staff_member_required
+def admin_pending_notifications_api(request):
+    """
+    Admin panel üçün anlıq bildiriş API-si.
+    Təsdiq gözləyən yeni elan və ödənişləri JSON olaraq qaytarır.
+    """
+    try:
+        elan_gozlemede = Elan.objects.filter(status='gozlemede')
+        elan_count = elan_gozlemede.count()
+        latest_elan = elan_gozlemede.order_by('-id').first()
+        elan_data = None
+        if latest_elan:
+            elan_data = {
+                'id': latest_elan.id,
+                'title': latest_elan.bashliq or 'Başlıqsız Elan',
+                'user': latest_elan.istifadeci.username,
+                'phone': latest_elan.telefon or '',
+                'url': reverse('admin:core_elan_change', args=[latest_elan.id]),
+            }
+
+        odenis_gozlemede = Odenis.objects.filter(status='gozlemede')
+        odenis_count = odenis_gozlemede.count()
+        latest_odenis = odenis_gozlemede.order_by('-id').first()
+        odenis_data = None
+        if latest_odenis:
+            odenis_data = {
+                'id': latest_odenis.id,
+                'amount': f"{latest_odenis.mebleg} AZN",
+                'type': latest_odenis.get_nov_display(),
+                'user': latest_odenis.istifadeci.username,
+                'url': reverse('admin:core_odenis_change', args=[latest_odenis.id]),
+            }
+
+        return JsonResponse({
+            'status': 'ok',
+            'elan': {
+                'count': elan_count,
+                'latest': elan_data,
+            },
+            'odenis': {
+                'count': odenis_count,
+                'latest': odenis_data,
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
 
 
 def dashboard_callback(request, context):

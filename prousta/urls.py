@@ -17,8 +17,10 @@ sitemaps = {
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core.admin import admin_pending_notifications_api
 
 urlpatterns = [
+    path('admin/api/pending-notifications/', admin_pending_notifications_api, name='admin_pending_notifications'),
     path('admin/', admin.site.urls),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 

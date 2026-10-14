@@ -245,6 +245,9 @@ UNFOLD = {
         "search_models": True,
         "show_history": True,
     },
+    "SCRIPTS": [
+        lambda request: "/static/js/admin_notifications.js",
+    ],
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": False,
