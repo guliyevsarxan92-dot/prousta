@@ -47,4 +47,6 @@ urlpatterns = [
     path('mobil-tetbiq/', views.mobil_app, name='mobil_app'),
     path('problemler/', views.problemler_siyahi, name='problemler_siyahi'),
     path('problemler/<slug:slug>/', views.problem_detail, name='problem_detail'),
+    path('banner/<int:banner_id>/klik/', views.banner_klik, name='banner_klik'),
+    path('banner/<int:banner_id>/baxis/', views.banner_baxis, name='banner_baxis'),
 ]

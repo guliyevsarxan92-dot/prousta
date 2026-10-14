@@ -283,6 +283,8 @@ class ReklamBanner(models.Model):
         default=False,
         help_text='İşarələnsə, bu mövqedə aktiv reklam (şəkil/video) olmadıqda banner saytda heç bir yer tutmayacaq və tam gizlənəcək'
     )
+    klik_sayi = models.PositiveIntegerField('Klik Sayı', default=0, db_index=True, help_text='Bannerə edilən toplam keçid sayı')
+    baxis_sayi = models.PositiveIntegerField('Baxış Sayı', default=0, help_text='Bannerin saytda nümayiş sayı')
     bitis_tarixi = models.DateTimeField('Bitmə tarixi', null=True, blank=True, help_text='Boş buraxsanız müddətsiz aktiv olar')
     yaradildi = models.DateTimeField(auto_now_add=True)
     yenilendi = models.DateTimeField(auto_now=True)
@@ -293,6 +295,16 @@ class ReklamBanner(models.Model):
 
     def __str__(self):
         return f"{self.get_movqe_display()} — {self.bashliq or 'Başlıqsız'}"
+
+    @property
+    def ctr(self):
+        if self.baxis_sayi > 0:
+            return round((self.klik_sayi / self.baxis_sayi) * 100, 2)
+        return 0.0
+
+    @property
+    def ctr_formatted(self):
+        return f"{self.ctr:.2f}%"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -309,6 +321,35 @@ class ReklamBanner(models.Model):
             cache.delete('reklam_bannerleri')
         except Exception:
             pass
+
+
+class BannerKlik(models.Model):
+    CIHAZ_CHOICES = [
+        ('mobil', 'Mobil'),
+        ('desktop', 'Desktop'),
+        ('planset', 'Planşet'),
+        ('diger', 'Digər'),
+    ]
+
+    banner = models.ForeignKey(
+        ReklamBanner,
+        on_delete=models.CASCADE,
+        related_name='klikler',
+        verbose_name='Banner'
+    )
+    ip_unvan = models.GenericIPAddressField('IP Ünvanı', null=True, blank=True)
+    cihaz = models.CharField('Cihaz Növü', max_length=20, choices=CIHAZ_CHOICES, default='desktop')
+    user_agent = models.CharField('Brauzer / User-Agent', max_length=500, blank=True)
+    referer = models.URLField('Keçid Mənbəyi (Referer)', max_length=500, blank=True)
+    yaradildi = models.DateTimeField('Klik Tarixi', auto_now_add=True, db_index=True)
+
+    class Meta:
+        verbose_name = 'Banner Kliki'
+        verbose_name_plural = 'Banner Klikləri'
+        ordering = ['-yaradildi']
+
+    def __str__(self):
+        return f"{self.banner.bashliq or self.banner.get_movqe_display()} — {self.yaradildi.strftime('%d.%m.%Y %H:%M')}"
 
 
 class VipPaket(models.Model):

@@ -1,18 +1,18 @@
-<div class="side-ad-slot{% if reklam_sol and reklam_sol.animasiya_effekti != 'none' %} anim-{{ reklam_sol.animasiya_effekti }}{% endif %}" id="sideAdLeftSlot">
+<div class="side-ad-slot{% if reklam_sol and reklam_sol.animasiya_effekti != 'none' %} anim-{{ reklam_sol.animasiya_effekti }}{% endif %}" id="sideAdLeftSlot"{% if reklam_sol %} data-banner-track-view="{{ reklam_sol.id }}"{% endif %}>
   {% if reklam_sol and reklam_sol.video %}
-    <a href="{{ reklam_sol.link|default:'#' }}" {% if reklam_sol.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sol.bashliq }}">
+    <a href="{% url 'banner_klik' reklam_sol.id %}" target="_blank" rel="noopener sponsored" class="side-ad-link" title="{{ reklam_sol.bashliq }}">
       <video class="side-ad-custom-video" autoplay muted loop playsinline preload="auto">
         <source src="{{ reklam_sol.video.url }}">
       </video>
     </a>
   {% elif reklam_sol and reklam_sol.video_url %}
-    <a href="{{ reklam_sol.link|default:'#' }}" {% if reklam_sol.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sol.bashliq }}">
+    <a href="{% url 'banner_klik' reklam_sol.id %}" target="_blank" rel="noopener sponsored" class="side-ad-link" title="{{ reklam_sol.bashliq }}">
       <video class="side-ad-custom-video" autoplay muted loop playsinline preload="auto">
         <source src="{{ reklam_sol.video_url }}">
       </video>
     </a>
   {% elif reklam_sol and reklam_sol.shekil %}
-    <a href="{{ reklam_sol.link|default:'#' }}" {% if reklam_sol.link %}target="_blank" rel="noopener sponsored"{% endif %} class="side-ad-link" title="{{ reklam_sol.bashliq }}">
+    <a href="{% url 'banner_klik' reklam_sol.id %}" target="_blank" rel="noopener sponsored" class="side-ad-link" title="{{ reklam_sol.bashliq }}">
       <img src="{{ reklam_sol.shekil.url }}" alt="{{ reklam_sol.bashliq|default:'Reklam' }}" class="side-ad-custom-img">
     </a>
   {% elif reklam_sol and reklam_sol.html_kod %}

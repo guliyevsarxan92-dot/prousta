@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 import random
@@ -19,7 +19,10 @@ import re
 from datetime import timedelta
 from decimal import Decimal
 from django.core.paginator import Paginator
-from .models import Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat, Problem, VipPaket
+from .models import (
+    Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat,
+    Problem, VipPaket, ReklamBanner, BannerKlik
+)
 from .seo import indexable_kategori_ids
 from .watermark import filigran_yoxla
 from .locations import LOKASIYALAR, POPULAR_LOKASIYALAR, get_lokasiya
@@ -1124,4 +1127,68 @@ def llms_txt(request):
         cache.set(cache_key, content, 3600)
 
     return HttpResponse(content, content_type='text/plain; charset=utf-8')
+
+
+def _detect_device(user_agent: str) -> str:
+    ua = (user_agent or '').lower()
+    if 'ipad' in ua or 'tablet' in ua:
+        return 'planset'
+    if any(m in ua for m in ['mobile', 'android', 'iphone', 'ipod', 'opera mini', 'blackberry']):
+        return 'mobil'
+    return 'desktop'
+
+
+def _get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR')
+
+
+def banner_klik(request, banner_id):
+    """
+    Banner kliklərini izləyir, statistikada qeydə alır və
+    müştərinin keçid linkinə yönləndirir.
+    """
+    banner = get_object_or_404(ReklamBanner, id=banner_id)
+    ip = _get_client_ip(request)
+    ua = request.META.get('HTTP_USER_AGENT', '')
+    referer = request.META.get('HTTP_REFERER', '')
+    cihaz = _detect_device(ua)
+
+    # 2 saniyəlik anti-spam (eyni IP-dən ardıcıl klikləri qarşılamaq)
+    cache_key = f"b_click_spam_{banner_id}_{ip}"
+    if not cache.get(cache_key):
+        cache.set(cache_key, 1, 2)
+        ReklamBanner.objects.filter(id=banner_id).update(klik_sayi=F('klik_sayi') + 1)
+        try:
+            BannerKlik.objects.create(
+                banner=banner,
+                ip_unvan=ip,
+                cihaz=cihaz,
+                user_agent=ua[:500],
+                referer=referer[:500]
+            )
+        except Exception:
+            pass
+
+    target_url = banner.link.strip() if banner.link else referer or '/'
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or 'application/json' in request.headers.get('accept', ''):
+        return JsonResponse({'status': 'ok', 'url': target_url})
+
+    return HttpResponseRedirect(target_url)
+
+
+def banner_baxis(request, banner_id):
+    """
+    Bannerin saytda nümayiş sayını (impressions) asinxron olaraq artırır.
+    """
+    ip = _get_client_ip(request)
+    cache_key = f"b_view_spam_{banner_id}_{ip}"
+    if not cache.get(cache_key):
+        cache.set(cache_key, 1, 60)
+        ReklamBanner.objects.filter(id=banner_id).update(baxis_sayi=F('baxis_sayi') + 1)
+
+    return JsonResponse({'status': 'ok'})
 

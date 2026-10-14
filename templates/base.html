@@ -349,6 +349,33 @@ document.addEventListener('click', function(e) {
     }
   }
 }, {passive: true});
+
+// Banner nümayişlərinin (impressions) izlənməsi
+(function() {
+  if (!('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var bId = el.getAttribute('data-banner-track-view');
+        if (bId) {
+          el.removeAttribute('data-banner-track-view');
+          var bUrl = '/banner/' + encodeURIComponent(bId) + '/baxis/';
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(bUrl);
+          } else {
+            fetch(bUrl, {method: 'GET', keepalive: true});
+          }
+        }
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('[data-banner-track-view]').forEach(function(b) {
+    observer.observe(b);
+  });
+})();
 </script>
 </body>
 </html>

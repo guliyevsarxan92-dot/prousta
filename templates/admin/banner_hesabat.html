@@ -1,0 +1,296 @@
+{% extends 'admin/base.html' %}
+{% load i18n unfold %}
+
+{% block title %}Reklam Hesabatı: {{ banner.bashliq|default:banner.get_movqe_display }} | {{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6 mb-8 max-w-7xl mx-auto print:max-w-none print:m-0">
+
+  <!-- Action Bar & Navigation -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs print:border-none print:shadow-none print:p-0">
+    <div class="flex items-center gap-3">
+      <a href="{% url 'admin:core_reklambanner_changelist' %}" class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-700 dark:text-base-300 transition-colors print:hidden" title="Geri">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+      </a>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
+            {{ banner.get_movqe_display }}
+          </span>
+          {% if banner.aktiv %}
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-400">Aktiv</span>
+          {% else %}
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-400">Deaktiv</span>
+          {% endif %}
+        </div>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          {{ banner.bashliq|default:"Başlıqsız Banner" }}
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-base-400 mt-0.5">
+          Yaradıldı: {{ banner.yaradildi|date:"d.m.Y H:i" }} | Hesabat tarixi: {{ now|date:"d.m.Y H:i" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Export & Print Buttons -->
+    <div class="flex items-center gap-2.5 print:hidden">
+      <a href="?export=csv" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-800 dark:text-white border border-slate-300 dark:border-base-700 text-xs font-bold transition-all shadow-xs">
+        <span class="material-symbols-outlined text-base text-emerald-600">file_download</span>
+        <span>Excel / CSV Yüklə</span>
+      </a>
+      <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all" style="background-color:#059669;color:#ffffff;">
+        <span class="material-symbols-outlined text-base">print</span>
+        <span>Çap Et / PDF Saxla</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Overview Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <!-- Toplam Klik -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-emerald-500/40 dark:border-emerald-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Toplam Klik</span>
+        <span class="material-symbols-outlined text-lg text-emerald-600">touch_app</span>
+      </div>
+      <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+        {{ total_klik }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Bütün dövr</div>
+    </div>
+
+    <!-- Toplam Baxış (Impressions) -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider">Nümayiş (Baxış)</span>
+        <span class="material-symbols-outlined text-lg text-sky-600">visibility</span>
+      </div>
+      <div class="text-3xl font-extrabold text-slate-900 dark:text-white">
+        {{ total_baxis }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Ekranda göstərilmə</div>
+    </div>
+
+    <!-- CTR % -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider">CTR (Klik Faizi)</span>
+        <span class="material-symbols-outlined text-lg text-indigo-600">percent</span>
+      </div>
+      <div class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+        {{ ctr }}%
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Klik / Nümayiş</div>
+    </div>
+
+    <!-- Son 24 Saat -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider">Son 24 Saat</span>
+        <span class="material-symbols-outlined text-lg text-amber-500">schedule</span>
+      </div>
+      <div class="text-3xl font-extrabold text-slate-900 dark:text-white">
+        {{ klik_24h }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Bugünkü aktivlik</div>
+    </div>
+
+    <!-- Son 7 Gün -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider">Son 7 Gün</span>
+        <span class="material-symbols-outlined text-lg text-teal-600">date_range</span>
+      </div>
+      <div class="text-3xl font-extrabold text-slate-900 dark:text-white">
+        {{ klik_7d }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Həftəlik klik</div>
+    </div>
+
+    <!-- Son 30 Gün -->
+    <div class="p-4 rounded-xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <div class="flex items-center justify-between text-base-500 dark:text-base-400 mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider">Son 30 Gün</span>
+        <span class="material-symbols-outlined text-lg text-emerald-600">calendar_month</span>
+      </div>
+      <div class="text-3xl font-extrabold text-slate-900 dark:text-white">
+        {{ klik_30d }}
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1">Aylıq dövr</div>
+    </div>
+  </div>
+
+  <!-- Device Breakdown & Banner Details -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Cihaz Bölgüsü -->
+    <div class="p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+      <h3 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-emerald-600">devices</span>
+        Cihaz Bölgüsü
+      </h3>
+      
+      <!-- Progress Bar -->
+      <div class="w-full h-3 bg-slate-100 dark:bg-base-800 rounded-full overflow-hidden flex mb-4">
+        <div style="width: {{ mobil_faiz }}%" class="bg-emerald-500" title="Mobil: {{ mobil_faiz }}%"></div>
+        <div style="width: {{ desktop_faiz }}%" class="bg-sky-500" title="Desktop: {{ desktop_faiz }}%"></div>
+        <div style="width: {{ planset_faiz }}%" class="bg-amber-500" title="Planşet: {{ planset_faiz }}%"></div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <span class="font-medium text-slate-700 dark:text-base-300">Mobil Cihazlar</span>
+          </div>
+          <span class="font-bold text-slate-900 dark:text-white">{{ mobil_sayi }} ({{ mobil_faiz }}%)</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+            <span class="font-medium text-slate-700 dark:text-base-300">Masaüstü (Desktop)</span>
+          </div>
+          <span class="font-bold text-slate-900 dark:text-white">{{ desktop_sayi }} ({{ desktop_faiz }}%)</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+            <span class="font-medium text-slate-700 dark:text-base-300">Planşetlər</span>
+          </div>
+          <span class="font-bold text-slate-900 dark:text-white">{{ planset_sayi }} ({{ planset_faiz }}%)</span>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-4 border-t border-slate-100 dark:border-base-800 text-xs text-slate-500">
+        Kliklərin <strong>{{ mobil_faiz }}%</strong> hissəsi smartfon istifadəçiləri tərəfindən həyata keçirilib.
+      </div>
+    </div>
+
+    <!-- Banner Detalları & Keçid Linki -->
+    <div class="lg:col-span-2 p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs flex flex-col justify-between">
+      <div>
+        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-base text-emerald-600">link</span>
+          Kampaniya və Hədəf Linki
+        </h3>
+        <div class="space-y-2.5 text-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 rounded-lg bg-slate-50 dark:bg-base-800">
+            <span class="text-slate-500 dark:text-base-400 font-medium">Hədəf Link (URL):</span>
+            {% if banner.link %}
+            <a href="{{ banner.link }}" target="_blank" class="font-bold text-emerald-600 hover:underline truncate max-w-md">
+              {{ banner.link }} ↗
+            </a>
+            {% else %}
+            <span class="text-slate-400">Təyin edilməyib</span>
+            {% endif %}
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 rounded-lg bg-slate-50 dark:bg-base-800">
+            <span class="text-slate-500 dark:text-base-400 font-medium">Animasiya Effekti:</span>
+            <span class="font-bold text-slate-800 dark:text-white">{{ banner.get_animasiya_effekti_display }}</span>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 p-2.5 rounded-lg bg-slate-50 dark:bg-base-800">
+            <span class="text-slate-500 dark:text-base-400 font-medium">Müqavilə / Bitmə Tarixi:</span>
+            <span class="font-bold text-slate-800 dark:text-white">
+              {% if banner.bitis_tarixi %}{{ banner.bitis_tarixi|date:"d.m.Y H:i" }}{% else %}Müddətsiz aktiv{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-base-800 flex items-center justify-between text-xs text-slate-500">
+        <span>Prousta.az Reklam Şəbəkəsi</span>
+        <span class="font-mono">Banner ID: #{{ banner.id }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Günlük Klik Dinamikası (Son 14 gün) -->
+  {% if daily_stats %}
+  <div class="p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs">
+    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+      <span class="material-symbols-outlined text-base text-emerald-600">bar_chart</span>
+      Son 14 Günün Klik Dinamikası
+    </h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5">
+      {% for d in daily_stats %}
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-base-800 border border-slate-200 dark:border-base-700 text-center">
+        <div class="text-xs text-slate-500 mb-1">{{ d.gun|date:"d M" }}</div>
+        <div class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{{ d.say }}</div>
+        <div class="text-[10px] text-slate-400">klik</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Son Klik Qeydləri Cədvəli -->
+  <div class="p-5 rounded-2xl bg-white dark:bg-base-900 border border-base-200 dark:border-base-800 shadow-xs overflow-hidden">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-emerald-600">history</span>
+        Son Klik Hadisələri (Son 100 qeyd)
+      </h3>
+      <span class="text-xs text-slate-500 font-medium">Toplam {{ son_klikler|length }} hadisə</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-base-800 text-slate-600 dark:text-base-300 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-base-700">
+          <tr>
+            <th class="py-2.5 px-3">Tarix və Saat</th>
+            <th class="py-2.5 px-3">Cihaz</th>
+            <th class="py-2.5 px-3">IP Ünvanı</th>
+            <th class="py-2.5 px-3">Keçid Mənbəyi (Referer)</th>
+            <th class="py-2.5 px-3">Brauzer / ƏS</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-base-800">
+          {% for k in son_klikler %}
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-base-800/50 transition-colors">
+            <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+              {{ k.yaradildi|date:"d.m.Y H:i:s" }}
+            </td>
+            <td class="py-2.5 px-3 whitespace-nowrap">
+              {% if k.cihaz == 'mobil' %}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">📱 Mobil</span>
+              {% elif k.cihaz == 'desktop' %}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200">💻 Desktop</span>
+              {% elif k.cihaz == 'planset' %}
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">📟 Planşet</span>
+              {% else %}
+              <span class="text-slate-500">{{ k.get_cihaz_display }}</span>
+              {% endif %}
+            </td>
+            <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-base-400 whitespace-nowrap">
+              {{ k.ip_unvan|default:"—" }}
+            </td>
+            <td class="py-2.5 px-3 text-slate-600 dark:text-base-400 truncate max-w-xs" title="{{ k.referer }}">
+              {% if k.referer %}{{ k.referer }}{% else %}<span class="text-slate-400">Birbaşa / Digər</span>{% endif %}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 truncate max-w-xs" title="{{ k.user_agent }}">
+              {{ k.user_agent|truncatechars:45 }}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="py-8 text-center text-slate-400">
+              Bu banner üçün hələlik heç bir klik qeydə alınmayıb.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<style>
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  header, nav, aside, .unfold-sidebar, .unfold-header, .print\:hidden { display: none !important; }
+  .max-w-7xl { max-width: 100% !important; margin: 0 !important; }
+  .shadow-xs { box-shadow: none !important; }
+  .border { border: 1px solid #e2e8f0 !important; }
+}
+</style>
+{% endblock %}

@@ -1,28 +1,28 @@
 {% if reklam_orta and reklam_orta.video %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam">
-  <a href="{{ reklam_orta.link|default:'#' }}" {% if reklam_orta.link %}target="_blank" rel="noopener sponsored"{% endif %} class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
+  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
     <video class="in-grid-ad-video" autoplay muted loop playsinline preload="auto">
       <source src="{{ reklam_orta.video.url }}">
     </video>
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.video_url %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam">
-  <a href="{{ reklam_orta.link|default:'#' }}" {% if reklam_orta.link %}target="_blank" rel="noopener sponsored"{% endif %} class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
+  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
     <video class="in-grid-ad-video" autoplay muted loop playsinline preload="auto">
       <source src="{{ reklam_orta.video_url }}">
     </video>
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.shekil %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam">
-  <a href="{{ reklam_orta.link|default:'#' }}" {% if reklam_orta.link %}target="_blank" rel="noopener sponsored"{% endif %} class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
+  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
     <img src="{{ reklam_orta.shekil.url }}" alt="{{ reklam_orta.bashliq|default:'Reklam' }}" class="in-grid-ad-img" loading="lazy">
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.html_kod %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam">
-  <div class="in-grid-ad-custom-html">
+<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
+  <div class="in-grid-custom-html">
     {{ reklam_orta.html_kod|safe }}
   </div>
 </div>

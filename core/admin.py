@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.urls import reverse
+from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -26,6 +26,7 @@ from .models import (
     BankMelumat,
     Problem,
     ReklamBanner,
+    BannerKlik,
     VipPaket,
 )
 
@@ -76,6 +77,8 @@ def dashboard_callback(request, context):
         total_user = User.objects.count()
         total_profil = Profil.objects.count()
         aktiv_banner = ReklamBanner.objects.filter(aktiv=True).count()
+        total_banner_klik = ReklamBanner.objects.aggregate(s=models.Sum('klik_sayi'))['s'] or 0
+        total_banner_baxis = ReklamBanner.objects.aggregate(s=models.Sum('baxis_sayi'))['s'] or 0
         total_kategori = Kategori.objects.count()
 
         # Son gözləmədə olan elanlar (Dashboard-da birbaşa baxmaq və təsdiq etmək üçün)
@@ -99,6 +102,8 @@ def dashboard_callback(request, context):
             'kpi_total_user': total_user,
             'kpi_total_profil': total_profil,
             'kpi_aktiv_banner': aktiv_banner,
+            'kpi_total_banner_klik': total_banner_klik,
+            'kpi_total_banner_baxis': total_banner_baxis,
             'kpi_total_kategori': total_kategori,
             'son_gozlemede_elanlar': son_gozlemede_elanlar,
             'son_gozlemede_odenisler': son_gozlemede_odenisler,
@@ -729,17 +734,19 @@ class ReklamBannerAdmin(ModelAdmin):
         'movqe_badge',
         'bashliq',
         'shekil_baxish',
+        'klik_sayi_badge',
+        'baxis_sayi_badge',
+        'ctr_badge',
         'animasiya_effekti',
         'aktiv_badge',
-        'bos_olduqda_gizlet_badge',
         'link_preview',
+        'hesabat_duymesi',
         'bitis_tarixi',
-        'yenilendi',
     ]
     list_editable = []
     list_filter = ['movqe', 'aktiv', 'bos_olduqda_gizlet', 'animasiya_effekti']
     search_fields = ['bashliq', 'link']
-    actions = ['aktivlesdir_action', 'deaktivlesdir_action']
+    actions = ['aktivlesdir_action', 'deaktivlesdir_action', 'statistikalari_sifirla']
 
     @display(
         description='Mövqe',
@@ -773,6 +780,40 @@ class ReklamBannerAdmin(ModelAdmin):
     def bos_olduqda_gizlet_badge(self, obj):
         return obj.bos_olduqda_gizlet, ('Bəli' if obj.bos_olduqda_gizlet else 'Xeyr')
 
+    def klik_sayi_badge(self, obj):
+        return format_html(
+            '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">'
+            '👆 {}</span>',
+            obj.klik_sayi
+        )
+    klik_sayi_badge.short_description = 'Kliklər'
+    klik_sayi_badge.admin_order_field = 'klik_sayi'
+
+    def baxis_sayi_badge(self, obj):
+        return format_html(
+            '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-base-800 dark:text-base-300">'
+            '👁️ {}</span>',
+            obj.baxis_sayi
+        )
+    baxis_sayi_badge.short_description = 'Baxış'
+    baxis_sayi_badge.admin_order_field = 'baxis_sayi'
+
+    def ctr_badge(self, obj):
+        val = obj.ctr
+        cls = 'text-emerald-600 dark:text-emerald-400 font-extrabold' if val >= 1.0 else 'text-slate-500 font-medium'
+        return format_html('<span class="text-xs {}">{}%</span>', cls, f"{val:.2f}")
+    ctr_badge.short_description = 'CTR %'
+
+    def hesabat_duymesi(self, obj):
+        url = reverse('admin:reklambanner_hesabat', args=[obj.pk])
+        return format_html(
+            '<a href="{}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors" style="background-color:#059669;color:#ffffff;">'
+            '<span class="material-symbols-outlined text-sm">analytics</span>'
+            'Hesabat</a>',
+            url
+        )
+    hesabat_duymesi.short_description = 'Hesabat'
+
     def shekil_baxish(self, obj):
         if obj.video:
             return format_html(
@@ -800,6 +841,94 @@ class ReklamBannerAdmin(ModelAdmin):
         return '—'
     link_preview.short_description = 'Link'
 
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:banner_id>/hesabat/', self.admin_site.admin_view(self.hesabat_view), name='reklambanner_hesabat'),
+        ]
+        return custom_urls + urls
+
+    def hesabat_view(self, request, banner_id):
+        from django.shortcuts import get_object_or_404, render
+        from django.http import HttpResponse
+        from django.db.models.functions import TruncDate
+        from django.db.models import Count
+        import csv
+
+        banner = get_object_or_404(ReklamBanner, pk=banner_id)
+        now = timezone.now()
+        last_24h = now - timedelta(hours=24)
+        last_7d = now - timedelta(days=7)
+        last_30d = now - timedelta(days=30)
+
+        klikler_qs = banner.klikler.all()
+
+        if request.GET.get('export') == 'csv':
+            response = HttpResponse(content_type='text/csv; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="banner_{banner.id}_hesabat_{now.strftime("%Y%m%d")}.csv"'
+            response.write('\ufeff'.encode('utf8'))
+            writer = csv.writer(response)
+            writer.writerow(['Banner', 'Mövqe', 'Tarix və Saat', 'Cihaz', 'IP Ünvanı', 'User-Agent', 'Referer'])
+            for k in klikler_qs.order_by('-yaradildi')[:2000]:
+                writer.writerow([
+                    banner.bashliq or 'Başlıqsız',
+                    banner.get_movqe_display(),
+                    k.yaradildi.strftime('%d.%m.%Y %H:%M:%S'),
+                    k.get_cihaz_display(),
+                    k.ip_unvan or '',
+                    k.user_agent,
+                    k.referer or 'Birbaşa / Digər'
+                ])
+            return response
+
+        total_klik = banner.klik_sayi
+        total_baxis = banner.baxis_sayi
+        ctr = banner.ctr
+
+        klik_24h = klikler_qs.filter(yaradildi__gte=last_24h).count()
+        klik_7d = klikler_qs.filter(yaradildi__gte=last_7d).count()
+        klik_30d = klikler_qs.filter(yaradildi__gte=last_30d).count()
+
+        mobil_sayi = klikler_qs.filter(cihaz='mobil').count()
+        desktop_sayi = klikler_qs.filter(cihaz='desktop').count()
+        planset_sayi = klikler_qs.filter(cihaz='planset').count()
+        cemi_qeydli = mobil_sayi + desktop_sayi + planset_sayi or 1
+        mobil_faiz = round((mobil_sayi / cemi_qeydli) * 100, 1)
+        desktop_faiz = round((desktop_sayi / cemi_qeydli) * 100, 1)
+        planset_faiz = round((planset_sayi / cemi_qeydli) * 100, 1)
+
+        daily_stats = list(
+            klikler_qs.filter(yaradildi__gte=now - timedelta(days=14))
+            .annotate(gun=TruncDate('yaradildi'))
+            .values('gun')
+            .annotate(say=Count('id'))
+            .order_by('-gun')
+        )
+
+        son_klikler = klikler_qs.order_by('-yaradildi')[:100]
+
+        context = {
+            **self.admin_site.each_context(request),
+            'title': f'Reklam Hesabatı: {banner.bashliq or banner.get_movqe_display()}',
+            'banner': banner,
+            'total_klik': total_klik,
+            'total_baxis': total_baxis,
+            'ctr': ctr,
+            'klik_24h': klik_24h,
+            'klik_7d': klik_7d,
+            'klik_30d': klik_30d,
+            'mobil_sayi': mobil_sayi,
+            'mobil_faiz': mobil_faiz,
+            'desktop_sayi': desktop_sayi,
+            'desktop_faiz': desktop_faiz,
+            'planset_sayi': planset_sayi,
+            'planset_faiz': planset_faiz,
+            'daily_stats': daily_stats,
+            'son_klikler': son_klikler,
+            'now': now,
+        }
+        return render(request, 'admin/banner_hesabat.html', context)
+
     @action(description='✅ Seçilmiş bannerləri AKTİV et')
     def aktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=True)
@@ -809,6 +938,66 @@ class ReklamBannerAdmin(ModelAdmin):
     def deaktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=False)
         self.message_user(request, "Bannerlər deaktiv edildi.")
+
+    @action(description='🔄 Seçilmiş bannerlərin statistikalarını SIFIRLA')
+    def statistikalari_sifirla(self, request, queryset):
+        queryset.update(klik_sayi=0, baxis_sayi=0)
+        for b in queryset:
+            b.klikler.all().delete()
+        self.message_user(request, "Seçilmiş bannerlərin klik və baxış statistikaları sıfırlandı.")
+
+
+@admin.register(BannerKlik)
+class BannerKlikAdmin(ModelAdmin):
+    list_display = ['banner', 'cihaz_badge', 'ip_unvan', 'referer_qisa', 'yaradildi']
+    list_filter = ['cihaz', 'banner', 'yaradildi']
+    search_fields = ['ip_unvan', 'user_agent', 'referer', 'banner__bashliq']
+    readonly_fields = ['banner', 'ip_unvan', 'cihaz', 'user_agent', 'referer', 'yaradildi']
+    actions = ['export_csv']
+
+    def has_add_permission(self, request):
+        return False
+
+    @display(
+        description='Cihaz',
+        label={
+            'mobil': 'success',
+            'desktop': 'info',
+            'planset': 'warning',
+            'diger': 'base',
+        }
+    )
+    def cihaz_badge(self, obj):
+        return obj.cihaz, obj.get_cihaz_display()
+
+    def referer_qisa(self, obj):
+        if obj.referer:
+            return format_html(
+                '<a href="{}" target="_blank" class="text-xs text-slate-500 dark:text-base-400 truncate max-w-[200px] inline-block hover:underline">{}</a>',
+                obj.referer, obj.referer
+            )
+        return '—'
+    referer_qisa.short_description = 'Mənbə (Referer)'
+
+    @action(description='📥 Seçilmiş klikləri CSV formatında yüklə')
+    def export_csv(self, request, queryset):
+        import csv
+        from django.http import HttpResponse
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = 'attachment; filename="banner_klik_qeydleri.csv"'
+        response.write('\ufeff'.encode('utf8'))
+        writer = csv.writer(response)
+        writer.writerow(['Banner', 'Cihaz', 'IP Ünvanı', 'User-Agent', 'Referer', 'Tarix'])
+        for k in queryset:
+            writer.writerow([
+                k.banner.bashliq or k.banner.get_movqe_display(),
+                k.get_cihaz_display(),
+                k.ip_unvan or '',
+                k.user_agent,
+                k.referer,
+                k.yaradildi.strftime('%d.%m.%Y %H:%M:%S')
+            ])
+        return response
 
 
 # ==============================================================================

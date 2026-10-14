@@ -318,6 +318,11 @@ UNFOLD = {
                         "icon": "ad_units",
                         "link": reverse_lazy("admin:core_reklambanner_changelist"),
                     },
+                    {
+                        "title": "Banner Klik Hesabatları",
+                        "icon": "query_stats",
+                        "link": reverse_lazy("admin:core_bannerklik_changelist"),
+                    },
                 ],
             },
             {
