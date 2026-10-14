@@ -256,10 +256,10 @@ class Odenis(models.Model):
 
 class ReklamBanner(models.Model):
     MOVQELER = [
-        ('ust', 'Üst Banner (Tam Enli - Ekran Boyu)'),
-        ('sol', 'Sol Yan Banner (Desktop)'),
-        ('sag', 'Sağ Yan Banner (Desktop)'),
-        ('orta', 'Orta / Elanlar Arası Horizontal Banner (Mobil və Veb)'),
+        ('ust', 'Üst'),
+        ('sol', 'Sol Yan'),
+        ('sag', 'Sağ Yan'),
+        ('orta', 'Orta'),
     ]
 
     ANIMASIYA_CHOICES = [

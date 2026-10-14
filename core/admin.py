@@ -732,19 +732,17 @@ class ProfilAdmin(ModelAdmin):
 class ReklamBannerAdmin(ModelAdmin):
     list_display = [
         'movqe_badge',
-        'bashliq',
+        'bashliq_qisa',
         'shekil_baxish',
         'klik_sayi_badge',
         'baxis_sayi_badge',
         'ctr_badge',
-        'animasiya_effekti',
         'aktiv_badge',
         'link_preview',
         'hesabat_duymesi',
-        'bitis_tarixi',
     ]
     list_editable = []
-    list_filter = ['movqe', 'aktiv', 'bos_olduqda_gizlet', 'animasiya_effekti']
+    list_filter = []
     search_fields = ['bashliq', 'link']
     actions = ['aktivlesdir_action', 'deaktivlesdir_action', 'statistikalari_sifirla']
 
@@ -814,21 +812,26 @@ class ReklamBannerAdmin(ModelAdmin):
         )
     hesabat_duymesi.short_description = 'Hesabat'
 
+    def bashliq_qisa(self, obj):
+        return obj.bashliq or format_html('<span class="text-slate-400 dark:text-base-500 italic">Başlıqsız</span>')
+    bashliq_qisa.short_description = 'Başlıq'
+    bashliq_qisa.admin_order_field = 'bashliq'
+
     def shekil_baxish(self, obj):
         if obj.video:
             return format_html(
-                '<video src="{}" style="height:44px;max-width:80px;border-radius:4px;object-fit:cover;" autoplay muted loop></video>',
+                '<video src="{}" style="height:32px;max-width:54px;border-radius:4px;object-fit:cover;" autoplay muted loop></video>',
                 obj.video.url
             )
         if obj.video_url:
-            return format_html('<span class="text-xs font-bold text-sky-600">Video Link</span>')
+            return format_html('<span class="text-xs font-bold text-sky-600">Video</span>')
         if obj.shekil:
             return format_html(
-                '<a href="{}" target="_blank"><img src="{}" style="height:44px;max-width:80px;border-radius:4px;object-fit:cover;"/></a>',
+                '<a href="{}" target="_blank"><img src="{}" style="height:32px;max-width:54px;border-radius:4px;object-fit:cover;"/></a>',
                 obj.shekil.url, obj.shekil.url
             )
         if obj.html_kod:
-            return format_html('<span class="text-xs font-bold text-emerald-600">HTML Kod</span>')
+            return format_html('<span class="text-xs font-bold text-emerald-600">HTML</span>')
         return '—'
     shekil_baxish.short_description = 'Media'
 
