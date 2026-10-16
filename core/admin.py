@@ -215,9 +215,9 @@ class ElanVipListFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ('1', '⭐ VIP və Super VIP'),
-            ('super_vip', '💎 Yalnız Super VIP'),
-            ('vip', '⭐ Yalnız VIP'),
+            ('1', 'VIP və Super VIP'),
+            ('super_vip', 'Yalnız Super VIP'),
+            ('vip', 'Yalnız VIP'),
             ('normal', 'Normal'),
         )
 
@@ -421,9 +421,9 @@ class ElanAdmin(ModelAdmin):
     def statistika_display(self, obj):
         return format_html(
             '<div style="font-size:11px;line-height:1.4" title="Baxış: {} | Zəng: {} | WhatsApp: {}">'
-            '👁 <b>{}</b> <span class="text-slate-400">baxış</span><br>'
-            '📞 <b>{}</b> <span class="text-slate-400">zəng</span> · '
-            '💬 <b>{}</b> <span class="text-slate-400">wp</span>'
+            '<span class="material-symbols-outlined text-[13px] text-slate-400 align-middle mr-1">visibility</span><b>{}</b> <span class="text-slate-400">baxış</span><br>'
+            '<span class="material-symbols-outlined text-[13px] text-emerald-600 align-middle mr-1">call</span><b>{}</b> <span class="text-slate-400">zəng</span> · '
+            '<span class="material-symbols-outlined text-[13px] text-teal-600 align-middle mr-1">chat</span><b>{}</b> <span class="text-slate-400">wp</span>'
             '</div>',
             obj.baxish_sayi, obj.zeng_sayi, obj.wp_sayi,
             obj.baxish_sayi,
@@ -445,7 +445,7 @@ class ElanAdmin(ModelAdmin):
         if obj.pk:
             return format_html(
                 '<a href="{}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-default bg-primary-600 text-white font-medium text-xs hover:bg-primary-700">'
-                '🌐 Saytda Gör ↗'
+                '<span class="material-symbols-outlined text-xs">open_in_new</span>Saytda Gör'
                 '</a>',
                 obj.get_absolute_url()
             )
@@ -457,7 +457,7 @@ class ElanAdmin(ModelAdmin):
     yaradildi_display.short_description = 'Tarix'
 
     # Toplu əməliyyatlar
-    @action(description='✅ Seçilmiş elanları TƏSDİQLƏ (Aktiv et)')
+    @action(description='Seçilmiş elanları TƏSDİQLƏ (Aktiv et)')
     def tesdiq_et_action(self, request, queryset):
         now = timezone.now()
         count = 0
@@ -469,12 +469,12 @@ class ElanAdmin(ModelAdmin):
             count += 1
         self.message_user(request, f"{count} elan uğurla aktiv edildi.")
 
-    @action(description='⏸️ Seçilmiş elanları DEAKTİV et')
+    @action(description='Seçilmiş elanları DEAKTİV et')
     def deaktiv_et_action(self, request, queryset):
         count = queryset.update(status='deaktiv')
         self.message_user(request, f"{count} elan deaktiv edildi.")
 
-    @action(description='⭐ 10 Günlük VIP et')
+    @action(description='10 Günlük VIP et')
     def vip_10_gun_action(self, request, queryset):
         now = timezone.now()
         count = 0
@@ -487,7 +487,7 @@ class ElanAdmin(ModelAdmin):
             count += 1
         self.message_user(request, f"{count} elan 10 günlük VIP edildi.")
 
-    @action(description='💎 30 Günlük SUPER VIP et')
+    @action(description='30 Günlük SUPER VIP et')
     def super_vip_30_gun_action(self, request, queryset):
         now = timezone.now()
         count = 0
@@ -500,12 +500,12 @@ class ElanAdmin(ModelAdmin):
             count += 1
         self.message_user(request, f"{count} elan 30 günlük Super VIP edildi.")
 
-    @action(description='🔄 VIP statusu ləğv et (Normal et)')
+    @action(description='VIP statusu ləğv et (Normal et)')
     def vip_legv_action(self, request, queryset):
         count = queryset.update(vip_status='normal', vip_siralama=0, vip_bitis=None)
         self.message_user(request, f"{count} elanın VIP statusu ləğv edildi.")
 
-    @action(description='📤 Seçilmiş elanlardan Usta Nömrələrini Çıxar (Toplu Mesaj / CSV)')
+    @action(description='Seçilmiş elanlardan Usta Nömrələrini Çıxar (Toplu Mesaj / CSV)')
     def cixaris_action(self, request, queryset):
         ids = ",".join(str(pk) for pk in queryset.values_list('pk', flat=True))
         url = reverse('admin:core_elan_cixaris') + f'?ids={ids}'
@@ -842,7 +842,7 @@ class OdenisAdmin(ModelAdmin):
         return obj.yaradildi.strftime('%d.%m.%Y %H:%M')
     yaradildi_display.short_description = 'Tarix'
 
-    @action(description='✅ Seçilmiş ödənişləri TƏSDİQLƏ (Balans/VIP aktiv et)')
+    @action(description='Seçilmiş ödənişləri TƏSDİQLƏ (Balans/VIP aktiv et)')
     def tesdiq_et_action(self, request, queryset):
         count = 0
         with transaction.atomic():
@@ -853,7 +853,7 @@ class OdenisAdmin(ModelAdmin):
                     count += 1
         self.message_user(request, f"{count} ödəniş uğurla təsdiqləndi.")
 
-    @action(description='❌ Seçilmiş ödənişləri LƏĞV ET')
+    @action(description='Seçilmiş ödənişləri LƏĞV ET')
     def legv_et_action(self, request, queryset):
         count = queryset.update(status='legv_edildi')
         self.message_user(request, f"{count} ödəniş ləğv edildi.")
@@ -1064,7 +1064,7 @@ class ReklamBannerAdmin(ModelAdmin):
     def klik_sayi_badge(self, obj):
         return format_html(
             '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">'
-            '👆 {}</span>',
+            '<span class="material-symbols-outlined text-[13px] align-middle">touch_app</span>{}</span>',
             obj.klik_sayi
         )
     klik_sayi_badge.short_description = 'Kliklər'
@@ -1073,7 +1073,7 @@ class ReklamBannerAdmin(ModelAdmin):
     def baxis_sayi_badge(self, obj):
         return format_html(
             '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-base-800 dark:text-base-300">'
-            '👁️ {}</span>',
+            '<span class="material-symbols-outlined text-[13px] align-middle">visibility</span>{}</span>',
             obj.baxis_sayi
         )
     baxis_sayi_badge.short_description = 'Baxış'
@@ -1215,17 +1215,17 @@ class ReklamBannerAdmin(ModelAdmin):
         }
         return render(request, 'admin/banner_hesabat.html', context)
 
-    @action(description='✅ Seçilmiş bannerləri AKTİV et')
+    @action(description='Seçilmiş bannerləri AKTİV et')
     def aktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=True)
         self.message_user(request, "Bannerlər aktiv edildi.")
 
-    @action(description='⏸️ Seçilmiş bannerləri DEAKTİV et')
+    @action(description='Seçilmiş bannerləri DEAKTİV et')
     def deaktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=False)
         self.message_user(request, "Bannerlər deaktiv edildi.")
 
-    @action(description='🔄 Seçilmiş bannerlərin statistikalarını SIFIRLA')
+    @action(description='Seçilmiş bannerlərin statistikalarını SIFIRLA')
     def statistikalari_sifirla(self, request, queryset):
         queryset.update(klik_sayi=0, baxis_sayi=0)
         for b in queryset:
@@ -1265,7 +1265,7 @@ class BannerKlikAdmin(ModelAdmin):
         return '—'
     referer_qisa.short_description = 'Mənbə (Referer)'
 
-    @action(description='📥 Seçilmiş klikləri CSV formatında yüklə')
+    @action(description='Seçilmiş klikləri CSV formatında yüklə')
     def export_csv(self, request, queryset):
         import csv
         from django.http import HttpResponse

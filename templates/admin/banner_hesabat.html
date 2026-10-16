@@ -251,11 +251,17 @@
             </td>
             <td class="py-2.5 px-3 whitespace-nowrap">
               {% if k.cihaz == 'mobil' %}
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">📱 Mobil</span>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="material-symbols-outlined text-[13px]">smartphone</span> Mobil
+              </span>
               {% elif k.cihaz == 'desktop' %}
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200">💻 Desktop</span>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
+                <span class="material-symbols-outlined text-[13px]">computer</span> Desktop
+              </span>
               {% elif k.cihaz == 'planset' %}
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">📟 Planşet</span>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                <span class="material-symbols-outlined text-[13px]">tablet</span> Planşet
+              </span>
               {% else %}
               <span class="text-slate-500">{{ k.get_cihaz_display }}</span>
               {% endif %}

@@ -267,6 +267,9 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
       topVal = Math.max(Math.round(b + 12), 84);
     }
     document.documentElement.style.setProperty('--side-ad-top', topVal + 'px');
+    var winH = window.innerHeight || document.documentElement.clientHeight || 800;
+    var maxAvail = winH - topVal - 24;
+    var targetH = Math.min(Math.max(maxAvail, 300), 780);
     if(f) {
       var ft = f.getBoundingClientRect().top;
       var availH = ft - topVal - 20;
@@ -276,8 +279,12 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
       } else {
         document.documentElement.style.setProperty('--side-ad-opacity', '1');
         document.documentElement.style.setProperty('--side-ad-pointer', 'auto');
-        document.documentElement.style.setProperty('--side-ad-max-h', Math.min(availH, 580) + 'px');
+        document.documentElement.style.setProperty('--side-ad-max-h', Math.min(availH, targetH) + 'px');
       }
+    } else {
+      document.documentElement.style.setProperty('--side-ad-opacity', '1');
+      document.documentElement.style.setProperty('--side-ad-pointer', 'auto');
+      document.documentElement.style.setProperty('--side-ad-max-h', targetH + 'px');
     }
   }
   p();

@@ -1,8 +1,8 @@
 /**
  * Prousta.az Admin Panel — Canlı Səsli Bildiriş Sistemi
  * - Yeni Elan gəldikdə: Zərif ikiqat zəng/ding-dong səsi (Web Audio API)
- * - Yeni Ödəniş gəldikdə: Fərqli kassa/qəpik cingiltisi "Ka-Ching" səsi (Web Audio API)
- * - Masaüstü və ekran bildirişləri (Toast)
+ * - Yeni Ödəniş gəldikdə: Kassa/qəpik cingiltisi "Ka-Ching" səsi (Web Audio API)
+ * - Parametrlərdə yerləşdirilmiş səs tənzimləmələri və masaüstü bildirişləri
  */
 (function () {
   'use strict';
@@ -62,9 +62,39 @@
     updateSoundStatusUI();
   }
 
+  function toggleSound() {
+    unlockAudio();
+    var nowMuted = !isSoundMuted();
+    setSoundMuted(nowMuted);
+    if (!nowMuted) {
+      // Səs açıldıqda xəfif təsdiq səsi çal
+      playSoftConfirmSound();
+    }
+  }
+
   // =========================================================================
+  // SƏSLƏR (Web Audio API)
+  // =========================================================================
+  function playSoftConfirmSound() {
+    try {
+      var ctx = getAudioContext();
+      if (!ctx) return;
+      var now = ctx.currentTime;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, now);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.2, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } catch (e) {}
+  }
+
   // SƏS 1: YENİ ELAN SƏSİ (Zərif Kristal İkiqat Ding-Dong Zəngi)
-  // =========================================================================
   function playElanSound() {
     if (isSoundMuted()) return;
     try {
@@ -102,9 +132,7 @@
     }
   }
 
-  // =========================================================================
   // SƏS 2: YENİ ÖDƏNİŞ SƏSİ (Kassa Cingiltisi "Ka-Ching" / Qəpik səsi)
-  // =========================================================================
   function playOdenisSound() {
     if (isSoundMuted()) return;
     try {
@@ -168,7 +196,7 @@
   }
 
   // =========================================================================
-  // TOAST BİLDİRİŞ DİGƏRİNİ YARAT (Ekranın yuxarı sağ küncü)
+  // TOAST BİLDİRİŞ SİSTEMİ (Ekranın yuxarı sağ küncü)
   // =========================================================================
   var toastContainer = null;
   function getToastContainer() {
@@ -195,15 +223,17 @@
       opt.iconBg +
       ';color:' +
       opt.iconColor +
-      ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">' +
+      ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+      '<span class="material-symbols-outlined" style="font-size:20px;">' +
       opt.icon +
+      '</span>' +
       '</div>' +
       '<div style="flex:1;min-width:0;">' +
-      '<div style="display:flex;align-items:center;justify-content:between;gap:8px;margin-bottom:2px;">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px;">' +
       '<strong style="font-size:12px;color:#0f172a;letter-spacing:-0.2px;">' +
       opt.title +
       '</strong>' +
-      '<button type="button" class="toast-close" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;padding:0;margin-left:auto;">✕</button>' +
+      '<button type="button" class="toast-close" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;padding:0;margin-left:auto;display:flex;align-items:center;"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>' +
       '</div>' +
       '<div style="font-size:12px;font-weight:700;color:' +
       opt.textColor +
@@ -220,13 +250,12 @@
       opt.btnBg +
       ';padding:5px 12px;border-radius:7px;text-decoration:none;transition:background .2s;">' +
       opt.btnText +
-      ' ↗</a>' +
+      ' <span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span></a>' +
       '</div>' +
       '</div>';
 
     container.appendChild(toast);
 
-    // Animasiyalı giriş
     setTimeout(function () {
       toast.style.transform = 'translateX(0)';
     }, 10);
@@ -244,7 +273,6 @@
       closeBtn.addEventListener('click', removeToast);
     }
 
-    // 12 saniyədən sonra avtomatik silinmə
     setTimeout(removeToast, 12000);
   }
 
@@ -270,152 +298,125 @@
   }
 
   // =========================================================================
-  // KONTROL WIDGET-İ (Sağ aşağı künc)
+  // PARAMETRLƏR & İNTERFEYS İDARƏETMƏSİ (User Menu & Header)
   // =========================================================================
-  var widgetEl = null;
-
-  function createControlWidget() {
-    if (document.getElementById('proustaSoundWidget')) return;
-
-    widgetEl = document.createElement('div');
-    widgetEl.id = 'proustaSoundWidget';
-    widgetEl.style.cssText =
-      'position:fixed;bottom:18px;right:18px;z-index:99999;font-family:inherit;';
-
-    widgetEl.innerHTML =
-      '<div id="soundWidgetPill" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;background:#ffffff;border:1px solid #cbd5e1;padding:7px 12px;border-radius:25px;box-shadow:0 6px 20px rgba(0,0,0,0.1);font-size:11px;font-weight:700;color:#334155;user-select:none;transition:all .2s;">' +
-      '<span id="soundWidgetIcon" style="font-size:14px;">🔊</span>' +
-      '<span id="soundWidgetLabel">Səsli Bildiriş: Aktiv</span>' +
-      '</div>' +
-      '<div id="soundWidgetMenu" style="display:none;position:absolute;bottom:42px;right:0;width:240px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:12px;box-shadow:0 14px 35px rgba(0,0,0,0.18);flex-direction:column;gap:8px;">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9;padding-bottom:6px;margin-bottom:2px;">' +
-      '<span style="font-size:11px;font-weight:800;color:#0f172a;">🔔 SƏS PARAMETRLƏRİ</span>' +
-      '<button id="toggleMuteBtn" type="button" style="background:#f1f5f9;border:none;cursor:pointer;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:#334155;">Səssiz et</button>' +
-      '</div>' +
-      '<div style="font-size:10px;color:#64748b;line-height:1.4;">Yeni elan və ödəniş gəldikdə admin paneldə avtomatik fərqli səs çalınır.</div>' +
-      '<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px;">' +
-      '<button id="testElanSoundBtn" type="button" style="display:flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">' +
-      '<span>🔔</span><span>Yeni Elan Səsini Yoxla</span>' +
-      '</button>' +
-      '<button id="testOdenisSoundBtn" type="button" style="display:flex;align-items:center;gap:6px;background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">' +
-      '<span>💰</span><span>Yeni Ödəniş Səsini Yoxla</span>' +
-      '</button>' +
-      '<button id="enableDesktopNotifyBtn" type="button" style="display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;border-radius:8px;padding:6px 10px;font-size:10px;font-weight:600;cursor:pointer;">' +
-      '<span>💻</span><span>Masaüstü Bildirişi Aç</span>' +
-      '</button>' +
-      '</div>' +
-      '</div>';
-
-    document.body.appendChild(widgetEl);
-
-    var pill = document.getElementById('soundWidgetPill');
-    var menu = document.getElementById('soundWidgetMenu');
-    var toggleBtn = document.getElementById('toggleMuteBtn');
-    var testElanBtn = document.getElementById('testElanSoundBtn');
-    var testOdenisBtn = document.getElementById('testOdenisSoundBtn');
-    var desktopBtn = document.getElementById('enableDesktopNotifyBtn');
-
-    pill.addEventListener('click', function (e) {
-      e.stopPropagation();
-      unlockAudio();
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!widgetEl.contains(e.target)) {
-        menu.style.display = 'none';
-      }
-    });
-
-    toggleBtn.addEventListener('click', function () {
-      var nowMuted = !isSoundMuted();
-      setSoundMuted(nowMuted);
-    });
-
-    testElanBtn.addEventListener('click', function () {
-      unlockAudio();
-      playElanSound();
-      showToast({
-        title: '🔔 Test: Yeni Elan!',
-        body: 'Kondisioner təmiri və quraşdırılması',
-        sub: 'Usta: Əli Məmmədov · 050 123 45 67',
-        url: '/admin/core/elan/?status__exact=gozlemede',
-        icon: '🔔',
-        iconBg: '#ecfdf5',
-        iconColor: '#059669',
-        borderColor: '#a7f3d0',
-        textColor: '#047857',
-        btnBg: '#059669',
-        btnText: 'Elanlara Bax',
+  function initSoundControls() {
+    // 1. Header Səs Düyməsi
+    var headerBtn = document.getElementById('adminHeaderSoundBtn');
+    if (headerBtn && !headerBtn.dataset.bound) {
+      headerBtn.dataset.bound = 'true';
+      headerBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        toggleSound();
       });
-    });
+    }
 
-    testOdenisBtn.addEventListener('click', function () {
-      unlockAudio();
-      playOdenisSound();
-      showToast({
-        title: '💰 Test: Yeni Ödəniş!',
-        body: '15.00 AZN — Super VIP Paketi',
-        sub: 'İstifadəçi: usta_resul (Ödəniş qəbzi ilə)',
-        url: '/admin/core/odenis/?status__exact=gozlemede',
-        icon: '💳',
-        iconBg: '#fef3c7',
-        iconColor: '#d97706',
-        borderColor: '#fde68a',
-        textColor: '#b45309',
-        btnBg: '#d97706',
-        btnText: 'Ödənişə Bax',
+    // 2. Parametrlər Menyusu (Sidebar User Links) Səs Düyməsi
+    var toggleBtn = document.getElementById('toggleSoundBtn');
+    if (toggleBtn && !toggleBtn.dataset.bound) {
+      toggleBtn.dataset.bound = 'true';
+      toggleBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        toggleSound();
       });
-    });
+    }
 
-    desktopBtn.addEventListener('click', function () {
-      if ('Notification' in window) {
-        Notification.requestPermission().then(function (perm) {
-          if (perm === 'granted') {
-            showDesktopNotification(
-              'Prousta Admin Bildirişləri Aktivdir!',
-              'Yeni elan və ödənişlər daxil olduqda burada xəbərdarlıq görəcəksiniz.'
-            );
-            desktopBtn.innerText = '✅ Masaüstü Bildiriş Aktivdir';
-            desktopBtn.style.color = '#059669';
-          }
+    // 3. Test Elan Səsi Düyməsi
+    var testElanBtn = document.getElementById('testElanSoundQuickBtn');
+    if (testElanBtn && !testElanBtn.dataset.bound) {
+      testElanBtn.dataset.bound = 'true';
+      testElanBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        unlockAudio();
+        playElanSound();
+        showToast({
+          title: 'Test: Yeni Elan',
+          body: 'Kondisioner təmiri və quraşdırılması',
+          sub: 'Usta: Əli Məmmədov · 050 123 45 67',
+          url: '/admin/core/elan/?status__exact=gozlemede',
+          icon: 'campaign',
+          iconBg: '#ecfdf5',
+          iconColor: '#059669',
+          borderColor: '#a7f3d0',
+          textColor: '#047857',
+          btnBg: '#059669',
+          btnText: 'Elanlara Bax',
         });
-      }
-    });
+      });
+    }
+
+    // 4. Test Ödəniş Səsi Düyməsi
+    var testOdenisBtn = document.getElementById('testOdenisSoundQuickBtn');
+    if (testOdenisBtn && !testOdenisBtn.dataset.bound) {
+      testOdenisBtn.dataset.bound = 'true';
+      testOdenisBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        unlockAudio();
+        playOdenisSound();
+        showToast({
+          title: 'Test: Yeni Ödəniş',
+          body: '15.00 AZN — Super VIP Paketi',
+          sub: 'İstifadəçi: usta_resul (Ödəniş qəbzi ilə)',
+          url: '/admin/core/odenis/?status__exact=gozlemede',
+          icon: 'payments',
+          iconBg: '#fef3c7',
+          iconColor: '#d97706',
+          borderColor: '#fde68a',
+          textColor: '#b45309',
+          btnBg: '#d97706',
+          btnText: 'Ödənişə Bax',
+        });
+      });
+    }
 
     updateSoundStatusUI();
   }
 
   function updateSoundStatusUI() {
     var muted = isSoundMuted();
-    var pill = document.getElementById('soundWidgetPill');
-    var icon = document.getElementById('soundWidgetIcon');
-    var label = document.getElementById('soundWidgetLabel');
-    var toggleBtn = document.getElementById('toggleMuteBtn');
 
-    if (!pill || !icon || !label || !toggleBtn) return;
+    // 1. Header Butonu
+    var headerBtn = document.getElementById('adminHeaderSoundBtn');
+    var headerIcon = document.getElementById('headerSoundIcon');
+    if (headerBtn && headerIcon) {
+      if (muted) {
+        headerIcon.innerText = 'volume_off';
+        headerIcon.className = 'material-symbols-outlined text-lg text-red-500';
+        headerBtn.title = 'Səsli Bildiriş: Səssiz (Açmaq üçün klikləyin)';
+      } else {
+        headerIcon.innerText = 'volume_up';
+        headerIcon.className = 'material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400';
+        headerBtn.title = 'Səsli Bildiriş: Aktiv (Səssiz etmək üçün klikləyin)';
+      }
+    }
 
-    if (muted) {
-      icon.innerText = '🔇';
-      label.innerText = 'Səs: Səssiz';
-      pill.style.borderColor = '#fca5a5';
-      pill.style.background = '#fff5f5';
-      pill.style.color = '#dc2626';
-      toggleBtn.innerText = 'Səsi Aç 🔊';
-      toggleBtn.style.color = '#059669';
-    } else {
-      icon.innerText = '🔊';
-      label.innerText = 'Səs: Aktiv';
-      pill.style.borderColor = '#bbf7d0';
-      pill.style.background = '#f0fdf4';
-      pill.style.color = '#15803d';
-      toggleBtn.innerText = 'Səssiz Et 🔇';
-      toggleBtn.style.color = '#dc2626';
+    // 2. Parametrlər Menyusu (Sidebar)
+    var toggleBtn = document.getElementById('toggleSoundBtn');
+    var soundIcon = document.getElementById('soundStatusIcon');
+    if (toggleBtn) {
+      if (muted) {
+        toggleBtn.innerText = 'Səssiz';
+        toggleBtn.className =
+          'cursor-pointer font-bold px-2 py-0.5 rounded text-[11px] transition-colors bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-950/60 dark:text-red-400';
+      } else {
+        toggleBtn.innerText = 'Aktiv';
+        toggleBtn.className =
+          'cursor-pointer font-bold px-2 py-0.5 rounded text-[11px] transition-colors bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300';
+      }
+    }
+    if (soundIcon) {
+      if (muted) {
+        soundIcon.innerText = 'volume_off';
+        soundIcon.className = 'material-symbols-outlined text-[17px] text-red-500';
+      } else {
+        soundIcon.innerText = 'volume_up';
+        soundIcon.className = 'material-symbols-outlined text-[17px] text-primary-600 dark:text-primary-500';
+      }
     }
   }
 
   // =========================================================================
-  // CANLI YOXLAMA (POLLING) VƏ BİLDİRİŞ İNTELLEKTİ
+  // CANLI YOXLAMA (POLLING) VƏ BİLDİRİŞLƏR
   // =========================================================================
   var lastElanId = null;
   var lastOdenisId = null;
@@ -460,18 +461,17 @@
         if (data.elan && data.elan.latest && data.elan.latest.id) {
           var curElanId = parseInt(data.elan.latest.id, 10);
           if (lastElanId !== null && curElanId > lastElanId) {
-            // YENİ ELAN GƏLDİ!
             lastElanId = curElanId;
             sessionStorage.setItem('prousta_last_elan_id', curElanId);
 
             playElanSound();
 
             showToast({
-              title: '🆕 Yeni Elan Daxil Oldu!',
+              title: 'Yeni Elan Daxil Oldu',
               body: data.elan.latest.title,
               sub: 'İstifadəçi: ' + data.elan.latest.user + (data.elan.latest.phone ? ' · ' + data.elan.latest.phone : ''),
               url: data.elan.latest.url || '/admin/core/elan/?status__exact=gozlemede',
-              icon: '🆕',
+              icon: 'campaign',
               iconBg: '#ecfdf5',
               iconColor: '#059669',
               borderColor: '#6ee7b7',
@@ -481,7 +481,7 @@
             });
 
             showDesktopNotification(
-              '🆕 Yeni Elan Daxil Oldu!',
+              'Yeni Elan Daxil Oldu',
               data.elan.latest.title + ' — ' + data.elan.latest.user,
               data.elan.latest.url
             );
@@ -495,18 +495,17 @@
         if (data.odenis && data.odenis.latest && data.odenis.latest.id) {
           var curOdenisId = parseInt(data.odenis.latest.id, 10);
           if (lastOdenisId !== null && curOdenisId > lastOdenisId) {
-            // YENİ ÖDƏNİŞ GƏLDİ!
             lastOdenisId = curOdenisId;
             sessionStorage.setItem('prousta_last_odenis_id', curOdenisId);
 
             playOdenisSound();
 
             showToast({
-              title: '💰 Yeni Ödəniş Daxil Oldu!',
+              title: 'Yeni Ödəniş Daxil Oldu',
               body: data.odenis.latest.amount + ' — ' + data.odenis.latest.type,
               sub: 'İstifadəçi: ' + data.odenis.latest.user,
               url: data.odenis.latest.url || '/admin/core/odenis/?status__exact=gozlemede',
-              icon: '💳',
+              icon: 'payments',
               iconBg: '#fef3c7',
               iconColor: '#d97706',
               borderColor: '#fcd34d',
@@ -516,7 +515,7 @@
             });
 
             showDesktopNotification(
-              '💰 Yeni Ödəniş Daxil Oldu!',
+              'Yeni Ödəniş Daxil Oldu',
               data.odenis.latest.amount + ' (' + data.odenis.latest.type + ') — ' + data.odenis.latest.user,
               data.odenis.latest.url
             );
@@ -531,9 +530,8 @@
       });
   }
 
-  // DOM hazır olduqda başlat
   function init() {
-    createControlWidget();
+    initSoundControls();
     pollNotifications();
     setInterval(pollNotifications, POLL_INTERVAL);
   }

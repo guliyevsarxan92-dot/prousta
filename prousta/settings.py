@@ -212,11 +212,11 @@ UNFOLD = {
     "SITE_URL": "/",
     "SITE_ICON": {
         "light": lambda request: "/static/brand-logo.svg",
-        "dark": lambda request: "/static/brand-logo.svg",
+        "dark": lambda request: "/static/brand-logo-dark.svg",
     },
     "SITE_LOGO": {
         "light": lambda request: "/static/brand-logo.svg",
-        "dark": lambda request: "/static/brand-logo.svg",
+        "dark": lambda request: "/static/brand-logo-dark.svg",
     },
     "SITE_FAVICONS": [
         {
@@ -268,13 +268,13 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
-                        "title": "🆕 Yeni Elanlar (Gözləmədə)",
+                        "title": "Yeni Elanlar (Gözləmədə)",
                         "icon": "mark_email_unread",
                         "link": "/admin/core/elan/?status__exact=gozlemede",
                         "badge": "core.admin.badge_elan_gozlemede",
                     },
                     {
-                        "title": "📋 Bütün Elanlar",
+                        "title": "Bütün Elanlar",
                         "icon": "campaign",
                         "link": reverse_lazy("admin:core_elan_changelist"),
                     },
@@ -289,7 +289,7 @@ UNFOLD = {
                         "link": reverse_lazy("admin:core_problem_changelist"),
                     },
                     {
-                        "title": "👥 Ustalar Bazası (Toplu Mesaj)",
+                        "title": "Ustalar Bazası (Toplu Mesaj)",
                         "icon": "contacts",
                         "link": reverse_lazy("admin:core_elan_cixaris"),
                     },

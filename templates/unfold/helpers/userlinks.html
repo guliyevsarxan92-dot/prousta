@@ -1,0 +1,19 @@
+{% load i18n static unfold %}
+
+{% if not is_popup %}
+    <div class="flex flex-row gap-3 items-center ml-auto">
+        {% if environment %}
+            {% include "unfold/helpers/label.html" with text=environment.0 type=environment.1 %}
+        {% endif %}
+
+        <button type="button" id="adminHeaderSoundBtn" class="cursor-pointer flex items-center justify-center h-8 w-8 rounded-lg bg-base-100 hover:bg-base-200 text-base-600 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300 transition-colors" title="Səsli Bildiriş: Aktiv">
+            <span class="material-symbols-outlined text-lg" id="headerSoundIcon">volume_up</span>
+        </button>
+
+        {% action_list %}
+
+        {% if nav_global_side %}
+            {{ nav_global_side }}
+        {% endif %}
+    </div>
+{% endif %}

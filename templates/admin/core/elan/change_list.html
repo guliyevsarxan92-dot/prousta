@@ -9,7 +9,7 @@
                 {# Tab: Bütün Elanlar #}
                 <a href="{% url 'admin:core_elan_changelist' %}" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'hamisi' %}bg-primary-600 text-white font-semibold shadow-sm{% else %}bg-base-100 hover:bg-base-200 text-base-700 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300{% endif %}">
-                    <span>📋 Bütün Elanlar</span>
+                    <span>Bütün Elanlar</span>
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'hamisi' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_hamisi }}
                     </span>
@@ -18,7 +18,7 @@
                 {# Tab: Yeni Elanlar (Gözləmədə) #}
                 <a href="{% url 'admin:core_elan_changelist' %}?status__exact=gozlemede" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'gozlemede' %}bg-amber-500 text-white font-semibold shadow-sm{% else %}bg-amber-50 hover:bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/40{% endif %}">
-                    <span>🆕 Yeni Elanlar (Gözləmədə)</span>
+                    <span>Yeni Elanlar (Gözləmədə)</span>
                     <span class="px-1.5 py-0.5 text-xs font-bold rounded-full {% if cur_tab == 'gozlemede' %}bg-white text-amber-700{% else %}bg-amber-500 text-white{% endif %}">
                         {{ say_gozlemede }}
                     </span>
@@ -27,7 +27,7 @@
                 {# Tab: Aktiv Elanlar #}
                 <a href="{% url 'admin:core_elan_changelist' %}?status__exact=aktiv" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'aktiv' %}bg-emerald-600 text-white font-semibold shadow-sm{% else %}bg-base-100 hover:bg-base-200 text-base-700 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300{% endif %}">
-                    <span>✅ Aktiv Elanlar</span>
+                    <span>Aktiv Elanlar</span>
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'aktiv' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_aktiv }}
                     </span>
@@ -36,7 +36,7 @@
                 {# Tab: VIP Elanlar #}
                 <a href="{% url 'admin:core_elan_changelist' %}?vip=1" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'vip' %}bg-purple-600 text-white font-semibold shadow-sm{% else %}bg-base-100 hover:bg-base-200 text-base-700 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300{% endif %}">
-                    <span>⭐ VIP Elanlar</span>
+                    <span>VIP Elanlar</span>
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'vip' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_vip }}
                     </span>
@@ -45,7 +45,7 @@
                 {# Tab: Müddəti Bitmiş #}
                 <a href="{% url 'admin:core_elan_changelist' %}?status__exact=muddeti_bitmis" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'muddeti_bitmis' %}bg-slate-700 text-white font-semibold shadow-sm{% else %}bg-base-100 hover:bg-base-200 text-base-700 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300{% endif %}">
-                    <span>⏳ Müddəti Bitmiş</span>
+                    <span>Müddəti Bitmiş</span>
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'muddeti_bitmis' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_muddeti_bitmis }}
                     </span>
@@ -54,10 +54,11 @@
                 {# Tab: Deaktiv #}
                 <a href="{% url 'admin:core_elan_changelist' %}?status__exact=deaktiv" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors {% if cur_tab == 'deaktiv' %}bg-red-600 text-white font-semibold shadow-sm{% else %}bg-base-100 hover:bg-base-200 text-base-700 dark:bg-base-800 dark:hover:bg-base-700 dark:text-base-300{% endif %}">
-                    <span>⏸️ Deaktiv</span>
+                    <span>Deaktiv</span>
                     <span class="px-1.5 py-0.5 text-xs rounded-full {% if cur_tab == 'deaktiv' %}bg-white/20 text-white{% else %}bg-base-200 dark:bg-base-700 text-base-600 dark:text-base-300{% endif %}">
                         {{ say_deaktiv }}
                     </span>
+                </a>
                 <a href="{% url 'admin:core_elan_cixaris' %}" 
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
                    style="background-color:#059669;color:#ffffff;"

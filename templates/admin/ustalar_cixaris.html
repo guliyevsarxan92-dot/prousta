@@ -224,8 +224,9 @@
         <span>Filtrlə</span>
       </button>
       {% if q or kat_id or sheher_filter or status_filter or ids_param %}
-      <a href="{% url 'admin:core_elan_cixaris' %}" class="inline-flex items-center px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-700 dark:text-base-300 text-xs font-semibold transition-all" title="Filtri Təmizlə">
-        Təmizlə ✕
+      <a href="{% url 'admin:core_elan_cixaris' %}" class="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-base-800 dark:hover:bg-base-700 text-slate-700 dark:text-base-300 text-xs font-semibold transition-all" title="Filtri Təmizlə">
+        <span class="material-symbols-outlined text-sm">close</span>
+        <span>Təmizlə</span>
       </a>
       {% endif %}
     </div>
@@ -322,7 +323,7 @@
               <div class="flex items-center gap-1">
                 {% if u.has_vip %}
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-400">
-                  ⭐ VIP
+                  VIP
                 </span>
                 {% endif %}
                 {% if u.has_active %}
