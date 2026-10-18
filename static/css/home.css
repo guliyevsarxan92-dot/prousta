@@ -14,3 +14,15 @@
 .spinner-ring{width:20px;height:20px;border:2px solid #007b5230;border-top-color:#007b52;border-radius:50%;animation:spinRing .8s linear infinite}
 @keyframes spinRing{to{transform:rotate(360deg)}}
 .all-loaded-note{font-size:12px;color:#6b7c76;font-weight:600;padding:8px 18px;background:#edf3f0;border-radius:20px}
+/* Elan kartı: Zəng və WhatsApp düymələri daha aydın görünsün */
+.service-actions{gap:6px;margin-top:5px}
+.service-actions>.call-button,.service-actions>.whatsapp-button{min-height:36px;font-size:12.5px;font-weight:700;border-radius:8px;gap:5px;letter-spacing:.1px;transition:background .15s,transform .1s}
+.service-actions>.call-button .ui-icon,.service-actions>.whatsapp-button .ui-icon{width:16px;height:16px}
+.service-actions>.call-button{background:#007b52;color:#fff;border:1px solid #007b52;box-shadow:0 2px 6px rgba(0,123,82,.25)}
+.service-actions>.call-button .ui-icon{color:#fff;fill:#fff;stroke:#fff}
+.service-actions>.call-button:hover{background:#005c40;color:#fff}
+.service-actions>.whatsapp-button{background:#25d366;color:#fff;border:1px solid #1ebe5a;box-shadow:0 2px 6px rgba(37,211,102,.3)}
+.service-actions>.whatsapp-button:hover{background:#1da851;color:#fff}
+.service-actions>.call-button:active,.service-actions>.whatsapp-button:active{transform:scale(.97)}
+@media(max-width:680px){.service-actions{gap:5px;margin-top:4px}.service-actions>.call-button,.service-actions>.whatsapp-button{min-height:34px;font-size:11.5px;border-radius:7px;gap:4px;padding:4px 3px}.service-actions>.call-button .ui-icon,.service-actions>.whatsapp-button .ui-icon{width:14px;height:14px}}
+@media(max-width:360px){.service-actions>.call-button,.service-actions>.whatsapp-button{font-size:10.5px;min-height:32px}}
