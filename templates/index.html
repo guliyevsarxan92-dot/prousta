@@ -86,7 +86,6 @@
       </div>
       <div class="service-info">
        <h3><a href="{% url 'xidmet_detail' service.slug %}">{{ service.title }}</a></h3>
-       <p class="service-description">{{ service.description }}</p>
        <p class="service-location">{% include 'partials/ui_icon.html' with name='pin' %} Bakı, {{ service.district }}</p>
        <div class="service-meta">
         <span><span class="rating-star">★</span> <b>{{ service.rating }}</b> <span class="muted">({{ service.reviews }} rəy)</span></span>

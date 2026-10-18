@@ -22,7 +22,7 @@ html { scroll-behavior: smooth; }
 
 @keyframes pageIn {
   from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: none; }
 }
 
 /* Scroll reveal */
@@ -86,19 +86,32 @@ nav.is-scrolled {
   transform: translateX(20px);
 }
 
-/* Kartlar və Elan Kartları (Kölgə və hover animasiyası) */
+/* Kartlar və Elan Kartları (Kölgə, yığcam ölçülər və hover animasiyası) */
 .service-card {
   background: #ffffff !important;
   border: 1px solid #dfebe5 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04) !important;
+  border-radius: 10px !important;
+  padding: 4px !important;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
 }
 
 .service-card:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.13), 0 4px 10px rgba(0, 123, 82, 0.08) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12), 0 3px 8px rgba(0, 123, 82, 0.08) !important;
   border-color: #bad8cc !important;
+}
+
+@media (max-width: 680px) {
+  .service-card {
+    border-radius: 8px !important;
+    padding: 3.5px !important;
+  }
+}
+
+/* Elan kartlarında alt mətni (təsviri) tam gizlət */
+.service-description {
+  display: none !important;
 }
 
 .kart {

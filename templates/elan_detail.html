@@ -340,10 +340,19 @@ var currentElanPk = null;
 var userBalans = parseFloat("{{ user.profil.balans|default:'0' }}".replace(',', '.')) || 0;
 
 function openIreliCekModal(pk, bashliq) {
+  var backdrop = document.getElementById('ireliCekModalBackdrop');
+  if (!backdrop) return;
+  if (backdrop.parentNode !== document.body) {
+    document.body.appendChild(backdrop);
+  }
+
   currentElanPk = pk;
-  document.getElementById('modalElanBashliq').innerText = bashliq;
-  document.getElementById('modalCariBalans').innerText = userBalans.toFixed(2) + ' ₼';
-  document.getElementById('modalSuccessMsg').style.display = 'none';
+  var elanBashliqElem = document.getElementById('modalElanBashliq');
+  if (elanBashliqElem) elanBashliqElem.innerText = bashliq || '';
+  var cariBalansElem = document.getElementById('modalCariBalans');
+  if (cariBalansElem) cariBalansElem.innerText = (typeof userBalans === 'number' ? userBalans.toFixed(2) : userBalans) + ' ₼';
+  var succElem = document.getElementById('modalSuccessMsg');
+  if (succElem) succElem.style.display = 'none';
 
   if (userBalans < 1.0) {
     document.getElementById('modalYetersizBalans').style.display = 'block';
@@ -355,12 +364,16 @@ function openIreliCekModal(pk, bashliq) {
     document.getElementById('btnBalansArtirLink').style.display = 'none';
   }
 
-  var backdrop = document.getElementById('ireliCekModalBackdrop');
   backdrop.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 function closeIreliCekModal() {
-  document.getElementById('ireliCekModalBackdrop').style.display = 'none';
+  var backdrop = document.getElementById('ireliCekModalBackdrop');
+  if (backdrop) {
+    backdrop.style.display = 'none';
+  }
+  document.body.style.overflow = '';
   currentElanPk = null;
 }
 
