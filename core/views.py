@@ -887,6 +887,17 @@ def vip_et(request, pk):
         qiymet = paket.qiymet
         gun = paket.muddet_gun
         now = timezone.now()
+        # Əgər elan artıq aktiv VIP-dirsə, vaxtı bitmədən təkrar VIP edilə bilməz
+        if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
+            if elan.vip_status == nov or elan.vip_status == 'super_vip':
+                bitis_str = elan.vip_bitis.strftime("%d.%m.%Y")
+                label = "Super VIP" if elan.vip_status == 'super_vip' else "VIP"
+                msg = f'Bu elan artıq {label} statusundadır ({bitis_str}-dək aktivdir). Müddəti bitmədən yenidən {nov.upper()} edilə bilməz.'
+                if is_ajax:
+                    return JsonResponse({'success': False, 'message': msg, 'error': 'artiq_vip'}, status=400)
+                messages.warning(request, msg)
+                return redirect('profil')
+
         with transaction.atomic():
             updated = Profil.objects.filter(
                 pk=profil.pk, balans__gte=qiymet

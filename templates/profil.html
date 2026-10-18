@@ -185,6 +185,8 @@
                     data-pk="{{ elan.pk }}"
                     data-bashliq="{{ elan.bashliq|escape }}"
                     data-vip="{{ elan.vip_status }}"
+                    data-vip-aktiv="{% if elan.is_vip_aktiv %}1{% else %}0{% endif %}"
+                    data-vip-bitis="{{ elan.vip_bitis|date:'d.m.Y' }}"
                     onclick="openReklamModal(this)"
                     title="Elanı reklam et və önə çıxar">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
@@ -343,6 +345,15 @@
       </a>
     </div>
 
+    <!-- VIP Aktivdir Xəbərdarlıq Bloku -->
+    <div id="modalVipActiveAlert" style="display:none;background:#fef3c7;border:1.5px solid #fde68a;border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#92400e;font-size:12.5px;align-items:center;gap:10px">
+      <span style="font-size:22px;line-height:1">⭐</span>
+      <div style="flex:1">
+        <strong id="modalVipActiveAlertTitle" style="display:block;font-size:13px;color:#92400e">Bu elan hazırda VIP statusundadır</strong>
+        <div id="modalVipActiveAlertDesc" style="font-size:11.5px;color:#b45309;margin-top:2px">Bitiş tarixi: ... Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.</div>
+      </div>
+    </div>
+
     <!-- Xəbərdarlıq və Uğur Mesajları -->
     <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;font-weight:600"></div>
     <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:12px;margin-bottom:14px;font-size:12.5px;line-height:1.4">
@@ -374,40 +385,40 @@
       </div>
 
       <!-- 2. VIP Elan -->
-      <div class="reklam-service-item">
+      <div class="reklam-service-item" id="itemModalVip">
         <div class="reklam-service-icon" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#fff">
           ⭐
         </div>
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">VIP Elan</h4>
-            <span class="reklam-badge reklam-badge--amber">Populyar</span>
+            <span id="badgeModalVip" class="reklam-badge reklam-badge--amber">Populyar</span>
           </div>
-          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.</p>
+          <p id="descModalVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.</p>
         </div>
         <div class="reklam-service-action">
           <div class="reklam-service-price">{{ vip_paket.qiymet|floatformat:'-2'|default:'3.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ vip_paket.muddet_gun|default:'10' }} gün</small></div>
-          <button type="button" class="btn-reklam-apply btn-reklam-apply--amber" onclick="submitVip('vip', {{ vip_paket.qiymet|default:'3' }}, this)">
+          <button type="button" id="btnModalVip" class="btn-reklam-apply btn-reklam-apply--amber" onclick="submitVip('vip', {{ vip_paket.qiymet|default:'3' }}, this)">
             VIP et
           </button>
         </div>
       </div>
 
       <!-- 3. Super VIP -->
-      <div class="reklam-service-item reklam-service-item--featured">
+      <div class="reklam-service-item reklam-service-item--featured" id="itemModalSuperVip">
         <div class="reklam-service-icon" style="background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff">
           👑
         </div>
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">Super VIP</h4>
-            <span class="reklam-badge reklam-badge--emerald">Ən çox baxış</span>
+            <span id="badgeModalSuperVip" class="reklam-badge reklam-badge--emerald">Ən çox baxış</span>
           </div>
-          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.</p>
+          <p id="descModalSuperVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.</p>
         </div>
         <div class="reklam-service-action">
           <div class="reklam-service-price">{{ super_vip_paket.qiymet|floatformat:'-2'|default:'8.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ super_vip_paket.muddet_gun|default:'30' }} gün</small></div>
-          <button type="button" class="btn-reklam-apply btn-reklam-apply--emerald" onclick="submitVip('super_vip', {{ super_vip_paket.qiymet|default:'8' }}, this)">
+          <button type="button" id="btnModalSuperVip" class="btn-reklam-apply btn-reklam-apply--emerald" onclick="submitVip('super_vip', {{ super_vip_paket.qiymet|default:'8' }}, this)">
             Super VIP
           </button>
         </div>
@@ -749,7 +760,10 @@
 
 <script>
 var currentElanPk = null;
-var userBalans = parseFloat("{{ profil.balans|default:'0' }}".replace(',', '.')) || 0;
+var currentElanVipAktiv = false;
+var currentElanVipStatus = 'normal';
+var currentElanVipBitis = '';
+var userBalans = parseFloat(String("{{ profil.balans|default:'0' }}").replace(',', '.')) || 0;
 
 function toggleCardDotsMenu(btn, e) {
   e.stopPropagation();
@@ -795,15 +809,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function openReklamModal(target, argBashliq, argVip) {
-  var pk, bashliq, vipStatus;
+  var pk, bashliq, vipStatus, vipAktiv, vipBitis;
   if (target && typeof target === 'object' && target.getAttribute) {
     pk = target.getAttribute('data-pk');
     bashliq = target.getAttribute('data-bashliq');
-    vipStatus = target.getAttribute('data-vip');
+    vipStatus = target.getAttribute('data-vip') || 'normal';
+    vipAktiv = (target.getAttribute('data-vip-aktiv') === '1');
+    vipBitis = target.getAttribute('data-vip-bitis') || '';
   } else {
     pk = target;
     bashliq = argBashliq;
-    vipStatus = argVip;
+    vipStatus = argVip || 'normal';
+    vipAktiv = false;
+    vipBitis = '';
   }
 
   var backdrop = document.getElementById('reklamModalBackdrop');
@@ -815,6 +833,10 @@ function openReklamModal(target, argBashliq, argVip) {
   }
 
   currentElanPk = pk;
+  currentElanVipAktiv = vipAktiv;
+  currentElanVipStatus = vipStatus;
+  currentElanVipBitis = vipBitis;
+
   var titleElem = document.getElementById('modalElanBashliq');
   if (titleElem) titleElem.innerText = bashliq || '';
   var balansElem = document.getElementById('modalCariBalans');
@@ -823,6 +845,113 @@ function openReklamModal(target, argBashliq, argVip) {
   if (succ) succ.style.display = 'none';
   var err = document.getElementById('modalYetersizBalans');
   if (err) err.style.display = 'none';
+
+  // VIP statusunu yoxla və göstər
+  var vipAlert = document.getElementById('modalVipActiveAlert');
+  var vipAlertTitle = document.getElementById('modalVipActiveAlertTitle');
+  var vipAlertDesc = document.getElementById('modalVipActiveAlertDesc');
+
+  var btnVip = document.getElementById('btnModalVip');
+  var badgeVip = document.getElementById('badgeModalVip');
+  var descVip = document.getElementById('descModalVip');
+
+  var btnSuper = document.getElementById('btnModalSuperVip');
+  var badgeSuper = document.getElementById('badgeModalSuperVip');
+  var descSuper = document.getElementById('descModalSuperVip');
+
+  if (vipAktiv) {
+    var label = (vipStatus === 'super_vip') ? 'Super VIP' : 'VIP';
+    if (vipAlert) {
+      vipAlert.style.display = 'flex';
+      if (vipAlertTitle) vipAlertTitle.innerText = 'Bu elan hazırda ' + label + ' statusundadır';
+      if (vipAlertDesc) vipAlertDesc.innerText = (vipBitis ? 'Bitiş tarixi: ' + vipBitis + '. ' : '') + 'Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.';
+    }
+
+    if (vipStatus === 'super_vip') {
+      if (btnVip) {
+        btnVip.disabled = true;
+        btnVip.innerText = 'Artıq Super VIP-dir';
+        btnVip.style.background = '#e2e8f0';
+        btnVip.style.color = '#64748b';
+        btnVip.style.boxShadow = 'none';
+        btnVip.style.cursor = 'not-allowed';
+      }
+      if (badgeVip) {
+        badgeVip.innerText = 'Super VIP aktivdir';
+      }
+      if (btnSuper) {
+        btnSuper.disabled = true;
+        btnSuper.innerText = 'Artıq Super VIP-dir' + (vipBitis ? ' (' + vipBitis + '-dək)' : '');
+        btnSuper.style.background = '#e2e8f0';
+        btnSuper.style.color = '#64748b';
+        btnSuper.style.boxShadow = 'none';
+        btnSuper.style.cursor = 'not-allowed';
+      }
+      if (badgeSuper) {
+        badgeSuper.innerText = 'Aktivdir' + (vipBitis ? ' (' + vipBitis + '-dək)' : '');
+      }
+    } else {
+      // Normal VIP aktivdir
+      if (btnVip) {
+        btnVip.disabled = true;
+        btnVip.innerText = 'Artıq VIP-dir' + (vipBitis ? ' (' + vipBitis + '-dək)' : '');
+        btnVip.style.background = '#e2e8f0';
+        btnVip.style.color = '#64748b';
+        btnVip.style.boxShadow = 'none';
+        btnVip.style.cursor = 'not-allowed';
+      }
+      if (badgeVip) {
+        badgeVip.innerText = 'Aktivdir' + (vipBitis ? ' (' + vipBitis + '-dək)' : '');
+      }
+      if (descVip) {
+        descVip.innerHTML = 'Bu elan hazırda VIP-dir' + (vipBitis ? ' (<b>' + vipBitis + '</b>-dək aktivdir)' : '') + '. Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.';
+      }
+      if (btnSuper) {
+        btnSuper.disabled = false;
+        btnSuper.innerText = 'Super VIP';
+        btnSuper.style.background = '';
+        btnSuper.style.color = '';
+        btnSuper.style.boxShadow = '';
+        btnSuper.style.cursor = '';
+      }
+      if (badgeSuper) {
+        badgeSuper.innerText = 'Ən çox baxış';
+      }
+    }
+  } else {
+    // VIP aktiv deyil
+    if (vipAlert) vipAlert.style.display = 'none';
+
+    if (btnVip) {
+      btnVip.disabled = false;
+      btnVip.innerText = 'VIP et';
+      btnVip.style.background = '';
+      btnVip.style.color = '';
+      btnVip.style.boxShadow = '';
+      btnVip.style.cursor = '';
+    }
+    if (badgeVip) {
+      badgeVip.innerText = 'Populyar';
+    }
+    if (descVip) {
+      descVip.innerText = 'Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.';
+    }
+
+    if (btnSuper) {
+      btnSuper.disabled = false;
+      btnSuper.innerText = 'Super VIP';
+      btnSuper.style.background = '';
+      btnSuper.style.color = '';
+      btnSuper.style.boxShadow = '';
+      btnSuper.style.cursor = '';
+    }
+    if (badgeSuper) {
+      badgeSuper.innerText = 'Ən çox baxış';
+    }
+    if (descSuper) {
+      descSuper.innerText = 'Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.';
+    }
+  }
 
   backdrop.classList.add('is-visible');
   backdrop.style.display = 'flex';
@@ -921,6 +1050,17 @@ function submitVip(nov, qiymet, btn) {
   var err = document.getElementById('modalYetersizBalans');
   succ.style.display = 'none';
   err.style.display = 'none';
+
+  if (currentElanVipAktiv) {
+    if (nov === 'vip' && currentElanVipStatus === 'vip') {
+      alert('Bu elan artıq VIP statusundadır' + (currentElanVipBitis ? ' (' + currentElanVipBitis + '-dək aktivdir)' : '') + '. Müddəti bitmədən yenidən VIP edilə bilməz.');
+      return;
+    }
+    if (currentElanVipStatus === 'super_vip') {
+      alert('Bu elan artıq Super VIP statusundadır' + (currentElanVipBitis ? ' (' + currentElanVipBitis + '-dək aktivdir)' : '') + '. Müddəti bitmədən yenidən aktivləşdirilə bilməz.');
+      return;
+    }
+  }
 
   var lazimOlan = parseFloat(qiymet);
   if (userBalans < lazimOlan) {

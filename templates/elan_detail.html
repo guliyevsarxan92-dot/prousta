@@ -134,7 +134,14 @@
             <button type="button" class="btn btn-sm" onclick="openIreliCekModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}')" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;font-weight:700;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 4px rgba(5,150,105,0.2)">
               🚀 İrəli çək (1 ₼)
             </button>
-            <a href="{% url 'vip_et' elan.pk %}" class="btn btn-gold btn-sm">{% include 'partials/ui_icon.html' with name='crown' %} VIP et</a>
+            {% if elan.is_vip_aktiv %}
+              <span class="badge badge--gold" style="padding:6px 10px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px">
+                {% include 'partials/ui_icon.html' with name='star' %}
+                {% if elan.vip_status == 'super_vip' %}Super VIP{% else %}VIP{% endif %} aktivdir ({{ elan.vip_bitis|date:"d.m.Y" }}-dək)
+              </span>
+            {% else %}
+              <a href="{% url 'vip_et' elan.pk %}" class="btn btn-gold btn-sm">{% include 'partials/ui_icon.html' with name='crown' %} VIP et</a>
+            {% endif %}
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid #e5ebe9;flex-wrap:wrap;font-size:12px">
@@ -180,7 +187,6 @@
           <div class="meta-list" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
             <div>{% include 'partials/ui_icon.html' with name='pin' %} <span>{{ elan.sheher }}</span></div>
             <div>{% include 'partials/ui_icon.html' with name='tag' %} <span>{{ elan.kategori.ad }}</span></div>
-            <div>{% include 'partials/ui_icon.html' with name='eye' %} <span>{{ elan.baxish_sayi }} baxış</span></div>
             <div>{% include 'partials/ui_icon.html' with name='calendar' %} <span>{{ elan.yaradildi|date:"d.m.Y" }}</span></div>
           </div>
         </div>

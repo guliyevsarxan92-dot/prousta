@@ -629,6 +629,15 @@ class ElanActivateVipApiView(APIView):
         qiymet = paket.qiymet
         gun = paket.muddet_gun
         now = timezone.now()
+        # Əgər elan artıq aktiv VIP-dirsə, vaxtı bitmədən təkrar VIP edilə bilməz
+        if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
+            if elan.vip_status == nov or elan.vip_status == 'super_vip':
+                bitis_str = elan.vip_bitis.strftime("%d.%m.%Y")
+                label = "Super VIP" if elan.vip_status == 'super_vip' else "VIP"
+                return Response(
+                    {'error': f'Bu elan artıq {label} statusundadır ({bitis_str}-dək aktivdir). Müddəti bitmədən yenidən {nov.upper()} edilə bilməz.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
         with transaction.atomic():
             updated = Profil.objects.filter(
