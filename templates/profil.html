@@ -180,28 +180,30 @@
               {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
             </span>
           </div>
-          <div class="service-actions" style="flex-wrap:wrap;gap:6px">
-            <a href="{% url 'elan_duzelis' elan.pk %}" class="call-button" style="font-size:11px;padding:6px 10px">
-              {% include 'partials/ui_icon.html' with name='edit' %} Düzəlt
-            </a>
-            <button type="button" class="btn-ireli-cek" onclick="openIreliCekModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}')" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 11px;border-radius:6px;font-size:11px;font-weight:700;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;border:none;cursor:pointer;box-shadow:0 2px 4px rgba(5,150,105,0.25);transition:all .15s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
-              🚀 İrəli çək (1 ₼)
+          <div class="service-actions elan-card-actions">
+            <button type="button" class="btn-card-reklam" onclick="openReklamModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}', '{{ elan.vip_status }}')" title="Elanı reklam et və önə çıxar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              <span>Reklam et</span>
             </button>
-            {% if elan.vip_status == 'normal' %}
-              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">
-                {% include 'partials/ui_icon.html' with name='crown' %} VIP et
-              </a>
-            {% else %}
-              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">
-                {% include 'partials/ui_icon.html' with name='crown' %} Uzat / Yüksəlt
-              </a>
-            {% endif %}
-            <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Bu elanı silmək istədiyinizdən əminsiniz?')">
-              {% csrf_token %}
-              <button type="submit" class="btn-danger btn-sm" style="font-size:11px;padding:6px 8px" title="Sil">
-                {% include 'partials/ui_icon.html' with name='trash' %}
+
+            <div class="card-dots-wrap">
+              <button type="button" class="btn-card-dots" onclick="toggleCardDotsMenu(this, event)" aria-label="Seçimlər" title="Seçimlər">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>
               </button>
-            </form>
+              <div class="card-dots-menu">
+                <a href="{% url 'elan_duzelis' elan.pk %}" class="card-dots-item">
+                  {% include 'partials/ui_icon.html' with name='edit' %}
+                  <span>Düzəlt</span>
+                </a>
+                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Bu elanı silmək istədiyinizdən əminsiniz?')">
+                  {% csrf_token %}
+                  <button type="submit" class="card-dots-item card-dots-item--danger">
+                    {% include 'partials/ui_icon.html' with name='trash' %}
+                    <span>Sil</span>
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
           {% if elan.ireli_cekildi %}
             <div style="font-size:10px;color:#047857;margin-top:6px;display:flex;align-items:center;gap:4px">
@@ -252,15 +254,29 @@
               {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
             </span>
           </div>
-          <div class="service-actions" style="margin-top:8px">
+          <div class="service-actions elan-card-actions" style="margin-top:8px">
             <form method="post" action="{% url 'elan_aktivlesdir' elan.pk %}" style="flex:1;margin:0">
               {% csrf_token %}
-              <button type="submit" class="btn btn-primary btn-block btn-sm">Yenidən aktivləşdir</button>
+              <button type="submit" class="btn btn-primary btn-block btn-sm" style="height:36px;border-radius:9px;font-weight:700">Yenidən aktivləşdir</button>
             </form>
-            <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Silmək istəyirsiniz?')">
-              {% csrf_token %}
-              <button type="submit" class="btn-danger btn-sm" title="Sil">{% include 'partials/ui_icon.html' with name='trash' %}</button>
-            </form>
+            <div class="card-dots-wrap">
+              <button type="button" class="btn-card-dots" onclick="toggleCardDotsMenu(this, event)" aria-label="Seçimlər" title="Seçimlər">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>
+              </button>
+              <div class="card-dots-menu">
+                <a href="{% url 'elan_duzelis' elan.pk %}" class="card-dots-item">
+                  {% include 'partials/ui_icon.html' with name='edit' %}
+                  <span>Düzəlt</span>
+                </a>
+                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Silmək istəyirsiniz?')">
+                  {% csrf_token %}
+                  <button type="submit" class="card-dots-item card-dots-item--danger">
+                    {% include 'partials/ui_icon.html' with name='trash' %}
+                    <span>Sil</span>
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -293,69 +309,419 @@
     {% endif %}
 </div>
 
-<!-- Modal: İrəli Çək (Tap.az stili) -->
-<div id="ireliCekModalBackdrop" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:18px;max-width:440px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);overflow:hidden;animation:modalPop .2s ease-out;position:relative;">
+<!-- Modal: Elanı Reklam Et (Bütün ödənişli xidmətlər: İrəli çək, VIP, Super VIP) -->
+<div id="reklamModalBackdrop" class="reklam-modal-backdrop" onclick="if(event.target === this) closeReklamModal()" style="display:none">
+  <div class="reklam-modal-dialog">
     
     <!-- Modal Header -->
-    <div style="background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;padding:20px 22px;display:flex;align-items:center;justify-content:space-between">
+    <div class="reklam-modal-header">
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:26px">🚀</span>
+        <div style="width:38px;height:38px;border-radius:10px;background:#eaf6f1;color:#007b52;display:flex;align-items:center;justify-content:center;font-size:18px">
+          🚀
+        </div>
         <div>
-          <h3 style="margin:0;font-size:17px;font-weight:800;color:#fff">Elanı İrəli Çək</h3>
-          <small style="opacity:.9;font-size:12px">Tap.az tipli ön sıraya çıxarma</small>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">Elanı Reklam Et</h3>
+          <div id="modalElanBashliq" style="margin-top:2px;font-size:12px;color:#64748b;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
         </div>
       </div>
-      <button type="button" onclick="closeIreliCekModal()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+      <button type="button" class="reklam-modal-close" onclick="closeReklamModal()" aria-label="Bağla">✕</button>
     </div>
 
-    <!-- Modal Body -->
-    <div style="padding:22px">
-      <div style="font-size:13px;color:#475569;margin-bottom:14px;line-height:1.5">
-        Elanınız bütün axtarışlarda və ana səhifədə <b>ən ön sıraya</b> (yeni verilmiş elan kimi) qalxacaq və daha çox müştəri qazanacaqsınız.
+    <!-- Balans Məlumatı -->
+    <div class="reklam-modal-balans">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:12.5px;color:#64748b">Cari balansınız:</span>
+        <strong id="modalCariBalans" style="font-size:15px;color:#007b52">{{ profil.balans|floatformat:'2' }} ₼</strong>
       </div>
-
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:18px">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px">Seçilmiş elan:</div>
-        <div id="modalElanBashliq" style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
-        
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed #cbd5e1;font-size:13px">
-          <span style="color:#64748b">Xidmət haqqı:</span>
-          <span style="font-weight:800;color:#059669;font-size:16px">1.00 ₼</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;font-size:13px">
-          <span style="color:#64748b">Cari balansınız:</span>
-          <span id="modalCariBalans" style="font-weight:800;font-size:14px;color:#0f172a">{{ profil.balans|floatformat:'2' }} ₼</span>
-        </div>
-      </div>
-
-      <!-- Kifayət etməyəndə xəbərdarlıq bloku -->
-      <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:12px;margin-bottom:16px;font-size:12.5px;line-height:1.4">
-        ⚠️ <b>Balansınız kifayət etmir.</b> Bu elanı irəli çəkmək üçün zəhmət olmasa ən azı 1.00 ₼ balans artırın.
-      </div>
-
-      <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;font-weight:600">
-      </div>
-
-      <!-- Modal Actions -->
-      <div style="display:flex;gap:10px;align-items:center">
-        <button type="button" onclick="closeIreliCekModal()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer">
-          Ləğv et
-        </button>
-
-        <button id="btnIreliCekConfirm" type="button" onclick="submitIreliCek()" style="flex:2;padding:12px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:13.5px;cursor:pointer;box-shadow:0 4px 10px rgba(5,150,105,0.3);display:inline-flex;align-items:center;justify-content:center;gap:6px">
-          <span>🚀 1 ₼ ilə İrəli Çək</span>
-        </button>
-
-        <a id="btnBalansArtirLink" href="{% url 'odenis' %}" style="display:none;flex:2;padding:12px;background:#2563eb;color:#fff;border-radius:10px;font-weight:800;font-size:13.5px;text-align:center;text-decoration:none;box-shadow:0 4px 10px rgba(37,99,235,0.3)">
-          💳 Balansı Artır
-        </a>
-      </div>
+      <a href="{% url 'odenis' %}" class="reklam-balans-artir">
+        + Balansı artır
+      </a>
     </div>
+
+    <!-- Xəbərdarlıq və Uğur Mesajları -->
+    <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;font-weight:600"></div>
+    <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:12px;margin-bottom:14px;font-size:12.5px;line-height:1.4">
+      <div id="modalYetersizBalansText">⚠️ <b>Balansınız kifayət etmir.</b> Zəhmət olmasa balansı artırın.</div>
+      <a href="{% url 'odenis' %}" style="display:inline-block;margin-top:6px;font-weight:700;color:#dc2626;text-decoration:underline">💳 Balansı indi artır →</a>
+    </div>
+
+    <!-- Ödənişli Seçimlər Siyahısı (Tap.az stili) -->
+    <div class="reklam-services-list">
+      
+      <!-- 1. İrəli çək (1 AZN) -->
+      <div class="reklam-service-item">
+        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:#fff">
+          🚀
+        </div>
+        <div class="reklam-service-details">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">İrəli çək</h4>
+            <span class="reklam-badge reklam-badge--green">1 AZN · Sürətli</span>
+          </div>
+          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Elanı dərhal axtarış və kateqoriya siyahısında ən ön sıraya qaldırır.</p>
+        </div>
+        <div class="reklam-service-action">
+          <div class="reklam-service-price">1.00 ₼</div>
+          <button type="button" class="btn-reklam-apply btn-reklam-apply--green" onclick="submitIreliCek(this)">
+            İrəli çək
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. VIP Elan -->
+      <div class="reklam-service-item">
+        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#fff">
+          ⭐
+        </div>
+        <div class="reklam-service-details">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">VIP Elan</h4>
+            <span class="reklam-badge reklam-badge--amber">Populyar</span>
+          </div>
+          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.</p>
+        </div>
+        <div class="reklam-service-action">
+          <div class="reklam-service-price">{{ vip_paket.qiymet|floatformat:'-2'|default:'3.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ vip_paket.muddet_gun|default:'10' }} gün</small></div>
+          <button type="button" class="btn-reklam-apply btn-reklam-apply--amber" onclick="submitVip('vip', {{ vip_paket.qiymet|default:'3' }}, this)">
+            VIP et
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Super VIP -->
+      <div class="reklam-service-item reklam-service-item--featured">
+        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff">
+          👑
+        </div>
+        <div class="reklam-service-details">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">Super VIP</h4>
+            <span class="reklam-badge reklam-badge--emerald">Ən çox baxış</span>
+          </div>
+          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.</p>
+        </div>
+        <div class="reklam-service-action">
+          <div class="reklam-service-price">{{ super_vip_paket.qiymet|floatformat:'-2'|default:'8.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ super_vip_paket.muddet_gun|default:'30' }} gün</small></div>
+          <button type="button" class="btn-reklam-apply btn-reklam-apply--emerald" onclick="submitVip('super_vip', {{ super_vip_paket.qiymet|default:'8' }}, this)">
+            Super VIP
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <small style="font-size:11px;color:#94a3b8">Bütün xidmətlər balansdan avtomatik aktivləşdirilir.</small>
+      <button type="button" onclick="closeReklamModal()" style="padding:7px 16px;border:none;background:#f1f5f9;color:#475569;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer">Bağla</button>
+    </div>
+
   </div>
 </div>
 
 <style>
+/* Card action buttons */
+.elan-card-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: 10px !important;
+  position: relative !important;
+}
+
+.btn-card-reklam {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #008f60, #00714c);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 123, 82, 0.22);
+  transition: all .15s ease;
+}
+.btn-card-reklam:hover, .btn-card-reklam:active {
+  background: linear-gradient(135deg, #007b52, #005c40);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 123, 82, 0.3);
+}
+
+.card-dots-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.btn-card-dots {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1.5px solid #dce8e2;
+  background: #ffffff;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.btn-card-dots:hover, .btn-card-dots:active {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.card-dots-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+  min-width: 140px;
+  z-index: 150;
+  display: none;
+  flex-direction: column;
+  padding: 5px;
+}
+.card-dots-menu.is-open {
+  display: flex;
+  animation: dotsPop .15s ease-out;
+}
+@keyframes dotsPop {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.card-dots-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  border-radius: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+  text-decoration: none;
+}
+.card-dots-item:hover, .card-dots-item:active {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.card-dots-item--danger {
+  color: #e11d48;
+}
+.card-dots-item--danger:hover, .card-dots-item--danger:active {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+/* Reklam Modal Dialog */
+.reklam-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.reklam-modal-dialog {
+  background: #ffffff;
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  animation: modalPop .22s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+.reklam-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.reklam-modal-close {
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all .15s ease;
+}
+.reklam-modal-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+.reklam-modal-balans {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.reklam-balans-artir {
+  font-size: 12px;
+  font-weight: 700;
+  color: #007b52;
+  background: #eaf6f1;
+  padding: 5px 10px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: background .15s ease;
+}
+.reklam-balans-artir:hover {
+  background: #d4ece1;
+}
+
+.reklam-services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.reklam-service-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  transition: all .15s ease;
+}
+.reklam-service-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+.reklam-service-item--featured {
+  border-color: #a7f3d0;
+  background: #fafffc;
+}
+.reklam-service-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.reklam-service-details {
+  flex: 1;
+  min-width: 0;
+}
+.reklam-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.reklam-badge--green {
+  background: #d1fae5;
+  color: #065f46;
+}
+.reklam-badge--amber {
+  background: #fef3c7;
+  color: #92400e;
+}
+.reklam-badge--emerald {
+  background: #eaf6f1;
+  color: #007b52;
+}
+.reklam-service-action {
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.reklam-service-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.btn-reklam-apply {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  transition: all .15s ease;
+}
+.btn-reklam-apply--green {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+}
+.btn-reklam-apply--green:hover {
+  background: #047857;
+}
+.btn-reklam-apply--amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+}
+.btn-reklam-apply--amber:hover {
+  background: #b45309;
+}
+.btn-reklam-apply--emerald {
+  background: linear-gradient(135deg, #008f60, #00714c);
+  box-shadow: 0 2px 6px rgba(0, 143, 96, 0.25);
+}
+.btn-reklam-apply--emerald:hover {
+  background: #005c40;
+}
+
+@media (max-width: 480px) {
+  .reklam-service-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .reklam-service-action {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+  }
+}
+
 @keyframes modalPop {
   0% { transform: scale(0.95); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
@@ -366,88 +732,173 @@
 var currentElanPk = null;
 var userBalans = parseFloat("{{ profil.balans|default:'0' }}".replace(',', '.')) || 0;
 
-function openIreliCekModal(pk, bashliq) {
+function toggleCardDotsMenu(btn, e) {
+  e.stopPropagation();
+  var menu = btn.parentElement.querySelector('.card-dots-menu');
+  var isOpen = menu.classList.contains('is-open');
+  // Close any other open menus
+  document.querySelectorAll('.card-dots-menu.is-open').forEach(function(m){
+    m.classList.remove('is-open');
+  });
+  if (!isOpen) {
+    menu.classList.add('is-open');
+  }
+}
+
+// Global click listener to close dots menu
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.card-dots-wrap')) {
+    document.querySelectorAll('.card-dots-menu.is-open').forEach(function(m){
+      m.classList.remove('is-open');
+    });
+  }
+});
+
+function openReklamModal(pk, bashliq, vipStatus) {
   currentElanPk = pk;
   document.getElementById('modalElanBashliq').innerText = bashliq;
   document.getElementById('modalCariBalans').innerText = userBalans.toFixed(2) + ' ₼';
   document.getElementById('modalSuccessMsg').style.display = 'none';
+  document.getElementById('modalYetersizBalans').style.display = 'none';
 
-  if (userBalans < 1.0) {
-    document.getElementById('modalYetersizBalans').style.display = 'block';
-    document.getElementById('btnIreliCekConfirm').style.display = 'none';
-    document.getElementById('btnBalansArtirLink').style.display = 'block';
-  } else {
-    document.getElementById('modalYetersizBalans').style.display = 'none';
-    document.getElementById('btnIreliCekConfirm').style.display = 'inline-flex';
-    document.getElementById('btnBalansArtirLink').style.display = 'none';
-  }
-
-  var backdrop = document.getElementById('ireliCekModalBackdrop');
+  var backdrop = document.getElementById('reklamModalBackdrop');
   backdrop.style.display = 'flex';
 }
 
-function closeIreliCekModal() {
-  document.getElementById('ireliCekModalBackdrop').style.display = 'none';
+function openIreliCekModal(pk, bashliq) {
+  openReklamModal(pk, bashliq, 'normal');
+}
+
+function closeReklamModal() {
+  document.getElementById('reklamModalBackdrop').style.display = 'none';
   currentElanPk = null;
 }
 
-function submitIreliCek() {
-  if (!currentElanPk) return;
-  var btn = document.getElementById('btnIreliCekConfirm');
-  btn.disabled = true;
-  btn.innerHTML = '<span>Gözləyin...</span>';
+function closeIreliCekModal() {
+  closeReklamModal();
+}
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
+function getCsrfToken() {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.substring(0, 10) === 'csrftoken=') {
+        cookieValue = decodeURIComponent(cookie.substring(10));
+        break;
       }
     }
-    return cookieValue;
   }
-  var csrftoken = getCookie('csrftoken');
+  return cookieValue;
+}
+
+function submitIreliCek(btn) {
+  if (!currentElanPk) return;
+  var succ = document.getElementById('modalSuccessMsg');
+  var err = document.getElementById('modalYetersizBalans');
+  succ.style.display = 'none';
+  err.style.display = 'none';
+
+  if (userBalans < 1.00) {
+    document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ <b>Balansınız kifayət etmir.</b> İrəli çəkmək üçün ən azı 1.00 ₼ lazımdır (Cari balans: ' + userBalans.toFixed(2) + ' ₼).';
+    err.style.display = 'block';
+    return;
+  }
+
+  var originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerText = 'Gözləyin...';
 
   fetch('/elan/' + currentElanPk + '/ireli-cek/', {
     method: 'POST',
     headers: {
-      'X-CSRFToken': csrftoken,
+      'X-CSRFToken': getCsrfToken(),
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json'
     }
   })
   .then(function(resp) { return resp.json(); })
   .then(function(data) {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
     if (data.success) {
       userBalans = parseFloat(data.yeni_balans);
       document.getElementById('modalCariBalans').innerText = data.yeni_balans + ' ₼';
-      var succ = document.getElementById('modalSuccessMsg');
       succ.innerText = '✅ ' + data.message;
       succ.style.display = 'block';
-      btn.style.display = 'none';
       setTimeout(function() {
         window.location.reload();
       }, 1200);
     } else {
-      btn.disabled = false;
-      btn.innerHTML = '<span>🚀 1 ₼ ilə İrəli Çək</span>';
       if (data.error === 'kifayet_etmir') {
-        document.getElementById('modalYetersizBalans').style.display = 'block';
-        btn.style.display = 'none';
-        document.getElementById('btnBalansArtirLink').style.display = 'block';
+        document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ ' + data.message;
+        err.style.display = 'block';
       } else {
         alert(data.message || 'Xəta baş verdi');
       }
     }
   })
-  .catch(function(err) {
+  .catch(function() {
     btn.disabled = false;
-    btn.innerHTML = '<span>🚀 1 ₼ ilə İrəli Çək</span>';
+    btn.innerHTML = originalText;
+    alert('Şəbəkə xətası baş verdi.');
+  });
+}
+
+function submitVip(nov, qiymet, btn) {
+  if (!currentElanPk) return;
+  var succ = document.getElementById('modalSuccessMsg');
+  var err = document.getElementById('modalYetersizBalans');
+  succ.style.display = 'none';
+  err.style.display = 'none';
+
+  var lazimOlan = parseFloat(qiymet);
+  if (userBalans < lazimOlan) {
+    document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ <b>Balansınız kifayət etmir.</b> Bu xidmət üçün ' + lazimOlan.toFixed(2) + ' ₼ lazımdır (Cari balans: ' + userBalans.toFixed(2) + ' ₼).';
+    err.style.display = 'block';
+    return;
+  }
+
+  var originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerText = 'Gözləyin...';
+
+  var formData = new FormData();
+  formData.append('nov', nov);
+
+  fetch('/vip/' + currentElanPk + '/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCsrfToken(),
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: formData
+  })
+  .then(function(resp) { return resp.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    if (data.success) {
+      userBalans = parseFloat(data.yeni_balans);
+      document.getElementById('modalCariBalans').innerText = data.yeni_balans + ' ₼';
+      succ.innerText = '✅ ' + data.message;
+      succ.style.display = 'block';
+      setTimeout(function() {
+        window.location.reload();
+      }, 1200);
+    } else {
+      if (data.error === 'kifayet_etmir') {
+        document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ ' + data.message;
+        err.style.display = 'block';
+      } else {
+        alert(data.message || 'Xəta baş verdi');
+      }
+    }
+  })
+  .catch(function() {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
     alert('Şəbəkə xətası baş verdi.');
   });
 }

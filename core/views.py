@@ -702,6 +702,7 @@ def elan_klik_artir(request, pk, nov):
 
 @login_required
 def profil(request):
+    profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
     elanlar = Elan.objects.filter(istifadeci=request.user).prefetch_related('shekillar')
     favoritler = Favorit.objects.filter(istifadeci=request.user).prefetch_related('elan__shekillar')
     oxunmamis = Mesaj.objects.filter(alici=request.user, oxundu=False).count()
@@ -709,7 +710,11 @@ def profil(request):
     cemi_baxish = sum(e.baxish_sayi for e in elanlar)
     cemi_zeng = sum(e.zeng_sayi for e in elanlar)
     cemi_wp = sum(e.wp_sayi for e in elanlar)
+    paketler = VipPaket.get_all_aktiv()
+    vip_paket = VipPaket.get_paket('vip')
+    super_vip_paket = VipPaket.get_paket('super_vip')
     return render(request, 'profil.html', {
+        'profil': profil,
         'elanlar': elanlar,
         'favoritler': favoritler,
         'oxunmamis': oxunmamis,
@@ -717,6 +722,9 @@ def profil(request):
         'cemi_baxish': cemi_baxish,
         'cemi_zeng': cemi_zeng,
         'cemi_wp': cemi_wp,
+        'paketler': paketler,
+        'vip_paket': vip_paket,
+        'super_vip_paket': super_vip_paket,
     })
 
 @login_required
@@ -859,9 +867,20 @@ def vip_et(request, pk):
     elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
     profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
     paketler = VipPaket.get_all_aktiv()
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json'
+
     if request.method == 'POST':
         nov = request.POST.get('nov')
+        if not nov and request.body:
+            import json
+            try:
+                body_data = json.loads(request.body)
+                nov = body_data.get('nov')
+            except Exception:
+                pass
         if nov not in ('vip', 'super_vip'):
+            if is_ajax:
+                return JsonResponse({'success': False, 'message': 'Yanlış VIP növü!'}, status=400)
             messages.error(request, 'Yanlış VIP növü!')
             return redirect('profil')
         paket = VipPaket.get_paket(nov)
@@ -873,6 +892,14 @@ def vip_et(request, pk):
                 pk=profil.pk, balans__gte=qiymet
             ).update(balans=F('balans') - qiymet)
             if not updated:
+                if is_ajax:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'kifayet_etmir',
+                        'message': f'Balansınız kifayət deyil! Lazım olan: {qiymet:.2f} ₼',
+                        'lazim_olan': float(qiymet),
+                        'cari_balans': float(profil.balans)
+                    }, status=400)
                 messages.error(request, f'Balansınız kifayət deyil! Lazım olan: {qiymet} ₼')
                 return redirect('profil')
             # Ədalətli müddət: Əgər elanın VIP vaxtı hələ bitməyibsə, yeni günləri mövcud bitişin üzərinə əlavə et
@@ -887,7 +914,14 @@ def vip_et(request, pk):
             elan.vip_siralama = 1
             elan.save()
             Odenis.objects.create(istifadeci=request.user, elan=elan, nov=nov, mebleg=qiymet, status='tesdiq_edildi')
+        profil.refresh_from_db()
         status_label = paket.ad
+        if is_ajax:
+            return JsonResponse({
+                'success': True,
+                'message': f'Elanınız {status_label} edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.',
+                'yeni_balans': f'{profil.balans:.2f}'
+            })
         messages.success(request, f'Elanınız {status_label} edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.')
         return redirect('profil')
     return render(request, 'vip.html', {'elan': elan, 'profil': profil, 'paketler': paketler})
