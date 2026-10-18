@@ -100,7 +100,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/logo.css' %}">
-<link rel="stylesheet" href="{% static 'css/prousta.css' %}">
+<link rel="stylesheet" href="{% static 'css/prousta.css' %}?v=3.3">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18379438131"></script>
 <script>
@@ -197,12 +197,12 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .footer-brand{grid-column:1/-1}
   .footer-bottom{flex-direction:column;gap:12px;text-align:center;padding:20px}
   .site-nav{height:64px;padding:0 16px;position:sticky;top:8px;z-index:200;width:calc(100% - 20px);margin:8px auto 10px auto;border-radius:32px;border:1px solid #dce8e2;box-shadow:0 8px 22px -3px rgba(16,24,25,.14),0 3px 8px -2px rgba(0,123,82,.08);display:flex;align-items:center}
-  .nav-links{display:none}
-  .hamburger{display:flex}
+  .nav-links, .nav-actions{display:none !important}
+  .hamburger{display:flex !important;margin-left:auto}
   .msgs{left:16px;right:16px;max-width:100%}
 }
 </style>
-<link rel="stylesheet" href="{% static 'css/marketplace.css' %}?v=3.2">
+<link rel="stylesheet" href="{% static 'css/marketplace.css' %}?v=3.3">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <link rel="stylesheet" href="{% static 'css/pages.css' %}">
 {% block style %}{% endblock %}

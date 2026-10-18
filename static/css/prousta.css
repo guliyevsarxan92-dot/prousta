@@ -199,6 +199,22 @@ nav.is-scrolled {
   transform: translateY(-1px);
 }
 
+@media (max-width: 768px) {
+  .site-nav .nav-actions {
+    display: none !important;
+  }
+  .site-nav .nav-inner {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .site-nav .hamburger {
+    display: flex !important;
+    margin-left: auto !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
