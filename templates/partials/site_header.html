@@ -8,13 +8,7 @@
    <a href="{% url 'problemler_siyahi' %}">Bloq</a>
   </div>
   <div class="nav-actions">
-   {% if user.is_authenticated %}
-     <a href="{% url 'mesajlar' %}" class="nav-messages" aria-label="Mesajlar">{% include 'partials/ui_icon.html' with name='chat' %}{% if oxunmamis_mesaj %}<span>{{ oxunmamis_mesaj }}</span>{% endif %}</a>
-     <a href="{% url 'profil' %}" class="btn btn-outline" style="gap:5px">{% include 'partials/ui_icon.html' with name='user' %} Profilim</a>
-     <form method="post" action="{% url 'cixis' %}" style="margin:0;display:inline-flex">{% csrf_token %}<button type="submit" class="btn btn-outline" style="padding:9px 12px;color:#e11d48;border-color:#fecdd3;gap:4px" title="Hesabdan çıxış" onmouseover="this.style.background='#fff1f2';this.style.borderColor='#fda4af'" onmouseout="this.style.background='transparent';this.style.borderColor='#fecdd3'">{% include 'partials/ui_icon.html' with name='logout' %} <span style="font-size:12px;font-weight:600">Çıxış</span></button></form>
-   {% else %}
-     <a href="{% url 'giris' %}" class="btn btn-outline">Daxil ol</a>
-   {% endif %}
+   {% if user.is_authenticated %}<a href="{% url 'mesajlar' %}" class="nav-messages" aria-label="Mesajlar">{% include 'partials/ui_icon.html' with name='chat' %}{% if oxunmamis_mesaj %}<span>{{ oxunmamis_mesaj }}</span>{% endif %}</a><a href="{% url 'profil' %}" class="btn btn-outline">Profilim</a>{% else %}<a href="{% url 'giris' %}" class="btn btn-outline">Daxil ol</a>{% endif %}
    <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Elan yerləşdir</a>
   </div>
   <button class="hamburger" onclick="toggleMenu(this)" id="hamburger" type="button" aria-label="Menyunu aç" aria-controls="mobilMenu" aria-expanded="false"><span></span><span></span><span></span></button>
