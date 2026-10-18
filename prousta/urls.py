@@ -25,5 +25,7 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 
     path('social-auth/', include('social_django.urls', namespace='social')),
+    path('api/v1/', include('core.api_urls')),
+    path('api/', include('core.api_urls')),
     path('', include('core.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

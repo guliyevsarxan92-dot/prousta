@@ -2,7 +2,7 @@
 Mərkəzləşdirilmiş SEO köməkçiləri.
 
 - seo_context: hər səhifə üçün düzgün canonical URL və noindex qərarı.
-- CanonicalHostMiddleware: www → apex 301 və texniki domenlərdə (onrender.com və s.) X-Robots-Tag: noindex.
+- CanonicalHostMiddleware: www → apex 301 və texniki hostlarda (IP ünvanı və s.) X-Robots-Tag: noindex.
 """
 from django.conf import settings
 from django.http import HttpResponsePermanentRedirect
@@ -80,7 +80,7 @@ class CanonicalHostMiddleware:
     """
     Dublikat domen problemini həll edir:
     - www.prousta.az → https://prousta.az (301)
-    - Digər texniki hostlar (*.onrender.com, *.railway.app) indekslənməsin deyə X-Robots-Tag əlavə olunur.
+    - Digər texniki hostlar (məs. birbaşa IP ünvanı) indekslənməsin deyə X-Robots-Tag əlavə olunur.
     Yalnız DEBUG=False olduqda işləyir.
     """
 
@@ -88,6 +88,20 @@ class CanonicalHostMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if request.path.startswith('/api/'):
+            if request.method == 'OPTIONS':
+                from django.http import HttpResponse
+                resp = HttpResponse(status=200)
+                resp['Access-Control-Allow-Origin'] = '*'
+                resp['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+                resp['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'
+                return resp
+            response = self.get_response(request)
+            response['Access-Control-Allow-Origin'] = '*'
+            response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            response['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'
+            return response
+
         if settings.DEBUG:
             return self.get_response(request)
 

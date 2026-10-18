@@ -81,6 +81,8 @@ class Elan(models.Model):
     baxish_sayi = models.PositiveIntegerField('Baxış Sayı', default=0)
     zeng_sayi = models.PositiveIntegerField('Zəng Klikləri', default=0)
     wp_sayi = models.PositiveIntegerField('WhatsApp Klikləri', default=0)
+    ireli_cekildi = models.DateTimeField('İrəli Çəkildi', null=True, blank=True, db_index=True)
+    ireli_cekilme_sayi = models.PositiveIntegerField('İrəli Çəkilmə Sayı', default=0)
     yaradildi = models.DateTimeField(auto_now_add=True)
     yenilendi = models.DateTimeField(auto_now=True)
 
@@ -236,6 +238,7 @@ class Odenis(models.Model):
         ('vip', 'VIP Elan'),
         ('super_vip', 'Super VIP Elan'),
         ('balans', 'Balans Artırma'),
+        ('ireli_cek', 'İrəli Çəkmə'),
     ]
 
     istifadeci = models.ForeignKey(User, on_delete=models.CASCADE, related_name='odenisler')

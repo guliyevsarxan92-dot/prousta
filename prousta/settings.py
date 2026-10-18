@@ -14,7 +14,6 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://prousta.az',
     'https://www.prousta.az',
-    'https://*.onrender.com',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
@@ -32,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'rest_framework',
+    'rest_framework.authtoken',
     'social_django',
     'cloudinary',
     'cloudinary_storage',
@@ -74,24 +74,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prousta.wsgi.application'
 
-_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:5432/postgres"
+_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
 
-_raw_db_url = os.getenv('DATABASE_URL', '').strip()
-if not _raw_db_url or 'frankfurt-postgres.render.com' in _raw_db_url or 'dpg-' in _raw_db_url or 'prousta-db' in _raw_db_url:
-    _active_db_url = _SUPABASE_DB_URL
-else:
-    _active_db_url = _raw_db_url
+_active_db_url = os.getenv('DATABASE_URL', '').strip() or _SUPABASE_DB_URL
 
-# Supabase pooler 6543 portu transaction/read-only ola bilər, 5432 oxuma-yazma üçün işlədilir
-if 'pooler.supabase.com:6543' in _active_db_url:
-    _active_db_url = _active_db_url.replace(':6543', ':5432')
+if 'pooler.supabase.com:5432' in _active_db_url:
+    _active_db_url = _active_db_url.replace(':5432', ':6543')
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        _active_db_url,
-        conn_max_age=600,
-        ssl_require=True if 'supabase' in _active_db_url else (not DEBUG),
-    )
+    'default': {
+        **dj_database_url.parse(
+            _active_db_url,
+            conn_max_age=0,
+            ssl_require=True if 'supabase' in _active_db_url else (not DEBUG),
+        ),
+        'DISABLE_SERVER_SIDE_CURSORS': True,
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -137,6 +135,15 @@ STORAGES = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
 
 # Production təhlükəsizlik
 if not DEBUG:

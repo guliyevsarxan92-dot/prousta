@@ -49,7 +49,7 @@
       </a>
       <form method="post" action="{% url 'cixis' %}" style="margin:0">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger btn-sm" title="Çıxış">
+        <button type="submit" class="btn btn-outline btn-sm" style="color:#e11d48;border-color:#fecdd3;gap:6px" onmouseover="this.style.background='#fff1f2';this.style.borderColor='#fda4af'" onmouseout="this.style.background='transparent';this.style.borderColor='#fecdd3'" title="Hesabdan çıxış">
           {% include 'partials/ui_icon.html' with name='logout' %}
           Çıxış
         </button>
@@ -180,26 +180,34 @@
               {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
             </span>
           </div>
-          <div class="service-actions" style="flex-wrap:wrap">
-            <a href="{% url 'elan_duzelis' elan.pk %}" class="call-button" style="font-size:10px">
+          <div class="service-actions" style="flex-wrap:wrap;gap:6px">
+            <a href="{% url 'elan_duzelis' elan.pk %}" class="call-button" style="font-size:11px;padding:6px 10px">
               {% include 'partials/ui_icon.html' with name='edit' %} Düzəlt
             </a>
+            <button type="button" class="btn-ireli-cek" onclick="openIreliCekModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}')" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 11px;border-radius:6px;font-size:11px;font-weight:700;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;border:none;cursor:pointer;box-shadow:0 2px 4px rgba(5,150,105,0.25);transition:all .15s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+              🚀 İrəli çək (1 ₼)
+            </button>
             {% if elan.vip_status == 'normal' %}
-              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:10px;font-weight:700">
+              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">
                 {% include 'partials/ui_icon.html' with name='crown' %} VIP et
               </a>
             {% else %}
-              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:10px;font-weight:700">
+              <a href="{% url 'vip_et' elan.pk %}" class="btn-gold" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">
                 {% include 'partials/ui_icon.html' with name='crown' %} Uzat / Yüksəlt
               </a>
             {% endif %}
             <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Bu elanı silmək istədiyinizdən əminsiniz?')">
               {% csrf_token %}
-              <button type="submit" class="btn-danger btn-sm" style="font-size:10px;padding:6px 8px" title="Sil">
+              <button type="submit" class="btn-danger btn-sm" style="font-size:11px;padding:6px 8px" title="Sil">
                 {% include 'partials/ui_icon.html' with name='trash' %}
               </button>
             </form>
           </div>
+          {% if elan.ireli_cekildi %}
+            <div style="font-size:10px;color:#047857;margin-top:6px;display:flex;align-items:center;gap:4px">
+              <span>🚀</span> Son irəli çəkilmə: <b>{{ elan.ireli_cekildi|date:"d.m.Y H:i" }}</b>
+            </div>
+          {% endif %}
         </div>
       </article>
       {% endif %}
@@ -283,10 +291,167 @@
       <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Elanlara bax</a>
     </div>
     {% endif %}
+</div>
+
+<!-- Modal: İrəli Çək (Tap.az stili) -->
+<div id="ireliCekModalBackdrop" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:18px;max-width:440px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);overflow:hidden;animation:modalPop .2s ease-out;position:relative;">
+    
+    <!-- Modal Header -->
+    <div style="background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;padding:20px 22px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:26px">🚀</span>
+        <div>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:#fff">Elanı İrəli Çək</h3>
+          <small style="opacity:.9;font-size:12px">Tap.az tipli ön sıraya çıxarma</small>
+        </div>
+      </div>
+      <button type="button" onclick="closeIreliCekModal()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div style="padding:22px">
+      <div style="font-size:13px;color:#475569;margin-bottom:14px;line-height:1.5">
+        Elanınız bütün axtarışlarda və ana səhifədə <b>ən ön sıraya</b> (yeni verilmiş elan kimi) qalxacaq və daha çox müştəri qazanacaqsınız.
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:18px">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px">Seçilmiş elan:</div>
+        <div id="modalElanBashliq" style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
+        
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed #cbd5e1;font-size:13px">
+          <span style="color:#64748b">Xidmət haqqı:</span>
+          <span style="font-weight:800;color:#059669;font-size:16px">1.00 ₼</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;font-size:13px">
+          <span style="color:#64748b">Cari balansınız:</span>
+          <span id="modalCariBalans" style="font-weight:800;font-size:14px;color:#0f172a">{{ profil.balans|floatformat:'2' }} ₼</span>
+        </div>
+      </div>
+
+      <!-- Kifayət etməyəndə xəbərdarlıq bloku -->
+      <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:12px;margin-bottom:16px;font-size:12.5px;line-height:1.4">
+        ⚠️ <b>Balansınız kifayət etmir.</b> Bu elanı irəli çəkmək üçün zəhmət olmasa ən azı 1.00 ₼ balans artırın.
+      </div>
+
+      <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;font-weight:600">
+      </div>
+
+      <!-- Modal Actions -->
+      <div style="display:flex;gap:10px;align-items:center">
+        <button type="button" onclick="closeIreliCekModal()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer">
+          Ləğv et
+        </button>
+
+        <button id="btnIreliCekConfirm" type="button" onclick="submitIreliCek()" style="flex:2;padding:12px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;border:none;border-radius:10px;font-weight:800;font-size:13.5px;cursor:pointer;box-shadow:0 4px 10px rgba(5,150,105,0.3);display:inline-flex;align-items:center;justify-content:center;gap:6px">
+          <span>🚀 1 ₼ ilə İrəli Çək</span>
+        </button>
+
+        <a id="btnBalansArtirLink" href="{% url 'odenis' %}" style="display:none;flex:2;padding:12px;background:#2563eb;color:#fff;border-radius:10px;font-weight:800;font-size:13.5px;text-align:center;text-decoration:none;box-shadow:0 4px 10px rgba(37,99,235,0.3)">
+          💳 Balansı Artır
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
+<style>
+@keyframes modalPop {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+
 <script>
+var currentElanPk = null;
+var userBalans = parseFloat("{{ profil.balans|default:'0' }}".replace(',', '.')) || 0;
+
+function openIreliCekModal(pk, bashliq) {
+  currentElanPk = pk;
+  document.getElementById('modalElanBashliq').innerText = bashliq;
+  document.getElementById('modalCariBalans').innerText = userBalans.toFixed(2) + ' ₼';
+  document.getElementById('modalSuccessMsg').style.display = 'none';
+
+  if (userBalans < 1.0) {
+    document.getElementById('modalYetersizBalans').style.display = 'block';
+    document.getElementById('btnIreliCekConfirm').style.display = 'none';
+    document.getElementById('btnBalansArtirLink').style.display = 'block';
+  } else {
+    document.getElementById('modalYetersizBalans').style.display = 'none';
+    document.getElementById('btnIreliCekConfirm').style.display = 'inline-flex';
+    document.getElementById('btnBalansArtirLink').style.display = 'none';
+  }
+
+  var backdrop = document.getElementById('ireliCekModalBackdrop');
+  backdrop.style.display = 'flex';
+}
+
+function closeIreliCekModal() {
+  document.getElementById('ireliCekModalBackdrop').style.display = 'none';
+  currentElanPk = null;
+}
+
+function submitIreliCek() {
+  if (!currentElanPk) return;
+  var btn = document.getElementById('btnIreliCekConfirm');
+  btn.disabled = true;
+  btn.innerHTML = '<span>Gözləyin...</span>';
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  fetch('/elan/' + currentElanPk + '/ireli-cek/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': csrftoken,
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(function(resp) { return resp.json(); })
+  .then(function(data) {
+    if (data.success) {
+      userBalans = parseFloat(data.yeni_balans);
+      document.getElementById('modalCariBalans').innerText = data.yeni_balans + ' ₼';
+      var succ = document.getElementById('modalSuccessMsg');
+      succ.innerText = '✅ ' + data.message;
+      succ.style.display = 'block';
+      btn.style.display = 'none';
+      setTimeout(function() {
+        window.location.reload();
+      }, 1200);
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🚀 1 ₼ ilə İrəli Çək</span>';
+      if (data.error === 'kifayet_etmir') {
+        document.getElementById('modalYetersizBalans').style.display = 'block';
+        btn.style.display = 'none';
+        document.getElementById('btnBalansArtirLink').style.display = 'block';
+      } else {
+        alert(data.message || 'Xəta baş verdi');
+      }
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🚀 1 ₼ ilə İrəli Çək</span>';
+    alert('Şəbəkə xətası baş verdi.');
+  });
+}
+
 function showTab(id, btn){
   document.querySelectorAll('.tab-pane').forEach(function(p){ p.style.display = 'none'; });
   document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('is-active'); });

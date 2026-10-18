@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -120,6 +121,7 @@ def apply_fair_rotation(qs, seed):
     if has_local:
         order_fields.append(F('is_local').desc())
     order_fields.append(F('vip_siralama').desc())
+    order_fields.append(F('ireli_cekildi').desc(nulls_last=True))
 
     if connection.vendor == 'postgresql':
         return qs.annotate(
@@ -889,6 +891,86 @@ def vip_et(request, pk):
         messages.success(request, f'Elanınız {status_label} edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.')
         return redirect('profil')
     return render(request, 'vip.html', {'elan': elan, 'profil': profil, 'paketler': paketler})
+
+
+@login_required
+@require_POST
+def elan_ireli_cek(request, pk):
+    """
+    Tap.az tipli 'İrəli çək' xidməti:
+    1 AZN balansdan çıxılır və elan ən ön sıraya qalxır (ireli_cekildi = now).
+    """
+    elan = get_object_or_404(Elan, pk=pk)
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json'
+
+    if elan.istifadeci != request.user and not request.user.is_superuser:
+        if is_ajax:
+            return JsonResponse({'success': False, 'message': 'Bu elanı idarə etmək icazəniz yoxdur.'}, status=403)
+        messages.error(request, 'Bu elanı idarə etmək icazəniz yoxdur.')
+        return redirect('profil')
+
+    if elan.status != 'aktiv':
+        msg = 'Yalnız aktiv elanları irəli çəkmək mümkündür.'
+        if is_ajax:
+            return JsonResponse({'success': False, 'message': msg}, status=400)
+        messages.error(request, msg)
+        return redirect('profil')
+
+    IRELI_CEK_QIYMET = Decimal('1.00')
+    profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
+
+    if profil.balans < IRELI_CEK_QIYMET:
+        msg = f'Balansınız kifayət etmir. Cari balansınız: {profil.balans:.2f} ₼. Elanı irəli çəkmək üçün ən azı 1 ₼ balans artırın.'
+        if is_ajax:
+            return JsonResponse({
+                'success': False,
+                'error': 'kifayet_etmir',
+                'message': msg,
+                'balans': f'{profil.balans:.2f}',
+                'lazim_olan': '1.00',
+                'odenis_url': reverse('odenis')
+            }, status=400)
+        messages.error(request, msg)
+        return redirect('odenis')
+
+    with transaction.atomic():
+        updated = Profil.objects.filter(pk=profil.pk, balans__gte=IRELI_CEK_QIYMET).update(
+            balans=F('balans') - IRELI_CEK_QIYMET
+        )
+        if not updated:
+            msg = 'Balansınız kifayət etmir.'
+            if is_ajax:
+                return JsonResponse({'success': False, 'message': msg}, status=400)
+            messages.error(request, msg)
+            return redirect('odenis')
+
+        now = timezone.now()
+        Elan.objects.filter(pk=elan.pk).update(
+            ireli_cekildi=now,
+            ireli_cekilme_sayi=F('ireli_cekilme_sayi') + 1
+        )
+        Odenis.objects.create(
+            istifadeci=request.user,
+            elan=elan,
+            nov='ireli_cek',
+            mebleg=IRELI_CEK_QIYMET,
+            status='tesdiq_edildi',
+            qeyd=f'#{elan.nomre} nömrəli elan irəli çəkildi (1 AZN)'
+        )
+        profil.refresh_from_db(fields=['balans'])
+
+    msg = f'“{elan.bashliq}” elanı uğurla ən ön sıraya çəkildi! Balansınızdan 1 ₼ çıxıldı. Qalıq balans: {profil.balans:.2f} ₼.'
+    if is_ajax:
+        return JsonResponse({
+            'success': True,
+            'message': msg,
+            'yeni_balans': f'{profil.balans:.2f}',
+            'elan_pk': elan.pk
+        })
+
+    messages.success(request, msg)
+    return redirect(request.META.get('HTTP_REFERER') or 'profil')
+
 
 @login_required
 def odenis(request):
