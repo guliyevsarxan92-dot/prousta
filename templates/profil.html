@@ -212,11 +212,6 @@
               </div>
             </div>
           </div>
-          {% if elan.ireli_cekildi %}
-            <div style="font-size:10px;color:#047857;margin-top:6px;display:flex;align-items:center;gap:4px">
-              <span>🚀</span> Son irəli çəkilmə: <b>{{ elan.ireli_cekildi|date:"d.m.Y H:i" }}</b>
-            </div>
-          {% endif %}
         </div>
       </article>
       {% endif %}
@@ -322,14 +317,9 @@
     
     <!-- Modal Header -->
     <div class="reklam-modal-header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:38px;height:38px;border-radius:10px;background:#eaf6f1;color:#007b52;display:flex;align-items:center;justify-content:center;font-size:18px">
-          🚀
-        </div>
-        <div>
-          <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">Elanı Reklam Et</h3>
-          <div id="modalElanBashliq" style="margin-top:2px;font-size:12px;color:#64748b;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
-        </div>
+      <div>
+        <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">Elanı Reklam Et</h3>
+        <div id="modalElanBashliq" style="margin-top:2px;font-size:12px;color:#64748b;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
       </div>
       <button type="button" class="reklam-modal-close" onclick="closeReklamModal()" aria-label="Bağla">✕</button>
     </div>
@@ -346,19 +336,16 @@
     </div>
 
     <!-- VIP Aktivdir Xəbərdarlıq Bloku -->
-    <div id="modalVipActiveAlert" style="display:none;background:#fef3c7;border:1.5px solid #fde68a;border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#92400e;font-size:12.5px;align-items:center;gap:10px">
-      <span style="font-size:22px;line-height:1">⭐</span>
-      <div style="flex:1">
-        <strong id="modalVipActiveAlertTitle" style="display:block;font-size:13px;color:#92400e">Bu elan hazırda VIP statusundadır</strong>
-        <div id="modalVipActiveAlertDesc" style="font-size:11.5px;color:#b45309;margin-top:2px">Bitiş tarixi: ... Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.</div>
-      </div>
+    <div id="modalVipActiveAlert" style="display:none;background:#fef3c7;border:1.5px solid #fde68a;border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#92400e;font-size:12.5px">
+      <strong id="modalVipActiveAlertTitle" style="display:block;font-size:13px;color:#92400e">Bu elan hazırda VIP statusundadır</strong>
+      <div id="modalVipActiveAlertDesc" style="font-size:11.5px;color:#b45309;margin-top:2px">Bitiş tarixi: ... Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.</div>
     </div>
 
     <!-- Xəbərdarlıq və Uğur Mesajları -->
     <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;font-weight:600"></div>
     <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:12px;margin-bottom:14px;font-size:12.5px;line-height:1.4">
-      <div id="modalYetersizBalansText">⚠️ <b>Balansınız kifayət etmir.</b> Zəhmət olmasa balansı artırın.</div>
-      <a href="{% url 'odenis' %}" style="display:inline-block;margin-top:6px;font-weight:700;color:#dc2626;text-decoration:underline">💳 Balansı indi artır →</a>
+      <div id="modalYetersizBalansText"><b>Balansınız kifayət etmir.</b> Zəhmət olmasa balansı artırın.</div>
+      <a href="{% url 'odenis' %}" style="display:inline-block;margin-top:6px;font-weight:700;color:#dc2626;text-decoration:underline">Balansı indi artır →</a>
     </div>
 
     <!-- Ödənişli Seçimlər Siyahısı (Tap.az stili) -->
@@ -366,9 +353,6 @@
       
       <!-- 1. İrəli çək (1 AZN) -->
       <div class="reklam-service-item">
-        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:#fff">
-          🚀
-        </div>
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">İrəli çək</h4>
@@ -386,9 +370,6 @@
 
       <!-- 2. VIP Elan -->
       <div class="reklam-service-item" id="itemModalVip">
-        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#fff">
-          ⭐
-        </div>
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">VIP Elan</h4>
@@ -406,9 +387,6 @@
 
       <!-- 3. Super VIP -->
       <div class="reklam-service-item reklam-service-item--featured" id="itemModalSuperVip">
-        <div class="reklam-service-icon" style="background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff">
-          👑
-        </div>
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">Super VIP</h4>

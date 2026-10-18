@@ -445,4 +445,55 @@ function submitIreliCek() {
 }
 </script>
 {% endif %}
+
+{% if elan.telefon %}
+<!-- Dərhal sağda aşağı küncdə xırda zəng butonu -->
+<a href="tel:{{ elan.telefon }}" class="floating-quick-call" aria-label="Zəng et" title="Zəng et: {{ elan.telefon }}" data-track-elan="{{ elan.pk }}" data-track-type="zeng">
+  {% include 'partials/ui_icon.html' with name='phone' %}
+</a>
+<style>
+.floating-quick-call {
+  position: fixed;
+  bottom: 24px;
+  right: 22px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #008f60, #00714c);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 123, 82, 0.42), 0 2px 6px rgba(0, 0, 0, 0.12);
+  z-index: 998;
+  transition: transform .18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .18s ease;
+  text-decoration: none;
+}
+.floating-quick-call:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 123, 82, 0.55);
+  color: #ffffff;
+}
+.floating-quick-call:active {
+  transform: scale(0.94);
+}
+.floating-quick-call .ui-icon {
+  width: 22px;
+  height: 22px;
+  stroke: #ffffff;
+}
+@media(max-width: 768px) {
+  .floating-quick-call {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    right: 16px;
+    width: 44px;
+    height: 44px;
+  }
+  .floating-quick-call .ui-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+</style>
+{% endif %}
 {% endblock %}
