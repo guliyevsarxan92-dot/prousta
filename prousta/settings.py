@@ -68,6 +68,9 @@ TEMPLATES = [
                 'core.context_processors.oxunmamis_mesaj',
                 'core.seo.seo_context',
             ],
+            'builtins': [
+                'core.templatetags.cld_tags',
+            ],
         },
     },
 ]

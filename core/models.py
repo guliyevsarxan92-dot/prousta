@@ -152,6 +152,49 @@ class ElanShekil(models.Model):
     def __str__(self):
         return f"{self.elan.bashliq} - şəkil"
 
+    @property
+    def card_url(self):
+        """Ana səhifə və axtarış kartları üçün optimallaşdırılmış WebP URL (~15-25 KB)."""
+        if not self.shekil:
+            return ''
+        try:
+            from core.image_optimizer import get_card_image_url
+            return get_card_image_url(self.shekil.url)
+        except Exception:
+            return getattr(self.shekil, 'url', '')
+
+    @property
+    def detail_url(self):
+        """Elan daxili əsas şəkil üçün Full HD keyfiyyətli WebP URL (~60-90 KB)."""
+        if not self.shekil:
+            return ''
+        try:
+            from core.image_optimizer import get_detail_image_url
+            return get_detail_image_url(self.shekil.url)
+        except Exception:
+            return getattr(self.shekil, 'url', '')
+
+    @property
+    def thumb_url(self):
+        """Qalereya kiçik ikonları üçün WebP URL (~5-10 KB)."""
+        if not self.shekil:
+            return ''
+        try:
+            from core.image_optimizer import get_thumb_image_url
+            return get_thumb_image_url(self.shekil.url)
+        except Exception:
+            return getattr(self.shekil, 'url', '')
+
+    def save(self, *args, **kwargs):
+        # Yeni şəkil yüklənərkən yaddaşda avtomatik sıxılma və ölçüləndirmə
+        if self.shekil and hasattr(self.shekil, 'file') and not self.pk:
+            try:
+                from core.image_optimizer import compress_uploaded_image
+                self.shekil = compress_uploaded_image(self.shekil)
+            except Exception:
+                pass
+        super().save(*args, **kwargs)
+
 
 class Profil(models.Model):
     istifadeci = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profil')

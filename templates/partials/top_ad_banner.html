@@ -22,7 +22,7 @@
 <aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri" data-banner-track-view="{{ reklam_ust.id }}">
   <div class="top-ad-container">
     <a href="{% url 'banner_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-      <img src="{{ reklam_ust.shekil.url }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img" loading="eager">
+      <img src="{{ reklam_ust.shekil.url|cld_detail }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img" loading="eager">
     </a>
   </div>
 </aside>

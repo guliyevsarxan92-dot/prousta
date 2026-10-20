@@ -95,7 +95,7 @@
       <div class="panel" style="padding:12px">
         <div class="gallery-main" style="max-height:480px">
           {% if elan.shekillar.first %}
-            <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" id="anaImg">
+            <img src="{{ elan.shekillar.first.shekil.url|cld_detail }}" alt="{{ elan.bashliq }}" id="anaImg">
           {% else %}
             <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
               {% include 'partials/ui_icon.html' with name='image' %}
@@ -106,8 +106,8 @@
         {% if elan.shekillar.count > 1 %}
         <div class="gallery-thumbs">
           {% for s in elan.shekillar.all %}
-            <button type="button" class="{% if forloop.first %}is-active{% endif %}" onclick="selectThumb(this, '{{ s.shekil.url }}')">
-              <img src="{{ s.shekil.url }}" alt="{{ elan.bashliq }} - {{ forloop.counter }}" loading="lazy">
+            <button type="button" class="{% if forloop.first %}is-active{% endif %}" onclick="selectThumb(this, '{{ s.shekil.url|cld_detail }}')">
+              <img src="{{ s.shekil.url|cld_thumb }}" alt="{{ elan.bashliq }} - {{ forloop.counter }}" loading="lazy">
             </button>
           {% endfor %}
         </div>

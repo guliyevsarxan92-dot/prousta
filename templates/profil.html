@@ -141,7 +141,7 @@
         <div class="service-photo">
           <a href="{{ elan.get_absolute_url }}">
             {% with elan.shekillar.all as sh %}{% if sh %}
-              <img src="{{ sh.0.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+              <img src="{{ sh.0.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
             {% else %}
               <span class="service-photo-empty">
                 {% include 'partials/ui_icon.html' with name='list' %}
@@ -235,7 +235,7 @@
       <article class="service-card" style="opacity:.75">
         <div class="service-photo">
           {% if elan.shekillar.first %}
-            <img src="{{ elan.shekillar.first.shekil.url }}" alt="{{ elan.bashliq }}" loading="lazy">
+            <img src="{{ elan.shekillar.first.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
           {% else %}
             <span class="service-photo-empty">{% include 'partials/ui_icon.html' with name='list' %}</span>
           {% endif %}

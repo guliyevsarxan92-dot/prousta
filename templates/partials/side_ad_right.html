@@ -13,7 +13,7 @@
     </a>
   {% elif reklam_sag and reklam_sag.shekil %}
     <a href="{% url 'banner_klik' reklam_sag.id %}" target="_blank" rel="noopener sponsored" class="side-ad-link" title="{{ reklam_sag.bashliq }}">
-      <img src="{{ reklam_sag.shekil.url }}" alt="{{ reklam_sag.bashliq|default:'Reklam' }}" class="side-ad-custom-img">
+      <img src="{{ reklam_sag.shekil.url|cld_card }}" alt="{{ reklam_sag.bashliq|default:'Reklam' }}" class="side-ad-custom-img">
     </a>
   {% elif reklam_sag and reklam_sag.html_kod %}
     <div class="side-ad-custom-html">

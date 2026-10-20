@@ -63,7 +63,7 @@ class ElanShekilSerializer(serializers.ModelSerializer):
     def get_shekil_url(self, obj):
         if not obj.shekil:
             return None
-        url = obj.shekil.url
+        url = getattr(obj, 'detail_url', obj.shekil.url)
         request = self.context.get('request')
         if request and not url.startswith(('http://', 'https://')):
             return request.build_absolute_uri(url)
@@ -95,7 +95,7 @@ class ElanListSerializer(serializers.ModelSerializer):
             shekil = obj.shekillar.filter(esas=True).first() or obj.shekillar.first()
 
         if shekil and shekil.shekil:
-            url = shekil.shekil.url
+            url = getattr(shekil, 'card_url', shekil.shekil.url)
             if request and not url.startswith(('http://', 'https://')):
                 return request.build_absolute_uri(url)
             return url
@@ -242,7 +242,7 @@ class ReklamBannerSerializer(serializers.ModelSerializer):
     def get_shekil_url(self, obj):
         if not obj.shekil:
             return None
-        url = obj.shekil.url
+        url = getattr(obj, 'detail_url', obj.shekil.url)
         request = self.context.get('request')
         if request and not url.startswith(('http://', 'https://')):
             return request.build_absolute_uri(url)
