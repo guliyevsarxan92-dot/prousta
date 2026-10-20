@@ -135,4 +135,16 @@ class AuthProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  Future<void> deleteAccount({String? password, String? confirm}) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await ApiService.deleteAccount(password: password, confirm: confirm);
+      _user = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

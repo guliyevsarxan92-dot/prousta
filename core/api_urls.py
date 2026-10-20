@@ -7,6 +7,7 @@ urlpatterns = [
     path('auth/register/', api_views.RegisterApiView.as_view(), name='api_register'),
     path('auth/google/', api_views.GoogleLoginApiView.as_view(), name='api_google_login'),
     path('auth/logout/', api_views.LogoutApiView.as_view(), name='api_logout'),
+    path('auth/delete-account/', api_views.DeleteAccountApiView.as_view(), name='api_delete_account'),
     path('auth/me/', api_views.ProfileApiView.as_view(), name='api_me'),
 
     # Categories
@@ -30,6 +31,11 @@ urlpatterns = [
     # Messages / Chat
     path('messages/conversations/', api_views.ConversationsApiView.as_view(), name='api_conversations'),
     path('messages/<int:other_user_id>/', api_views.ChatMessagesApiView.as_view(), name='api_chat_messages'),
+
+    # Report & Block (Google Play UGC)
+    path('report/', api_views.ReportApiView.as_view(), name='api_report'),
+    path('users/<int:user_id>/block/', api_views.BlockToggleApiView.as_view(), name='api_block_toggle'),
+    path('users/blocked/', api_views.BlockedUsersApiView.as_view(), name='api_blocked_users'),
 
     # VIP & Payments
     path('vip-packages/', api_views.VipPackagesApiView.as_view(), name='api_vip_packages'),

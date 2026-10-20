@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,12 +8,18 @@ import '../models/models.dart';
 
 class ApiService {
   static const String _envUrl = String.fromEnvironment('API_URL', defaultValue: '');
-  static String _resolvedBaseUrl = _envUrl.isNotEmpty ? _envUrl : 'http://127.0.0.1:8000/api/v1';
+  static String _resolvedBaseUrl = _envUrl.isNotEmpty
+      ? _envUrl
+      : (kReleaseMode ? 'https://prousta.az/api/v1' : 'http://127.0.0.1:8000/api/v1');
   static bool _urlChecked = false;
 
   static String get baseUrl => _resolvedBaseUrl;
 
   static Future<void> ensureBaseUrl() async {
+    if (kReleaseMode) {
+      _resolvedBaseUrl = 'https://prousta.az/api/v1';
+      return;
+    }
     if (_urlChecked || _envUrl.isNotEmpty) return;
     _urlChecked = true;
     try {
@@ -323,18 +330,36 @@ class ApiService {
     required String qiymet,
     required String sheher,
     required String telefon,
+    int? kategoriId,
+    List<File>? newImages,
+    List<int>? deleteImageIds,
   }) async {
-    final res = await http.patch(
+    final req = http.MultipartRequest(
+      'PATCH',
       Uri.parse('$baseUrl/elanlar/$id/update/'),
-      headers: _headers,
-      body: jsonEncode({
-        'bashliq': bashliq,
-        'acaqlama': acaqlama,
-        'qiymet': qiymet,
-        'sheher': sheher,
-        'telefon': telefon,
-      }),
     );
+    req.headers.addAll(_multipartHeaders);
+    req.fields['bashliq'] = bashliq;
+    req.fields['acaqlama'] = acaqlama;
+    req.fields['qiymet'] = qiymet;
+    req.fields['sheher'] = sheher;
+    req.fields['telefon'] = telefon;
+    if (kategoriId != null) req.fields['kategori_id'] = kategoriId.toString();
+
+    if (deleteImageIds != null && deleteImageIds.isNotEmpty) {
+      for (final imgId in deleteImageIds) {
+        req.fields['silinecek_shekiller'] = imgId.toString();
+      }
+    }
+
+    if (newImages != null && newImages.isNotEmpty) {
+      for (final f in newImages) {
+        req.files.add(await http.MultipartFile.fromPath('shekillar', f.path));
+      }
+    }
+
+    final streamed = await req.send();
+    final res = await http.Response.fromStream(streamed);
     final data = jsonDecode(utf8.decode(res.bodyBytes));
     if (res.statusCode == 200) {
       return ElanModel.fromJson(data['elan']);
@@ -529,5 +554,84 @@ class ApiService {
       return data['message'] ?? 'Elanınız VİP edildi!';
     }
     throw Exception(data['error'] ?? 'VİP aktivləşdirilə bilmədi');
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACCOUNT DELETION (Google Play Policy)
+  // ---------------------------------------------------------------------------
+
+  static Future<void> deleteAccount({String? password, String? confirm}) async {
+    final body = <String, dynamic>{};
+    if (password != null && password.isNotEmpty) {
+      body['password'] = password;
+    }
+    if (confirm != null && confirm.isNotEmpty) {
+      body['confirm'] = confirm;
+    }
+
+    final res = await http.post(
+      Uri.parse('$baseUrl/auth/delete-account/'),
+      headers: _headers,
+      body: jsonEncode(body),
+    );
+    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    if (res.statusCode == 200) {
+      await setToken(null);
+      return;
+    }
+    throw Exception(data['error'] ?? 'Hesab silinərkən xəta baş verdi');
+  }
+
+  // ---------------------------------------------------------------------------
+  // UGC: REPORT & BLOCK (Google Play Policy)
+  // ---------------------------------------------------------------------------
+
+  static Future<String> reportContent({
+    int? elanId,
+    int? userId,
+    required String sebeb,
+    String? qeyd,
+  }) async {
+    final payload = <String, dynamic>{
+      'sebeb': sebeb,
+    };
+    if (elanId != null) payload['elan_id'] = elanId;
+    if (userId != null) payload['user_id'] = userId;
+    if (qeyd != null && qeyd.isNotEmpty) payload['qeyd'] = qeyd;
+
+    final res = await http.post(
+      Uri.parse('$baseUrl/report/'),
+      headers: _headers,
+      body: jsonEncode(payload),
+    );
+    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    if (res.statusCode == 201 || res.statusCode == 200) {
+      return data['message'] ?? 'Şikayətiniz qəbul edildi';
+    }
+    throw Exception(data['error'] ?? 'Şikayət göndərilə bilmədi');
+  }
+
+  static Future<bool> toggleBlockUser(int userId) async {
+    final res = await http.post(
+      Uri.parse('$baseUrl/users/$userId/block/'),
+      headers: _headers,
+    );
+    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    if (res.statusCode == 200) {
+      return data['blocked'] == true;
+    }
+    throw Exception(data['error'] ?? 'İstifadəçi bloklanarkən xəta baş verdi');
+  }
+
+  static Future<List<Map<String, dynamic>>> getBlockedUsers() async {
+    final res = await http.get(
+      Uri.parse('$baseUrl/users/blocked/'),
+      headers: _headers,
+    );
+    if (res.statusCode == 200) {
+      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      return list.cast<Map<String, dynamic>>();
+    }
+    return [];
   }
 }

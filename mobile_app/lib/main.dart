@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
@@ -60,7 +59,7 @@ class ProustaApp extends StatelessWidget {
           ),
           pageTransitionsTheme: const PageTransitionsTheme(
             builders: {
-              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
               TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
               TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
@@ -134,7 +133,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: IndexedStack(
+      body: _AnimatedIndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
@@ -142,137 +141,139 @@ class _MainNavigationShellState extends State<MainNavigationShell>
     );
   }
 
-  // Inspired by best_flutter_ui_templates/lib/fitness_app/bottom_navigation_view/bottom_bar_view.dart
+  // Floating rounded oval bottom navigation bar with soft multi-layer shadow
   Widget _buildCurvedBottomBar(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final bottomMargin = bottomPadding > 0 ? bottomPadding : 12.0;
 
-    return SizedBox(
-      height: 88 + bottomPadding,
-      child: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: [
-          AnimatedBuilder(
-            animation: _barAnimController,
-            builder: (context, _) {
-              final radius = CurvedAnimation(
-                    parent: _barAnimController,
-                    curve: Curves.fastOutSlowIn,
-                  ).value *
-                  36.0;
-
-              return CustomPaint(
-                painter: _ProustaBarShadowPainter(radius: radius),
-                child: PhysicalShape(
-                  color: Colors.white,
-                  elevation: 20.0,
-                  shadowColor:
-                      const Color(0xFF0A4D34).withValues(alpha: 0.35),
-                  clipper: _ProustaTabClipper(radius: radius),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+    return Container(
+      padding: EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        bottom: bottomMargin,
+      ),
+      child: SizedBox(
+        height: 70,
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            // 1. Oval background card with multi-layer ambient & drop shadow
+            Container(
+              height: 64,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32.0),
+                boxShadow: [
+                  // Wide ambient soft drop shadow (alti kolgeli)
+                  BoxShadow(
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.12),
+                    offset: const Offset(0, 10),
+                    blurRadius: 24.0,
+                    spreadRadius: 2.0,
+                  ),
+                  // Dark green tinted directional shadow
+                  BoxShadow(
+                    color: const Color(0xFF0A4D34).withValues(alpha: 0.10),
+                    offset: const Offset(0, 4),
+                    blurRadius: 10.0,
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFE2E8F0).withValues(alpha: 0.8),
+                  width: 1.0,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32.0),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
                     children: [
-                      SizedBox(
-                        height: 64,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(left: 8, right: 8, top: 4),
-                          child: Row(
-                            children: [
-                              _buildNavItem(
-                                index: 0,
-                                icon: Icons.home_outlined,
-                                activeIcon: Icons.home_rounded,
-                                label: 'Ana səhifə',
-                              ),
-                              _buildNavItem(
-                                index: 1,
-                                icon: Icons.favorite_border_rounded,
-                                activeIcon: Icons.favorite_rounded,
-                                label: 'Favorilər',
-                              ),
-                              SizedBox(
-                                width: CurvedAnimation(
-                                      parent: _barAnimController,
-                                      curve: Curves.fastOutSlowIn,
-                                    ).value *
-                                    68.0,
-                              ),
-                              _buildNavItem(
-                                index: 3,
-                                icon: Icons.chat_bubble_outline_rounded,
-                                activeIcon: Icons.chat_bubble_rounded,
-                                label: 'Mesajlar',
-                              ),
-                              _buildNavItem(
-                                index: 4,
-                                icon: Icons.person_outline_rounded,
-                                activeIcon: Icons.person_rounded,
-                                label: 'Profil',
-                              ),
-                            ],
-                          ),
-                        ),
+                      _buildNavItem(
+                        index: 0,
+                        icon: Icons.home_outlined,
+                        activeIcon: Icons.home_rounded,
+                        label: 'Ana səhifə',
                       ),
-                      SizedBox(height: bottomPadding),
+                      _buildNavItem(
+                        index: 1,
+                        icon: Icons.favorite_border_rounded,
+                        activeIcon: Icons.favorite_rounded,
+                        label: 'Favorilər',
+                      ),
+                      const SizedBox(width: 58.0), // Gap for center floating action button
+                      _buildNavItem(
+                        index: 3,
+                        icon: Icons.chat_bubble_outline_rounded,
+                        activeIcon: Icons.chat_bubble_rounded,
+                        label: 'Mesajlar',
+                      ),
+                      _buildNavItem(
+                        index: 4,
+                        icon: Icons.person_outline_rounded,
+                        activeIcon: Icons.person_rounded,
+                        label: 'Profil',
+                      ),
                     ],
                   ),
                 ),
-              );
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: bottomPadding + 14),
-            child: SizedBox(
-              width: 68,
-              height: 68,
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ScaleTransition(
-                  alignment: Alignment.center,
-                  scale: CurvedAnimation(
-                    parent: _barAnimController,
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF0A4D34),
-                          Color(0xFF0FA968),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              const Color(0xFF007B52).withValues(alpha: 0.48),
-                          offset: const Offset(0, 8),
-                          blurRadius: 18.0,
-                          spreadRadius: 1.0,
-                        ),
+              ),
+            ),
+
+            // 2. Center Floating '+' Action Button
+            Positioned(
+              top: -12,
+              child: SizedBox(
+                width: 58,
+                height: 58,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF0A4D34),
+                        Color(0xFF0FA968),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        splashColor: Colors.white.withValues(alpha: 0.2),
-                        onTap: () => _setTab(2),
-                        child: const Icon(
-                          Icons.add_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF007B52).withValues(alpha: 0.42),
+                        offset: const Offset(0, 8),
+                        blurRadius: 16.0,
+                        spreadRadius: 1.0,
+                      ),
+                      BoxShadow(
+                        color: const Color(0xFF0F172A).withValues(alpha: 0.15),
+                        offset: const Offset(0, 4),
+                        blurRadius: 6.0,
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 3.5,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      splashColor: Colors.white.withValues(alpha: 0.25),
+                      onTap: () => _setTab(2),
+                      child: const Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                        size: 30,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -326,7 +327,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
               label,
               style: TextStyle(
                 fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? primary : const Color(0xFF78858F),
                 letterSpacing: 0.1,
               ),
@@ -338,114 +339,75 @@ class _MainNavigationShellState extends State<MainNavigationShell>
   }
 }
 
-/// Paints an upward ambient + direct drop shadow along the curved bottom bar path
-class _ProustaBarShadowPainter extends CustomPainter {
-  _ProustaBarShadowPainter({this.radius = 36.0});
+/// Smooth 60/120 FPS high-performance animated tab switcher
+class _AnimatedIndexedStack extends StatefulWidget {
+  final int index;
+  final List<Widget> children;
 
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = _ProustaTabClipper(radius: radius).getClip(size);
-
-    // Soft wide upward ambient shadow
-    final ambientShadowPaint = Paint()
-      ..color = const Color(0xFF0F172A).withValues(alpha: 0.14)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
-    canvas.save();
-    canvas.translate(0, -4);
-    canvas.drawPath(path, ambientShadowPaint);
-    canvas.restore();
-
-    // Closer crisp shadow right under the top edge
-    final directShadowPaint = Paint()
-      ..color = const Color(0xFF0A4D34).withValues(alpha: 0.12)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-    canvas.save();
-    canvas.translate(0, -1.5);
-    canvas.drawPath(path, directShadowPaint);
-    canvas.restore();
-
-    // Subtle crisp top border line so the curve edge is always defined
-    final borderPaint = Paint()
-      ..color = const Color(0xFFCBD5E1).withValues(alpha: 0.65)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-    canvas.drawPath(path, borderPaint);
-  }
+  const _AnimatedIndexedStack({
+    required this.index,
+    required this.children,
+  });
 
   @override
-  bool shouldRepaint(_ProustaBarShadowPainter oldDelegate) =>
-      oldDelegate.radius != radius;
+  State<_AnimatedIndexedStack> createState() => _AnimatedIndexedStackState();
 }
 
-// Custom notched wave clipper from best_flutter_ui_templates/lib/fitness_app/bottom_navigation_view/bottom_bar_view.dart
-class _ProustaTabClipper extends CustomClipper<Path> {
-  _ProustaTabClipper({this.radius = 36.0});
-
-  final double radius;
+class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+  late int _currentIndex;
 
   @override
-  Path getClip(Size size) {
-    final Path path = Path();
-    final double v = radius * 2;
-
-    path.lineTo(0, 0);
-    path.arcTo(
-      Rect.fromLTWH(0, 0, radius, radius),
-      _degreeToRadians(180),
-      _degreeToRadians(90),
-      false,
+  void initState() {
+    super.initState();
+    _currentIndex = widget.index;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 240),
     );
-    path.arcTo(
-      Rect.fromLTWH(
-        ((size.width / 2) - v / 2) - radius + v * 0.04,
-        0,
-        radius,
-        radius,
-      ),
-      _degreeToRadians(270),
-      _degreeToRadians(70),
-      false,
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
     );
-
-    path.arcTo(
-      Rect.fromLTWH((size.width / 2) - v / 2, -v / 2, v, v),
-      _degreeToRadians(160),
-      _degreeToRadians(-140),
-      false,
-    );
-
-    path.arcTo(
-      Rect.fromLTWH(
-        (size.width - ((size.width / 2) - v / 2)) - v * 0.04,
-        0,
-        radius,
-        radius,
-      ),
-      _degreeToRadians(200),
-      _degreeToRadians(70),
-      false,
-    );
-    path.arcTo(
-      Rect.fromLTWH(size.width - radius, 0, radius, radius),
-      _degreeToRadians(270),
-      _degreeToRadians(90),
-      false,
-    );
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-
-    path.close();
-    return path;
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.025),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    ));
+    _controller.forward();
   }
 
   @override
-  bool shouldReclip(_ProustaTabClipper oldClipper) =>
-      oldClipper.radius != radius;
+  void didUpdateWidget(covariant _AnimatedIndexedStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.index != oldWidget.index) {
+      _currentIndex = widget.index;
+      _controller.forward(from: 0.0);
+    }
+  }
 
-  double _degreeToRadians(double degree) {
-    return (math.pi / 180) * degree;
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: IndexedStack(
+          index: _currentIndex,
+          children: widget.children,
+        ),
+      ),
+    );
   }
 }

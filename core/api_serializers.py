@@ -15,10 +15,14 @@ class ProfilSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profil = ProfilSerializer(read_only=True)
+    has_password = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profil']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profil', 'has_password']
+
+    def get_has_password(self, obj):
+        return obj.has_usable_password()
 
 
 class AltKategoriSerializer(serializers.ModelSerializer):
@@ -77,6 +81,7 @@ class ElanListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'nomre', 'bashliq', 'qiymet', 'status',
             'vip_status', 'sheher', 'telefon', 'baxish_sayi',
+            'zeng_sayi', 'wp_sayi',
             'yaradildi', 'esas_shekil', 'kategori_ad', 'kategori_slug',
             'is_favorit'
         ]

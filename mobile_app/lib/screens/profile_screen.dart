@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/models.dart';
 import '../providers/auth_provider.dart';
 import '../providers/elan_provider.dart';
@@ -94,197 +95,441 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final sheherCtrl = TextEditingController(text: fullElan.sheher);
     final telefonCtrl = TextEditingController(text: fullElan.telefon);
     final acaqlamaCtrl = TextEditingController(text: fullElan.acaqlama ?? '');
+    // Existing photos and new photos
+    final existingImages = List<ElanShekilModel>.from(fullElan.shekillar);
+    final deleteImageIds = <int>[];
+    final newImageFiles = <File>[];
     bool isSaving = false;
 
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF7FAF9),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 18,
-                right: 18,
-                top: 16,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 18,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Elana düzəliş et',
-                          style: TextStyle(
-                            fontSize: 17.5,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF0F172A),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          icon: const Icon(Icons.close_rounded),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: bashliqCtrl,
-                      decoration: InputDecoration(
-                        labelText: 'Xidmətin adı (Başlıq)',
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: qiymetCtrl,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Qiymət (AZN)',
-                              isDense: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+            return DraggableScrollableSheet(
+              initialChildSize: 0.9,
+              minChildSize: 0.5,
+              maxChildSize: 0.96,
+              expand: false,
+              builder: (ctx, scrollCtrl) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF7FAF9),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+                  ),
+                  child: Column(
+                    children: [
+                      // Header
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 14, 14, 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEAF6F1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.edit_note_rounded,
+                                color: Color(0xFF007B52),
+                                size: 22,
                               ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: sheherCtrl,
-                            decoration: InputDecoration(
-                              labelText: 'Şəhər',
-                              isDense: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: telefonCtrl,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Telefon nömrəsi',
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: acaqlamaCtrl,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        labelText: 'Xidmət haqqında ətraflı məlumat',
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
-                      child: ElevatedButton(
-                        onPressed: isSaving
-                            ? null
-                            : () async {
-                                setModalState(() => isSaving = true);
-                                try {
-                                  final updated = await ApiService.updateElan(
-                                    id: elan.id,
-                                    bashliq: bashliqCtrl.text.trim(),
-                                    acaqlama: acaqlamaCtrl.text.trim(),
-                                    qiymet: qiymetCtrl.text.trim(),
-                                    sheher: sheherCtrl.text.trim(),
-                                    telefon: telefonCtrl.text.trim(),
-                                  );
-                                  if (mounted) {
-                                    setState(() {
-                                      final idx = _myElanlar
-                                          .indexWhere((e) => e.id == elan.id);
-                                      if (idx != -1) {
-                                        _myElanlar[idx] = updated;
-                                      }
-                                    });
-                                    context
-                                        .read<ElanProvider>()
-                                        .fetchElanlar(reset: true);
-                                  }
-                                  if (!ctx.mounted) return;
-                                  Navigator.pop(ctx);
-                                  if (!mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Elan uğurla yeniləndi!'),
-                                      backgroundColor: Color(0xFF007B52),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  if (ctx.mounted) {
-                                    setModalState(() => isSaving = false);
-                                  }
-                                  if (!mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        e
-                                            .toString()
-                                            .replaceFirst('Exception: ', ''),
-                                      ),
-                                      backgroundColor: Colors.redAccent,
-                                    ),
-                                  );
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF007B52),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: isSaving
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text(
-                                'Yadda saxla',
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Elana düzəliş et',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14.5,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF0F172A),
                                 ),
                               ),
+                            ),
+                            IconButton(
+                              onPressed: () => Navigator.pop(ctx),
+                              icon: const Icon(Icons.close_rounded),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      const Divider(height: 1, color: Color(0xFFE2E8F0)),
+
+                      // Form Content
+                      Expanded(
+                        child: ListView(
+                          controller: scrollCtrl,
+                          padding: const EdgeInsets.fromLTRB(18, 16, 18, 24),
+                          children: [
+                            // 1. Photos Section
+                            const Text(
+                              'Xidmət Şəkilləri',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Köhnə şəkilləri silə və ya yenilərini əlavə edə bilərsiniz',
+                              style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                            ),
+                            const SizedBox(height: 12),
+
+                            SizedBox(
+                              height: 96,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  // Add photo button
+                                  InkWell(
+                                    onTap: () async {
+                                      final picker = ImagePicker();
+                                      final picked = await picker.pickMultiImage();
+                                      if (picked.isNotEmpty) {
+                                        setModalState(() {
+                                          newImageFiles.addAll(picked.map((x) => File(x.path)));
+                                        });
+                                      }
+                                    },
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Container(
+                                      width: 96,
+                                      height: 96,
+                                      margin: const EdgeInsets.only(right: 10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: const Color(0xFF0FA968),
+                                          style: BorderStyle.solid,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: const Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.add_a_photo_outlined,
+                                            color: Color(0xFF007B52),
+                                            size: 26,
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Foto əlavə et',
+                                            style: TextStyle(
+                                              fontSize: 10.5,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF007B52),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Existing Photos
+                                  ...existingImages.map((shk) {
+                                    return Container(
+                                      width: 96,
+                                      height: 96,
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(14),
+                                            child: CachedNetworkImage(
+                                              imageUrl: shk.shekilUrl ?? '',
+                                              width: 96,
+                                              height: 96,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Container(color: const Color(0xFFE2E8F0)),
+                                              errorWidget: (context, url, error) => Container(
+                                                color: const Color(0xFFE2E8F0),
+                                                child: const Icon(Icons.image_not_supported_outlined),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 4,
+                                            right: 4,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setModalState(() {
+                                                  existingImages.remove(shk);
+                                                  deleteImageIds.add(shk.id);
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(4),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.black54,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close_rounded,
+                                                  color: Colors.white,
+                                                  size: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+
+                                  // Newly picked photos
+                                  ...newImageFiles.map((file) {
+                                    return Container(
+                                      width: 96,
+                                      height: 96,
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(14),
+                                            child: Image.file(
+                                              file,
+                                              width: 96,
+                                              height: 96,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 4,
+                                            right: 4,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setModalState(() {
+                                                  newImageFiles.remove(file);
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(4),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.black54,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close_rounded,
+                                                  color: Colors.white,
+                                                  size: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 4,
+                                            left: 4,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF007B52),
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: const Text(
+                                                'Yeni',
+                                                style: TextStyle(
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // 2. Title
+                            TextField(
+                              controller: bashliqCtrl,
+                              decoration: InputDecoration(
+                                labelText: 'Xidmətin adı (Başlıq)',
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+
+                            // 3. Price & City
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: qiymetCtrl,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: 'Qiymət (AZN)',
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      isDense: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: TextField(
+                                    controller: sheherCtrl,
+                                    decoration: InputDecoration(
+                                      labelText: 'Şəhər',
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      isDense: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+
+                            // 4. Phone
+                            TextField(
+                              controller: telefonCtrl,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                labelText: 'Telefon nömrəsi',
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+
+                            // 5. Description
+                            TextField(
+                              controller: acaqlamaCtrl,
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                labelText: 'Xidmət haqqında ətraflı məlumat',
+                                filled: true,
+                                fillColor: Colors.white,
+                                isDense: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+
+                            // Submit Button
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: isSaving
+                                    ? null
+                                    : () async {
+                                        setModalState(() => isSaving = true);
+                                        try {
+                                          final updated = await ApiService.updateElan(
+                                            id: elan.id,
+                                            bashliq: bashliqCtrl.text.trim(),
+                                            acaqlama: acaqlamaCtrl.text.trim(),
+                                            qiymet: qiymetCtrl.text.trim(),
+                                            sheher: sheherCtrl.text.trim(),
+                                            telefon: telefonCtrl.text.trim(),
+                                            newImages: newImageFiles.isNotEmpty ? newImageFiles : null,
+                                            deleteImageIds: deleteImageIds.isNotEmpty ? deleteImageIds : null,
+                                          );
+                                          if (mounted) {
+                                            setState(() {
+                                              final idx = _myElanlar.indexWhere((e) => e.id == elan.id);
+                                              if (idx != -1) {
+                                                _myElanlar[idx] = updated;
+                                              }
+                                            });
+                                            context.read<ElanProvider>().fetchElanlar(reset: true);
+                                          }
+                                          if (!ctx.mounted) return;
+                                          Navigator.pop(ctx);
+                                          if (!mounted) return;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Elan və şəkillər uğurla yeniləndi!'),
+                                              backgroundColor: Color(0xFF007B52),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          if (ctx.mounted) {
+                                            setModalState(() => isSaving = false);
+                                          }
+                                          if (!mounted) return;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                e.toString().replaceFirst('Exception: ', ''),
+                                              ),
+                                              backgroundColor: Colors.redAccent,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF007B52),
+                                  foregroundColor: Colors.white,
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                child: isSaving
+                                    ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Yadda saxla',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 15.5,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             );
           },
         );
@@ -1131,6 +1376,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   void _showHelpSupportDialog() {
     showDialog(
       context: context,
@@ -1140,9 +1392,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Kömək və dəstək',
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
-        content: const Text(
-          'prousta.az platforması ilə bağlı sual və ya təklifləriniz üçün dəstək xidmətimizlə əlaqə saxlaya bilərsiniz:\n\n• E-poçt: info@prousta.az\n• Veb sayt: https://prousta.az',
-          style: TextStyle(height: 1.45),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'prousta.az platforması ilə bağlı sual və ya təklifləriniz üçün dəstək xidmətimizlə əlaqə saxlaya bilərsiniz:\n\n• E-poçt: info@prousta.az\n• Veb sayt: https://prousta.az',
+              style: TextStyle(height: 1.45),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _launchUrl('https://prousta.az/gizlilik/');
+                  },
+                  icon: const Icon(Icons.privacy_tip_outlined, size: 18),
+                  label: const Text('Məxfilik siyasəti'),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _launchUrl('https://prousta.az/istifade-sertleri/');
+                  },
+                  icon: const Icon(Icons.description_outlined, size: 18),
+                  label: const Text('İstifadə şərtləri'),
+                ),
+              ],
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -1156,6 +1439,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _confirmDeleteAccount(AppUser user) {
+    final passwordCtrl = TextEditingController();
+    final confirmCtrl = TextEditingController();
+    bool isSubmitting = false;
+    String? errorText;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            title: Row(
+              children: const [
+                Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Hesabı birdəfəlik sil',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17),
+                  ),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Hesabınızı sildikdə bütün elanlarınız, mesajlarınız, favoritləriniz və profil məlumatlarınız sistemdən birdəfəlik silinəcək və bu əməliyyat geri qaytarıla bilməz.',
+                    style: TextStyle(color: Color(0xFF64748B), height: 1.45, fontSize: 13.5),
+                  ),
+                  const SizedBox(height: 16),
+                  if (user.hasPassword) ...[
+                    const Text(
+                      'Təsdiq üçün cari şifrənizi daxil edin:',
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: passwordCtrl,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Şifrəniz',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ] else ...[
+                    const Text(
+                      'Təsdiq üçün aşağıdakı xanaya "SIL" yazın:',
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: confirmCtrl,
+                      decoration: const InputDecoration(
+                        hintText: 'SIL',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ],
+                  if (errorText != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      errorText!,
+                      style: const TextStyle(color: Color(0xFFEF4444), fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
+                child: const Text('İmtina'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEF4444),
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                ),
+                onPressed: isSubmitting
+                    ? null
+                    : () async {
+                        setDialogState(() {
+                          isSubmitting = true;
+                          errorText = null;
+                        });
+                        final messenger = ScaffoldMessenger.of(context);
+                        try {
+                          await context.read<AuthProvider>().deleteAccount(
+                                password: user.hasPassword ? passwordCtrl.text.trim() : null,
+                                confirm: !user.hasPassword ? confirmCtrl.text.trim() : null,
+                              );
+                          if (ctx.mounted) Navigator.pop(ctx);
+                          messenger.showSnackBar(
+                            const SnackBar(content: Text('Hesabınız uğurla silindi')),
+                          );
+                        } catch (e) {
+                          setDialogState(() {
+                            isSubmitting = false;
+                            errorText = e.toString().replaceFirst('Exception: ', '');
+                          });
+                        }
+                      },
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Hesabı sil', style: TextStyle(fontWeight: FontWeight.w800)),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1269,7 +1677,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         '$totalViews',
                                         style: const TextStyle(
                                           fontSize: 15.5,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
                                           color: Color(0xFF0F172A),
                                         ),
                                       ),
@@ -1308,7 +1716,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         '$totalZeng',
                                         style: const TextStyle(
                                           fontSize: 15.5,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
                                           color: Color(0xFF0F172A),
                                         ),
                                       ),
@@ -1347,7 +1755,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         '$totalWp',
                                         style: const TextStyle(
                                           fontSize: 15.5,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
                                           color: Color(0xFF0F172A),
                                         ),
                                       ),
@@ -1373,78 +1781,187 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 12.0),
 
-                  // 3. Settings1-style Green Balance Action Card (Strictly Balance, no VIP)
+                  // 3. Modern Clean Balance Card (Səliqəli balans kartı)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Card(
-                      elevation: 5.0,
-                      margin: EdgeInsets.zero,
-                      color: const Color(0xFF007B52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF007B52),
+                            Color(0xFF06573C),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(18.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF007B52).withValues(alpha: 0.28),
+                            offset: const Offset(0, 8),
+                            blurRadius: 18.0,
+                            spreadRadius: 1.0,
+                          ),
+                        ],
                       ),
-                      child: ListTile(
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const VipPaymentScreen(
-                                initialType: 'balans',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18.0),
+                        child: Stack(
+                          children: [
+                            // Subtle background decoration circles
+                            Positioned(
+                              top: -24,
+                              right: -24,
+                              child: Container(
+                                width: 110,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.07),
+                                ),
                               ),
                             ),
-                          );
-                          _loadProfileData();
-                        },
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 6,
-                        ),
-                        leading: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.16),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.account_balance_wallet_rounded,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
-                        title: Text(
-                          'Balans: ${user.profil.balans.toStringAsFixed(2)} AZN',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 15.5,
-                          ),
-                        ),
-                        subtitle: Text(
-                          'Şəxsi hesab balansınızı artırın',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.85),
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        trailing: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'Balans artır',
-                            style: TextStyle(
-                              color: Color(0xFF007B52),
-                              fontWeight: FontWeight.w800,
-                              fontSize: 12.5,
+                            Positioned(
+                              bottom: -35,
+                              right: 60,
+                              child: Container(
+                                width: 90,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                ),
+                              ),
                             ),
-                          ),
+
+                            // Main Content
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18.0,
+                                vertical: 16.0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Top Row: Wallet Icon + Label
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(7),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.16),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: const Icon(
+                                          Icons.account_balance_wallet_rounded,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Cari balans',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(alpha: 0.9),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  // Balance Value + Artır Action Button
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          Text(
+                                            user.profil.balans.toStringAsFixed(2),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 27,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: -0.5,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'AZN',
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(alpha: 0.85),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      // Sleek Top-up Button
+                                      Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(22),
+                                          onTap: () async {
+                                            await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => const VipPaymentScreen(
+                                                  initialType: 'balans',
+                                                ),
+                                              ),
+                                            );
+                                            _loadProfileData();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 8,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(22),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.12),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.add_rounded,
+                                                  size: 16,
+                                                  color: Color(0xFF007B52),
+                                                ),
+                                                SizedBox(width: 3),
+                                                Text(
+                                                  'Balans artır',
+                                                  style: TextStyle(
+                                                    color: Color(0xFF007B52),
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 12.5,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -1495,6 +2012,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _buildDivider(),
                           _buildSettingsTile(
+                            icon: Icons.privacy_tip_outlined,
+                            title: 'Məxfilik siyasəti',
+                            onTap: () => _launchUrl('https://prousta.az/gizlilik/'),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsTile(
                             icon: Icons.help_outline_rounded,
                             title: 'Kömək və dəstək',
                             onTap: _showHelpSupportDialog,
@@ -1515,6 +2038,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onLogout: () async {
                       await context.read<AuthProvider>().logout();
                     },
+                    onDeleteAccount: () => _confirmDeleteAccount(user),
                   ),
 
                   const SizedBox(height: 105.0),
@@ -1582,7 +2106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 badgeText,
                 style: TextStyle(
                   fontSize: 11.5,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   color: highlightBadge
                       ? Colors.white
                       : const Color(0xFF007B52),
@@ -1685,7 +2209,7 @@ class _ProustaProfileHeader extends StatelessWidget {
                     user.fullName,
                     style: const TextStyle(
                       fontSize: 19,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       color: Color(0xFF0F172A),
                     ),
                   ),
@@ -1721,6 +2245,7 @@ class _ProustaUserInfoCard extends StatelessWidget {
   final String phone;
   final String username;
   final VoidCallback onLogout;
+  final VoidCallback onDeleteAccount;
 
   const _ProustaUserInfoCard({
     required this.city,
@@ -1728,6 +2253,7 @@ class _ProustaUserInfoCard extends StatelessWidget {
     required this.phone,
     required this.username,
     required this.onLogout,
+    required this.onDeleteAccount,
   });
 
   @override
@@ -1858,7 +2384,7 @@ class _ProustaUserInfoCard extends StatelessWidget {
                       title: const Text(
                         'Hesabdan çıxış et',
                         style: TextStyle(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                           fontSize: 14.5,
                           color: Color(0xFFEF4444),
                         ),
@@ -1866,6 +2392,30 @@ class _ProustaUserInfoCard extends StatelessWidget {
                       trailing: const Icon(
                         Icons.chevron_right_rounded,
                         color: Color(0xFFEF4444),
+                      ),
+                    ),
+                    ListTile(
+                      onTap: onDeleteAccount,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 2,
+                      ),
+                      leading: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Color(0xFF94A3B8),
+                        size: 21,
+                      ),
+                      title: const Text(
+                        'Hesabı sil',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Color(0xFF94A3B8),
                       ),
                     ),
                   ],
@@ -1916,7 +2466,7 @@ class _ProustaAvatar extends StatelessWidget {
                   fallbackInitial,
                   style: TextStyle(
                     fontSize: radius * 0.65,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     color: const Color(0xFF007B52),
                   ),
                 )

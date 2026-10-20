@@ -111,7 +111,7 @@ class ElanCard extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 9.5,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: 0.3,
                                 ),
                               ),
@@ -169,7 +169,7 @@ class ElanCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontSize: 13.5,
                           color: Color(0xFF0F172A),
                           height: 1.2,
@@ -181,7 +181,7 @@ class ElanCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           fontSize: 14,
                           color: Color(0xFF007B52),
                         ),
@@ -269,7 +269,7 @@ class ElanCard extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 8.5,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -298,7 +298,7 @@ class ElanCard extends StatelessWidget {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 14.5,
                                   color: Color(0xFF0F172A),
                                   height: 1.25,
@@ -327,7 +327,7 @@ class ElanCard extends StatelessWidget {
                         Text(
                           priceText,
                           style: const TextStyle(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             fontSize: 15,
                             color: Color(0xFF007B52),
                           ),
@@ -352,7 +352,7 @@ class ElanCard extends StatelessWidget {
           'prousta.az',
           style: TextStyle(
             fontSize: 11.5,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
             color: Color(0xFF007B52),
             letterSpacing: -0.3,
           ),

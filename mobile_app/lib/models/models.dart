@@ -34,6 +34,7 @@ class AppUser {
   final String firstName;
   final String lastName;
   final UserProfile profil;
+  final bool hasPassword;
 
   AppUser({
     required this.id,
@@ -42,6 +43,7 @@ class AppUser {
     required this.firstName,
     required this.lastName,
     required this.profil,
+    this.hasPassword = true,
   });
 
   String get fullName {
@@ -60,6 +62,7 @@ class AppUser {
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',
       profil: UserProfile.fromJson(json['profil'] ?? {}),
+      hasPassword: json['has_password'] ?? true,
     );
   }
 }

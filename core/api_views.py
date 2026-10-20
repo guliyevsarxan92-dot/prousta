@@ -16,7 +16,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import (
     Elan, ElanShekil, Kategori, Profil, Favorit, Mesaj,
-    Odenis, BankMelumat, VipPaket, ReklamBanner
+    Odenis, BankMelumat, VipPaket, ReklamBanner, Shikayet, Bloklama, _AZ_MAP
 )
 from .api_serializers import (
     UserSerializer, ProfilSerializer, KategoriSerializer,
@@ -181,6 +181,44 @@ class LogoutApiView(APIView):
         return Response({'message': 'Uğurla çıxış edildi.'})
 
 
+class DeleteAccountApiView(APIView):
+    """Hesabın və bağlı bütün məlumatların (elanlar, mesajlar, favoritlər, profil) birdəfəlik silinməsi."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        if user.is_staff or user.is_superuser:
+            return Response(
+                {'error': 'Admin hesabı tətbiqdən silinə bilməz.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if user.has_usable_password():
+            password = request.data.get('password', '')
+            if not password or not user.check_password(password):
+                return Response(
+                    {'error': 'Şifrə yanlışdır.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        elif str(request.data.get('confirm', '')).strip().upper() != 'SIL':
+            return Response(
+                {'error': 'Təsdiq üçün "SIL" yazın.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with transaction.atomic():
+            # Şəkil fayllarını diskdən də silirik
+            for shekil in ElanShekil.objects.filter(elan__istifadeci=user):
+                if shekil.shekil:
+                    shekil.shekil.delete(save=False)
+            profil = getattr(user, 'profil', None)
+            if profil and profil.avatar:
+                profil.avatar.delete(save=False)
+            user.delete()  # CASCADE: Token, Profil, Elan, Mesaj, Favorit, Bloklama
+
+        return Response({'message': 'Hesabınız və bütün məlumatlarınız silindi.'})
+
+
 class ProfileApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
@@ -265,12 +303,24 @@ class ElanlarListApiView(APIView):
         if user_id and user_id.isdigit():
             qs = qs.filter(istifadeci_id=int(user_id))
 
+        bloklanmis = Bloklama.bloklanmis_idler(request.user)
+        if bloklanmis:
+            qs = qs.exclude(istifadeci_id__in=bloklanmis)
+
         if q:
-            qs = qs.filter(
-                Q(bashliq__icontains=q) |
-                Q(acaqlama__icontains=q) |
-                Q(nomre__icontains=q)
-            )
+            # Azərbaycan hərfləri ilə həm əsli, həm transliterasiyalı axtarış (məs: kombi ustasi <-> kombi ustası)
+            q_az = q.translate(_AZ_MAP)
+            terms = {q, q_az}
+            q_filter = Q()
+            for term in terms:
+                q_filter |= (
+                    Q(bashliq__icontains=term) |
+                    Q(acaqlama__icontains=term) |
+                    Q(nomre__icontains=term) |
+                    Q(kategori__ad__icontains=term) |
+                    Q(kategori__ust_kategori__ad__icontains=term)
+                )
+            qs = qs.filter(q_filter)
 
         if kategori_slug:
             qs = qs.filter(
@@ -419,6 +469,7 @@ class ElanCreateApiView(APIView):
 
 class ElanUpdateApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def patch(self, request, pk):
         elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
@@ -428,6 +479,7 @@ class ElanUpdateApiView(APIView):
         qiymet_raw = request.data.get('qiymet')
         sheher = request.data.get('sheher')
         telefon = request.data.get('telefon')
+        kategori_id = request.data.get('kategori') or request.data.get('kategori_id')
 
         if bashliq:
             elan.bashliq = bashliq.strip()
@@ -438,13 +490,51 @@ class ElanUpdateApiView(APIView):
             elan.acaqlama = acaqlama.strip()
         if qiymet_raw is not None:
             try:
-                elan.qiymet = Decimal(qiymet_raw) if qiymet_raw != '' else None
+                elan.qiymet = Decimal(qiymet_raw) if str(qiymet_raw).strip() != '' else None
             except Exception:
                 return Response({'error': 'Qiymət formatı yanlışdır.'}, status=status.HTTP_400_BAD_REQUEST)
         if sheher:
             elan.sheher = sheher.strip()
         if telefon:
             elan.telefon = telefon.strip()
+        if kategori_id:
+            try:
+                kategori = Kategori.objects.filter(pk=int(kategori_id)).first()
+                if kategori:
+                    elan.kategori = kategori
+            except Exception:
+                pass
+
+        # Mövcud silinəcək şəkillər
+        silinecek_idler = request.data.getlist('silinecek_shekiller') if hasattr(request.data, 'getlist') else request.data.get('silinecek_shekiller', [])
+        if silinecek_idler:
+            for s_id in silinecek_idler:
+                try:
+                    shk = ElanShekil.objects.filter(id=int(s_id), elan=elan).first()
+                    if shk:
+                        if shk.shekil:
+                            shk.shekil.delete(save=False)
+                        shk.delete()
+                except Exception:
+                    pass
+
+        # Yeni əlavə olunan şəkillər
+        yeni_shekillar = request.FILES.getlist('shekillar') if hasattr(request.FILES, 'getlist') else []
+        if yeni_shekillar:
+            has_esas = ElanShekil.objects.filter(elan=elan, esas=True).exists()
+            for i, shk in enumerate(yeni_shekillar):
+                ElanShekil.objects.create(
+                    elan=elan,
+                    shekil=shk,
+                    esas=(not has_esas and i == 0)
+                )
+
+        # Əgər əsas şəkil qalmayıbsa, birincini əsas edirik
+        if not ElanShekil.objects.filter(elan=elan, esas=True).exists():
+            first_shk = ElanShekil.objects.filter(elan=elan).first()
+            if first_shk:
+                first_shk.esas = True
+                first_shk.save(update_fields=['esas'])
 
         elan.save()
         serializer = ElanDetailSerializer(elan, context={'request': request})
@@ -529,9 +619,12 @@ class ConversationsApiView(APIView):
         mesajlar = Mesaj.objects.filter(Q(gonderici=user) | Q(alici=user)).order_by('-yaradildi')
         other_user_ids = set()
         conversations = []
+        bloklanmis = Bloklama.bloklanmis_idler(user)
 
         for m in mesajlar:
             other_user = m.alici if m.gonderici == user else m.gonderici
+            if other_user.id in bloklanmis:
+                continue
             if other_user.id not in other_user_ids:
                 other_user_ids.add(other_user.id)
                 unread_count = Mesaj.objects.filter(gonderici=other_user, alici=user, oxundu=False).count()
@@ -585,6 +678,12 @@ class ChatMessagesApiView(APIView):
         if not metn:
             return Response({'error': 'Mesaj mətni boş ola bilməz.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if other_user.id in Bloklama.bloklanmis_idler(request.user):
+            return Response(
+                {'error': 'Bu istifadəçi ilə mesajlaşma mümkün deyil (bloklanıb).'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         elan = Elan.objects.filter(pk=elan_id).first() if elan_id else None
 
         mesaj = Mesaj.objects.create(
@@ -596,6 +695,77 @@ class ChatMessagesApiView(APIView):
 
         serializer = MesajSerializer(mesaj, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# -----------------------------------------------------------------------------
+# REPORT & BLOCK (Google Play UGC tələbi)
+# -----------------------------------------------------------------------------
+
+class ReportApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        elan_id = request.data.get('elan_id')
+        user_id = request.data.get('user_id')
+        sebeb = request.data.get('sebeb', 'diger')
+        qeyd = (request.data.get('qeyd') or '').strip()[:1000]
+
+        if sebeb not in dict(Shikayet.SEBEB_CHOICES):
+            sebeb = 'diger'
+
+        elan = Elan.objects.filter(pk=elan_id).first() if elan_id else None
+        hedef_user = User.objects.filter(pk=user_id).first() if user_id else None
+        if elan and not hedef_user:
+            hedef_user = elan.istifadeci
+
+        if not elan and not hedef_user:
+            return Response({'error': 'Şikayət obyekti tapılmadı.'}, status=status.HTTP_400_BAD_REQUEST)
+        if hedef_user and hedef_user.id == request.user.id:
+            return Response({'error': 'Özünüzdən şikayət edə bilməzsiniz.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        Shikayet.objects.create(
+            sikayet_eden=request.user,
+            elan=elan,
+            istifadeci=hedef_user,
+            sebeb=sebeb,
+            qeyd=qeyd,
+        )
+        return Response(
+            {'message': 'Şikayətiniz qəbul edildi. Moderatorlar 24 saat ərzində baxacaq.'},
+            status=status.HTTP_201_CREATED
+        )
+
+
+class BlockToggleApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        hedef = get_object_or_404(User, pk=user_id)
+        if hedef.id == request.user.id:
+            return Response({'error': 'Özünüzü bloklaya bilməzsiniz.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        obj, created = Bloklama.objects.get_or_create(bloklayan=request.user, bloklanan=hedef)
+        if not created:
+            obj.delete()
+            return Response({'blocked': False, 'message': 'İstifadəçi blokdan çıxarıldı.'})
+        return Response({'blocked': True, 'message': 'İstifadəçi bloklandı. Onun elanları və mesajları sizə görünməyəcək.'})
+
+
+class BlockedUsersApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        data = []
+        for b in Bloklama.objects.filter(bloklayan=request.user).select_related('bloklanan__profil').order_by('-yaradildi'):
+            u = b.bloklanan
+            profil = getattr(u, 'profil', None)
+            ad = f"{profil.ad} {profil.soyad}".strip() if profil else ''
+            data.append({
+                'user_id': u.id,
+                'username': u.username,
+                'ad_soyad': ad or u.get_full_name() or u.username,
+            })
+        return Response(data)
 
 
 # -----------------------------------------------------------------------------

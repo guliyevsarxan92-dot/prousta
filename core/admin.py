@@ -31,6 +31,8 @@ from .models import (
     ReklamBanner,
     BannerKlik,
     VipPaket,
+    Shikayet,
+    Bloklama,
 )
 
 
@@ -1462,3 +1464,21 @@ class CustomSocialAuthAdmin(ModelAdmin):
     list_filter = ['provider']
     search_fields = ['user__username', 'uid']
     ordering = ['-id']
+
+
+@admin.register(Shikayet)
+class ShikayetAdmin(ModelAdmin):
+    list_display = ['id', 'sebeb', 'elan', 'istifadeci', 'sikayet_eden', 'status', 'yaradildi']
+    list_filter = ['status', 'sebeb']
+    list_editable = ['status']
+    search_fields = ['qeyd', 'elan__bashliq', 'istifadeci__username', 'sikayet_eden__username']
+    raw_id_fields = ['elan', 'istifadeci', 'sikayet_eden']
+    ordering = ['-yaradildi']
+
+
+@admin.register(Bloklama)
+class BloklamaAdmin(ModelAdmin):
+    list_display = ['bloklayan', 'bloklanan', 'yaradildi']
+    search_fields = ['bloklayan__username', 'bloklanan__username']
+    raw_id_fields = ['bloklayan', 'bloklanan']
+    ordering = ['-yaradildi']

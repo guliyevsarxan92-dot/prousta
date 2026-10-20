@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchController.dispose();
@@ -70,7 +73,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onSearchChanged(String value) {
+    setState(() {});
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (mounted) {
+        context.read<ElanProvider>().setFilters(query: value.trim());
+      }
+    });
+  }
+
   void _submitSearch(String value) {
+    _searchDebounce?.cancel();
     context.read<ElanProvider>().setFilters(query: value.trim());
   }
 
@@ -331,8 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     color: Color(0xFF94A3B8),
                                                   ),
                                                 ),
-                                                onChanged: (_) =>
-                                                    setState(() {}),
+                                                onChanged: _onSearchChanged,
                                               ),
                                             ),
                                             if (_searchController
@@ -419,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const Text(
                               'Kateqoriyalar',
                               style: TextStyle(
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 18.5,
                                 letterSpacing: 0.2,
                                 color: Color(0xFF17262A),
@@ -440,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         'Hamısı',
                                         style: TextStyle(
                                           fontSize: 13,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.w600,
                                           color: Color(0xFF007B52),
                                         ),
                                       ),
@@ -477,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               fontSize: 19,
                               letterSpacing: 0.2,
                               color: Color(0xFF17262A),
@@ -496,7 +509,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Sıfırla',
                               style: TextStyle(
                                 color: Color(0xFF007B52),
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),
                             ),
@@ -542,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Uyğun elan tapılmadı',
                               style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w600,
                                 color: Color(0xFF17262A),
                               ),
                             ),
@@ -750,7 +763,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11.5,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     color: isSelected
                         ? const Color(0xFF007B52)
                         : const Color(0xFF17262A),

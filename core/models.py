@@ -425,3 +425,64 @@ class VipPaket(models.Model):
             return []
 
 
+
+
+class Shikayet(models.Model):
+    """İstifadəçilərin elan və ya digər istifadəçi barədə şikayəti (Google Play UGC tələbi)."""
+    SEBEB_CHOICES = [
+        ('spam', 'Spam / reklam'),
+        ('saxta', 'Saxta elan / fırıldaqçılıq'),
+        ('uygunsuz', 'Uyğunsuz və ya təhqiramiz məzmun'),
+        ('tehdid', 'Təhdid / təqib'),
+        ('diger', 'Digər'),
+    ]
+    STATUS_CHOICES = [
+        ('yeni', 'Yeni'),
+        ('baxildi', 'Baxıldı'),
+        ('hell_edildi', 'Həll edildi'),
+        ('redd_edildi', 'Rədd edildi'),
+    ]
+
+    sikayet_eden = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='etdiyi_shikayetler')
+    elan = models.ForeignKey(Elan, on_delete=models.SET_NULL, null=True, blank=True, related_name='shikayetler')
+    istifadeci = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='haqqinda_shikayetler', verbose_name='Şikayət edilən istifadəçi'
+    )
+    sebeb = models.CharField('Səbəb', max_length=20, choices=SEBEB_CHOICES, default='diger')
+    qeyd = models.TextField('Qeyd', blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='yeni', db_index=True)
+    yaradildi = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Şikayət'
+        verbose_name_plural = 'Şikayətlər'
+        ordering = ['-yaradildi']
+
+    def __str__(self):
+        hedef = f"Elan #{self.elan_id}" if self.elan_id else f"İstifadəçi #{self.istifadeci_id}"
+        return f"{hedef} — {self.get_sebeb_display()}"
+
+
+class Bloklama(models.Model):
+    """İstifadəçinin digər istifadəçini bloklaması: elanları və mesajları gizlədilir."""
+    bloklayan = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blokladiqlari')
+    bloklanan = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bloklayanlar')
+    yaradildi = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Bloklama'
+        verbose_name_plural = 'Bloklamalar'
+        unique_together = ('bloklayan', 'bloklanan')
+
+    def __str__(self):
+        return f"{self.bloklayan} ⛔ {self.bloklanan}"
+
+    @classmethod
+    def bloklanmis_idler(cls, user):
+        """İstifadəçinin blokladığı və onu bloklayan istifadəçilərin ID-ləri."""
+        if not user or not user.is_authenticated:
+            return set()
+        a = cls.objects.filter(bloklayan=user).values_list('bloklanan_id', flat=True)
+        b = cls.objects.filter(bloklanan=user).values_list('bloklayan_id', flat=True)
+        return set(a) | set(b)

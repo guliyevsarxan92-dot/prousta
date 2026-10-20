@@ -204,6 +204,185 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
     );
   }
 
+  void _showReportDialog(ElanModel elan, int sellerId) {
+    if (!context.read<AuthProvider>().isAuthenticated) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AuthScreen()),
+      );
+      return;
+    }
+
+    String selectedReason = 'saxta';
+    final qeydCtrl = TextEditingController();
+    bool isSubmitting = false;
+
+    final reasons = [
+      {'key': 'saxta', 'label': 'Saxta elan / fırıldaqçılıq'},
+      {'key': 'spam', 'label': 'Spam və ya təkrarlanan elan'},
+      {'key': 'uygunsuz', 'label': 'Uyğunsuz / təhqiramiz məzmun'},
+      {'key': 'tehdid', 'label': 'Təhdid və ya təqib'},
+      {'key': 'diger', 'label': 'Digər'},
+    ];
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            title: Row(
+              children: const [
+                Icon(Icons.flag_outlined, color: Color(0xFFEF4444)),
+                SizedBox(width: 8),
+                Text('Elan haqqında şikayət', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Şikayət səbəbini seçin:', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                  const SizedBox(height: 8),
+                  RadioGroup<String>(
+                    groupValue: selectedReason,
+                    onChanged: (val) {
+                      if (val != null) setDialogState(() => selectedReason = val);
+                    },
+                    child: Column(
+                      children: reasons
+                          .map((r) => RadioListTile<String>(
+                                value: r['key']!,
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(r['label']!, style: const TextStyle(fontSize: 13.5)),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: qeydCtrl,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      hintText: 'Əlavə qeyd (istəyə bağlı)',
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
+                child: const Text('İmtina'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEF4444),
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: isSubmitting
+                    ? null
+                    : () async {
+                        setDialogState(() => isSubmitting = true);
+                        final messenger = ScaffoldMessenger.of(context);
+                        try {
+                          final msg = await ApiService.reportContent(
+                            elanId: elan.id,
+                            userId: sellerId > 0 ? sellerId : null,
+                            sebeb: selectedReason,
+                            qeyd: qeydCtrl.text.trim(),
+                          );
+                          if (ctx.mounted) Navigator.pop(ctx);
+                          messenger.showSnackBar(
+                            SnackBar(content: Text(msg)),
+                          );
+                        } catch (e) {
+                          setDialogState(() => isSubmitting = false);
+                          messenger.showSnackBar(
+                            SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+                          );
+                        }
+                      },
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Göndər'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showBlockConfirmation(int sellerId, String sellerName) {
+    if (!context.read<AuthProvider>().isAuthenticated) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AuthScreen()),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: const Text('İstifadəçini blokla', style: TextStyle(fontWeight: FontWeight.w600)),
+        content: Text(
+          '$sellerName adlı istifadəçini bloklamaq istəyirsiniz?\n\nBloklandıqdan sonra onun elanları və mesajları sizə görünməyəcək.',
+          style: const TextStyle(height: 1.45),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İmtina'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                final blocked = await ApiService.toggleBlockUser(sellerId);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        blocked
+                            ? '$sellerName bloklandı'
+                            : '$sellerName blokdan çıxarıldı',
+                      ),
+                    ),
+                  );
+                  if (blocked) {
+                    Navigator.pop(context); // Detail səhifəsindən çıxır
+                  }
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+                  );
+                }
+              }
+            },
+            child: const Text('Blokla'),
+          ),
+        ],
+      ),
+    );
+  }
+
   String _extractSellerName(Map<String, dynamic>? info) {
     if (info == null) return 'Peşəkar Usta';
     final adSoyad = info['ad_soyad']?.toString().trim() ?? '';
@@ -266,7 +445,6 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
     final sellerName = _extractSellerName(info);
     final sellerAvatar = info?['avatar']?.toString() ??
         (images.isNotEmpty ? images.first : null);
-    final ratingScore = (4.8 + (elan.id % 3) * 0.1).toStringAsFixed(1);
     const double galleryHeight = 310.0;
 
     return Scaffold(
@@ -373,7 +551,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                               elan.bashliq,
                               textAlign: TextAlign.left,
                               style: const TextStyle(
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 21,
                                 letterSpacing: 0.2,
                                 height: 1.25,
@@ -382,7 +560,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                             ),
                           ),
 
-                          // Price & Star Rating Row (from course_info_screen.dart)
+                          // Price & VIP Row
                           Padding(
                             padding: const EdgeInsets.only(
                               left: 16,
@@ -397,56 +575,36 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                 Text(
                                   elan.formattedPrice,
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w700,
                                     fontSize: 22,
                                     letterSpacing: 0.2,
                                     color: Color(0xFF007B52),
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    if (elan.isVip)
-                                      Container(
-                                        margin: const EdgeInsets.only(right: 8),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 3,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFFF59E0B),
-                                              Color(0xFFD97706),
-                                            ],
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: const Text(
-                                          'VİP',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
+                                if (elan.isVip)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFFF59E0B),
+                                          Color(0xFFD97706),
+                                        ],
                                       ),
-                                    Text(
-                                      ratingScore,
-                                      style: const TextStyle(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Text(
+                                      'VİP',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 19,
-                                        color: Color(0xFF475569),
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    const Icon(
-                                      Icons.star_rounded,
-                                      color: Color(0xFF0FA968),
-                                      size: 24,
-                                    ),
-                                  ],
-                                ),
+                                  ),
                               ],
                             ),
                           ),
@@ -575,7 +733,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                                         : 'U',
                                                     style: const TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w800,
+                                                      fontWeight: FontWeight.w600,
                                                       color: Color(0xFF007B52),
                                                     ),
                                                   )
@@ -619,7 +777,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                                         style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
-                                                              FontWeight.w800,
+                                                              FontWeight.w600,
                                                           color:
                                                               Color(0xFF17262A),
                                                         ),
@@ -664,7 +822,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                             label: const Text(
                                               'WhatsApp',
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w800,
+                                                fontWeight: FontWeight.w600,
                                                 color: Color(0xFF007B52),
                                               ),
                                             ),
@@ -678,7 +836,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                     'Xidmət haqqında ətraflı',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w600,
                                       color: Color(0xFF17262A),
                                     ),
                                   ),
@@ -746,28 +904,81 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                 ),
               ),
 
-              // 6. Top-left Back Button
-              Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 8,
-                  left: 12,
-                ),
-                child: SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: Material(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: Color(0xFF17262A),
-                        size: 19,
+              // 6. Top-left Back Button & Top-right More (Report / Block)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 8,
+                left: 12,
+                right: 12,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: Material(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        shape: const CircleBorder(),
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Color(0xFF17262A),
+                            size: 19,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if (!isOwner)
+                      SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: Material(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          shape: const CircleBorder(),
+                          child: PopupMenuButton<String>(
+                            icon: const Icon(
+                              Icons.more_vert_rounded,
+                              color: Color(0xFF17262A),
+                              size: 22,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            onSelected: (val) {
+                              if (val == 'report') {
+                                _showReportDialog(elan, sellerId);
+                              } else if (val == 'block') {
+                                _showBlockConfirmation(sellerId, sellerName);
+                              }
+                            },
+                            itemBuilder: (ctx) => [
+                              const PopupMenuItem(
+                                value: 'report',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.flag_outlined, size: 20, color: Color(0xFFEF4444)),
+                                    SizedBox(width: 10),
+                                    Text('Şikayət et'),
+                                  ],
+                                ),
+                              ),
+                              if (sellerId > 0)
+                                const PopupMenuItem(
+                                  value: 'block',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.block_rounded, size: 20, color: Color(0xFF64748B)),
+                                      SizedBox(width: 10),
+                                      Text('İstifadəçini blokla'),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
 
@@ -845,7 +1056,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                       Text(
                                         'Zəng et',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w800,
+                                          fontWeight: FontWeight.w600,
                                           fontSize: 15,
                                           color: Colors.white,
                                         ),
@@ -901,7 +1112,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                                       Text(
                                         'WhatsApp',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w800,
+                                          fontWeight: FontWeight.w600,
                                           fontSize: 15,
                                           color: Colors.white,
                                         ),
@@ -985,7 +1196,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   fontSize: 13.5,
                   letterSpacing: 0.2,
                   color: Color(0xFF007B52),
@@ -1025,7 +1236,7 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
               'prousta.az',
               style: TextStyle(
                 color: Color(0xFF007B52),
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
                 fontSize: 15,
               ),
             ),
