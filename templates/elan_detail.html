@@ -63,7 +63,7 @@
 {% endblock %}
 {% block robots %}{% if is_inactive or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
 {% block description %}{{ elan.bashliq }} — {{ elan.sheher }}{% if elan.sheher != "Bakı" %}, Azərbaycan{% endif %}. {% if elan.qiymet %}Qiymət: {{ elan.qiymet }} ₼. {% endif %}{{ elan.acaqlama|truncatechars:120 }} Prousta.az-da peşəkar usta tapın!{% endblock %}
-{% block keywords %}{{ elan.bashliq }}, {{ elan.kategori }} {{ elan.sheher }}, {{ elan.kategori|lower }} usta, {{ elan.kategori|lower }} qiymət, {{ elan.sheher }} usta tap, Prousta.az{% endblock %}
+{% block keywords %}{{ elan.bashliq }}, {{ elan.kategori }} {{ elan.sheher }}, {{ elan.kategori|lower }} üzrə xidmət, {{ elan.kategori|lower }} qiymət, {{ elan.sheher }} usta tap, Prousta.az{% endblock %}
 {% block og_title %}{{ elan.bashliq }} — {{ elan.sheher }}{% endblock %}
 {% block og_description %}{{ elan.acaqlama|truncatechars:200 }}{% endblock %}
 {% block og_image %}{% if elan.shekillar.first %}{{ elan.shekillar.first.shekil.url }}{% else %}https://prousta.az/static/og-image.jpg{% endif %}{% endblock %}
@@ -250,7 +250,7 @@
   {% if oxsar_elanlar %}
   <section class="pg-section" style="margin-top:36px">
     <div class="sec-head">
-      <h2>Oxşar elanlar və digər {{ elan.kategori.ad }} ustaları</h2>
+      <h2>{{ elan.kategori.ad }} üzrə oxşar elanlar</h2>
       {% if elan.kategori %}<a href="{% url 'xidmet_detail' elan.kategori.slug %}">Bütün {{ elan.kategori.ad }} elanları {% include 'partials/ui_icon.html' with name='arrow' %}</a>{% endif %}
     </div>
     <div class="service-grid">

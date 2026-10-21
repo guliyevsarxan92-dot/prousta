@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }} — Peşəkar Ustalar və Qiymətlər | Prousta.az{% elif aktiv_kategori.seo_title %}{{ aktiv_kategori.seo_title }}{% else %}{{ aktiv_kategori.ad }} Bakıda — Peşəkar Ustalar və Qiymətlər | Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üzrə {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ lokasiya_melumat.ad }} və ətrafında ({{ lokasiya_melumat.erazi }}) peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% elif aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} xidməti axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları{% if min_qiymet %}, qiymətlər {{ min_qiymet|floatformat:'-2' }} ₼-dən başlayır{% endif %}. Peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın!{% endif %}{% endblock %}
-{% block keywords %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} ustasi {{ lokasiya_melumat.slug }}, {{ lokasiya_melumat.tam_ad }} ustalar, Prousta.az{% else %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} ustası, {{ aktiv_kategori.ad|lower }} qiyməti, {{ aktiv_kategori.ad|lower }} elanları, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endif %}{% endblock %}
+{% block description %}{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} ərazisində {{ aktiv_kategori.ad|lower }} üzrə xidmət axtarırsınız? Prousta.az-da {{ lokasiya_melumat.ad }} və ətrafında ({{ lokasiya_melumat.erazi }}) peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% elif aktiv_kategori.seo_description %}{{ aktiv_kategori.seo_description }}{% else %}Bakıda {{ aktiv_kategori.ad|lower }} üzrə xidmət axtarırsınız? Prousta.az-da {{ aktiv_kategori.ad|lower }} elanları{% if min_qiymet %}, qiymətlər {{ min_qiymet|floatformat:'-2' }} ₼-dən başlayır{% endif %}. Peşəkar ustalarla birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın!{% endif %}{% endblock %}
+{% block keywords %}{% if lokasiya_melumat %}{{ aktiv_kategori.ad }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} {{ lokasiya_melumat.ad }}, {{ aktiv_kategori.ad|lower }} üzrə xidmət {{ lokasiya_melumat.ad }}, {{ lokasiya_melumat.tam_ad }} ustalar, Prousta.az{% else %}{{ aktiv_kategori.ad }} Bakı, {{ aktiv_kategori.ad|lower }} üzrə xidmət, {{ aktiv_kategori.ad|lower }} qiyməti, {{ aktiv_kategori.ad|lower }} elanları, usta tap Bakı, peşəkar {{ aktiv_kategori.ad|lower }}, Prousta.az{% endif %}{% endblock %}
 {% block robots %}{% if not kat_indexable or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
 {% block canonical %}{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% if seo_page > 1 %}?page={{ seo_page }}{% endif %}{% elif seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
 {% block canonical2 %}{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% if seo_page > 1 %}?page={{ seo_page }}{% endif %}{% elif seo_page > 1 %}/xidmet/{{ aktiv_kategori.slug }}/?page={{ seo_page }}{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}{% endblock %}
@@ -84,26 +84,26 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "{% if lokasiya_melumat %}{{ lokasiya_melumat.ad|escapejs }} ərazisində{% else %}Bakıda{% endif %} {{ aktiv_kategori.ad|lower|escapejs }} qiyməti nə qədərdir?",
+          "name": "{% if lokasiya_melumat %}{{ lokasiya_melumat.ad|escapejs }} ərazisində{% else %}Bakıda{% endif %} {{ aktiv_kategori.ad|lower|escapejs }} üzrə xidmətin qiyməti nə qədərdir?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "{% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} xidməti üzrə elanlarda qiymətlər təxminən {{ min_qiymet|floatformat:'-2' }} AZN-dən başlayır.{% else %}Qiymət görüləcək işin həcminə, detal və ehtiyat hissələrinin dəyərinə görə dəyişir.{% endif %} Ən sərfəli təklifi tapmaq üçün elanları müqayisə edib birbaşa ustalarla əlaqə saxlaya bilərsiniz."
+            "text": "{% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower|escapejs }} üzrə elanlarda qiymətlər təxminən {{ min_qiymet|floatformat:'-2' }} AZN-dən başlayır.{% else %}Qiymət görüləcək işin həcminə və mürəkkəbliyinə görə dəyişir.{% endif %} Bir neçə mütəxəssisin elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz."
           }
         },
         {
           "@type": "Question",
-          "name": "{{ aktiv_kategori.ad|escapejs }} ustasını necə çağırmaq olar?",
+          "name": "{{ aktiv_kategori.ad|escapejs }} üzrə xidmət necə sifariş edilir?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Prousta.az-da heç bir vasitəçi və komissiya yoxdur. Bəyəndiyiniz elandakı «Zəng et» və ya «WhatsApp» düyməsinə klikləyərək birbaşa usta ilə əlaqə qura və vaxt təyin edə bilərsiniz."
+            "text": "Prousta.az-da heç bir vasitəçi yoxdur. Elan kartındakı «Zəng et» və ya «WhatsApp» düymələrinə toxunaraq birbaşa mütəxəssislə əlaqə saxlaya və sifarişinizi qeydiyyatdan keçirə bilərsiniz."
           }
         },
         {
           "@type": "Question",
-          "name": "{{ aktiv_kategori.ad|escapejs }} xidmətinə zəmanət verilirmi?",
+          "name": "Xidmətə və görülən işə zəmanət verilirmi?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ustaların çoxu gördükləri təmir və quraşdırma işlərinə zəmanət verir. İşə başlamazdan əvvəl seçdiyiniz usta ilə zəmanət şərtlərini və görüləcək işləri dəqiqləşdirməyiniz tövsiyə olunur."
+            "text": "Zəmanət şərtləri xidmətin növünə və mütəxəssisin təklifinə görə dəyişir. Sifarişdən əvvəl görüləcək işi, zəmanətin olub-olmadığını və müddətini seçdiyiniz mütəxəssislə dəqiqləşdirin."
           }
         }
       ]
@@ -208,48 +208,48 @@
     <div class="sec-head"><h3>Tez-tez verilən suallar (FAQ)</h3></div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
-        <summary style="font-weight:700;font-size:15px;color:var(--tx)">Bakıda {{ aktiv_kategori.ad|lower }} xidmətinin qiyməti nə qədərdir?</summary>
+        <summary style="font-weight:700;font-size:15px;color:var(--tx)">{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }} ərazisində{% else %}Bakıda{% endif %} {{ aktiv_kategori.ad|lower }} üzrə xidmətin qiyməti nə qədərdir?</summary>
         <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
-          {% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} xidməti üzrə elanlarda qiymətlər təxminən <strong>{{ min_qiymet|floatformat:'-2' }} AZN</strong>-dən başlayır.{% else %}Qiymət görüləcək işin həcminə və mürəkkəbliyinə görə dəyişir.{% endif %} Bir neçə ustanın elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.
+          {% if min_qiymet %}Prousta.az-da {{ aktiv_kategori.ad|lower }} üzrə elanlarda qiymətlər təxminən <strong>{{ min_qiymet|floatformat:'-2' }} AZN</strong>-dən başlayır.{% else %}Qiymət görüləcək işin həcminə və mürəkkəbliyinə görə dəyişir.{% endif %} Bir neçə mütəxəssisin elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.
         </p>
       </details>
       <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
-        <summary style="font-weight:700;font-size:15px;color:var(--tx)">{{ aktiv_kategori.ad }} ustası ilə necə əlaqə saxlamaq olar?</summary>
+        <summary style="font-weight:700;font-size:15px;color:var(--tx)">{{ aktiv_kategori.ad }} üzrə xidmət necə sifariş edilir?</summary>
         <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
-          Prousta.az-da heç bir vasitəçi yoxdur. Elan kartındakı «Zəng et» və ya «WhatsApp» düymələrinə toxunaraq birbaşa usta ilə əlaqə saxlaya və sifarişinizi qeydiyyatdan keçirə bilərsiniz.
+          Prousta.az-da heç bir vasitəçi yoxdur. Elan kartındakı «Zəng et» və ya «WhatsApp» düymələrinə toxunaraq birbaşa mütəxəssislə əlaqə saxlaya və sifarişinizi qeydiyyatdan keçirə bilərsiniz.
         </p>
       </details>
       <details class="panel" style="padding:16px 20px;border-radius:12px;cursor:pointer;background:#fff;border:1px solid var(--border)">
         <summary style="font-weight:700;font-size:15px;color:var(--tx)">Xidmətə və görülən işə zəmanət verilirmi?</summary>
         <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
-          Təmir və servis xidmətləri göstərən ustaların əksəriyyəti işlərinə zəmanət verir. İşə başlamazdan öncə usta ilə zəmanət müddətini dəqiqləşdirmək tövsiyə olunur.
+          Zəmanət şərtləri xidmətin növünə və mütəxəssisin təklifinə görə dəyişir. Sifarişdən əvvəl görüləcək işi, zəmanətin olub-olmadığını və müddətini seçdiyiniz mütəxəssislə dəqiqləşdirin.
         </p>
       </details>
     </div>
   </section>
 
   <section class="join-banner pg-section" style="margin-top:30px">
-    <div class="join-copy"><h2>{{ aktiv_kategori.ad }} ustasısınız?</h2><p>Xidmətlərinizi minlərlə potensial müştəriyə təqdim edin. Qeydiyyat pulsuzdur!</p></div>
+    <div class="join-copy"><h2>{{ aktiv_kategori.ad }} üzrə xidmət göstərirsiniz?</h2><p>Xidmətlərinizi minlərlə potensial müştəriyə təqdim edin. Qeydiyyat pulsuzdur!</p></div>
     <a href="{% url 'elan_yarat' %}" class="join-button" style="margin-right:0">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a>
   </section>
 
   <!-- Kateqoriyanın Ətraflı SEO Mətni -->
   <section class="panel prose" style="padding:28px 32px;margin-top:24px;border-radius:14px;border:1px solid var(--border);background:#fff">
     {% if lokasiya_melumat %}
-      <h2>{{ lokasiya_melumat.tam_ad }} üzrə Peşəkar {{ aktiv_kategori.ad }} Xidməti</h2>
-      <p><strong>{{ lokasiya_melumat.ad }}</strong> və ətraf ərazilərdə ({{ lokasiya_melumat.erazi }}) operativ və etibarlı {{ aktiv_kategori.ad|lower }} axtarırsınızsa, <strong>Prousta.az</strong> ən doğru ünvandır. Platformamızda {{ lokasiya_melumat.ad }} ərazisində fəaliyyət göstərən, çağırışlara ən qısa müddətdə (30-60 dəqiqə ərzində) gələn təcrübəli ustaların elanları toplanmışdır.</p>
-      <h3>{{ lokasiya_melumat.ad }} ərazisində usta çağırmağın üstünlükləri</h3>
+      <h2>{{ lokasiya_melumat.tam_ad }} üzrə {{ aktiv_kategori.ad }} — Peşəkar xidmət</h2>
+      <p><strong>{{ lokasiya_melumat.ad }}</strong> və ətraf ərazilərdə ({{ lokasiya_melumat.erazi }}) operativ və etibarlı {{ aktiv_kategori.ad|lower }} axtarırsınızsa, <strong>Prousta.az</strong> ən doğru ünvandır. Platformamızda {{ lokasiya_melumat.ad }} ərazisində xidmət göstərən mütəxəssislərin elanları toplanmışdır.</p>
+      <h3>{{ lokasiya_melumat.ad }} ərazisində xidmət seçimi</h3>
       <ul style="padding-left:20px;line-height:1.8">
-        <li><strong>Sürətli çatdırılma və operativ gəliş:</strong> Usta sizinlə eyni rayonda və ya qonşu mikrorayonda olduğu üçün tıxaclarda vaxt itirmədən qısa zamanda ünvana çatır.</li>
+        <li><strong>Rahat əlaqə və vaxt seçimi:</strong> Xidmətin göstəriləcəyi yeri və vaxtı seçdiyiniz mütəxəssislə birbaşa razılaşdıra bilərsiniz.</li>
         <li><strong>Heç bir komissiya olmadan birbaşa qiymət:</strong> Arada şirkət və ya vasitəçi faizi olmadan birbaşa usta ilə əlaqə saxlayıb qiyməti razılaşdırırsınız.</li>
-        <li><strong>Bütün məhəllə və mikrorayonlara xidmət:</strong> {{ lokasiya_melumat.erazi }} daxil olmaqla bütün yaxın ərazilərdə yerində təmir, diaqnostika və quraşdırma.</li>
+        <li><strong>Ərazi üzrə seçim:</strong> {{ lokasiya_melumat.erazi }} və yaxın ərazilərdə xidmət göstərən mütəxəssislərin təkliflərini müqayisə edin.</li>
       </ul>
-      <p style="margin-top:12px">Əgər siz də {{ lokasiya_melumat.ad }} və ətrafında {{ aktiv_kategori.ad|lower }} kimi xidmət göstərirsinizsə, dərhal <strong>pulsuz elan yerləşdirərək</strong> yerli müştərilərin sizə birbaşa zəng etməsini təmin edin.</p>
+      <p style="margin-top:12px">Əgər siz də {{ lokasiya_melumat.ad }} və ətrafında {{ aktiv_kategori.ad|lower }} üzrə xidmət göstərirsinizsə, dərhal <strong>pulsuz elan yerləşdirərək</strong> yerli müştərilərin sizə birbaşa zəng etməsini təmin edin.</p>
     {% elif aktiv_kategori.seo_metn %}
       {{ aktiv_kategori.seo_metn|safe }}
     {% else %}
-      <h2>Bakıda Peşəkar {{ aktiv_kategori.ad }} Xidməti</h2>
-      <p>Ev və ofislərdə baş verən nasazlıqların aradan qaldırılması və keyfiyyətli təmir işləri üçün təcrübəli {{ aktiv_kategori.ad|lower }} tapmaq vacibdir. <strong>Prousta.az</strong> platforması vasitəsilə Bakının bütün rayonlarında (Yasamal, Nərimanov, Xətai, Nəsimi, Binəqədi, Sabunçu və s.) və Abşeron ərazisində fəaliyyət göstərən peşəkar ustaları bir məkanda tapa bilərsiniz.</p>
+      <h2>Bakıda {{ aktiv_kategori.ad }} üzrə peşəkar xidmət</h2>
+      <p>{{ aktiv_kategori.ad }} üzrə xidmət axtararkən mütəxəssislərin təcrübəsini, iş nümunələrini və qiymət təkliflərini müqayisə edə bilərsiniz. <strong>Prousta.az</strong> platforması vasitəsilə Bakının bütün rayonlarında (Yasamal, Nərimanov, Xətai, Nəsimi, Binəqədi, Sabunçu və s.) və Abşeron ərazisində fəaliyyət göstərən peşəkar ustaları bir məkanda tapa bilərsiniz.</p>
       <h3>Niyə Prousta.az-da usta axtarmalısınız?</h3>
       <ul style="padding-left:20px;line-height:1.8">
         <li><strong>Birbaşa əlaqə:</strong> Heç bir vasitəçi komissiyası olmadan birbaşa usta ilə zəng və ya WhatsApp vasitəsilə danışın.</li>

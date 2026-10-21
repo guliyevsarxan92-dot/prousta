@@ -12,9 +12,8 @@ SHEHER = 'Bakı'
 
 def _acaqlama(ad: str) -> str:
     """Hər kateqoriya üçün uyğun açıqlama mətni."""
-    ad_l = ad.lower()
     return (
-        f"Peşəkar {ad_l} xidməti Bakıda və ətraf rayonlarda. "
+        f"{ad} üzrə peşəkar xidmət Bakıda və ətraf rayonlarda. "
         f"Çoxillik təcrübəli mütəxəssis komandası, keyfiyyətli iş, "
         f"münasib qiymətlər və zəmanətli xidmət təklif edirik.\n\n"
         f"✅ Pulsuz qiymətləndirmə\n"
@@ -25,7 +24,7 @@ def _acaqlama(ad: str) -> str:
         f"✅ Bakının bütün rayonlarına xidmət\n\n"
         f"24/7 əlaqə üçün zəng edin və ya saytdan mesaj göndərin. "
         f"Sifarişiniz qısa müddətdə qəbul ediləcək və ən qısa zamanda "
-        f"ünvanınıza usta yönləndiriləcək.\n\n"
+        f"xidmətin yeri və vaxtı sizinlə razılaşdırılacaq.\n\n"
         f"Prousta.az — Azərbaycanın etibarlı xidmət platforması."
     )
 

@@ -64,8 +64,7 @@ Gree, Mitsubishi Electric, Mitsubishi Heavy, LG, Samsung, AUX, Midea, Bosch, Bek
 - 10 ildən artıq təcrübəli ustalar
 - Görülən hər bir işə rəsmi yazılı zəmanət
 - Günün istənilən vaxtı operativ çıxış
-
-Açar sözlər: kondisioner ustasi {area}, kondisioner temiri baki, kondisioner qurasdirilmasi, kondisioner yuyulmasi, freon qaz vurulmasi r410 r22, kondisioner plata temiri, kondisioner motoru, inverter kondisioner servisi, ucuz kondisioner ustasi, tecili kondisioner temiri.""",
+""",
 
             """Kondisioneriniz soyutmur, qızdırmır, su axıdır və ya səs salır? Narahat olmayın! {area} ərazisində peşəkar kondisioner ustası xidməti ilə problemlərinizi ən qısa zamanda həll edirik.
 
@@ -86,8 +85,7 @@ Niyə bizi seçməlisiniz?
 - Münasib və şəffaf qiymətlər
 - Keyfiyyətə 100% zəmanət
 - Hər növ orijinal hissələr
-
-Açar sözlər: kondisioner ustasi {area}, baki kondisioner temiri, freon qaz vurulmasi, kondisioner yuma xidmeti, kondisioner qurasdirma usta, split kondisioner temiri, zemanetli kondisioner ustasi.""",
+""",
 
             """{area} üzrə peşəkar və operativ kondisioner təmiri və montajı xidməti. İllərin təcrübəsinə malik ustalarımız istənilən mürəkkəblikdə olan nasazlıqları operativ şəkildə aradan qaldırır.
 
@@ -102,8 +100,7 @@ Açar sözlər: kondisioner ustasi {area}, baki kondisioner temiri, freon qaz vu
 
 Bütün Gree, LG, Samsung, AUX, Midea, Bosch, Beko, Mitsubishi və digər markalara tam zəmanət verilir. 
 24/7 əlaqə saxlaya bilərsiniz.
-
-Açar sözlər: kondisioner temiri {area}, kondisioner qaz vurulmasi, kondisioner ustasi baki, kondisioner yuyulmasi dermanla, inverter kondisioner ustasi, kondisioner montaj qiymeti, tecili kondisioner servisi."""
+"""
         ],
         'prices': [15, 20, 25, 30, 35, 40, 50, 60, None],
         'img_prefix': 'kondisioner',
@@ -150,8 +147,7 @@ Təmir etdiyimiz markalar:
 - Orijinal zavod ehtiyat hissələri
 - Rəsmi zəmanət
 - Təcrübəli və məsuliyyətli ustalar
-
-Açar sözlər: kombi ustasi {area}, kombi temiri baki, kombi yuyulmasi dermanla, radiatorlarin yuyulmasi, kombi plata temiri, kombi qurasdirilmasi, kombi tezyiq dusur, kombi isti su vermir, immergas kombi temiri, baxi kombi ustasi, zemanetli kombi servisi.""",
+""",
 
             """Kombiniz isti su vermir, radiatorlar qızmır, kombi səs edir və ya təzyiq daim düşür? {area} ərazisində təcrübəli kombi ustalarımız dərhal köməyinizə çatacaq!
 
@@ -167,8 +163,7 @@ Xidmət göstərilən markalar:
 Baxi, Immergas, Bosch, Demirdöküm, Ariston, E.C.A, Viessmann, Ferroli, Thermex və bütün digər modellər.
 
 Zəmanətli və operativ xidmət üçün 24/7 əlaqə saxlaya bilərsiniz.
-
-Açar sözlər: kombi ustasi {area}, kombi temiri, radiatorlarin xususi aparatla yuyulmasi, kombi plata ustasi, kombi su axidir, kombi sirkulyasiya nasosu, baki kombi temiri, tecili kombi ustasi.""",
+""",
 
             """{area} və Bakıətrafı qəsəbələrdə fəaliyyət göstərən peşəkar kombi servisi. Kombinizin uzunömürlü və qənaətcil işləməsi üçün ən keyfiyyətli təmir və profilaktika xidməti təklif edirik.
 
@@ -181,8 +176,7 @@ Görülən işlər:
 6. Yanma kamerasının və injektorların təmizlənməsi
 
 Bütün işlərə yazılı zəmanət verilir. Orijinal hissələrdən istifadə olunur.
-
-Açar sözlər: kombi ustasi {area}, kombi yuyulmasi aparati, kombi temiri baki, kombi esenjor temiri, demirdokum kombi ustasi, ariston kombi temiri, baxi plata temiri, tecili kombi xidmeti."""
+"""
         ],
         'prices': [20, 25, 30, 35, 40, 45, 50, 60, None],
         'img_prefix': 'kombi',
@@ -226,8 +220,7 @@ Görülən işlər:
 - Standartlara tam uyğun quraşdırma və keyfiyyətli materiallar
 - Görülən işlərə rəsmi zəmanət
 - Texniki servis və profilaktik baxış
-
-Açar sözlər: havalandirma ustasi {area}, ventilyasiya sistemleri qurasdirilmasi, restoran havalandirmasi baki, manqal havalandirmasi zontik, kanal tipli havalandirma motoru, salyangoz motor temiri, havalandirma borulari, havalandirma temizlenmesi, havalandirma layihe montaj.""",
+""",
 
             """{area} ərazisində hər növ ictimai-iaşə obyektləri və sənaye sahələri üçün etibarlı havalandırma xidməti. Güclü çəkim, təmiz hava və qoxusuz mühit təmin edirik!
 
@@ -240,8 +233,7 @@ Xidmətlərimiz:
 🔹 Təmiz hava verən (pritok) və çirkli hava sovuran (vıtajka) sistemlərin balanslaşdırılması
 
 İllərin təcrübəsi ilə obyektiniz üçün ən optimal və qənaətcil havalandırma həllini təklif edirik.
-
-Açar sözlər: havalandirma ustasi {area}, donerxana havalandirmasi, restoran havalandirma zontiki, kafe ventilyasiya, havalandirma motoru temiri, nerj zontik qurasdirma, baki havalandirma servisi.""",
+""",
 
             """Havalandırma sisteminiz yaxşı çəkmir, səs-küy salır və ya məkanda yemək qoxusu qalır? {area} üzrə peşəkar havalandırma ustası xidmətimizlə probleminizi tez bir zamanda həll edirik.
 
@@ -253,8 +245,7 @@ Görülən işlər:
 5. Rekuperator və filtrasiya bloklarının quraşdırılması
 
 İstənilən miqyasda işləri dəqiqliklə və zəmanətlə icra edirik.
-
-Açar sözlər: havalandirma temiri {area}, ventilyasiya ustasi baki, havalandirma sistemleri, aspirasiya sistemleri, havalandirma temizliyi, vıtajka temiri, manqal kapotu ustasi."""
+"""
         ],
         'prices': [30, 40, 50, 60, 70, 80, 100, None],
         'img_prefix': 'havalandirma',
@@ -300,8 +291,7 @@ Samsung, LG, Bosch, Beko, Indesit, Hotpoint-Ariston, Siemens, Candy, Vestel, Ele
 - Orijinal və zəmanətli ehtiyat hissələri
 - Görülən işə yazılı zəmanət
 - Münasib qiymətlər
-
-Açar sözlər: paltaryuyan ustasi {area}, paltaryuyan temiri baki, paltaryuyan su bosaltmir pompa, paltaryuyan su qizdirmir ten, paltaryuyan podsipnik deyisimi, paltaryuyan plata temiri beyin, paltaryuyan cox ses edir, unvanda paltaryuyan temiri, samsung paltaryuyan temiri, lg paltaryuyan ustasi.""",
+""",
 
             """Paltaryuyan maşınınız işləmir, proqramı yarımçıq saxlayır, su axıdır və ya qapısı açılmır? {area} ərazisində təcrübəli ustalarımız evinizə gələrək problemi yerindəcə həll edir.
 
@@ -314,8 +304,7 @@ Xidmətlərimiz:
 🔹 Motor və remen təmiri
 
 Bütün işlərə zəmanət verilir. Əlaqə saxlayın, eyni gündə təmir edək!
-
-Açar sözlər: paltaryuyan ustasi {area}, paltaryuyan masin temiri, paltaryuyan su axidir, bosch paltaryuyan temiri, beko paltaryuyan ustasi, paltaryuyan remen qirilib, paltaryuyan temiri unvanda baki.""",
+""",
 
             """{area} üzrə zəmanətli paltaryuyan maşın təmiri xidməti. Hər növ nasazlıq peşəkar ustalar tərəfindən orijinal detallarla aradan qaldırılır.
 
@@ -327,8 +316,7 @@ Görülən işlər:
 5. Qapı manjeti və şlanqların dəyişdirilməsi
 
 Hər bir işimizə rəsmi zəmanət verilir.
-
-Açar sözlər: paltaryuyan temiri {area}, paltaryuyan ustasi baki, paltaryuyan podsiplik temiri, avtomat paltaryuyan ustasi, indesit paltaryuyan temiri, ariston paltaryuyan ustasi, tecili paltaryuyan temiri."""
+"""
         ],
         'prices': [15, 20, 25, 30, 35, 40, 50, None],
         'img_prefix': 'paltaryuyan',
@@ -374,8 +362,7 @@ Bosch, Siemens, Beko, Samsung, LG, Ariston, Indesit, Electrolux, Gorenje, Whirlp
 - Orijinal hissələr və peşəkar alətlər
 - Rəsmi zəmanət
 - Sərfəli qiymətlər
-
-Açar sözlər: qabyuyan ustasi {area}, qabyuyan temiri baki, qabyuyan masin temiri, qabyuyan su qizdirmir ten, qabyuyan yaxsi yumur, qabyuyan pompa temiri, qabyuyan plata temiri, bosch qabyuyan temiri, beko qabyuyan ustasi, zemanetli qabyuyan servisi.""",
+""",
 
             """Qabyuyanınız işə düşmür, su sızdırır, xəta kodu verir və ya qabları natəmiz çıxarır? {area} ərazisində peşəkar qabyuyan ustası ilə əlaqə saxlayın, operativ şəkildə həll edək.
 
@@ -388,8 +375,7 @@ Xidmətlər:
 🔹 Filtr və daxili sistemlərin ərpdən təmizlənməsi
 
 Bütün markalara orijinal detallarla zəmanətli təmir təqdim edirik.
-
-Açar sözlər: qabyuyan ustasi {area}, qabyuyan masin temiri baki, qabyuyan su axidir aquastop, qabyuyan tablet erimir, siemens qabyuyan ustasi, ariston qabyuyan temiri, unvanda qabyuyan temiri.""",
+""",
 
             """{area} və Bakı qəsəbələrində qabyuyan maşınların peşəkar təmiri və montajı. İllərin təcrübəsinə malik ustalarımız hər bir problemi keyfiyyətlə aradan qaldırır.
 
@@ -401,8 +387,7 @@ Görülən işlər:
 5. Yeni qabyuyan maşınların quraşdırılması
 
 İşimizə tam zəmanət veririk.
-
-Açar sözlər: qabyuyan temiri {area}, qabyuyan ustasi baki, qabyuyan qurasdirilmasi, qabyuyan ehtiyat hisseleri, electrolux qabyuyan temiri, samsung qabyuyan ustasi, tecili qabyuyan servisi."""
+"""
         ],
         'prices': [20, 25, 30, 35, 40, 50, None],
         'img_prefix': 'qabyuyan',
@@ -448,8 +433,7 @@ Samsung, LG, Bosch, Beko, Indesit, Liebherr, Hitachi, Sharp, Atlant, Biryusa, Ve
 - Orijinal motor və ehtiyat hissələri
 - Görülən hər bir işə yazılı zəmanət
 - Münasib və şəffaf qiymətlər
-
-Açar sözlər: soyuducu ustasi {area}, soyuducu temiri baki, no frost soyuducu temiri, soyuducu qaz vurulmasi freon r600a r134a, soyuducu kompressor deyisimi, soyuducu alt hisse soyutmur, soyuducu plata temiri, samsung soyuducu ustasi, lg soyuducu temiri, atlant soyuducu ustasi, tecili soyuducu ustasi.""",
+""",
 
             """Soyuducunuz yaxşı soyutmur, xarlanır, motoru sönmür və ya qəribə səslər çıxarır? {area} ərazisində təcrübəli soyuducu ustalarımız dərhal ünvanınıza gəlir!
 
@@ -462,8 +446,7 @@ Xidmətlər:
 🔹 Qapı rezini və termostat dəyişimi
 
 Orijinal hissələr və 100% zəmanət.
-
-Açar sözlər: soyuducu ustasi {area}, soyuducu temiri, nofrost soyuducu buz baglayir, soyuducu motoru ses edir, beko soyuducu ustasi, bosch soyuducu temiri, baki soyuducu ustasi, unvanda soyuducu temiri.""",
+""",
 
             """{area} və Bakı qəsəbələrində bütün növ soyuducuların etibarlı təmiri. Peşəkar ustalarımız tərəfindən ən mürəkkəb nasazlıqlar belə yerindəcə həll olunur.
 
@@ -475,8 +458,7 @@ Görülən işlər:
 5. Vitrin və ticarət soyuducularına texniki baxış
 
 Yazılı zəmanət təqdim edirik. 24/7 əlaqə saxlaya bilərsiniz.
-
-Açar sözlər: soyuducu temiri {area}, soyuducu ustasi baki, freon qaz dolumu, soyuducu ehtiyat hisseleri, liebherr soyuducu temiri, hitachi soyuducu ustasi, tecili soyuducu servisi."""
+"""
         ],
         'prices': [20, 25, 30, 35, 40, 50, 60, None],
         'img_prefix': 'soyuducu',
@@ -519,8 +501,7 @@ Mənzillərdə, həyət evlərində, villalarda, ofis və obyektlərdə gizli su
 - Vaxta və təmir xərclərinə böyük qənaət
 - 100% dəqiq nəticəyə zəmanət
 - 24/7 operativ çıxış
-
-Açar sözlər: su sizma ustasi {area}, su sizmasi teyini baki, akustik aparatla su sizmasi axtarisi, termal kamera su sizma, dagitmadan su sizmasi tapilmasi, gizli su borusu sizmasi, kombi tezyiq dusmesi su sizmasi, su sizintisi teyini, qonsuya su damir usta, santexnik su sizma.""",
+""",
 
             """Evinizdə su sızır, divarlar nəm çəkir, kombinin barı daim düşür və ya su sayğacı öz-özünə fırlanır? {area} ərazisində xüsusi aparatlarla təchiz olunmuş ustalarımız dağıtmadan dərhal təyin edir!
 
@@ -532,8 +513,7 @@ Xidmətlər:
 🔹 Santexnika xidmətləri və kran/boru dəyişimi
 
 100% dəqiqlik və zəmanət.
-
-Açar sözlər: su sizma ustasi {area}, su sizintisi tapilmasi baki, termal kamera ile sizma axtarisi, su borusu partlayib, qirmadan su sizmasi teyini, baki santexnik su sizma.""",
+""",
 
             """{area} və bütün Bakı üzrə qırmadan və dağıtmadan su sızmalarının aparatla dəqiq təyini. Ən son model termal kamera və akustik cihazlarla sızma nöqtəsini 1 sm dəqiqliklə tapırıq.
 
@@ -545,8 +525,7 @@ Görülən işlər:
 5. Qonşuya su axması problemlərinin aradan qaldırılması
 
 Bizimlə əlaqə saxlayın, evinizi dağıtmadan problemi həll edək!
-
-Açar sözlər: su sizma teyini {area}, su sizmasi ustasi baki, isti pol su sizmasi, akustik su axtarma cihazi, su sizinti servisi, pesekar santexnik usta."""
+"""
         ],
         'prices': [30, 40, 50, 60, 70, 80, None],
         'img_prefix': 'su_sizma',
@@ -590,8 +569,7 @@ Bina mənzillərində, fərdi həyət evlərində, restoran, kafe, otel, sex və
 - 24/7 təcili qəza xidməti (gecə-gündüz zənglər qəbul olunur)
 - Ən çətin tıxanmaların operativ həlli
 - Zəmanətli və keyfiyyətli xidmət
-
-Açar sözlər: kanalizasiya ustasi {area}, kanalizasiya acilmasi baki, tixanmis kanalizasiya borusu acilmasi, aparatla kanalizasiya temizleme, trosla kanalizasiya acilmasi, hidrodinamik kanalizasiya yuma, trap acilmasi, unitaz acilmasi, 24 saat kanalizasiya ustasi, baki kanalizasiya temizleme xidmeti.""",
+""",
 
             """Kanalizasiya borunuz tutulub, su geri qayıdır və ya pis qoxu gəlir? {area} ərazisində 24/7 fəaliyyət göstərən peşəkar kanalizasiya xidmətimizə müraciət edin!
 
@@ -603,8 +581,7 @@ Xidmətlər:
 🔹 Boru qırılmalarının və nasazlıqların təmiri
 
 Heç bir yeri dağıtmadan səliqəli və zəmanətlə iş təhvil verilir.
-
-Açar sözlər: kanalizasiya ustasi {area}, kanalizasiya borusu tutulub, elektrotros kanalizasiya, trap temizleme, unitaz tutulmasi acilmasi, baki kanalizasiya ustasi, tecili kanalizasiya acan.""",
+""",
 
             """{area} və bütün Bakı qəsəbələrində kanalizasiya xətlərinin aparatla açılması və yuyulması. 
 
@@ -616,8 +593,7 @@ Görülən işlər:
 5. Pis qoxunun kökündən həlli
 
 24 saat xidmətinizdəyik. Zəmanətli iş.
-
-Açar sözlər: kanalizasiya acilmasi {area}, kanalizasiya temizleme baki, kanalizasiya aparati, restoran kanalizasiya yuma, unitaz acan usta, zemanetli kanalizasiya xidmeti."""
+"""
         ],
         'prices': [20, 25, 30, 35, 40, 50, 60, None],
         'img_prefix': 'kanalizasiya',
