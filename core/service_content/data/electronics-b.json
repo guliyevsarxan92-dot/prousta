@@ -1,0 +1,52 @@
+{
+  "planset-temiri": {
+    "name": "Planşet təmiri", "heading": "Planşet təmiri — ekran, batareya və enerji sistemi",
+    "description": "Planşet ekranı, toxunma və batareya təmiri üzrə elanları müqayisə edin. Model, məlumat ehtiyatı və hissə uyğunluğunu servisə bildirin.",
+    "intro": "Planşetin dəqiq modelini və ekranla toxunma problemini ayrı göstərin. Qələm və klaviatura kimi aksesuarlarla bağlı nasazlıq varsa bunları da müraciətə əlavə edin.",
+    "scope": ["Ekran və toxunma diaqnostikası", "Şarj və batareya problemi", "Modelə uyğun proqram xidməti"],
+    "pricing": ["Ekran komplektinin növü", "Batareya və port uyğunluğu", "Məlumat köçürülməsi ehtiyacı"],
+    "prepare": ["Model kodu və əlamətlər", "Faylların ehtiyat nüsxəsi", "Problemli aksesuarın modeli"],
+    "questions": [["Şüşə və ekran komplekti eyni təmirdirmi?", "Modelin quruluşundan və zədədən asılıdır. Hansı hissənin dəyişdiriləcəyini və toxunma testini təklifdə dəqiqləşdirin."], ["Məlumatların saxlanmasını necə razılaşdırım?", "Servisə faylların sizin üçün vacib olduğunu bildirin. Silinmə və proqram bərpası üçün əvvəlcədən razılıq qaydası müəyyən edin."]],
+    "queries": ["planşet təmiri", "planşet ekran dəyişimi", "iPad servisi"], "related": ["telefon-ustasi", "komputer-ustasi"], "sources": ["apple-service"]
+  },
+  "krosna-antena-ustasi": {
+    "name": "Krosna antena ustası", "heading": "Krosna antena ustası — siqnal, qəbuledici və quraşdırma",
+    "description": "Peyk antenası quraşdırılması və siqnal problemi üçün usta seçin. Antena, qəbuledici, kabel xətti və giriş imkanını əvvəlcədən dəqiqləşdirin.",
+    "intro": "Kanalların görünməməsi televizor, qəbuledici və ya antena xətti ilə bağlı ola bilər. Neçə televizorun qoşulduğunu və problemin hamısında olub-olmadığını izah edin.",
+    "scope": ["Antena istiqaməti və siqnal baxışı", "Kabel və qəbuledici diaqnostikası", "Yeni antena və çıxış quraşdırılması"],
+    "pricing": ["Dam və balkona giriş", "Kabelin uzunluğu və çıxış sayı", "Avadanlıqla sazlamanın ayrı qiyməti"],
+    "prepare": ["Qəbuledici və antena şəkli", "Xəta mesajı və kanal vəziyyəti", "Quraşdırma yerinin əlçatanlığı"],
+    "questions": [["Kanal siyahısı yenilənməsi siqnal problemini həll edirmi?", "Əvvəl siqnalın və xəttin vəziyyəti yoxlanmalıdır. Proqram sazlaması ilə fiziki antena işinin həcmini ayrıca soruşun."], ["Yeni kabel qiymətə daxildirmi?", "Metrajı, birləşmələri və əlavə televizor çıxışlarını təklifdə göstərin. Materialın kim tərəfindən təmin edildiyini dəqiqləşdirin."]],
+    "queries": ["krosna ustası", "peyk antenası quraşdırılması", "antena siqnal yoxdur"], "related": ["televizor-ustasi", "elektrik"], "sources": []
+  },
+  "kamera-ustasi": {
+    "name": "Kamera ustası", "heading": "Təhlükəsizlik kamerası ustası — quraşdırma və sistem xidməti",
+    "description": "Müşahidə kamerası quraşdırılması, qeyd və uzaqdan baxış problemləri üçün xidmət seçin. Kamera sayı, kabel və məlumat girişlərini dəqiqləşdirin.",
+    "intro": "Müşahidə kamerası sistemində görüntü, yazma və uzaqdan giriş ayrı yoxlanır. Yeni quraşdırmada müşahidə nöqtələrini, işıq şəraitini və saxlama tələbinizi əvvəlcədən bildirin.",
+    "scope": ["Kamera və qeyd cihazı montajı", "Şəbəkə və uzaqdan giriş sazlaması", "Yazma və görüntü probleminin baxışı"],
+    "pricing": ["Kamera sayı və xüsusiyyətləri", "Kabel marşrutu və yaddaş həcmi", "Şəbəkə işi və texniki dəstək"],
+    "prepare": ["Məkan planı və kamera nöqtələri", "Mövcud avadanlığın modeli", "Giriş hüququ veriləcək şəxslər"],
+    "questions": [["Quraşdırma bitəndə hesab kimdə qalmalıdır?", "Sistemə inzibati girişin sizə təhvil verilməsini razılaşdırın. İlkin şifrələrin dəyişdirilməsi və sonrakı dəstək qaydasını soruşun."], ["Videonun neçə gün saxlanacağını necə öyrənim?", "Kamera sayı, görüntü parametrləri və diskə əsaslanan hesab tələb edin. Təklifdə saxlama şərti və parametrlər aydın göstərilməlidir."]],
+    "queries": ["kamera quraşdırılması", "təhlükəsizlik kamerası ustası", "müşahidə sistemi servisi"], "related": ["elektrik", "komputer-ustasi", "foto-video-aparatlar"], "sources": []
+  },
+  "printer-ustasi": {
+    "name": "Printer ustası", "heading": "Printer təmiri — çap keyfiyyəti, kağız və şəbəkə problemləri",
+    "description": "Printer və çoxfunksiyalı cihaz üçün təmir seçin. Model, çap nümunəsi, kartric tipi və şəbəkə bağlantısı barədə məlumat hazırlayın.",
+    "intro": "Kağızın ilişməsi, solğun çap və kompüterdən çapın getməməsi fərqli işlərdir. Lazer və mürəkkəbli cihazın modelini, problemli çap nümunəsini və bağlantı tipini bildirin.",
+    "scope": ["Çap və kağız ötürməsinin baxışı", "Kartric və çap hissəsinin diaqnostikası", "Şəbəkə və sürücü sazlanması"],
+    "pricing": ["Kartric xidməti ilə təmirin fərqi", "Hissə və sərf materialı", "Ofisdə baxış və cihaz daşınması"],
+    "prepare": ["Model və kartric kodu", "Problemli çap nümunəsi", "Kompüter və şəbəkə bağlantısı"],
+    "questions": [["Kartric doldurulması hər çap qüsurunu həll edirmi?", "Qüsurun mənbəyi yoxlanmalıdır. Kartric, mexanizm və digər hissələr üzrə nəticəni ayrıca soruşun."], ["Bir neçə kompüterə qoşulma qiymətə daxildirmi?", "İş yerlərinin sayını və şəbəkə şərtini əvvəl bildirin. Sürücü quraşdırılması ilə cihaz təmirini ayrıca razılaşdırın."]],
+    "queries": ["printer ustası", "printer təmiri", "printer çap etmir"], "related": ["komputer-ustasi", "cap-isleri"], "sources": []
+  },
+  "diger-elektronika": {
+    "name": "Digər elektronika ustaları", "heading": "Digər elektron cihazların təmiri — modelə uyğun diaqnostika",
+    "description": "Audio, oyun və ayrıca bölməsi olmayan elektron cihaz üçün servis seçin. Model, enerji adapteri, nasazlıq və təhvil şərtlərini dəqiqləşdirin.",
+    "intro": "Təmir ediləcək cihazın tam modelini yazın; yalnız marka adı uyğun servis seçməyə kifayət etməyə bilər. Adapter və qoşulan aksesuarın problemə təsirini də bildirin.",
+    "scope": ["Audio və media avadanlığı baxışı", "Oyun və digər elektron cihazlar", "Uyğun model üzrə komponent diaqnostikası"],
+    "pricing": ["Hissənin əldə edilməsi", "Diaqnostika və komponent işi", "Aksesuar və cihazın ayrı təmiri"],
+    "prepare": ["Model etiketi və cihaz şəkli", "Problemli bağlantı və adapter", "Saxlanmalı sazlamalar barədə məlumat"],
+    "questions": [["Modelin ehtiyat hissəsi yoxdursa nə olur?", "Diaqnostika başlamazdan əvvəl hissə axtarışını və təmir alınmadıqda ödənişi soruşun. Müddət və alternativ hissə razılığı ayrıca olmalıdır."], ["Zədələnmiş adapteri də verməliyəm?", "Uyğun enerji mənbəyi yoxlama üçün lazım ola bilər. Hansı aksesuarların qəbul ediləcəyini servis ilə dəqiqləşdirin."]],
+    "queries": ["elektron cihaz təmiri", "audio avadanlıq təmiri", "oyun konsolu servisi"], "related": ["elektronika", "komputer-ustasi", "televizor-ustasi"], "sources": []
+  }
+}

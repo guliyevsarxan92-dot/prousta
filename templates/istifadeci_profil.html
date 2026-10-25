@@ -30,7 +30,6 @@
       </div>
       <div class="meta-row">
         <span>{% include 'partials/ui_icon.html' with name='calendar' %} {{ sahib.date_joined|date:"d.m.Y" }}-dən aktiv üzv</span>
-        <span>{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.paginator.count }} aktiv elan</span>
         {% if sahib.profil.sheher %}<span>{% include 'partials/ui_icon.html' with name='pin' %} {{ sahib.profil.sheher }}</span>{% endif %}
       </div>
     </div>
@@ -40,7 +39,6 @@
   <section class="pg-section">
     <div class="sec-head">
       <h2>Ustanın aktiv elanları</h2>
-      <small>{{ elanlar.paginator.count }} elan</small>
     </div>
 
     <div class="service-grid">

@@ -1,0 +1,52 @@
+{
+  "jaluz": {
+    "name": "Jaluz", "heading": "Jaluz sifarişi — ölçü, işıqlandırma və montaj seçimi",
+    "description": "Jaluz və rulon pərdə üçün ölçü, material, işıq keçirmə və idarəetmə təkliflərini müqayisə edin. Montaj yerini əvvəlcədən dəqiqləşdirin.",
+    "intro": "Pəncərə daxilinə və divara montaj fərqli ölçü tələb edə bilər. Məxfilik, günəş işığı və qaraltma ehtiyacınızı bildirərək parça və mexanizm nümunələri istəyin.",
+    "scope": ["Yerində ölçü və material seçimi", "Əl və motorla idarə olunan sistem", "Montaj və mexanizm xidməti"],
+    "pricing": ["Pəncərə ölçüsü və jaluz növü", "Parça və idarəetmə sistemi", "Sökülmə, montaj və elektrik işi"],
+    "prepare": ["Pəncərə şəkli və təxmini ölçü", "İşıq və məxfilik tələbi", "Montaj ediləcək səth barədə məlumat"],
+    "questions": [["Tam qaraltma üçün istənilən parça uyğundur?", "Parçanın xüsusiyyətini və kənarlardan işıq keçməsini ayrıca soruşun. Nəticəyə montaj forması da təsir edir."], ["Qiymət kvadratmetrə görə necə hesablanır?", "Minimum sifariş, mexanizm və montajın vahid qiymətə daxil olub-olmadığını öyrənin. Ölçü götürmə haqqını da dəqiqləşdirin."]],
+    "queries": ["jaluz sifarişi", "rulon pərdə", "jaluz qiyməti"], "related": ["plastik-qapi-pencere", "interyer-dizayn"], "sources": []
+  },
+  "kanalizasiya-ustasi": {
+    "name": "Kanalizasiya ustası", "heading": "Kanalizasiya ustası — tıxanma, xətt baxışı və təmizləmə",
+    "description": "Kanalizasiya tıxanması və axıdılma problemi üçün xidmət seçin. Xəttin yeri, giriş nöqtəsi, iş üsulu və sonrakı yoxlamanı razılaşdırın.",
+    "intro": "Bir sifonda yaranan tıxanma ilə ümumi xəttdəki problem fərqli avadanlıq tələb edə bilər. Hansı nöqtələrdə suyun getmədiyini və problemin təkrarlanıb-təkrarlanmadığını bildirin.",
+    "scope": ["Tıxanmanın yeri üzrə baxış", "Uyğun avadanlıqla xəttin təmizlənməsi", "Təkrarlanan problemin araşdırılması"],
+    "pricing": ["Giriş nöqtəsi və xəttə əlçatanlıq", "Avadanlıq və işin davamı", "Açılma, bərpa və təmizlik"],
+    "prepare": ["Problemli nöqtələrin siyahısı", "Xəttin məlum sxemi və şəkli", "Əvvəl aparılmış müdaxilə"],
+    "questions": [["Tıxanma tez-tez təkrarlanırsa nə soruşum?", "Sadəcə açılma ilə səbəbin araşdırılmasını ayrı razılaşdırın. Xəttin vəziyyəti barədə hansı nəticə veriləcəyini soruşun."], ["İşin bitdiyini necə yoxlayım?", "Problemli nöqtələrdə axının sınağını və istifadə olunmuş sahənin təhvil vəziyyətini əvvəlcədən razılaşdırın. Əlavə açılma işləri ayrıca təsdiqlənməlidir."]],
+    "queries": ["kanalizasiya ustası", "kanalizasiya açılması", "kanalizasiya tıxanması"], "related": ["santexnik", "su-sizma", "zibil-dasima"], "sources": []
+  },
+  "su-sizma": {
+    "name": "Su sızmasının aşkarlanması", "heading": "Su sızmasının aşkarlanması — mənbənin yoxlanması və hesabat",
+    "description": "Gizli su sızması və rütubət üçün aşkarlama xidmətlərini müqayisə edin. Ölçmə üsulu, nəticənin izahı, açılma və təmir işlərini ayrıca soruşun.",
+    "intro": "Divardakı rütubət izi sızma mənbəyinin özünü göstərməyə bilər. Aşkarlama sifarişində mənbənin müəyyənləşdirilməsi, nəticənin izahı və sonrakı təmirin ayrı işlər olduğunu dəqiqləşdirin.",
+    "scope": ["Rütubət və su xətti üzrə baxış", "Uyğun cihazla mənbənin araşdırılması", "Nəticə və müdaxilə yeri barədə məlumat"],
+    "pricing": ["Yoxlanacaq sahə və xəttin növü", "Cihaz və əlavə ölçmə ehtiyacı", "Açılma, boru təmiri və səth bərpası"],
+    "prepare": ["İzin şəkli və yaranma vaxtı", "Su istifadə edildikdə dəyişiklik", "Mövcud boru sxemi varsa surəti"],
+    "questions": [["Aşkarlama xidməti borunun təmirini də əhatə edirmi?", "Baxış, yerin açılması, boru işi və səthin bərpasını ayrı soruşun. Bunlar bir təklifə daxil olmaya bilər."], ["Heç bir dağıntı olmadan nəticə zəmanəti verilirmi?", "İcraçı üsulun məhdudiyyətini və əlavə yoxlama ehtimalını izah etməlidir. Ölçmə nəticəsi ilə təmirə müdaxilə qərarını ayrı qiymətləndirin."]],
+    "queries": ["su sızmasının aşkarlanması", "gizli su sızması", "divarda rütubət sızma"], "related": ["santexnik", "kanalizasiya-ustasi", "kafel-metlax-ustasi"], "sources": []
+  },
+  "santexnik": {
+    "name": "Santexnik", "heading": "Santexnik — su xətti, kran və sanitar avadanlıq montajı",
+    "description": "Kran, sifon, unitaz və su xətti işləri üçün santexnik seçin. Dəyişdiriləcək hissə, material, iş həcmi və sınaq şərtlərini müqayisə edin.",
+    "intro": "Kiçik bağlantı təmiri ilə boru xəttinin yenilənməsi ayrı iş həcmləridir. Problemli nöqtəni, avadanlığın modelini və suyun haradan gəldiyini foto ilə göstərərək təklif alın.",
+    "scope": ["Kran və qarışdırıcı dəyişimi", "Unitaz, çanaq və sifon montajı", "Su xətti və bağlantı təmiri"],
+    "pricing": ["Avadanlıq və bağlantı uyğunluğu", "Divar daxilində işə giriş", "Material, sökülmə və sızma sınağı"],
+    "prepare": ["Problemli nöqtənin şəkli", "Yeni avadanlığın ölçü və modeli", "İş görüləcək yerə giriş məlumatı"],
+    "questions": [["Materialı özüm alsam iş haqqı necə hesablanır?", "Hissə siyahısını və uyğunluğu əvvəl razılaşdırın. Uyğun gəlməyən materialın dəyişməsi və əlavə səfər xərcini soruşun."], ["Yeni avadanlıq montajını necə qəbul edim?", "Bağlantı, su axını və sızma yoxlamalarını istəyin. Köhnə avadanlığın çıxarılması və iş yerinin təmizliyi barədə də razılaşın."]],
+    "queries": ["santexnik", "kran dəyişdirilməsi", "unitaz quraşdırılması"], "related": ["kanalizasiya-ustasi", "su-sizma", "ariston-ustasi"], "sources": []
+  },
+  "cilinger": {
+    "name": "Çilingər", "heading": "Çilingər — kilid xidməti və qapı mexanizmi təmiri",
+    "description": "Kilid dəyişimi, qapı mexanizmi və açılma xidməti üçün çilingər seçin. Kilid növü, çağırış haqqı və istifadə hüququnu təsdiqləmə qaydasını soruşun.",
+    "intro": "Açarın itməsi, kilidin işləməməsi və qapının əyilməsi fərqli işlərdir. Qapı və mexanizmin şəklini göndərin, müdaxilə üsulunu və hissə dəyişimi ehtimalını əvvəlcədən öyrənin.",
+    "scope": ["Kilid və silindr dəyişimi", "Qapı bağlanmasının sazlanması", "Səlahiyyətli müraciət üzrə açılma xidməti"],
+    "pricing": ["Kilid modeli və hissənin keyfiyyəti", "İşin üsulu və zədə riski", "Çağırış vaxtı və ünvan"],
+    "prepare": ["Qapı və kilidin şəkli", "Açarın vəziyyəti barədə məlumat", "İstifadə hüququnu təsdiqləmə imkanı"],
+    "questions": [["Kilidi açmaqla dəyişmək eyni xidmət sayılır?", "Açılma işi ilə yeni mexanizmin qiymətini ayrı soruşun. Əlavə hissə yalnız razılığınızla dəyişdirilməlidir."], ["Çilingər gəlməzdən əvvəl nəyi təsdiqləyim?", "Çağırış haqqını, təxmini müdaxilə üsulunu və hüququnuzu təsdiqləmək üçün hansı məlumatın lazım olduğunu dəqiqləşdirin."]],
+    "queries": ["çilingər", "kilid dəyişimi", "qapı kilidi təmiri"], "related": ["avtomobil-acar-ustasi", "plastik-qapi-pencere", "mebel-ustasi"], "sources": []
+  }
+}

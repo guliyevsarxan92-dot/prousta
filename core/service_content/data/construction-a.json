@@ -1,0 +1,62 @@
+{
+  "temir-tikinti": {
+    "name": "Təmir, Tikinti", "heading": "Təmir və tikinti xidmətləri — iş həcmi və smeta seçimi",
+    "description": "Elektrik, santexnika, üzləmə və tikinti işlərini uyğun bölmədə müqayisə edin. Ölçü, material, iş mərhələləri və qəbul şərtləri ilə smeta istəyin.",
+    "intro": "Tam təmir ilə bir hissənin dəyişdirilməsi fərqli sifarişlərdir. İşləri mərhələlərə ayırmaq material, usta haqqı və əlavə xərclərin hansı təklifə daxil olduğunu görməyə kömək edir.",
+    "scope": ["Mühəndis və kommunikasiya işləri", "Divar, döşəmə və tavan tamamlanması", "Qapı, şüşə və konstruksiya montajı"],
+    "pricing": ["Ölçü və mövcud səthin vəziyyəti", "Materialla iş haqqının ayrılması", "Söküntü və tullantının daşınması"],
+    "prepare": ["Ölçülər və mövcud vəziyyət şəkilləri", "İstənilən nəticənin nümunəsi", "Mərhələ və büdcə prioritetləri"],
+    "questions": [["Təmir təkliflərini necə eyni əsasla müqayisə edim?", "Hər icraçıya eyni iş siyahısını verin. Hazırlıq, material, montaj, təmizlik və əlavə işin razılaşdırılması qaydasını yazılı istəyin."], ["Hər işi bir briqadaya vermək məcburidirmi?", "Ayrı ixtisasları müxtəlif icraçılar görə bilər. İş ardıcıllığını, məsuliyyət sərhədini və mərhələlərin qəbulunu əvvəlcədən müəyyənləşdirin."]],
+    "queries": ["təmir tikinti xidmətləri", "ev təmiri smeta", "təmir ustaları"], "related": ["ev-temiri", "interyer-dizayn", "insaat-materiallari"], "sources": []
+  },
+  "elektrik": {
+    "name": "Elektrik", "heading": "Elektrik ustası — xətt, işıqlandırma və nasazlıq baxışı",
+    "description": "Elektrik xətti, priz, işıqlandırma və lövhə işləri üçün uyğun usta seçin. İşin həcmi, material və qəbul yoxlamalarını əvvəlcədən razılaşdırın.",
+    "intro": "Bir prizin dəyişməsi ilə mənzilin elektrik xəttinin yenilənməsi fərqli plan tələb edir. Mövcud sistemin vəziyyətini və qoşulacaq avadanlığı ixtisaslı icraçı ilə qiymətləndirin.",
+    "scope": ["Priz və işıqlandırma montajı", "Xətt və elektrik lövhəsi üzrə işlər", "Nasazlığın ölçmə ilə yoxlanması"],
+    "pricing": ["Nöqtələrin sayı və kabel marşrutu", "Səthin açılması və bərpası", "Material və qəbul ölçmələri"],
+    "prepare": ["İş görüləcək nöqtələrin siyahısı", "Lövhə və otaqların şəkli", "Qoşulacaq avadanlıq barədə məlumat"],
+    "questions": [["Elektrik işinə qiymət nöqtə ilə hesablanır?", "İcraçının nöqtə anlayışına hansı işləri daxil etdiyini soruşun. Kabel, montaj qutusu və səthin bərpası ayrıca hesablana bilər."], ["İşi qəbul edərkən nə tələb edim?", "Görülmüş xətt və nöqtələrin siyahısını, müvafiq yoxlamaları və material məlumatını istəyin. Texniki təhlükəsizlik qiymətləndirməsini ixtisaslı şəxs aparmalıdır."]],
+    "queries": ["elektrik ustası", "elektrik xətti çəkilməsi", "priz quraşdırılması"], "related": ["ev-temiri", "kamera-ustasi", "avtomatik-qapilar"], "sources": []
+  },
+  "cam-balkon": {
+    "name": "Cam balkon", "heading": "Cam balkon — şüşələnmə sistemi və montaj təklifləri",
+    "description": "Balkon şüşələnməsi üçün açılma sistemi, ölçü, şüşə və profil təkliflərini müqayisə edin. Ölçü götürmə, montaj və su keçirmə şərtlərini soruşun.",
+    "intro": "Qatlanan, sürüşən və çərçivəli şüşələnmədə istifadə və bağlanma xüsusiyyətləri fərqlənir. Balkonun ölçüsü, küləyə açıq olması və istənilən istifadə formasını ölçü baxışında izah edin.",
+    "scope": ["Balkon ölçüsünün götürülməsi", "Şüşə və açılma sistemi seçimi", "Profil və şüşə montajı"],
+    "pricing": ["Açılışın ölçüsü və forması", "Şüşə, profil və mexanizm növü", "Köhnə sistemin sökülməsi"],
+    "prepare": ["Balkonun ümumi şəkli", "Təxmini en və hündürlük", "Açılma və təmizlik gözləntisi"],
+    "questions": [["Cam balkon tam istilik izolyasiyası təmin edirmi?", "Sistemin texniki göstəricilərini soruşun. Şüşələnmə növlərini eyni izolyasiya səviyyəsi kimi qəbul etmədən istifadə məqsədinizi bildirin."], ["Ölçü götürmədən yekun qiymət almaq olar?", "İlkin rəqəm verilə bilər, lakin yekun təklif ölçü, profil və montaj detallarına bağlanmalıdır. Aksesuar və sökülmə xərcini ayrıca yoxlayın."]],
+    "queries": ["cam balkon", "balkon şüşələnməsi", "cam balkon qiyməti"], "related": ["surgu-sistemleri", "plastik-qapi-pencere", "hebesebe-sistemi"], "sources": ["schueco-sliding"]
+  },
+  "plastik-qapi-pencere": {
+    "name": "Plastik qapı pəncərə", "heading": "Plastik qapı-pəncərə — hazırlanma, sazlama və montaj",
+    "description": "PVC qapı-pəncərə hazırlanması və təmiri üçün profil, şüşə paketi, mexanizm və montaj işlərini eyni şərtlərlə müqayisə edin.",
+    "intro": "Yeni pəncərə sifarişi ilə mövcud qanadın sazlanması ayrı işlərdir. Hava və su keçirmə, bağlanma problemi və ölçü barədə məlumat uyğun xidmət təklifi almağa kömək edir.",
+    "scope": ["Profil və şüşə paketi seçimi", "Qanad və bağlanma mexanizmi sazlaması", "Yeni çərçivənin montajı"],
+    "pricing": ["Profil və şüşə paketinin tərkibi", "Açılan qanad və aksesuar sayı", "Sökülmə və kənarların bərpası"],
+    "prepare": ["Ölçü və açılma istiqaməti", "Mövcud qüsurun şəkli", "İzolyasiya və rəng tələbi"],
+    "questions": [["Hava keçirməyə görə bütün pəncərə dəyişməlidir?", "Mexanizm, kiplik və montaj vəziyyətinin baxışını istəyin. Tam dəyişmə ilə sazlama təklifinin səbəbi aydın olmalıdır."], ["Təklifdə hansı materialları yazdırım?", "Profil seriyası, şüşə paketinin tərkibi və mexanizm barədə konkret məlumat alın. Montaj və kənarların tamamlanmasını da siyahıya daxil edin."]],
+    "queries": ["plastik pəncərə", "PVC qapı pəncərə", "pəncərə sazlanması"], "related": ["cam-balkon", "surgu-sistemleri", "su-sizma"], "sources": []
+  },
+  "surgu-sistemleri": {
+    "name": "Sürgü sistemləri", "heading": "Sürgü sistemləri — qapı, rels və mexanizm xidməti",
+    "description": "Şüşə və mebel sürgü sistemləri üçün uyğun icraçı seçin. Qanad ölçüsü, rels, təkər və kilidləmə işinin hansı sistemə aid olduğunu dəqiqləşdirin.",
+    "intro": "Mebel dolabının sürgüsü ilə böyük şüşəli qapının mexanizmi eyni sistem deyil. Harada istifadə olunduğunu və ilişmə, boşluq və ya bağlanma problemini bildirin.",
+    "scope": ["Rels və hərəkət mexanizminin baxışı", "Qanad və kilidləmə sazlanması", "Yeni sürgü sisteminin quraşdırılması"],
+    "pricing": ["Qanadın materialı və ölçüsü", "Mexanizmin modeli və uyğunluğu", "Relsə giriş və sökülmə işi"],
+    "prepare": ["Sistemin ümumi şəkli", "Mexanizmin markası varsa məlumat", "Hərəkət probleminin videosu"],
+    "questions": [["İlişən sürgüdə yalnız təkər dəyişmək kifayətdirmi?", "Rels və qanadın vəziyyəti də yoxlanmalıdır. Hissə dəyişiminin hansı səbəbə əsaslandığını soruşun."], ["Mebel və balkon sürgüsü üçün eyni ustaya müraciət edim?", "İcraçının hansı sistemlərlə işlədiyini yoxlayın. Ölçü və mexanizm uyğunluğu ayrı alət və hissələr tələb edə bilər."]],
+    "queries": ["sürgü sistemi", "sürgülü qapı təmiri", "sürgü mexanizmi dəyişimi"], "related": ["mebel-ustasi", "hebesebe-sistemi", "cam-balkon"], "sources": ["schueco-sliding"]
+  },
+  "dus-kabina": {
+    "name": "Duş kabinəsi", "heading": "Duş kabinəsi — ölçüyə uyğun montaj və mexanizm təmiri",
+    "description": "Duş kabinəsi hazırlanması, quraşdırılması və təmiri üçün ölçü, şüşə, açılma mexanizmi və su keçirmə şərtlərini müqayisə edin.",
+    "intro": "Kabinin ölçüsü ilə yanaşı döşəmənin və divarların vəziyyəti montaja təsir edir. Su keçirmə, qapının hərəkəti və ya şüşə dəyişikliyi üzrə işi dəqiq təsvir edin.",
+    "scope": ["Yerində ölçü və sistem seçimi", "Şüşə və qapı montajı", "Rels, təkər və kiplik təmiri"],
+    "pricing": ["Şüşənin ölçüsü və xüsusiyyəti", "Açılma mexanizmi və aksesuarlar", "Səthin hazırlığı və köhnə kabinin sökülməsi"],
+    "prepare": ["Hamamın və duş zonasının şəkli", "Təxmini ölçü və açılma sahəsi", "Su sızmasının görüldüyü yer"],
+    "questions": [["Duş zonasından su gəlirsə problem həmişə kabindədir?", "Kabin, bağlantı və səthin vəziyyəti ayrıca qiymətləndirilməlidir. Müdaxilədən əvvəl sızma mənbəyinin necə müəyyən ediləcəyini soruşun."], ["Yeni kabin üçün yalnız en və hündürlük kifayətdirmi?", "Divar bucağı, döşəmə və açılma sahəsi də nəzərə alınmalıdır. Yekun sifariş ölçüsünü montajı görəcək icraçı ilə təsdiqləyin."]],
+    "queries": ["duş kabinəsi", "duş kabinəsi quraşdırılması", "duş kabinəsi təmiri"], "related": ["santexnik", "kafel-metlax-ustasi", "su-sizma"], "sources": []
+  }
+}

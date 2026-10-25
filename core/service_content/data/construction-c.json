@@ -1,0 +1,52 @@
+{
+  "laminat-parket-ustasi": {
+    "name": "Laminat parket ustası", "heading": "Laminat və parket ustası — döşəmə hazırlığı və quraşdırma",
+    "description": "Laminat və parket döşənməsi üçün səth hazırlığı, altlıq, material və plintus işlərini müqayisə edin. Ölçü və döşəmə vəziyyətini bildirin.",
+    "intro": "Yeni örtüyün görünüşünə döşəmənin hazırlığı da təsir edir. Laminat döşənməsi, taxta parketin bərpası və alt səthin düzəldilməsini ayrı işlər kimi qiymətləndirin.",
+    "scope": ["Alt səthin vəziyyətinə baxış", "Laminat və parket quraşdırılması", "Plintus, keçid və kənar tamamlanması"],
+    "pricing": ["Səthin hamarlığı və hazırlıq işi", "Otağın forması və kəsimlər", "Sökülmə, altlıq və plintus"],
+    "prepare": ["Sahə ölçüsü və otaq şəkli", "Seçilmiş materialın məlumatı", "Mövcud örtük barədə məlumat"],
+    "questions": [["Kvadratmetr qiymətinə altlıq və plintus daxildirmi?", "Material, döşəmə hazırlığı, altlıq və kənar işlərini siyahı üzrə soruşun. Bir vahid qiymət bütün mərhələləri əhatə etməyə bilər."], ["Köhnə parketin üstünə yeni örtük döşənə bilərmi?", "Mövcud səth və istehsalçının quraşdırma tələbi qiymətləndirilməlidir. Ustadan uyğunluq və əlavə hazırlığın səbəbini izah etməsini istəyin."]],
+    "queries": ["laminat ustası", "parket döşənməsi", "laminat döşəmə qiyməti"], "related": ["ev-temiri", "malyar-ustasi", "mebel-ustasi"], "sources": []
+  },
+  "dartma-tavan-ustasi": {
+    "name": "Dartma tavan ustası", "heading": "Dartma tavan — material, işıq nöqtələri və montaj",
+    "description": "Dartma tavan sifarişində material, otaq ölçüsü, işıq nöqtələri və kənar tamamlanmasını müqayisə edin. Montaj və elektrik işlərini dəqiqləşdirin.",
+    "intro": "Tavanın sahəsi ilə yanaşı künclər, işıq nöqtələri və kommunikasiya çıxışları iş həcminə təsir edir. İşıqlandırma ilə örtük montajının kimin məsuliyyətində olacağını müəyyənləşdirin.",
+    "scope": ["Ölçü və örtük seçimi", "Profil və tavan montajı", "İşıq və çıxış nöqtələrinin hazırlanması"],
+    "pricing": ["Material və səthin xüsusiyyəti", "Künc və işıq nöqtələrinin sayı", "Karniz və əlavə profillər"],
+    "prepare": ["Otağın ölçüsü və planı", "İşıqlandırma sxemi", "Mövcud tavan və çıxışların şəkli"],
+    "questions": [["İşıq nöqtələri tavan qiymətinə daxildirmi?", "Nöqtələrin hazırlanması, armatur və elektrik bağlantısını ayrıca soruşun. Təklifdə hər işin icraçısı göstərilməlidir."], ["Tavan materialını hansı məlumatla seçmək olar?", "Məhsulun adı, istifadə xüsusiyyəti, qulluq və zəmanət sənədini istəyin. Nümunəni otağın işıqlandırmasına uyğun qiymətləndirin."]],
+    "queries": ["dartma tavan", "dartma tavan ustası", "dartma tavan qiyməti"], "related": ["elektrik", "lepka-ustasi", "interyer-dizayn"], "sources": []
+  },
+  "ev-temiri": {
+    "name": "Ev təmiri", "heading": "Ev təmiri — mərhələli iş planı və müqayisəli smeta",
+    "description": "Mənzil və ev təmiri üçün iş siyahısı, material, müddət və mərhələ ödənişlərini müqayisə edin. Söküntü və təhvil şərtlərini əvvəlcədən müəyyənləşdirin.",
+    "intro": "Kosmetik təmir, əsaslı yenilənmə və yeni mənzilin tamamlanması fərqli smetalardır. Görüləcək işləri otaq və mərhələ üzrə yazmaq təkliflərin müqayisəsini daha aydın edir.",
+    "scope": ["Söküntü və səth hazırlığı", "Kommunikasiya işlərinin koordinasiyası", "Üzləmə və tamamlanma mərhələləri"],
+    "pricing": ["Mövcud vəziyyət və iş siyahısı", "Material sinfi və tədarükü", "Əlavə işlər və mərhələ müddəti"],
+    "prepare": ["Plan, sahə və mövcud şəkillər", "Material və üslub seçimi", "Büdcə və təhvil prioritetləri"],
+    "questions": [["Təmir smetasında nələr ayrıca göstərilməlidir?", "Hər mərhələnin ölçüsü, iş haqqı, materialı və istisnalarını istəyin. Əlavə işin yalnız təsdiqdən sonra qiymətləndirilməsini razılaşdırın."], ["Ödənişi hansı qaydada planlamaq olar?", "Mərhələ nəticəsi və qəbul meyarı ilə əlaqələndirilən ödəniş planı istəyin. Müddət dəyişikliyi və material alınması qaydasını da yazılı dəqiqləşdirin."]],
+    "queries": ["ev təmiri", "mənzil təmiri smeta", "əsaslı təmir"], "related": ["interyer-dizayn", "elektrik", "santexnik"], "sources": []
+  },
+  "divar-kagizi-ustasi": {
+    "name": "Divar kağızı ustası", "heading": "Divar kağızı ustası — səth hazırlığı və yapışdırma",
+    "description": "Divar kağızı yapışdırılması üçün divarın vəziyyətini, rulon növünü və naxış uyğunlaşdırmasını dəqiqləşdirin. Hazırlıq və sökülmə işlərini müqayisə edin.",
+    "intro": "Divarın hamarlanması və köhnə örtüyün çıxarılması yapışdırmadan əvvəl ayrıca iş ola bilər. Naxışlı və fərqli əsaslı kağızlarda kəsim və material tələblərini soruşun.",
+    "scope": ["Köhnə örtüyün çıxarılması", "Səthin hazırlığına baxış", "Kağızın kəsilməsi və yapışdırılması"],
+    "pricing": ["Divarın hazırlıq vəziyyəti", "Rulon növü və naxış təkrarı", "Künclər və kəsim həcmi"],
+    "prepare": ["Divar ölçüsü və şəkli", "Rulonun etiket və naxış məlumatı", "Köhnə örtük barədə məlumat"],
+    "questions": [["Rulon sayını yalnız otaq sahəsi ilə hesablamaq olar?", "Divar ölçüləri, rulon eni və naxış təkrarı nəzərə alınmalıdır. Sifarişdən əvvəl material hesabını icraçı ilə təsdiqləyin."], ["Səth hazırlığı yapışdırma qiymətinə daxildirmi?", "Sökülmə, hamarlama və əsas hazırlığını ayrıca soruşun. Üst qatın altında qalan işlər smetada aydın göstərilməlidir."]],
+    "queries": ["divar kağızı ustası", "oboy yapışdırılması", "divar kağızı qiyməti iş haqqı"], "related": ["malyar-ustasi", "lepka-ustasi", "ev-temiri"], "sources": []
+  },
+  "lepka-ustasi": {
+    "name": "Lepka ustası", "heading": "Lepka ustası — dekorativ karniz və divar elementləri",
+    "description": "Lepka, dekorativ karniz və divar çərçivələri üçün material, ölçü, naxış və boya hazırlığı işlərini müqayisə edin. Eskizlə təklif istəyin.",
+    "intro": "Karniz, rozet və divar çərçivəsində ölçü ilə birləşmə keyfiyyəti fərqli iş həcmi yaradır. Materialın növünü və son boya qatının kim tərəfindən görüləcəyini əvvəl müəyyənləşdirin.",
+    "scope": ["Dekorativ elementlərin ölçüləndirilməsi", "Karniz və çərçivə montajı", "Birləşmə və boya hazırlığı"],
+    "pricing": ["Material və profilin ölçüsü", "Künc və birləşmə sayı", "Eskiz, montaj və boya işi"],
+    "prepare": ["Divar və tavan şəkilləri", "İstənilən naxış nümunəsi", "Dekorun ölçüləri və yerləşməsi"],
+    "questions": [["Lepka montajı ilə boyanması birlikdə görülür?", "İcraçıların iş sərhədini əvvəl müəyyənləşdirin. Birləşmələrin tamamlanması və boya qatının qiymətə daxil olub-olmadığını soruşun."], ["Dekorativ element üçün hansı materialı seçmək lazımdır?", "Çəki, səth və qulluq tələbinə uyğun nümunə istəyin. Məhsulun xüsusiyyətini istehsalçı məlumatı və montaj şərti ilə müqayisə edin."]],
+    "queries": ["lepka ustası", "dekorativ karniz montajı", "divar çərçivəsi dekor"], "related": ["malyar-ustasi", "dartma-tavan-ustasi", "interyer-dizayn"], "sources": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "elektronika": {
+    "name": "Elektronika", "heading": "Elektronika təmiri — cihaz, məlumat və hissə seçimi",
+    "description": "Telefon, kompüter, televizor və digər elektronika üçün uyğun servis bölməsini seçin. Məlumatların qorunması, hissə növü və təhvil şərtlərini yoxlayın.",
+    "intro": "Elektronika servisində cihazın işləməsi ilə yanaşı şəxsi məlumatların qorunması da vacibdir. Modeli, nasazlıq əlamətini və məlumatın saxlanması tələbini sifarişdə ayrıca göstərin.",
+    "scope": ["Mobil cihaz və kompüter servisi", "Görüntü, kamera və qəbul avadanlığı", "Çap və digər elektron cihazlar"],
+    "pricing": ["Diaqnostika və komponent səviyyəsi", "Hissənin mənşəyi və uyğunluğu", "Məlumat bərpasının ayrıca işi"],
+    "prepare": ["Tam model və problem təsviri", "Mümkündürsə ehtiyat nüsxə", "Təhvil verilən aksesuar siyahısı"],
+    "questions": [["Servisə hansı məlumatları verməliyəm?", "Model, əlamət və əvvəlki müdaxiləni bildirin. Hesab şifrələrini paylaşmaq əvəzinə zəruri yoxlamanın necə aparılacağını soruşun."], ["Hissə dəyişimi ilə proqram işi eyni təklifdirmi?", "Bunlar ayrı işlərdir. Komponent, proqram təminatı və məlumat bərpasının qiymətini ayrıca istəyin."]],
+    "queries": ["elektronika təmiri", "elektron cihaz servisi", "elektronika ustası"], "related": ["meiset-texnikasi", "it-biznes"], "sources": ["apple-service"]
+  },
+  "telefon-ustasi": {
+    "name": "Telefon ustası", "heading": "Telefon təmiri — ekran, batareya və şarj nasazlıqları",
+    "description": "Telefon ekranı, batareyası və şarj problemi üçün servis seçin. Modelə uyğun hissə, şəxsi məlumatlar və təmirdən sonrakı yoxlamaları dəqiqləşdirin.",
+    "intro": "Ekran zədəsi, batareya zəifləməsi və şarj olmama müxtəlif müdaxilələrdir. Telefonun modelini və problemin yaranma şəraitini bildirin; dəyişdiriləcək hissənin növünü əvvəlcədən öyrənin.",
+    "scope": ["Ekran və toxunma hissəsinin baxışı", "Batareya və şarj diaqnostikası", "Modelə uyğun lövhə və proqram işi"],
+    "pricing": ["Ekran və hissənin keyfiyyət sinfi", "Lövhə təmirinin ayrıca həcmi", "Məlumatın saxlanması tələbi"],
+    "prepare": ["Dəqiq model və nasazlıq şəkli", "Mümkündürsə məlumat ehtiyat nüsxəsi", "Cihazın təhvil vəziyyətinin qeydi"],
+    "questions": [["Ekran dəyişərkən nəyi müqayisə edim?", "Hissənin növünü, sensor və görüntü yoxlamalarını, zəmanət şərtini soruşun. Təkcə eyni model adı bütün təklifləri bərabər etmir."], ["Hesab şifrəmi ustaya verməliyəm?", "Hesab şifrəsini paylaşmayın. Zəruri test və giriş addımlarını öz iştirakınızla yerinə yetirməyin mümkünlüyünü dəqiqləşdirin."]],
+    "queries": ["telefon ustası", "telefon ekran dəyişimi", "telefon batareya dəyişimi"], "related": ["planset-temiri", "komputer-ustasi"], "sources": ["apple-service"]
+  },
+  "komputer-ustasi": {
+    "name": "Kompüter ustası", "heading": "Kompüter və noutbuk təmiri — diaqnostika və təkmilləşdirmə",
+    "description": "Noutbuk və masaüstü kompüter üçün təmir, təmizləmə və təkmilləşdirmə təkliflərini müqayisə edin. Fayllar, lisenziya və hissə uyğunluğunu dəqiqləşdirin.",
+    "intro": "Yavaş işləmə, açılmama və qızma əlamətlərini ayrı təsvir edin. Servis təklifi proqram işi, hissə dəyişimi və məlumat bərpasını ayırmalıdır; faylların silinməsinə ayrıca razılıq verin.",
+    "scope": ["Noutbuk və masaüstü diaqnostikası", "Soyutma və enerji sisteminin baxışı", "Uyğun yaddaş və disk təkmilləşdirməsi"],
+    "pricing": ["Lövhə təmiri və modul dəyişimi", "Disk köçürülməsi və məlumat bərpası", "Proqram lisenziyası və quraşdırma işi"],
+    "prepare": ["Model və istifadə məqsədi", "Saxlanmalı faylların siyahısı", "Əlamətin fotosu və ya xəta mətni"],
+    "questions": [["Yavaş kompüterə mütləq yeni hissə lazımdır?", "Səbəbin yoxlanmasını istəyin. Təkmilləşdirmə təklifində hissənin uyğunluğu və hansı işi yaxşılaşdıracağı aydın göstərilməlidir."], ["Proqram quraşdırılması fayllarımı siləcəkmi?", "Diskin formatlanıb-formatlanmayacağını əvvəlcədən soruşun. Ehtiyat nüsxənin yeri və məlumat köçürülməsinin qiyməti ayrıca razılaşdırılmalıdır."]],
+    "queries": ["kompüter ustası", "noutbuk təmiri", "noutbuk təmizlənməsi"], "related": ["telefon-ustasi", "printer-ustasi", "veb-sayt"], "sources": ["apple-service"]
+  },
+  "televizor-ustasi": {
+    "name": "Televizor ustası", "heading": "Televizor təmiri — görüntü, səs və enerji problemləri",
+    "description": "Televizorda görüntü yoxdur, səs gəlmir və ya cihaz açılmır? Model, panel vəziyyəti və diaqnostika şərtlərinə uyğun servis elanlarını müqayisə edin.",
+    "intro": "Ekranın fiziki zədəsi ilə görüntünün sönməsi eyni nasazlıq deyil. Səsin gəlib-gəlmədiyini, indikatorun davranışını və hansı girişdə problem olduğunu qeyd edin.",
+    "scope": ["Görüntü və işıqlandırma diaqnostikası", "Enerji və səs sisteminin baxışı", "Smart funksiyalar üzrə proqram yoxlaması"],
+    "pricing": ["Panel ilə digər hissələrin fərqi", "Ekran ölçüsü və model uyğunluğu", "Daşınma və divardan sökülmə"],
+    "prepare": ["Arxa etiketdəki model", "Ekran və indikatorun videosu", "Divar asqısı barədə məlumat"],
+    "questions": [["Səs var, görüntü yoxdursa ekran dəyişməlidirmi?", "Bu əlamət təkbaşına panel dəyişimini təsdiqləmir. İşıqlandırma və digər hissələr üzrə diaqnostikanın nəticəsini soruşun."], ["Televizorun aparılma şərtini necə razılaşdırım?", "Qəbul sənədində cihazın vəziyyətini, modelini və aksesuarlarını qeyd edin. Daşınma haqqını və təhvil müddətini dəqiqləşdirin."]],
+    "queries": ["televizor ustası", "televizor görüntü yoxdur", "televizor təmiri"], "related": ["krosna-antena-ustasi", "diger-elektronika"], "sources": []
+  },
+  "foto-video-aparatlar": {
+    "name": "Foto və video aparatlar", "heading": "Fotoaparat və videokamera təmiri — korpus və obyektiv servisi",
+    "description": "Fotoaparat, obyektiv və videokamera təmiri üçün servis seçin. Model, görüntü qüsuru, təhvil komplekti və yoxlama qaydasını dəqiqləşdirin.",
+    "intro": "Kamera korpusu, obyektiv və aksesuarın nasazlığını bir-birindən ayırın. Fokus problemi, görüntüdə ləkə və mexaniki zədə üçün icraçının uyğun avadanlıqla işlədiyini yoxlayın.",
+    "scope": ["Korpus və obyektiv diaqnostikası", "Fokus və görüntü qüsurlarının baxışı", "Modelə uyğun təmizləmə və təmir"],
+    "pricing": ["Korpus və obyektiv üzrə ayrı iş", "Hissənin tapılması və kalibrasiya", "Diaqnostika və test çəkilişi"],
+    "prepare": ["Korpus və obyektivin modelləri", "Problemli nümunə foto və ya video", "Təhvil komplektinin siyahısı"],
+    "questions": [["Korpusla obyektivi birlikdə verməliyəm?", "Uyğunluq və fokus problemi üçün servis bunu istəyə bilər. Hansı komponentlərin test üçün lazım olduğunu əvvəlcədən soruşun."], ["Təmirdən sonra nələri yoxlayım?", "Bildirdiyiniz problemi təkrarlayan test çəkilişi istəyin. Fokus, görüntü və idarəetmə funksiyalarını öz komplektinizlə yoxlayın."]],
+    "queries": ["fotoaparat təmiri", "obyektiv təmiri", "videokamera servisi"], "related": ["kamera-ustasi", "foto-xidmetleri", "video-xidmetleri"], "sources": []
+  }
+}

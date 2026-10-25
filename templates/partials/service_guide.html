@@ -1,0 +1,16 @@
+<section class="panel prose service-guide" aria-labelledby="service-guide-title" style="padding:24px;margin-top:24px">
+  <h2 id="service-guide-title">{{ category.ad }} üzrə seçim bələdçisi</h2>
+  {% if brief %}
+  <p>{{ brief.intro }}</p>
+  <h3>Sifarişdə hansı işlər dəqiqləşdirilməlidir?</h3>
+  <ul>{% for item in brief.scope %}<li>{{ item }}</li>{% endfor %}</ul>
+  <h3>Qiymət təklifini necə müqayisə etmək olar?</h3>
+  <p>Təklifləri eyni iş həcmi üzrə müqayisə edin. Bu xidmət üçün aşağıdakı amilləri ayrıca soruşun:</p>
+  <ul>{% for item in brief.pricing %}<li>{{ item }}</li>{% endfor %}</ul>
+  <h3>Müraciətdən əvvəl hazırlayın</h3>
+  <ul>{% for item in brief.prepare %}<li>{{ item }}</li>{% endfor %}</ul>
+  {% else %}
+  <p>Görüləcək işi, tələb olunan nəticəni və xidmət ünvanını elan sahibinə bildirin. İşin həcmini, materialları, ödənişi və qəbul qaydasını əvvəlcədən razılaşdırın.</p>
+  {% endif %}
+  {% if additional_html %}<div class="service-guide-additional"><h3>Əlavə xidmət məlumatı</h3>{{ additional_html|safe }}</div>{% endif %}
+</section>

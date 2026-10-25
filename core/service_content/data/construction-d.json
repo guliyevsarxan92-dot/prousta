@@ -1,0 +1,52 @@
+{
+  "kafel-metlax-ustasi": {
+    "name": "Kafel-metlax ustası", "heading": "Kafel-metlax ustası — səth hazırlığı və üzləmə",
+    "description": "Kafel və metlax döşənməsində səth, plitə ölçüsü, kəsim və fuga işlərini müqayisə edin. Hamam üçün su izolyasiyasını ayrıca razılaşdırın.",
+    "intro": "Divar və döşəmə üzləməsində səthin hazırlığı ilə plitənin döşənməsi ayrı mərhələlərdir. Böyük ölçülü plitə, künc və drenaj detalları təklifdə ayrıca göstərilməlidir.",
+    "scope": ["Səth və ölçü baxışı", "Plitənin kəsilməsi və üzlənməsi", "Fuga və kənar tamamlanması"],
+    "pricing": ["Plitə ölçüsü və kəsim forması", "Hamarlama və su izolyasiyası", "Köhnə örtüyün sökülməsi"],
+    "prepare": ["Sahə və səth şəkilləri", "Plitənin ölçü və materialı", "Drenaj və digər çıxışlar"],
+    "questions": [["Hamam izolyasiyası plitə döşənməsinə daxildirmi?", "İzolyasiya qatını, tətbiq sahəsini və qəbul yoxlamasını ayrıca dəqiqləşdirin. Plitə montajı bütün alt işləri əhatə etməyə bilər."], ["Böyük plitənin iş haqqı niyə fərqlənir?", "Daşınma, kəsim və quraşdırma üsulu dəyişə bilər. Təklifləri eyni ölçü, səth və kəsim siyahısı ilə müqayisə edin."]],
+    "queries": ["kafel metlax ustası", "kafel döşənməsi", "hamam kafel işi"], "related": ["santexnik", "dus-kabina", "su-sizma"], "sources": []
+  },
+  "malyar-ustasi": {
+    "name": "Malyar ustası", "heading": "Malyar ustası — divar hazırlığı və boya işləri",
+    "description": "Divar və tavan boyanması üçün hazırlıq, boya sistemi və iş həcmini müqayisə edin. Çatların bərpası və mebellərin qorunmasını dəqiqləşdirin.",
+    "intro": "Hazır səthin yenidən boyanması ilə çatlı divarın bərpası eyni iş deyil. Mövcud örtük, rütubət izi və istənilən nəticəni bildirərək mərhələli təklif istəyin.",
+    "scope": ["Səth hazırlığı və lokal bərpa", "Astar və boya qatları", "Kənarların və iş yerinin tamamlanması"],
+    "pricing": ["Divarın mövcud vəziyyəti", "Boya növü və razılaşdırılmış qatlar", "Hündürlük və sahəyə giriş"],
+    "prepare": ["Divar şəkli və ölçü", "İstənilən rəng nümunəsi", "Mebelli otaq barədə məlumat"],
+    "questions": [["Boya qiymətinə divarın hamarlanması daxildirmi?", "Hazırlıq, astar və boya işlərini ayrıca yazdırın. Hansı qüsurların bərpa ediləcəyi əvvəl razılaşdırılmalıdır."], ["Rəngi yalnız telefondakı şəkildən seçmək olar?", "Ekran və işıq rəngi fərqli göstərə bilər. Yekun seçimi məhsul kodu və kiçik səth nümunəsi ilə təsdiqləyin."]],
+    "queries": ["malyar ustası", "divar boyanması", "boya işləri qiyməti"], "related": ["divar-kagizi-ustasi", "lepka-ustasi", "ev-temiri"], "sources": []
+  },
+  "tol-ustasi": {
+    "name": "Tol ustası", "heading": "Tol ustası — dam örtüyü və su izolyasiyası işləri",
+    "description": "Damın tol və rulon örtük işləri üçün mövcud əsas, drenaj, material və birləşmələri müqayisə edin. Sökülmə və qəbul şərtlərini soruşun.",
+    "intro": "Lokal dam sızmasının təmiri ilə örtüyün tam yenilənməsi fərqli həll tələb edə bilər. Baxış zamanı damın vəziyyətini, suyun axınını və keçid nöqtələrini birlikdə qiymətləndirin.",
+    "scope": ["Dam və sızma nöqtələrinə baxış", "Rulon örtüyün tətbiqi", "Birləşmə və keçid detallarının tamamlanması"],
+    "pricing": ["Dam sahəsi və əsasın vəziyyəti", "Material sistemi və iş qatları", "Köhnə örtük və drenaj işi"],
+    "prepare": ["Sızma izinin və damın şəkli", "Əvvəlki örtük məlumatı", "Dama giriş imkanı"],
+    "questions": [["Lokal yamaq bütün dam problemini həll edərmi?", "Sızmanın mənbəyi və örtüyün ümumi vəziyyəti qiymətləndirilməlidir. Lokal təmirin hansı sahəyə aid olduğunu yazılı dəqiqləşdirin."], ["Dam işini hansı sənədlə razılaşdırım?", "Material adı, tətbiq ediləcək sahə, hazırlıq və birləşmə işlərini istəyin. Zəmanətin əhatəsi və istisnaları ayrıca göstərilməlidir."]],
+    "queries": ["tol ustası", "dam izolyasiyası", "dam sızması təmiri"], "related": ["su-sizma", "ev-temiri", "insaat-materiallari"], "sources": []
+  },
+  "mehecer": {
+    "name": "Məhəccər", "heading": "Məhəccər sifarişi — pilləkən və balkon üçün hazırlanma",
+    "description": "Pilləkən və balkon məhəccəri üçün ölçü, material, bərkitmə və səth işləməsini müqayisə edin. Eskiz və montaj həcmini dəqiqləşdirin.",
+    "intro": "Məhəccərin görünüşü ilə yanaşı harada və necə bərkidiləcəyi də sifarişin əsas hissəsidir. Pilləkən, balkon və açıq məkan üçün layihə və montaj tələblərini ayrıca bildirin.",
+    "scope": ["Ölçü və eskizin hazırlanması", "Metal, şüşə və digər elementlər", "Bərkitmə və səth tamamlanması"],
+    "pricing": ["Uzunluq və dönmə hissələri", "Material və səth örtüyü", "Bərkitmə yeri və montaj əlçatanlığı"],
+    "prepare": ["Pilləkən və balkon şəkli", "Təxmini uzunluq və nümunə", "İstifadə və montaj yeri"],
+    "questions": [["Yalnız paqonmetr qiyməti ilə seçim etmək olarmı?", "Material, element sayı və bərkitmə üsulu eyni olmalıdır. Səth işləməsi və montajın daxil olduğunu soruşun."], ["Hazır nümunə mənim pilləkənimə uyğun gəlirmi?", "Ölçü, dönmə və bərkitmə səthi qiymətləndirilməlidir. Texniki uyğunluğu və tələb olunan hesablamanı ixtisaslı icraçı ilə dəqiqləşdirin."]],
+    "queries": ["məhəccər sifarişi", "pilləkən məhəccəri", "balkon məhəccəri"], "related": ["surgu-sistemleri", "beton-isleri", "interyer-dizayn"], "sources": []
+  },
+  "avtomatik-qapilar": {
+    "name": "Avtomatik qapılar", "heading": "Avtomatik qapılar — motor, idarəetmə və montaj xidməti",
+    "description": "Avtomatik darvaza və qapı üçün ölçü, çəki, motor və idarəetmə təkliflərini müqayisə edin. Elektrik işi və servis şərtlərini soruşun.",
+    "intro": "Mövcud qapıya motor əlavə etmək ilə yeni avtomatik sistem qurmaq ayrı sifarişlərdir. Qanadın növünü, təxmini ölçüsünü və gündəlik istifadə ehtiyacını bildirərək uyğun həll istəyin.",
+    "scope": ["Mexaniki hərəkət və motor baxışı", "Motor və idarəetmə quraşdırılması", "Pult, sensor və aksesuar xidməti"],
+    "pricing": ["Qapının tipi və hərəkət şərti", "Motor və təhlükəsizlik aksesuarları", "Elektrik və montaj hazırlığı"],
+    "prepare": ["Qapının şəkli və ölçüsü", "Mövcud motorun modeli", "İstifadə sıxlığı və giriş şəraiti"],
+    "questions": [["Hər qapıya istənilən motor taxılırmı?", "Motorun texniki uyğunluğu ilə qapının mexaniki vəziyyəti birlikdə qiymətləndirilməlidir. Model seçiminin səbəbini soruşun."], ["Quraşdırmada hansı yoxlamalar olmalıdır?", "Hərəkət, idarəetmə və sistemin uyğun təhlükəsizlik funksiyalarının sınağını razılaşdırın. Pultların və girişlərin təhvilini də yoxlayın."]],
+    "queries": ["avtomatik qapı", "darvaza motoru", "avtomatik qapı təmiri"], "related": ["elektrik", "surgu-sistemleri", "kamera-ustasi"], "sources": []
+  }
+}

@@ -28,7 +28,6 @@ class _SellerElanlarScreenState extends State<SellerElanlarScreen> {
   final List<ElanModel> _elanlar = [];
   bool _isLoading = true;
   String? _error;
-  int _totalCount = 0;
 
   @override
   void initState() {
@@ -44,12 +43,10 @@ class _SellerElanlarScreenState extends State<SellerElanlarScreen> {
     try {
       final res = await ApiService.getElanlar(userId: widget.sellerId);
       final list = (res['results'] as List<dynamic>?)?.cast<ElanModel>() ?? [];
-      final count = (res['count'] as int?) ?? list.length;
       if (mounted) {
         setState(() {
           _elanlar.clear();
           _elanlar.addAll(list);
-          _totalCount = count;
           _isLoading = false;
         });
       }
@@ -110,16 +107,15 @@ class _SellerElanlarScreenState extends State<SellerElanlarScreen> {
                       color: Color(0xFF0F172A),
                     ),
                   ),
-                  Text(
-                    _isLoading
-                        ? 'Elanlar yüklənir...'
-                        : '$_totalCount elan',
-                    style: const TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF64748B),
+                  if (_isLoading)
+                    const Text(
+                      'Elanlar yüklənir...',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF64748B),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

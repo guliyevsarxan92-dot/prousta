@@ -439,35 +439,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         ),
                                       )
                                     : null,
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (cat.elanSayi > 0)
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 9,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFEAF6F1),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Text(
-                                          '${cat.elanSayi} elan',
-                                          style: const TextStyle(
-                                            fontSize: 11.5,
-                                            fontWeight: FontWeight.w800,
-                                            color: Color(0xFF007B52),
-                                          ),
-                                        ),
-                                      ),
-                                    const SizedBox(width: 6),
-                                    const Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: Color(0xFF94A3B8),
-                                    ),
-                                  ],
+                                trailing: const Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: Color(0xFF94A3B8),
                                 ),
                               ),
                               if (hasSubs) ...[
@@ -511,9 +485,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             ),
                                           ),
                                           child: Text(
-                                            sub.elanSayi > 0
-                                                ? '${sub.ad} (${sub.elanSayi})'
-                                                : sub.ad,
+                                            sub.ad,
                                             style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w700,

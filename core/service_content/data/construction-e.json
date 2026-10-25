@@ -1,0 +1,52 @@
+{
+  "beton-isleri": {
+    "name": "Beton işləri", "heading": "Beton işləri — həcm, hazırlıq və icra planı",
+    "description": "Beton işləri üçün layihə, həcm, qəlib, armatur və çatdırılma şərtlərini müqayisə edin. Material və iş haqqını ayrı göstərən smeta istəyin.",
+    "intro": "Döşəmə, həyət və daşıyıcı konstruksiya betonunu eyni sifariş kimi qiymətləndirməyin. İşin texniki tələbləri və material göstəriciləri layihəyə uyğun müəyyən edilməlidir.",
+    "scope": ["Əsas və sahənin hazırlığı", "Qəlib və razılaşdırılmış armatur işi", "Betonun çatdırılması və yerləşdirilməsi"],
+    "pricing": ["Layihə həcmi və material tələbi", "Nasos və sahəyə giriş", "Qəlib, hazırlıq və son səth"],
+    "prepare": ["Layihə və ölçülər", "Sahənin giriş şəkilləri", "İşin istifadə məqsədi"],
+    "questions": [["Beton işinə yalnız sahə ilə qiymət almaq olar?", "Həcm və konstruksiya tələbi dəqiqləşməlidir. Qalınlıq və digər texniki ölçüləri təxmini internet məsləhəti ilə deyil, layihə ilə müəyyənləşdirin."], ["Materialla iş haqqını necə ayırım?", "Beton, armatur, qəlib, daşınma və işçi xərclərini ayrı göstərin. Qəbul və material sənədlərinin təqdimini də razılaşdırın."]],
+    "queries": ["beton işləri", "beton tökülməsi", "beton işləri smeta"], "related": ["anbar-tikintisi", "asfalt-isleri", "insaat-materiallari"], "sources": []
+  },
+  "asfalt-isleri": {
+    "name": "Asfalt işləri", "heading": "Asfalt işləri — əsas hazırlığı və örtük icrası",
+    "description": "Həyət, giriş və dayanacaq asfaltlanması üçün əsas hazırlığı, sahə istifadəsi, drenaj və örtük həcmini eyni şərtlərlə müqayisə edin.",
+    "intro": "Yalnız üst örtüyün dəyişməsi ilə torpaq sahənin tam hazırlanması fərqli smetalardır. Sahənin hansı nəqliyyat üçün istifadə olunacağını və suyun axıdılmasını layihə mərhələsində bildirin.",
+    "scope": ["Əsasın və mövcud örtüyün baxışı", "Razılaşdırılmış hazırlıq işləri", "Örtüyün yerləşdirilməsi və tamamlanması"],
+    "pricing": ["Əsasın mövcud vəziyyəti", "Layihədəki qat və material həcmi", "Texnika girişi və drenaj işi"],
+    "prepare": ["Sahənin planı və ölçüsü", "İstifadə yükü barədə məlumat", "Giriş və su axını şəkilləri"],
+    "questions": [["Eyni sahəyə niyə fərqli qiymət verilir?", "Əsasın hazırlanması və material həcmi təkliflərdə fərqlənə bilər. Smetaları eyni texniki iş siyahısına uyğunlaşdırın."], ["Drenaj işi asfalt qiymətinə daxildirmi?", "Suyun yönləndirilməsi, kənar elementlər və mövcud quyularla iş ayrıca göstərilməlidir. Örtüyün istifadəyə verilmə şərtini də soruşun."]],
+    "queries": ["asfalt işləri", "həyət asfaltlanması", "asfalt döşənməsi qiyməti"], "related": ["beton-isleri", "zibil-dasima", "texnika-icaresi"], "sources": []
+  },
+  "sauna-tikintisi": {
+    "name": "Sauna tikintisi", "heading": "Sauna tikintisi — məkan, avadanlıq və layihə seçimi",
+    "description": "Sauna hazırlanması üçün kabin, qızdırıcı, havalandırma və elektrik işlərini müqayisə edin. Material və sınaq mərhələlərini dəqiqləşdirin.",
+    "intro": "Hazır kabin quraşdırılması ilə mövcud otağın saunaya çevrilməsi fərqli layihələrdir. İstifadə sayı, ölçü və məkanın texniki hazırlığını müvafiq ixtisaslı icraçılarla qiymətləndirin.",
+    "scope": ["Otaq və kabin planlaşdırılması", "Üzləmə və avadanlıq montajı", "Elektrik və havalandırma koordinasiyası"],
+    "pricing": ["Ölçü və daxili material", "Qızdırıcı və idarəetmə komplekti", "Texniki hazırlıq və sınaqlar"],
+    "prepare": ["Məkan planı və ölçülər", "İstifadə məqsədi və sayı", "Mövcud kommunikasiyalar"],
+    "questions": [["Sauna paketində elektrik işi də olurmu?", "Layihə, xətt, avadanlıq bağlantısı və yoxlamaların hansı icraçıya aid olduğunu soruşun. Kabin qiyməti bunları tam əhatə etməyə bilər."], ["Qızdırıcını yalnız otaq sahəsinə görə seçmək olar?", "İstehsalçının tələbləri və məkanın quruluşu nəzərə alınmalıdır. Seçimin texniki əsaslandırılmasını layihəni hazırlayandan istəyin."]],
+    "queries": ["sauna tikintisi", "sauna hazırlanması", "sauna quraşdırılması"], "related": ["havalandirma-ustasi", "elektrik", "interyer-dizayn"], "sources": []
+  },
+  "bioklimatik-pergola": {
+    "name": "Bioklimatik pergola", "heading": "Bioklimatik pergola — terras örtüyü və idarəetmə sistemi",
+    "description": "Terras üçün bioklimatik pergola sifarişində ölçü, daşıyıcı sistem, lamel, su axını və motor komplektini müqayisə edin. Montaj yerini göstərin.",
+    "intro": "Pergola sifarişində örtüyün açılması ilə su axıdılması və daşıyıcı hissə birlikdə planlaşdırılır. Terrasın ölçüsünü, bərkitmə yerini və əlavə yan bağlanma istəyinizi əvvəl bildirin.",
+    "scope": ["Ölçü və daşıyıcı sistem təklifi", "Lamel və motor montajı", "Su axını və yan elementlərin tamamlanması"],
+    "pricing": ["Açılış ölçüsü və daşıyıcı hazırlıq", "Motor, sensor və işıq komplekti", "Yan bağlanma və drenaj"],
+    "prepare": ["Terras planı və şəkillər", "Bərkitmə səthinin məlumatı", "İdarəetmə və yan bağlanma tələbi"],
+    "questions": [["Pergola qiymətinə yan şüşələr daxildirmi?", "Yan sistem, işıqlandırma, sensor və su axını detallarını ayrıca soruşun. Paketlərin komplektini eyniləşdirmədən məbləğləri müqayisə etməyin."], ["Mövcud terrasa montaj üçün baxış lazımdırmı?", "Bərkitmə və texniki uyğunluq yerində qiymətləndirilməlidir. Konstruksiya barədə tələb olunan hesablamanı ixtisaslı icraçı ilə dəqiqləşdirin."]],
+    "queries": ["bioklimatik pergola", "terras pergola", "pergola qiyməti"], "related": ["hebesebe-sistemi", "cam-balkon", "jaluz"], "sources": []
+  },
+  "hebesebe-sistemi": {
+    "name": "Hebeşebe sistemi", "heading": "Hebeşebe sistemi — qaldır-sürüşdür qapı həlləri",
+    "description": "Hebeşebe və qaldır-sürüşdür şüşəli qapılar üçün profil, şüşə paketi, mexanizm və hədd detallarını müqayisə edin. Ölçü baxışı ilə təklif alın.",
+    "intro": "Böyük şüşəli açılışlarda qaldır-sürüşdür sistemin mexanizmi adi sürgüdən fərqlənir. İstilik, keçid rahatlığı və açılan qanad tələblərini eyni təklifdə dəqiqləşdirin.",
+    "scope": ["Açılış ölçüsü və sistem seçimi", "Profil və şüşə paketinin hazırlanması", "Mexanizm montajı və sazlanması"],
+    "pricing": ["Qanad ölçüsü və profil sistemi", "Şüşə paketinin tərkibi", "Hədd, drenaj və montaj hazırlığı"],
+    "prepare": ["Açılış planı və ölçüsü", "İstənilən açılma istiqaməti", "İzolyasiya və keçid tələbi"],
+    "questions": [["Hebeşebe adi sürgülü qapıdan nə ilə fərqlənir?", "Qaldır-sürüşdür mexanizminin iş prinsipi və komplekti fərqlidir. Təklifdə sistemin tam adını və texniki göstəricilərini istəyin."], ["Sistemə sonradan motor əlavə etmək olar?", "Bu, modelin uyğunluğundan asılıdır. Əl və avtomatik idarəetmə seçimini sifarişdən əvvəl istehsalçı məlumatı ilə dəqiqləşdirin."]],
+    "queries": ["hebeşebe sistemi", "qaldır sürüşdür qapı", "Hebeschiebe qapı"], "related": ["surgu-sistemleri", "cam-balkon", "plastik-qapi-pencere"], "sources": ["schueco-sliding"]
+  }
+}

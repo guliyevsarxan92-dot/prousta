@@ -1,0 +1,11 @@
+<section class="pg-section" style="margin-top:28px">
+  <div class="sec-head"><h3>Tez-tez verilən suallar (FAQ)</h3></div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    {% for question, answer in questions %}
+    <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border)">
+      <summary style="font-weight:700;font-size:15px">{{ question }}</summary>
+      <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">{{ answer }}</p>
+    </details>
+    {% endfor %}
+  </div>
+</section>

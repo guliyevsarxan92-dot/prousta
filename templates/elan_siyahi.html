@@ -9,7 +9,6 @@
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}<span aria-current="page">{% if axtaris %}Axtarış{% else %}Bütün elanlar{% endif %}</span></nav>
 
   <section class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.paginator.count }} aktiv elan</span>
     {% if axtaris %}
       <h1>“{{ axtaris }}” üçün <span>nəticələr</span></h1>
       <p>Axtarışınıza uyğun usta və xidmət elanları. Premium elanlar ilk sırada göstərilir.</p>
@@ -41,7 +40,7 @@
   {% endif %}
 
   <section class="pg-section">
-    <div class="sec-head"><h2>{% if axtaris %}Tapılan elanlar{% else %}Son elanlar{% endif %}</h2><small>{{ elanlar.paginator.count }} elan</small></div>
+    <div class="sec-head"><h2>{% if axtaris %}Tapılan elanlar{% else %}Son elanlar{% endif %}</h2></div>
     <div class="service-grid">
       {% for elan in elanlar %}
         {% include 'partials/home_service_card.html' with eager_image=forloop.first %}

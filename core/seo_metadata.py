@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 
 from .seo import PUBLIC_VIEWS, SITE_URL, seo_context
+from .service_content import get_content, metadata_value
 
 BRAND = 'Prousta.az'
 ORGANIZATION_ID = SITE_URL + '/#organization'
@@ -59,7 +60,7 @@ def service_faq(context):
              f'{floatformat(minimum, "-2")} AZN-dən başlayır.' if minimum
              else 'Qiymət görüləcək işin həcminə və mürəkkəbliyinə görə dəyişir.')
     location_note = (' Burada digər ərazilərin elanları da göstərilir; elan qiyməti konkret ünvana xidmətin yekun qiymətini təsdiqləmir.' if location else '')
-    return [
+    questions = [
         (f'{area} {category.ad.lower()} üzrə xidmətin qiyməti nə qədərdir?',
          price + ' Bir neçə mütəxəssisin elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.' + location_note),
         (f'{category.ad} üzrə xidmət necə sifariş edilir?',
@@ -67,6 +68,12 @@ def service_faq(context):
         ('Xidmətə və görülən işə zəmanət verilirmi?',
          'Zəmanət şərtləri xidmətin növünə və mütəxəssisin təklifinə görə dəyişir. Sifarişdən əvvəl görüləcək işi, zəmanətin olub-olmadığını və müddətini seçdiyiniz mütəxəssislə dəqiqləşdirin.'),
     ]
+    content = get_content(category)
+    if content:
+        question, answer = questions[0]
+        answer += ' Qiymətə təsir edən amillər: ' + '; '.join(content['pricing']) + '.'
+        return [(question, answer), *[tuple(item) for item in content['questions']]]
+    return questions
 
 
 def _organization():
@@ -138,8 +145,8 @@ def build_metadata(context):
         page_type = 'AboutPage'
     extra = []
     if category:
-        title = category.seo_title or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
-        description = category.seo_description or (
+        title = metadata_value(category, 'seo_title') or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
+        description = metadata_value(category, 'seo_description') or (
             f'{category.ad} üzrə aktiv elanları, qiymətləri və iş nümunələrini müqayisə edin. '
             'Elan sahibi ilə xidmətin ərazisini, vaxtını və yekun qiymətini razılaşdırın.')
         crumbs += [('Xidmətlər', '/elanlar/')]
