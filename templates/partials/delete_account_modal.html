@@ -1,0 +1,69 @@
+<!-- Modal: Hesabı Sil -->
+<div id="deleteAccountModalBackdrop" role="dialog" aria-modal="true" aria-label="Hesabı birdəfəlik sil" tabindex="-1" class="reklam-modal-backdrop" onclick="if(event.target === this) closeDeleteAccountModal()" style="display:none">
+  <div class="reklam-modal-dialog" style="max-width:440px">
+    <div class="reklam-modal-header" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          {% include 'partials/ui_icon.html' with name='trash' %}
+        </div>
+        <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">Hesabı birdəfəlik sil</h3>
+      </div>
+      <button type="button" class="reklam-modal-close" onclick="closeDeleteAccountModal()" aria-label="Bağla">✕</button>
+    </div>
+
+    <form method="post" action="{% url 'hesab_sil' %}" style="margin:0">
+      {% csrf_token %}
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;margin-bottom:14px;color:#991b1b;font-size:13px;line-height:1.45">
+        ⚠️ <b>Diqqət:</b> Hesabınızı sildikdə bütün elanlarınız, mesajlarınız, favoritləriniz və profil məlumatlarınız sistemdən <b>birdəfəlik silinəcək</b> və bu əməliyyat geri qaytarıla bilməz.
+      </div>
+
+      {% if user.has_usable_password %}
+        <div style="margin-bottom:16px">
+          <label for="delete_account_password" style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px">Təsdiq üçün cari şifrənizi daxil edin:</label>
+          <input type="password" id="delete_account_password" name="password" required placeholder="Şifrəniz" style="width:100%;box-sizing:border-box;padding:10px 14px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#cbd5e1'">
+        </div>
+      {% else %}
+        <div style="margin-bottom:16px">
+          <label for="delete_account_confirm" style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px">Təsdiq üçün aşağıdakı xanaya <b>SIL</b> yazın:</label>
+          <input type="text" id="delete_account_confirm" name="confirm" required placeholder="SIL" style="width:100%;box-sizing:border-box;padding:10px 14px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#cbd5e1'">
+        </div>
+      {% endif %}
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteAccountModal()">İmtina</button>
+        <button type="submit" class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;font-weight:700;padding:8px 18px;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+          {% include 'partials/ui_icon.html' with name='trash' %}
+          Bəli, hesabımı sil
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openDeleteAccountModal() {
+  var m = document.getElementById('deleteAccountModalBackdrop');
+  if (m) {
+    if (m.parentNode !== document.body) {
+      document.body.appendChild(m);
+    }
+    m.style.display = 'flex';
+    m.classList.add('is-visible');
+    var inp = m.querySelector('input');
+    if (inp) {
+      inp.value = '';
+      setTimeout(function() { inp.focus(); }, 100);
+    }
+  }
+}
+function closeDeleteAccountModal() {
+  var m = document.getElementById('deleteAccountModalBackdrop');
+  if (m) {
+    m.style.display = 'none';
+    m.classList.remove('is-visible');
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDeleteAccountModal();
+});
+</script>

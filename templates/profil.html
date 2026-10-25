@@ -54,6 +54,10 @@
           Çıxış
         </button>
       </form>
+      <button type="button" class="btn btn-outline btn-sm" onclick="openDeleteAccountModal()" style="color:#b91c1c;border-color:#fca5a5;gap:6px" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent';this.style.borderColor='#fca5a5'" title="Hesabı birdəfəlik sil">
+        {% include 'partials/ui_icon.html' with name='trash' %}
+        Hesabı sil
+      </button>
     </div>
   </div>
 
@@ -313,6 +317,25 @@
     {% endif %}
     {% include 'partials/profile_pager.html' with page=favoritler key='favorites_page' tab='favoritler' label='Favoritlərin səhifələri' %}
 </div>
+
+  <!-- Hesabı Silmə Kartı -->
+  <div class="panel" style="margin-top:28px;border:1.5px dashed #fca5a5;background:#fffafb;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;padding:18px 22px;border-radius:14px">
+    <div>
+      <h3 style="margin:0 0 4px;font-size:15px;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:8px">
+        {% include 'partials/ui_icon.html' with name='trash' %}
+        Hesabın birdəfəlik silinməsi
+      </h3>
+      <p style="margin:0;font-size:13px;color:#7f1d1d">
+        Artıq platformadan istifadə etmək istəmirsinizsə, hesabınızı və bütün məlumatlarınızı buradan birdəfəlik silə bilərsiniz.
+      </p>
+    </div>
+    <button type="button" class="btn btn-sm" onclick="openDeleteAccountModal()" style="background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;font-weight:700;padding:8px 18px;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='#fecdd3'" onmouseout="this.style.background='#fee2e2'">
+      {% include 'partials/ui_icon.html' with name='trash' %}
+      Hesabı sil
+    </button>
+  </div>
+
+{% include 'partials/delete_account_modal.html' %}
 
 <!-- Modal: Elanı Reklam Et (Bütün ödənişli xidmətlər: İrəli çək, VIP, Super VIP) -->
 <div id="reklamModalBackdrop" role="dialog" aria-modal="true" aria-label="Elan üçün ödənişli xidmətlər" tabindex="-1" class="reklam-modal-backdrop" onclick="if(event.target === this) closeReklamModal()" style="display:none">

@@ -625,6 +625,32 @@ def profil_duzelis(request):
     return render(request, 'profil_duzelis.html')
 
 @login_required
+@require_POST
+def hesab_sil(request):
+    """İstifadəçinin öz hesabını və bağlı bütün məlumatlarını birdəfəlik silməsi."""
+    user = request.user
+    if user.is_staff or user.is_superuser:
+        messages.error(request, 'Admin hesabı silinə bilməz.')
+        return redirect('profil')
+
+    if user.has_usable_password():
+        password = request.POST.get('password', '')
+        if not password or not user.check_password(password):
+            messages.error(request, 'Daxil edilən şifrə yanlışdır.')
+            return redirect('profil')
+    else:
+        confirm = str(request.POST.get('confirm', '')).strip().upper()
+        if confirm != 'SIL':
+            messages.error(request, 'Təsdiq üçün "SIL" yazmalısınız.')
+            return redirect('profil')
+
+    logout(request)
+    with transaction.atomic():
+        user.delete()
+    messages.success(request, 'Hesabınız və bütün məlumatlarınız uğurla silindi.')
+    return redirect('index')
+
+@login_required
 def profil_foto(request):
     if request.method == 'POST' and request.FILES.get('avatar'):
         avatar = request.FILES['avatar']

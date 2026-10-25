@@ -39,6 +39,7 @@ urlpatterns = [
     path('profil/foto/', views.profil_foto, name='profil_foto'),
     path('profil/foto/crop/', views.profil_foto_crop, name='profil_foto_crop'),
     path('profil/duzelis/', views.profil_duzelis, name='profil_duzelis'),
+    path('profil/hesab-sil/', views.hesab_sil, name='hesab_sil'),
     path('istifadeci/<int:pk>/', views.istifadeci_profil, name='istifadeci_profil'),
     path('favorit/<int:pk>/', views.favorit_toggle, name='favorit_toggle'),
     path('mesajlar/', views.mesajlar, name='mesajlar'),

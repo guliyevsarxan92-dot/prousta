@@ -443,3 +443,38 @@ class RemediationTests(TestCase):
             )
         self.assertEqual(Mesaj.objects.filter(alici=new_user).count(), 1)
 
+    def test_web_account_deletion_flow(self):
+        user = User.objects.create_user(username='silinecek_user', password='MyStrongPassword123!')
+        cat = Kategori.objects.create(ad='Təmir', slug='temir-silme-test')
+        ad = Elan.objects.create(
+            istifadeci=user,
+            kategori=cat,
+            bashliq='Silinəcək elan',
+            acaqlama='Bu elan hesab silinəndə itməlidir.',
+            status='aktiv'
+        )
+
+        client = Client()
+        client.login(username='silinecek_user', password='MyStrongPassword123!')
+
+        # 1. Səhv şifrə ilə sorğu verildikdə hesab silinməməlidir
+        bad_resp = client.post('/profil/hesab-sil/', {'password': 'WrongPassword!'})
+        self.assertEqual(bad_resp.status_code, 302)
+        self.assertTrue(User.objects.filter(pk=user.pk).exists())
+        self.assertTrue(Elan.objects.filter(pk=ad.pk).exists())
+
+        # 2. Düzgün şifrə ilə sorğu verildikdə hesab və elan silinməlidir
+        ok_resp = client.post('/profil/hesab-sil/', {'password': 'MyStrongPassword123!'})
+        self.assertRedirects(ok_resp, '/')
+        self.assertFalse(User.objects.filter(pk=user.pk).exists())
+        self.assertFalse(Elan.objects.filter(pk=ad.pk).exists())
+
+    def test_web_account_deletion_admin_rejected(self):
+        admin = User.objects.create_superuser(username='admin_boss', password='BossPassword123!')
+        client = Client()
+        client.login(username='admin_boss', password='BossPassword123!')
+        resp = client.post('/profil/hesab-sil/', {'password': 'BossPassword123!'})
+        self.assertRedirects(resp, '/profil/')
+        self.assertTrue(User.objects.filter(pk=admin.pk).exists())
+
+
