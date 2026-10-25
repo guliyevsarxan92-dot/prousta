@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from core.seo_discovery import sitemap_index
 from core.sitemaps import (
     AnaSehifeSitemap, KategoriSitemap, AltKategoriSitemap, StatikSitemap,
     ElanSitemap, ProblemSitemap, XidmetLokasiyaSitemap
@@ -22,7 +23,8 @@ from core.admin import admin_pending_notifications_api
 urlpatterns = [
     path('admin/api/pending-notifications/', admin_pending_notifications_api, name='admin_pending_notifications'),
     path('admin/', admin.site.urls),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps, 'sitemap_url_name': 'sitemap_section'}, name='sitemap'),
+    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/section.xml'}, name='sitemap_section'),
 
     path('social-auth/', include('social_django.urls', namespace='social')),
     path('api/v1/', include('core.api_urls')),

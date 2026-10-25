@@ -9,3 +9,6 @@ staticfiles/
 dentcrm/
 elanlar_backup_tam.json
 *.json.bak
+private_media/
+deploy.sh
+mobile_app/android/.kotlin/

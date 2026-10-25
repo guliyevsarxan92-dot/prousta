@@ -1,5 +1,13 @@
 import json
 import secrets
+import hashlib
+from datetime import timedelta
+from django.db import transaction
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from .identity import google_user
+from .throttles import mobile_auth_limit
+from .models import MobileLoginTicket
 
 from django.conf import settings
 from django.contrib.auth import login
@@ -21,14 +29,17 @@ CACHE_PREFIX = "mobile_login_token:"
 
 @csrf_exempt
 @require_POST
+@mobile_auth_limit
 def mobile_google_login(request):
     try:
         data = json.loads(request.body.decode("utf-8") or "{}")
     except ValueError:
         return HttpResponseBadRequest("invalid json")
 
-    token = (data.get("id_token") or "").strip()
-    if not token:
+    if not isinstance(data, dict) or not isinstance(data.get("id_token"), str):
+        return JsonResponse({"error": "id_token required"}, status=400)
+    token = data["id_token"].strip()
+    if not token or len(token) > 16384:
         return JsonResponse({"error": "id_token required"}, status=400)
 
     client_id = getattr(settings, "GOOGLE_WEB_CLIENT_ID", "") or settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
@@ -39,38 +50,17 @@ def mobile_google_login(request):
         info = google_id_token.verify_oauth2_token(
             token, google_requests.Request(), client_id
         )
-    except ValueError as e:
-        return JsonResponse({"error": "invalid token", "detail": str(e)}, status=401)
+    except (ValueError, TypeError):
+        return JsonResponse({"error": "invalid token"}, status=401)
 
-    email = (info.get("email") or "").lower().strip()
-    if not email or not info.get("email_verified", False):
-        return JsonResponse({"error": "email not verified"}, status=401)
-
-    user = User.objects.filter(email__iexact=email).first()
-    if user is None:
-        base = (email.split("@")[0] or f"user{secrets.token_hex(3)}")[:26]
-        username = base
-        suffix = 0
-        while User.objects.filter(username=username).exists():
-            suffix += 1
-            username = f"{base}{suffix}"
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            first_name=(info.get("given_name") or "")[:30],
-            last_name=(info.get("family_name") or "")[:150],
-        )
-        user.set_unusable_password()
-        user.save()
-        profil, _ = Profil.objects.get_or_create(istifadeci=user)
-        if not profil.ad:
-            profil.ad = user.first_name or ""
-        if not profil.soyad:
-            profil.soyad = user.last_name or ""
-        profil.save()
+    try:
+        user = google_user(info)
+    except ValidationError as exc:
+        return JsonResponse({'error': ' '.join(exc.messages)}, status=400)
 
     login_token = secrets.token_urlsafe(32)
-    cache.set(CACHE_PREFIX + login_token, user.pk, timeout=TOKEN_TTL_SECONDS)
+    MobileLoginTicket.objects.create(digest=hashlib.sha256(login_token.encode()).hexdigest(),
+                                      user=user, expires=timezone.now() + timedelta(seconds=TOKEN_TTL_SECONDS))
     return JsonResponse({"login_token": login_token})
 
 
@@ -79,15 +69,17 @@ def mobile_session(request):
     token = (request.GET.get("t") or "").strip()
     if not token:
         return redirect("giris")
-    key = CACHE_PREFIX + token
-    user_id = cache.get(key)
-    cache.delete(key)
-    if not user_id:
-        return redirect("giris")
-    try:
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return redirect("giris")
-    user.backend = "django.contrib.auth.backends.ModelBackend"
-    login(request, user)
-    return redirect("/")
+    with transaction.atomic():
+        ticket = MobileLoginTicket.objects.select_for_update().select_related('user').filter(
+            digest=hashlib.sha256(token.encode()).hexdigest(), expires__gt=timezone.now()).first()
+        if not ticket:
+            return redirect('giris')
+        user = ticket.user
+        ticket.delete()
+    if not user.is_active:
+        return redirect('giris')
+    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    response = redirect('/')
+    response['Cache-Control'] = 'no-store'
+    response['Referrer-Policy'] = 'no-referrer'
+    return response

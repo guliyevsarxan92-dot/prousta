@@ -1,53 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
-{% block description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda və Azərbaycanda usta elanları. Ən yaxşı qiymətlər və etibarlı ustalar Prousta.az-da.{% else %}Bakıda və Azərbaycanda bütün usta elanları: elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri, mebel ustası və daha çox. Prousta.az-da tapın!{% endif %}{% endblock %}
-{% block keywords %}usta elanları Bakı, elektrik ustası Bakı, santexnik Bakı, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri Bakı, mebel ustası, peşəkar xidmət Bakı, Prousta.az{% endblock %}
-{% block robots %}{% if axtaris or seo_noindex %}noindex, follow{% else %}index, follow, max-image-preview:large, max-snippet:-1{% endif %}{% endblock %}
-{% block canonical %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
-{% block canonical2 %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
-{% block og_url %}{% if seo_page > 1 %}/elanlar/?page={{ seo_page }}{% else %}/elanlar/{% endif %}{% endblock %}
-{% block og_title %}{% if axtaris %}"{{ axtaris }}" — Usta Axtarış Nəticələri Bakı{% else %}Bakıda Usta Elanları — Bütün Xidmətlər{% endif %} — Prousta.az{% endblock %}
-{% block og_description %}{% if axtaris %}"{{ axtaris }}" üzrə Bakıda usta elanları Prousta.az-da.{% else %}Bakıda elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası və 100+ xidmət elanı.{% endif %}{% endblock %}
+
 {% block extra_head %}
 {% if elanlar.has_previous %}<link rel="prev" href="/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "{% if axtaris %}{{ axtaris|escapejs }} — Axtarış Nəticələri{% else %}Bütün Elanlar{% endif %} — Prousta.az",
-  "description": "Prousta.az-da peşəkar xidmət elanlarının tam siyahısı.",
-  "url": "https://prousta.az/elanlar/{% if axtaris %}?q={{ axtaris|urlencode }}{% endif %}",
-  "inLanguage": "az-AZ",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Prousta.az",
-    "url": "https://prousta.az"
-  },
-  "mainEntity": {
-    "@type": "ItemList",
-    "numberOfItems": {{ elanlar.paginator.count|default:0 }},
-    "itemListElement": [
-      {% for elan in elanlar %}{
-        "@type": "ListItem",
-        "position": {{ forloop.counter }},
-        "url": "https://prousta.az{{ elan.get_absolute_url }}",
-        "name": "{{ elan.bashliq|escapejs }}"
-      }{% if not forloop.last %},{% endif %}{% endfor %}
-    ]
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Bütün Elanlar", "item": "https://prousta.az/elanlar/"}
-  ]
-}
-</script>
 {% endblock %}
 {% block content %}
 <div class="pg">
@@ -89,7 +44,7 @@
     <div class="sec-head"><h2>{% if axtaris %}Tapılan elanlar{% else %}Son elanlar{% endif %}</h2><small>{{ elanlar.paginator.count }} elan</small></div>
     <div class="service-grid">
       {% for elan in elanlar %}
-        {% include 'partials/home_service_card.html' %}
+        {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
         {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
           {% include 'partials/in_grid_ad_banner.html' %}
         {% endif %}

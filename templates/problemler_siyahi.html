@@ -1,38 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}{% if secilmis %}{{ secilmis|title }} Problemləri və Həlləri{% elif axtaris %}“{{ axtaris }}” üzrə texniki məqalələr{% else %}Ev Problemləri, Səbəbləri və Usta Bələdçisi Bakıda{% endif %} | Prousta.az{% endblock %}
-{% block description %}Kombi yanmır, su təzyiqi düşür, kondisioner soyutmur, paltaryuyan sıxmır? Bütün məişət texnikası və ev təmiri problemlərinin səbəbləri və addım-addım həll yolları.{% endblock %}
-{% block keywords %}ev problemləri Bakı, kombi xətaları, kondisioner təmiri, paltaryuyan xətası, usta məsləhətləri, Prousta bloq{% endblock %}
-{% block canonical %}/problemler/{% endblock %}
-{% block canonical2 %}/problemler/{% endblock %}
-{% block og_url %}/problemler/{% endblock %}
-{% block og_title %}Ev Problemləri və Peşəkar Həllər — Prousta.az Bloq{% endblock %}
-{% block og_description %}Məişət texnikası və ev nasazlıqlarının səbəbi və peşəkar usta həlləri.{% endblock %}
 
 {% block extra_head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "CollectionPage",
-      "@id": "https://prousta.az/problemler/#webpage",
-      "name": "Ev Problemləri və Texniki Həllər Bələdçisi",
-      "description": "Evdə yarana biləcək ən çox rast gəlinən problemlər və onların peşəkar həll yolları.",
-      "url": "https://prousta.az/problemler/",
-      "inLanguage": "az-AZ",
-      "isPartOf": {"@type": "WebSite", "@id": "https://prousta.az/#website"}
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://prousta.az/problemler/#breadcrumb",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-        {"@type": "ListItem", "position": 2, "name": "Bloq və Problemlər", "item": "https://prousta.az/problemler/"}
-      ]
-    }
-  ]
-}
-</script>
 {% endblock %}
 
 {% block style %}

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/models.dart';
@@ -23,9 +23,11 @@ class AuthProvider extends ChangeNotifier {
       if (ApiService.isAuthenticated) {
         _user = await ApiService.getProfile();
       }
-    } catch (_) {
+    } on ApiAuthException {
       await ApiService.setToken(null);
       _user = null;
+    } catch (_) {
+      // Preserve credentials during a temporary network or server outage.
     } finally {
       _isLoading = false;
       _initialized = true;
@@ -79,6 +81,13 @@ class AuthProvider extends ChangeNotifier {
     try {
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
+        clientId: kIsWeb
+            ? const String.fromEnvironment(
+                'GOOGLE_WEB_CLIENT_ID',
+                defaultValue:
+                    '811460264298-gge8uv2mfv7rro7fsi6jhkgfs7i1krht.apps.googleusercontent.com',
+              )
+            : null,
         serverClientId:
             '811460264298-gge8uv2mfv7rro7fsi6jhkgfs7i1krht.apps.googleusercontent.com',
       );
@@ -101,8 +110,11 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> refreshProfile() async {
     if (!ApiService.isAuthenticated) return;
+    final sessionToken = ApiService.token;
     try {
-      _user = await ApiService.getProfile();
+      final profile = await ApiService.getProfile();
+      if (ApiService.token != sessionToken) return;
+      _user = profile;
       notifyListeners();
     } catch (_) {}
   }
@@ -112,18 +124,21 @@ class AuthProvider extends ChangeNotifier {
     String? soyad,
     String? telefon,
     String? sheher,
-    File? avatarFile,
+    XFile? avatarFile,
   }) async {
     _isLoading = true;
     notifyListeners();
+    final sessionToken = ApiService.token;
     try {
-      _user = await ApiService.updateProfile(
+      final profile = await ApiService.updateProfile(
         ad: ad,
         soyad: soyad,
         telefon: telefon,
         sheher: sheher,
         avatarFile: avatarFile,
       );
+      if (ApiService.token != sessionToken) return;
+      _user = profile;
     } finally {
       _isLoading = false;
       notifyListeners();

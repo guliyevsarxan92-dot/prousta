@@ -1,0 +1,16 @@
+.git
+.env
+.aws
+.agents
+.codex
+venv
+mobile_app
+dentcrm
+media
+private_media
+staticfiles
+elanlar_backup_tam.json
+**/__pycache__
+**/*.pyc
+**/*.jks
+**/key.properties

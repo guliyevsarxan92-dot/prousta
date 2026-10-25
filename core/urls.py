@@ -2,15 +2,23 @@ from django.urls import path, re_path
 from django.views.generic.base import RedirectView
 from . import views
 from . import mobile_auth
+from . import receipts
+from .health import readiness
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('health/', readiness, name='health'),
     path('mobile/google-login/', mobile_auth.mobile_google_login, name='mobile_google_login'),
     path('mobile/session/', mobile_auth.mobile_session, name='mobile_session'),
     path('qeydiyyat/', views.qeydiyyat, name='qeydiyyat'),
     path('giris/', views.giris, name='giris'),
     path('cixis/', views.cixis, name='cixis'),
     path('sifre-unutdum/', views.sifre_unutdum, name='sifre_unutdum'),
+    path('sifre-yenile/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('sifre-yenilendi/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('qebz/<int:pk>/', receipts.download, name='payment_receipt'),
+    path('mesaj/<int:pk>/cavab/', views.mesaj_cavab, name='mesaj_cavab'),
     path('elanlar/', views.elan_siyahi, name='elan_siyahi'),
     path('xidmet/<slug:slug>/', views.xidmet_detail, name='xidmet_detail'),
     path('xidmet/<slug:slug>/<slug:lokasiya>/', views.xidmet_detail, name='xidmet_lokasiya_detail'),

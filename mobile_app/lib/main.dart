@@ -12,7 +12,11 @@ import 'services/api_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ApiService.init();
+  try {
+    await ApiService.init();
+  } catch (_) {
+    // Public browsing remains available if the credential store is unavailable.
+  }
   runApp(const ProustaApp());
 }
 
@@ -29,45 +33,52 @@ class ProustaApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
-        ChangeNotifierProvider(create: (_) => ElanProvider()..loadInitialData()),
+        ChangeNotifierProxyProvider<AuthProvider, ElanProvider>(
+          create: (_) => ElanProvider()..loadInitialData(),
+          update: (_, auth, provider) =>
+              (provider ?? ElanProvider())..bindUser(auth.user?.id),
+        ),
       ],
-      child: MaterialApp(
-        title: 'prousta.az',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: brandPrimary,
-            primary: brandPrimary,
-            secondary: brandAccent,
-            surface: Colors.white,
-          ),
-          scaffoldBackgroundColor: nearlyWhite,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            foregroundColor: darkerText,
-            elevation: 0,
-            scrolledUnderElevation: 0.5,
-            surfaceTintColor: Colors.transparent,
-          ),
-          cardTheme: CardThemeData(
-            color: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      child: Consumer<AuthProvider>(
+        builder: (context, auth, child) => MaterialApp(
+          key: ValueKey(auth.user?.id),
+          title: 'prousta.az',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: brandPrimary,
+              primary: brandPrimary,
+              secondary: brandAccent,
+              surface: Colors.white,
+            ),
+            scaffoldBackgroundColor: nearlyWhite,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: darkerText,
+              elevation: 0,
+              scrolledUnderElevation: 0.5,
+              surfaceTintColor: Colors.transparent,
+            ),
+            cardTheme: CardThemeData(
+              color: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+                TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+              },
             ),
           ),
-          pageTransitionsTheme: const PageTransitionsTheme(
-            builders: {
-              TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-            },
-          ),
+          home: const MainNavigationShell(),
         ),
-        home: const MainNavigationShell(),
       ),
     );
   }
@@ -99,9 +110,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
         onNavigateToCategories: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const CategoriesScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const CategoriesScreen()),
           );
         },
         onNavigateToCreate: () => _setTab(2),
@@ -110,9 +119,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
       FavoritesScreen(onNavigateToHome: () => _setTab(0)),
       CreateElanScreen(onCreated: () => _setTab(0)),
       const MessagesScreen(),
-      ProfileScreen(
-        onNavigateToMessages: () => _setTab(3),
-      ),
+      ProfileScreen(onNavigateToMessages: () => _setTab(3)),
     ];
   }
 
@@ -133,10 +140,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _AnimatedIndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: _AnimatedIndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: _buildCurvedBottomBar(context),
     );
   }
@@ -147,11 +151,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
     final bottomMargin = bottomPadding > 0 ? bottomPadding : 12.0;
 
     return Container(
-      padding: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        bottom: bottomMargin,
-      ),
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: bottomMargin),
       child: SizedBox(
         height: 70,
         child: Stack(
@@ -202,7 +202,9 @@ class _MainNavigationShellState extends State<MainNavigationShell>
                         activeIcon: Icons.favorite_rounded,
                         label: 'Favorilər',
                       ),
-                      const SizedBox(width: 58.0), // Gap for center floating action button
+                      const SizedBox(
+                        width: 58.0,
+                      ), // Gap for center floating action button
                       _buildNavItem(
                         index: 3,
                         icon: Icons.chat_bubble_outline_rounded,
@@ -230,10 +232,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF0A4D34),
-                        Color(0xFF0FA968),
-                      ],
+                      colors: [Color(0xFF0A4D34), Color(0xFF0FA968)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -251,10 +250,7 @@ class _MainNavigationShellState extends State<MainNavigationShell>
                         blurRadius: 6.0,
                       ),
                     ],
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 3.5,
-                    ),
+                    border: Border.all(color: Colors.white, width: 3.5),
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -344,10 +340,7 @@ class _AnimatedIndexedStack extends StatefulWidget {
   final int index;
   final List<Widget> children;
 
-  const _AnimatedIndexedStack({
-    required this.index,
-    required this.children,
-  });
+  const _AnimatedIndexedStack({required this.index, required this.children});
 
   @override
   State<_AnimatedIndexedStack> createState() => _AnimatedIndexedStackState();
@@ -375,10 +368,7 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.025),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -403,10 +393,7 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: IndexedStack(
-          index: _currentIndex,
-          children: widget.children,
-        ),
+        child: IndexedStack(index: _currentIndex, children: widget.children),
       ),
     );
   }

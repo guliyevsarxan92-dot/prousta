@@ -35,7 +35,7 @@
       </div>
       <div class="field">
         <label for="id_username">İstifadəçi adı</label>
-        <input id="id_username" name="username" required minlength="8" pattern="[a-zA-Z0-9]+" autocomplete="username" placeholder="Məsələn: usta_kamran">
+        <input id="id_username" name="username" required minlength="8" pattern="[a-zA-Z0-9]+" autocomplete="username" placeholder="Məsələn: ustakamran">
         <div class="field-hint">Minimum 8 simvol, yalnız hərf və rəqəm</div>
       </div>
       <div class="field">
@@ -44,22 +44,17 @@
       </div>
       <div class="field">
         <label for="sifre">Şifrə</label>
-        <input name="password" id="sifre" type="password" required minlength="8" maxlength="14" autocomplete="new-password" placeholder="••••••••" oninput="sifre_yoxla(this.value)">
+        <input name="password" id="sifre" type="password" required minlength="8" maxlength="128" autocomplete="new-password" placeholder="••••••••" oninput="sifre_yoxla(this.value)">
         <div class="sifre-qaydalar">
           <div class="sifre-qayda" id="q-uzunluq">
-            <span class="q-icon">✗</span> 8–14 simvol
+            <span class="q-icon">✗</span> 8–128 simvol
           </div>
-          <div class="sifre-qayda" id="q-boyuk">
-            <span class="q-icon">✗</span> Ən az 1 böyük hərf
-          </div>
-          <div class="sifre-qayda" id="q-reqem">
-            <span class="q-icon">✗</span> Ən az 1 rəqəm
-          </div>
+
         </div>
       </div>
       <div class="field">
         <label for="id_password2">Şifrəni təsdiqləyin</label>
-        <input id="id_password2" name="password2" type="password" required minlength="8" maxlength="14" autocomplete="new-password" placeholder="••••••••">
+        <input id="id_password2" name="password2" type="password" required minlength="8" maxlength="128" autocomplete="new-password" placeholder="••••••••">
       </div>
       <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:12px">Qeydiyyatdan keç</button>
     </form>
@@ -79,12 +74,8 @@
 
 <script>
 function sifre_yoxla(val) {
-  var uzunluq = val.length >= 8 && val.length <= 14;
-  var boyuk = /[A-Z]/.test(val);
-  var reqem = /[0-9]/.test(val);
+  var uzunluq = val.length >= 8 && val.length <= 128;
   set_qayda('q-uzunluq', uzunluq);
-  set_qayda('q-boyuk', boyuk);
-  set_qayda('q-reqem', reqem);
 }
 function set_qayda(id, ok) {
   var el = document.getElementById(id);

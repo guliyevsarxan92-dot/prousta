@@ -82,7 +82,7 @@
       </div>
       <div>
         <small style="color:var(--muted);font-size:11px;display:block">Elan Sayı</small>
-        <strong style="font-size:17px;font-weight:800">{{ elanlar.count }}</strong>
+        <strong style="font-size:17px;font-weight:800">{{ elanlar.paginator.count }}</strong>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
@@ -117,14 +117,14 @@
   <!-- Tablar -->
   <div class="tabs">
     <button class="is-active" type="button" onclick="showTab('elanlarim', this)">
-      Elanlarım ({{ elanlar.count }})
+      Elanlarım ({{ elanlar.paginator.count }})
     </button>
     <button type="button" onclick="showTab('bitmisler', this)">
       Müddəti Bitmiş
-      {% if muddeti_bitmis.count %}<span class="badge badge--red" style="margin-left:4px">{{ muddeti_bitmis.count }}</span>{% endif %}
+      {% if muddeti_bitmis.paginator.count %}<span class="badge badge--red" style="margin-left:4px">{{ muddeti_bitmis.paginator.count }}</span>{% endif %}
     </button>
     <button type="button" onclick="showTab('favoritler', this)">
-      Favoritlər ({{ favoritler.count }})
+      Favoritlər ({{ favoritler.paginator.count }})
     </button>
     <a href="{% url 'mesajlar' %}" style="text-decoration:none">
       Mesajlar {% if oxunmamis %}<span class="badge badge--red" style="margin-left:4px">{{ oxunmamis }}</span>{% endif %}
@@ -141,7 +141,7 @@
         <div class="service-photo">
           <a href="{{ elan.get_absolute_url }}">
             {% with elan.shekillar.all as sh %}{% if sh %}
-              <img src="{{ sh.0.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
+              <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
             {% else %}
               <span class="service-photo-empty">
                 {% include 'partials/ui_icon.html' with name='list' %}
@@ -184,7 +184,7 @@
             <button type="button" class="btn-card-reklam"
                     data-pk="{{ elan.pk }}"
                     data-bashliq="{{ elan.bashliq|escape }}"
-                    data-vip="{{ elan.vip_status }}"
+                    data-vip="{% if elan.is_vip_aktiv %}{{ elan.vip_status }}{% else %}normal{% endif %}"
                     data-vip-aktiv="{% if elan.is_vip_aktiv %}1{% else %}0{% endif %}"
                     data-vip-bitis="{{ elan.vip_bitis|date:'d.m.Y' }}"
                     onclick="openReklamModal(this)"
@@ -225,6 +225,7 @@
       <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Elan yerləşdir</a>
     </div>
     {% endif %}
+    {% include 'partials/profile_pager.html' with page=elanlar key='ads_page' tab='elanlarim' label='Elanların səhifələri' %}
   </div>
 
   <!-- Tab: Müddəti Bitmişlər -->
@@ -234,8 +235,8 @@
       {% for elan in muddeti_bitmis %}
       <article class="service-card" style="opacity:.75">
         <div class="service-photo">
-          {% if elan.shekillar.first %}
-            <img src="{{ elan.shekillar.first.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
+          {% if elan.primary_photo %}
+            <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
           {% else %}
             <span class="service-photo-empty">{% include 'partials/ui_icon.html' with name='list' %}</span>
           {% endif %}
@@ -291,6 +292,7 @@
       <p>Bütün elanlarınız aktiv vəziyyətdədir.</p>
     </div>
     {% endif %}
+    {% include 'partials/profile_pager.html' with page=muddeti_bitmis key='expired_page' tab='bitmisler' label='Müddəti bitmiş elanların səhifələri' %}
   </div>
 
   <!-- Tab: Favoritlər -->
@@ -309,10 +311,11 @@
       <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Elanlara bax</a>
     </div>
     {% endif %}
+    {% include 'partials/profile_pager.html' with page=favoritler key='favorites_page' tab='favoritler' label='Favoritlərin səhifələri' %}
 </div>
 
 <!-- Modal: Elanı Reklam Et (Bütün ödənişli xidmətlər: İrəli çək, VIP, Super VIP) -->
-<div id="reklamModalBackdrop" class="reklam-modal-backdrop" onclick="if(event.target === this) closeReklamModal()" style="display:none">
+<div id="reklamModalBackdrop" role="dialog" aria-modal="true" aria-label="Elan üçün ödənişli xidmətlər" tabindex="-1" class="reklam-modal-backdrop" onclick="if(event.target === this) closeReklamModal()" style="display:none">
   <div class="reklam-modal-dialog">
     
     <!-- Modal Header -->
@@ -1097,5 +1100,8 @@ function showTab(id, btn){
   if (target) target.style.display = 'block';
   btn.classList.add('is-active');
 }
+var profileTabs = ['elanlarim', 'bitmisler', 'favoritler'];
+var requestedTab = profileTabs.indexOf(window.location.hash.slice(1));
+if (requestedTab >= 0) showTab(profileTabs[requestedTab], document.querySelectorAll('.tabs button')[requestedTab]);
 </script>
 {% endblock %}

@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
+from .storage import receipt_storage
+from django.utils.functional import cached_property
 
 
 _AZ_MAP = str.maketrans({
@@ -95,23 +97,13 @@ class Elan(models.Model):
                     break
             else:
                 self.nomre = uuid.uuid4().hex[:10].upper()
-        now = timezone.now()
-        if self.vip_status in ('vip', 'super_vip'):
-            if not self.vip_bitis or self.vip_bitis <= now:
-                days = 30 if self.vip_status == 'super_vip' else 10
-                try:
-                    p = VipPaket.objects.filter(nov=self.vip_status, aktiv=True).first()
-                    if p:
-                        days = p.muddet_gun
-                except Exception:
-                    pass
-                self.vip_bitis = now + timedelta(days=days)
-            if not self.vip_yenilendi:
-                self.vip_yenilendi = now
+        if self.is_vip_aktiv():
             self.vip_siralama = self.VIP_ORDER.get(self.vip_status, 1)
         else:
             self.vip_status = 'normal'
             self.vip_siralama = 0
+        if kwargs.get('update_fields'):
+            kwargs['update_fields'] = set(kwargs['update_fields']) | {'vip_status', 'vip_siralama'}
         super().save(*args, **kwargs)
         if not self.bitis_tarixi and self.status == 'aktiv':
             now_plus_30 = timezone.now() + timedelta(days=30)
@@ -124,6 +116,20 @@ class Elan(models.Model):
         if not self.vip_bitis or self.vip_bitis <= timezone.now():
             return False
         return True
+
+    @cached_property
+    def primary_photo(self):
+        photos = list(self.shekillar.all())
+        return next((photo for photo in photos if photo.esas), photos[0] if photos else None)
+
+    @property
+    def phone_e164(self):
+        from .validation import phone
+        from django.core.exceptions import ValidationError
+        try:
+            return phone(self.telefon, optional=True)
+        except ValidationError:
+            return ''
 
     @property
     def slug(self) -> str:
@@ -209,6 +215,9 @@ class Profil(models.Model):
     def __str__(self):
         return self.istifadeci.username
 
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(balans__gte=0), name='profile_balance_nonnegative')]
+
 
 class Favorit(models.Model):
     istifadeci = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favoritler')
@@ -229,6 +238,8 @@ class Mesaj(models.Model):
 
     class Meta:
         ordering = ['yaradildi']
+        indexes = [models.Index(fields=['gonderici', 'alici', 'id'], name='chat_participants_id'),
+                   models.Index(fields=['alici', 'oxundu', 'gonderici'], name='unread_by_sender')]
 
     def __str__(self):
         return f"{self.gonderici} → {self.alici}"
@@ -278,6 +289,7 @@ class Odenis(models.Model):
         ('legv_edildi', 'Ləğv edildi'),
     ]
     NOV = [
+        ('elan', 'Əlavə elan'),
         ('vip', 'VIP Elan'),
         ('super_vip', 'Super VIP Elan'),
         ('balans', 'Balans Artırma'),
@@ -289,15 +301,44 @@ class Odenis(models.Model):
     nov = models.CharField(max_length=20, choices=NOV)
     mebleg = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS, default='gozlemede')
-    qebz = models.ImageField(upload_to='qebzler/', null=True, blank=True)
+    qebz = models.ImageField(upload_to='qebzler/', storage=receipt_storage, null=True, blank=True)
+    applied_at = models.DateTimeField(null=True, blank=True, editable=False)
     qeyd = models.TextField(blank=True)
     yaradildi = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def receipt_url(self):
+        from django.core import signing
+        from django.urls import reverse
+        token = signing.dumps({'payment': self.pk, 'user': self.istifadeci_id}, salt='receipt-download')
+        return reverse('payment_receipt', args=[self.pk]) + '?t=' + token
+
+    def save(self, *args, **kwargs):
+        from django.core.exceptions import ValidationError
+        from django.db import transaction
+        from .payments import apply_receipt
+        with transaction.atomic():
+            old = type(self).objects.select_for_update().filter(pk=self.pk).first() if self.pk else None
+            self._tesdiq_transition = False
+            if old and old.applied_at:
+                immutable = ('istifadeci_id', 'elan_id', 'nov', 'mebleg', 'status')
+                if any(getattr(self, name) != getattr(old, name) for name in immutable):
+                    raise ValidationError('Tətbiq edilmiş ödəniş dəyişdirilə və ya ləğv edilə bilməz.')
+                self.applied_at = old.applied_at
+            elif self.status == 'tesdiq_edildi' and not self.applied_at:
+                apply_receipt(self)
+                self.applied_at = timezone.now()
+                self._tesdiq_transition = True
+            if kwargs.get('update_fields'):
+                kwargs['update_fields'] = set(kwargs['update_fields']) | {'applied_at'}
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.istifadeci} - {self.nov} - {self.mebleg}₼"
 
     class Meta:
         verbose_name_plural = "Ödənişlər"
+        constraints = [models.CheckConstraint(condition=models.Q(mebleg__gt=0), name="payment_amount_positive")]
 
 
 class ReklamBanner(models.Model):
@@ -445,28 +486,22 @@ class VipPaket(models.Model):
                 'ustunlukler': 'Ana səhifədə və bütün kateqoriyalarda ən öndə\n30 gün (1 ay) fasiləsiz aktivlik\nƏn yüksək müştəri axını və zənglər',
             },
         }
-        try:
-            p = cls.objects.filter(nov=nov, aktiv=True).first()
-            if p:
-                return p
-            p, _ = cls.objects.get_or_create(nov=nov, defaults=defaults.get(nov, {}))
+        from django.core.exceptions import ValidationError
+        p = cls.objects.filter(nov=nov).first()
+        if p is not None:
+            if not p.aktiv or p.qiymet <= 0 or p.muddet_gun <= 0:
+                raise ValidationError('Bu VIP tarifi hazırda aktiv deyil.')
             return p
-        except Exception:
-            d = defaults.get(nov, {'qiymet': Decimal('5.00'), 'muddet_gun': 30, 'ad': nov.upper()})
-            return cls(nov=nov, **d)
+        if nov not in defaults:
+            raise ValidationError('Yanlış VIP növü.')
+        return cls(nov=nov, **defaults[nov])
 
     @classmethod
     def get_all_aktiv(cls):
-        try:
-            paketler = list(cls.objects.filter(aktiv=True).order_by('siralama'))
-            if not paketler:
-                for nov in ('vip', 'super_vip'):
-                    cls.get_paket(nov)
-                paketler = list(cls.objects.filter(aktiv=True).order_by('siralama'))
-            return paketler
-        except Exception:
-            return []
-
+        packages = list(cls.objects.filter(aktiv=True).order_by('siralama'))
+        if packages or cls.objects.exists():
+            return packages
+        return [cls.get_paket(kind) for kind in ('vip', 'super_vip')]
 
 
 
@@ -529,3 +564,26 @@ class Bloklama(models.Model):
         a = cls.objects.filter(bloklayan=user).values_list('bloklanan_id', flat=True)
         b = cls.objects.filter(bloklanan=user).values_list('bloklayan_id', flat=True)
         return set(a) | set(b)
+
+
+class SharedCacheEntry(models.Model):
+    cache_key = models.CharField(max_length=255, primary_key=True)
+    value = models.TextField()
+    expires = models.DateTimeField(db_index=True)
+
+    class Meta:
+        db_table = 'prousta_cache'
+
+
+class MobileLoginTicket(models.Model):
+    digest = models.CharField(max_length=64, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    expires = models.DateTimeField(db_index=True)
+
+
+class MediaCleanupTask(models.Model):
+    storage_alias = models.CharField(max_length=20)
+    name = models.CharField(max_length=1024)
+    attempts = models.PositiveIntegerField(default=0)
+    last_error = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

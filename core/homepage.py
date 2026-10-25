@@ -24,6 +24,8 @@ EXAMPLE_REVIEWS = [
 
 
 def presentation_context(cards):
+    from django.conf import settings
+    demo = settings.DEBUG and getattr(settings, 'HOME_DEMO_MODE', False) and not cards
     professionals = []
     seen = set()
     for card in cards:
@@ -34,8 +36,8 @@ def presentation_context(cards):
         'home_categories': CATEGORIES,
         'home_cards': cards,
         'home_professionals': professionals[:3],
-        'home_is_demo': not cards,
-        'example_services': EXAMPLE_SERVICES,
-        'example_professionals': EXAMPLE_PROFESSIONALS,
-        'example_reviews': EXAMPLE_REVIEWS,
+        'home_is_demo': demo,
+        'example_services': EXAMPLE_SERVICES if demo else [],
+        'example_professionals': EXAMPLE_PROFESSIONALS if demo else [],
+        'example_reviews': EXAMPLE_REVIEWS if demo else [],
     }

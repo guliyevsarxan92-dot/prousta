@@ -1,0 +1,7 @@
+{% if page.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="{{ label }}">
+  {% if page.has_previous %}<a href="?{{ key }}={{ page.previous_page_number }}{% if tab %}#{{ tab }}{% endif %}">Əvvəlki</a>{% endif %}
+  <span>{{ page.number }} / {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?{{ key }}={{ page.next_page_number }}{% if tab %}#{{ tab }}{% endif %}">Sonrakı</a>{% endif %}
+</nav>
+{% endif %}

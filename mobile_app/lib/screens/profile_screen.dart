@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'dart:typed_data';
+import '../widgets/picked_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,10 +17,7 @@ import 'vip_payment_screen.dart';
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onNavigateToMessages;
 
-  const ProfileScreen({
-    super.key,
-    this.onNavigateToMessages,
-  });
+  const ProfileScreen({super.key, this.onNavigateToMessages});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -65,8 +63,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _fetchUnreadCount() async {
     try {
       final convs = await ApiService.getConversations();
-      final totalUnread =
-          convs.fold<int>(0, (sum, item) => sum + item.unreadCount);
+      final totalUnread = convs.fold<int>(
+        0,
+        (sum, item) => sum + item.unreadCount,
+      );
       if (mounted) {
         setState(() {
           _unreadMessagesCount = totalUnread;
@@ -98,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Existing photos and new photos
     final existingImages = List<ElanShekilModel>.from(fullElan.shekillar);
     final deleteImageIds = <int>[];
-    final newImageFiles = <File>[];
+    final newImageFiles = <XFile>[];
     bool isSaving = false;
 
     await showModalBottomSheet(
@@ -120,7 +120,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 return Container(
                   decoration: const BoxDecoration(
                     color: Color(0xFFF7FAF9),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(22),
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -180,7 +182,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(height: 4),
                             const Text(
                               'Köhnə şəkilləri silə və ya yenilərini əlavə edə bilərsiniz',
-                              style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF64748B),
+                              ),
                             ),
                             const SizedBox(height: 12),
 
@@ -193,10 +198,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   InkWell(
                                     onTap: () async {
                                       final picker = ImagePicker();
-                                      final picked = await picker.pickMultiImage();
+                                      final picked = await picker
+                                          .pickMultiImage();
                                       if (picked.isNotEmpty) {
                                         setModalState(() {
-                                          newImageFiles.addAll(picked.map((x) => File(x.path)));
+                                          newImageFiles.addAll(picked);
                                         });
                                       }
                                     },
@@ -215,7 +221,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       ),
                                       child: const Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Icon(
                                             Icons.add_a_photo_outlined,
@@ -245,17 +252,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       child: Stack(
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(14),
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
                                             child: CachedNetworkImage(
                                               imageUrl: shk.shekilUrl ?? '',
                                               width: 96,
                                               height: 96,
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) => Container(color: const Color(0xFFE2E8F0)),
-                                              errorWidget: (context, url, error) => Container(
-                                                color: const Color(0xFFE2E8F0),
-                                                child: const Icon(Icons.image_not_supported_outlined),
-                                              ),
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                    color: const Color(
+                                                      0xFFE2E8F0,
+                                                    ),
+                                                  ),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => Container(
+                                                    color: const Color(
+                                                      0xFFE2E8F0,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons
+                                                          .image_not_supported_outlined,
+                                                    ),
+                                                  ),
                                             ),
                                           ),
                                           Positioned(
@@ -269,7 +293,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.all(4),
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
                                                 decoration: const BoxDecoration(
                                                   color: Colors.black54,
                                                   shape: BoxShape.circle,
@@ -296,8 +322,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       child: Stack(
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(14),
-                                            child: Image.file(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            child: PickedImage(
                                               file,
                                               width: 96,
                                               height: 96,
@@ -314,7 +342,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 });
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.all(4),
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
                                                 decoration: const BoxDecoration(
                                                   color: Colors.black54,
                                                   shape: BoxShape.circle,
@@ -331,10 +361,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             bottom: 4,
                                             left: 4,
                                             child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 5,
+                                                    vertical: 2,
+                                                  ),
                                               decoration: BoxDecoration(
                                                 color: const Color(0xFF007B52),
-                                                borderRadius: BorderRadius.circular(6),
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
                                               ),
                                               child: const Text(
                                                 'Yeni',
@@ -365,7 +400,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
-                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE2E8F0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -385,7 +422,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       isDense: true,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(14),
-                                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFE2E8F0),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -401,7 +440,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       isDense: true,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(14),
-                                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFE2E8F0),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -421,7 +462,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
-                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE2E8F0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -438,7 +481,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
-                                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE2E8F0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -454,43 +499,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : () async {
                                         setModalState(() => isSaving = true);
                                         try {
-                                          final updated = await ApiService.updateElan(
-                                            id: elan.id,
-                                            bashliq: bashliqCtrl.text.trim(),
-                                            acaqlama: acaqlamaCtrl.text.trim(),
-                                            qiymet: qiymetCtrl.text.trim(),
-                                            sheher: sheherCtrl.text.trim(),
-                                            telefon: telefonCtrl.text.trim(),
-                                            newImages: newImageFiles.isNotEmpty ? newImageFiles : null,
-                                            deleteImageIds: deleteImageIds.isNotEmpty ? deleteImageIds : null,
-                                          );
+                                          final updated =
+                                              await ApiService.updateElan(
+                                                id: elan.id,
+                                                bashliq: bashliqCtrl.text
+                                                    .trim(),
+                                                acaqlama: acaqlamaCtrl.text
+                                                    .trim(),
+                                                qiymet: qiymetCtrl.text.trim(),
+                                                sheher: sheherCtrl.text.trim(),
+                                                telefon: telefonCtrl.text
+                                                    .trim(),
+                                                newImages:
+                                                    newImageFiles.isNotEmpty
+                                                    ? newImageFiles
+                                                    : null,
+                                                deleteImageIds:
+                                                    deleteImageIds.isNotEmpty
+                                                    ? deleteImageIds
+                                                    : null,
+                                              );
                                           if (mounted) {
                                             setState(() {
-                                              final idx = _myElanlar.indexWhere((e) => e.id == elan.id);
+                                              final idx = _myElanlar.indexWhere(
+                                                (e) => e.id == elan.id,
+                                              );
                                               if (idx != -1) {
                                                 _myElanlar[idx] = updated;
                                               }
                                             });
-                                            context.read<ElanProvider>().fetchElanlar(reset: true);
+                                            context
+                                                .read<ElanProvider>()
+                                                .fetchElanlar(reset: true);
                                           }
                                           if (!ctx.mounted) return;
                                           Navigator.pop(ctx);
                                           if (!mounted) return;
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             const SnackBar(
-                                              content: Text('Elan və şəkillər uğurla yeniləndi!'),
-                                              backgroundColor: Color(0xFF007B52),
+                                              content: Text(
+                                                'Elan və şəkillər uğurla yeniləndi!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF007B52,
+                                              ),
                                             ),
                                           );
                                         } catch (e) {
                                           if (ctx.mounted) {
-                                            setModalState(() => isSaving = false);
+                                            setModalState(
+                                              () => isSaving = false,
+                                            );
                                           }
                                           if (!mounted) return;
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                e.toString().replaceFirst('Exception: ', ''),
+                                                e.toString().replaceFirst(
+                                                  'Exception: ',
+                                                  '',
+                                                ),
                                               ),
                                               backgroundColor: Colors.redAccent,
                                             ),
@@ -542,8 +614,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Elanı sil'),
-        content:
-            Text('"${elan.bashliq}" elanını silmək istədiyinizə əminsiniz?'),
+        content: Text(
+          '"${elan.bashliq}" elanını silmək istədiyinizə əminsiniz?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -593,7 +666,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final soyadCtrl = TextEditingController(text: user.profil.soyad);
     final telefonCtrl = TextEditingController(text: user.profil.telefon);
     final sheherCtrl = TextEditingController(text: user.profil.sheher);
-    File? pickedAvatar;
+    XFile? pickedAvatar;
+    Uint8List? pickedAvatarBytes;
     bool isSaving = false;
 
     showModalBottomSheet(
@@ -612,8 +686,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 imageQuality: 82,
               );
               if (xfile != null) {
+                final bytes = await xfile.readAsBytes();
+                if (!ctx.mounted) return;
                 setModalState(() {
-                  pickedAvatar = File(xfile.path);
+                  pickedAvatar = xfile;
+                  pickedAvatarBytes = bytes;
                 });
               }
             }
@@ -657,13 +734,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               radius: 42,
                               backgroundColor: const Color(0xFFEAF6F1),
                               backgroundImage: pickedAvatar != null
-                                  ? FileImage(pickedAvatar!) as ImageProvider
+                                  ? MemoryImage(pickedAvatarBytes!)
+                                        as ImageProvider
                                   : (user.profil.avatar != null &&
-                                          user.profil.avatar!.isNotEmpty)
-                                      ? CachedNetworkImageProvider(
-                                          user.profil.avatar!)
-                                      : null,
-                              child: (pickedAvatar == null &&
+                                        user.profil.avatar!.isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                      user.profil.avatar!,
+                                    )
+                                  : null,
+                              child:
+                                  (pickedAvatar == null &&
                                       (user.profil.avatar == null ||
                                           user.profil.avatar!.isEmpty))
                                   ? Text(
@@ -782,9 +862,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   if (!mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(e
-                                          .toString()
-                                          .replaceFirst('Exception: ', '')),
+                                      content: Text(
+                                        e.toString().replaceFirst(
+                                          'Exception: ',
+                                          '',
+                                        ),
+                                      ),
                                       backgroundColor: Colors.redAccent,
                                     ),
                                   );
@@ -826,12 +909,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showMyElanlarSheet(AppUser user, String cityDisplay) {
-    final totalViews =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.baxishSayi);
-    final totalZeng =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.zengSayi);
-    final totalWp =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.wpSayi);
+    final totalViews = _myElanlar.fold<int>(
+      0,
+      (sum, item) => sum + item.baxishSayi,
+    );
+    final totalZeng = _myElanlar.fold<int>(
+      0,
+      (sum, item) => sum + item.zengSayi,
+    );
+    final totalWp = _myElanlar.fold<int>(0, (sum, item) => sum + item.wpSayi);
 
     showModalBottomSheet(
       context: context,
@@ -853,8 +939,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(22)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(22),
+                    ),
                   ),
                   padding: const EdgeInsets.fromLTRB(18, 12, 10, 10),
                   child: Row(
@@ -911,8 +998,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Overall Usta Info: Baxış, Zəng, WhatsApp
                 Container(
                   margin: const EdgeInsets.fromLTRB(14, 10, 14, 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
@@ -986,11 +1075,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            mainAxisExtent: 206,
-                          ),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                mainAxisExtent: 206,
+                              ),
                           itemCount: _myElanlar.length,
                           itemBuilder: (context, index) {
                             final elan = _myElanlar[index];
@@ -1000,8 +1089,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF0F172A)
-                                        .withValues(alpha: 0.12),
+                                    color: const Color(
+                                      0xFF0F172A,
+                                    ).withValues(alpha: 0.12),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
                                   ),
@@ -1070,7 +1160,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     // Compact Actions Row: Düzəliş | VİP | Sil
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          5, 4, 5, 5),
+                                        5,
+                                        4,
+                                        5,
+                                        5,
+                                      ),
                                       child: Row(
                                         children: [
                                           // 1. Düzəliş (Edit)
@@ -1085,11 +1179,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               child: Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                  vertical: 5,
-                                                ),
+                                                      vertical: 5,
+                                                    ),
                                                 decoration: BoxDecoration(
-                                                  color:
-                                                      const Color(0xFFEAF6F1),
+                                                  color: const Color(
+                                                    0xFFEAF6F1,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.circular(7),
                                                 ),
@@ -1109,8 +1204,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         fontSize: 10.5,
                                                         fontWeight:
                                                             FontWeight.w800,
-                                                        color:
-                                                            Color(0xFF007B52),
+                                                        color: Color(
+                                                          0xFF007B52,
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
@@ -1128,17 +1224,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 onTap: () async {
                                                   Navigator.pop(ctx);
                                                   final updated =
-                                                      await Navigator.push<bool>(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          VipPaymentScreen(
-                                                        elanId: elan.id,
-                                                        elanTitle: elan.bashliq,
-                                                        initialType: 'vip',
-                                                      ),
-                                                    ),
-                                                  );
+                                                      await Navigator.push<
+                                                        bool
+                                                      >(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              VipPaymentScreen(
+                                                                elanId: elan.id,
+                                                                elanTitle: elan
+                                                                    .bashliq,
+                                                                initialType:
+                                                                    'vip',
+                                                              ),
+                                                        ),
+                                                      );
                                                   if (updated == true &&
                                                       mounted) {
                                                     _fetchMyElanlar();
@@ -1147,23 +1247,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 child: Container(
                                                   padding:
                                                       const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                  ),
+                                                        vertical: 5,
+                                                      ),
                                                   decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFFFEF3C7),
+                                                    color: const Color(
+                                                      0xFFFEF3C7,
+                                                    ),
                                                     borderRadius:
-                                                        BorderRadius.circular(7),
+                                                        BorderRadius.circular(
+                                                          7,
+                                                        ),
                                                   ),
                                                   child: const Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Icon(
                                                         Icons
                                                             .workspace_premium_rounded,
                                                         size: 12,
-                                                        color: Color(0xFFD97706),
+                                                        color: Color(
+                                                          0xFFD97706,
+                                                        ),
                                                       ),
                                                       SizedBox(width: 2),
                                                       Text(
@@ -1172,8 +1278,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           fontSize: 10.5,
                                                           fontWeight:
                                                               FontWeight.w800,
-                                                          color:
-                                                              Color(0xFFB45309),
+                                                          color: Color(
+                                                            0xFFB45309,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -1185,8 +1292,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           const SizedBox(width: 4),
                                           // 3. Sil
                                           InkWell(
-                                            borderRadius:
-                                                BorderRadius.circular(7),
+                                            borderRadius: BorderRadius.circular(
+                                              7,
+                                            ),
                                             onTap: () {
                                               Navigator.pop(ctx);
                                               _confirmDeleteElan(elan);
@@ -1194,9 +1302,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             child: Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 5,
-                                              ),
+                                                    horizontal: 8,
+                                                    vertical: 5,
+                                                  ),
                                               decoration: BoxDecoration(
                                                 color: const Color(0xFFFEE2E2),
                                                 borderRadius:
@@ -1301,8 +1409,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                   ),
                   padding: const EdgeInsets.fromLTRB(18, 16, 12, 10),
                   child: Row(
@@ -1337,11 +1446,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.all(14),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            mainAxisExtent: 196,
-                          ),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                mainAxisExtent: 196,
+                              ),
                           itemCount: favorites.length,
                           itemBuilder: (context, index) {
                             final elan = favorites[index];
@@ -1455,7 +1564,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
             title: Row(
               children: const [
                 Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
@@ -1475,13 +1586,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   const Text(
                     'Hesabınızı sildikdə bütün elanlarınız, mesajlarınız, favoritləriniz və profil məlumatlarınız sistemdən birdəfəlik silinəcək və bu əməliyyat geri qaytarıla bilməz.',
-                    style: TextStyle(color: Color(0xFF64748B), height: 1.45, fontSize: 13.5),
+                    style: TextStyle(
+                      color: Color(0xFF64748B),
+                      height: 1.45,
+                      fontSize: 13.5,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   if (user.hasPassword) ...[
                     const Text(
                       'Təsdiq üçün cari şifrənizi daxil edin:',
-                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -1496,7 +1614,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ] else ...[
                     const Text(
                       'Təsdiq üçün aşağıdakı xanaya "SIL" yazın:',
-                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -1512,7 +1633,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 10),
                     Text(
                       errorText!,
-                      style: const TextStyle(color: Color(0xFFEF4444), fontSize: 12.5, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        color: Color(0xFFEF4444),
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ],
@@ -1539,17 +1664,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final messenger = ScaffoldMessenger.of(context);
                         try {
                           await context.read<AuthProvider>().deleteAccount(
-                                password: user.hasPassword ? passwordCtrl.text.trim() : null,
-                                confirm: !user.hasPassword ? confirmCtrl.text.trim() : null,
-                              );
+                            password: user.hasPassword
+                                ? passwordCtrl.text.trim()
+                                : null,
+                            confirm: !user.hasPassword
+                                ? confirmCtrl.text.trim()
+                                : null,
+                          );
                           if (ctx.mounted) Navigator.pop(ctx);
                           messenger.showSnackBar(
-                            const SnackBar(content: Text('Hesabınız uğurla silindi')),
+                            const SnackBar(
+                              content: Text('Hesabınız uğurla silindi'),
+                            ),
                           );
                         } catch (e) {
                           setDialogState(() {
                             isSubmitting = false;
-                            errorText = e.toString().replaceFirst('Exception: ', '');
+                            errorText = e.toString().replaceFirst(
+                              'Exception: ',
+                              '',
+                            );
                           });
                         }
                       },
@@ -1557,9 +1691,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
-                    : const Text('Hesabı sil', style: TextStyle(fontWeight: FontWeight.w800)),
+                    : const Text(
+                        'Hesabı sil',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
               ),
             ],
           );
@@ -1586,10 +1726,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return Scaffold(
         backgroundColor: const Color(0xFFF6F9F8),
         body: SafeArea(
-          child: AuthScreen(
-            isEmbedded: true,
-            onSuccess: _loadProfileData,
-          ),
+          child: AuthScreen(isEmbedded: true, onSuccess: _loadProfileData),
         ),
       );
     }
@@ -1598,20 +1735,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final favorites = elanProvider.favorites;
     final phoneDisplay = user.profil.telefon.trim().isNotEmpty
         ? (user.profil.telefon.startsWith('+')
-            ? user.profil.telefon
-            : '+994 ${user.profil.telefon}')
+              ? user.profil.telefon
+              : '+994 ${user.profil.telefon}')
         : 'Qeyd edilməyib';
     final cityDisplay = user.profil.sheher.trim().isNotEmpty
         ? user.profil.sheher
         : 'Bakı, Azərbaycan';
-    final emailDisplay =
-        user.email.trim().isNotEmpty ? user.email : '@${user.username}';
-    final totalViews =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.baxishSayi);
-    final totalZeng =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.zengSayi);
-    final totalWp =
-        _myElanlar.fold<int>(0, (sum, item) => sum + item.wpSayi);
+    final emailDisplay = user.email.trim().isNotEmpty
+        ? user.email
+        : '@${user.username}';
+    final totalViews = _myElanlar.fold<int>(
+      0,
+      (sum, item) => sum + item.baxishSayi,
+    );
+    final totalZeng = _myElanlar.fold<int>(
+      0,
+      (sum, item) => sum + item.zengSayi,
+    );
+    final totalWp = _myElanlar.fold<int>(0, (sum, item) => sum + item.wpSayi);
 
     // Combined flutter_ui_challenges profile8.dart + settings1.dart UI
     return Scaffold(
@@ -1652,8 +1793,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           border: Border.all(color: const Color(0xFFDCECE5)),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF0F172A)
-                                  .withValues(alpha: 0.05),
+                              color: const Color(
+                                0xFF0F172A,
+                              ).withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -1789,15 +1931,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFF007B52),
-                            Color(0xFF06573C),
-                          ],
+                          colors: [Color(0xFF007B52), Color(0xFF06573C)],
                         ),
                         borderRadius: BorderRadius.circular(18.0),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF007B52).withValues(alpha: 0.28),
+                            color: const Color(
+                              0xFF007B52,
+                            ).withValues(alpha: 0.28),
                             offset: const Offset(0, 8),
                             blurRadius: 18.0,
                             spreadRadius: 1.0,
@@ -1849,8 +1990,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Container(
                                         padding: const EdgeInsets.all(7),
                                         decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.16),
-                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white.withValues(
+                                            alpha: 0.16,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                         child: const Icon(
                                           Icons.account_balance_wallet_rounded,
@@ -1862,7 +2007,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Text(
                                         'Cari balans',
                                         style: TextStyle(
-                                          color: Colors.white.withValues(alpha: 0.9),
+                                          color: Colors.white.withValues(
+                                            alpha: 0.9,
+                                          ),
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
                                           letterSpacing: 0.2,
@@ -1874,15 +2021,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                   // Balance Value + Artır Action Button
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Text(
-                                            user.profil.balans.toStringAsFixed(2),
+                                            user.profil.balans.toStringAsFixed(
+                                              2,
+                                            ),
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 27,
@@ -1894,7 +2045,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           Text(
                                             'AZN',
                                             style: TextStyle(
-                                              color: Colors.white.withValues(alpha: 0.85),
+                                              color: Colors.white.withValues(
+                                                alpha: 0.85,
+                                              ),
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -1906,14 +2059,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          borderRadius: BorderRadius.circular(22),
+                                          borderRadius: BorderRadius.circular(
+                                            22,
+                                          ),
                                           onTap: () async {
                                             await Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (_) => const VipPaymentScreen(
-                                                  initialType: 'balans',
-                                                ),
+                                                builder: (_) =>
+                                                    const VipPaymentScreen(
+                                                      initialType: 'balans',
+                                                    ),
                                               ),
                                             );
                                             _loadProfileData();
@@ -1925,10 +2081,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(22),
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.12),
+                                                  color: Colors.black
+                                                      .withValues(alpha: 0.12),
                                                   blurRadius: 6,
                                                   offset: const Offset(0, 2),
                                                 ),
@@ -2014,7 +2172,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildSettingsTile(
                             icon: Icons.privacy_tip_outlined,
                             title: 'Məxfilik siyasəti',
-                            onTap: () => _launchUrl('https://prousta.az/gizlilik/'),
+                            onTap: () =>
+                                _launchUrl('https://prousta.az/gizlilik/'),
                           ),
                           _buildDivider(),
                           _buildSettingsTile(
@@ -2076,11 +2235,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: const Color(0xFFEAF6F1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(
-          icon,
-          color: const Color(0xFF007B52),
-          size: 20,
-        ),
+        child: Icon(icon, color: const Color(0xFF007B52), size: 20),
       ),
       title: Text(
         title,
@@ -2459,8 +2614,9 @@ class _ProustaAvatar extends StatelessWidget {
         child: CircleAvatar(
           radius: radius - 3,
           backgroundColor: const Color(0xFFEAF6F1),
-          backgroundImage:
-              hasImage ? CachedNetworkImageProvider(imageUrl!) : null,
+          backgroundImage: hasImage
+              ? CachedNetworkImageProvider(imageUrl!)
+              : null,
           child: !hasImage
               ? Text(
                   fallbackInitial,

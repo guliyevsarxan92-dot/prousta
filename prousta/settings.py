@@ -2,14 +2,19 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-key-only-for-dev')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+SECRET_KEY = os.getenv('SECRET_KEY', '').strip()
+if not SECRET_KEY or len(SECRET_KEY) < 50:
+    raise ImproperlyConfigured('SECRET_KEY must contain at least 50 characters.')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [host.strip() for host in os.getenv(
+    'ALLOWED_HOSTS', 'prousta.az,www.prousta.az,localhost,127.0.0.1'
+).split(',') if host.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://prousta.az',
@@ -39,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'core.middleware.TrustedProxyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'core.seo.CanonicalHostMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -77,9 +83,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prousta.wsgi.application'
 
-_SUPABASE_DB_URL = "postgresql://postgres.nxisjlyoxzuhirhrewkj:Quliyev1992!@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
-
-_active_db_url = os.getenv('DATABASE_URL', '').strip() or _SUPABASE_DB_URL
+_active_db_url = os.getenv('DATABASE_URL', '').strip()
+if not _active_db_url:
+    raise ImproperlyConfigured('DATABASE_URL must be explicitly configured.')
 
 if 'pooler.supabase.com:5432' in _active_db_url:
     _active_db_url = _active_db_url.replace(':5432', ':6543')
@@ -96,6 +102,7 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'core.validation.PasswordLengthValidator'},
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
@@ -113,10 +120,12 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+PRIVATE_MEDIA_ROOT = Path(os.getenv('PRIVATE_MEDIA_ROOT', str(BASE_DIR / 'private_media')))
+MEDIA_CLEANUP_EAGER = DEBUG
 
 # Upload limitləri (mobil app profil şəkli + qəbz üçün)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024      # 15 MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024      # 15 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024      # 2 MB; larger uploads use temporary files
 
 # Django 5.x STORAGES — köhnə DEFAULT_FILE_STORAGE / STATICFILES_STORAGE əvəzinə
 _CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '').strip()
@@ -129,6 +138,8 @@ else:
     _default_storage = 'django.core.files.storage.FileSystemStorage'
 
 STORAGES = {
+    'receipts': {'BACKEND': 'django.core.files.storage.FileSystemStorage',
+                 'OPTIONS': {'location': str(PRIVATE_MEDIA_ROOT), 'base_url': '/private-unserved/'}},
     'default': {
         'BACKEND': _default_storage,
     },
@@ -141,11 +152,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'core.authentication.ExpiringTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'EXCEPTION_HANDLER': 'core.validation.api_exception_handler',
+    'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.AnonRateThrottle', 'rest_framework.throttling.UserRateThrottle', 'core.throttles.WriteThrottle'],
+    'DEFAULT_THROTTLE_RATES': {'anon': '120/min', 'user': '600/min', 'write': '30/min', 'auth': '5/min'},
+    'NUM_PROXIES': 0,
 }
 
 # Production təhlükəsizlik
@@ -155,10 +170,16 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False').lower() == 'true'
+    SECURE_HSTS_PRELOAD = os.getenv('SECURE_HSTS_PRELOAD', 'False').lower() == 'true'
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 LOGIN_URL = '/giris/'
+TRUSTED_PROXY_CIDRS = [cidr.strip() for cidr in os.getenv(
+    'TRUSTED_PROXY_CIDRS', '127.0.0.1/32,::1/128'
+).split(',') if cidr.strip()]
+SECURE_REDIRECT_EXEMPT = [r'^health/$']
 
 # Axtarış sistemləri təsdiq kodları (Google Search Console / Yandex Webmaster)
 GOOGLE_SITE_VERIFICATION = os.getenv('GOOGLE_SITE_VERIFICATION', '')
@@ -200,7 +221,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
+    'core.identity.require_explicit_google_link',
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
@@ -384,3 +405,23 @@ UNFOLD = {
     },
 }
 
+
+# Shared across workers in production; created by core migration 0028.
+CACHES = {'default': {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache' if DEBUG else 'django.core.cache.backends.db.DatabaseCache',
+    'LOCATION': 'prousta_cache',
+}}
+API_TOKEN_MAX_AGE = int(os.getenv('API_TOKEN_MAX_AGE', '2592000'))
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '25'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False').lower() == 'true'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@prousta.az')
+LOGGING = {
+    'version': 1, 'disable_existing_loggers': False,
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'loggers': {'core': {'handlers': ['console'], 'level': 'INFO', 'propagate': False}},
+}

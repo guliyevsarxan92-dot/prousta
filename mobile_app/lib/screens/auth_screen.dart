@@ -7,11 +7,7 @@ class AuthScreen extends StatefulWidget {
   final bool isEmbedded;
   final VoidCallback? onSuccess;
 
-  const AuthScreen({
-    super.key,
-    this.isEmbedded = false,
-    this.onSuccess,
-  });
+  const AuthScreen({super.key, this.isEmbedded = false, this.onSuccess});
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -71,8 +67,8 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _handleSuccess() {
-    widget.onSuccess?.call();
     if (!mounted) return;
+    widget.onSuccess?.call();
     if (!widget.isEmbedded && Navigator.canPop(context)) {
       Navigator.pop(context, true);
     }
@@ -168,10 +164,7 @@ class _AuthScreenState extends State<AuthScreen> {
         fontSize: 13.5,
         fontWeight: FontWeight.w500,
       ),
-      hintStyle: const TextStyle(
-        color: Color(0xFF94A3B8),
-        fontSize: 13,
-      ),
+      hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
       prefixIcon: Icon(icon, color: _brandPrimary, size: 19),
       suffixIcon: suffixIcon,
       filled: true,
@@ -283,7 +276,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _isLoginMode
                                           ? Colors.white
-                                          : Colors.white.withValues(alpha: 0.16),
+                                          : Colors.white.withValues(
+                                              alpha: 0.16,
+                                            ),
                                       foregroundColor: _isLoginMode
                                           ? _brandPrimary
                                           : Colors.white,
@@ -293,8 +288,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                         vertical: 10,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(22.0),
+                                        borderRadius: BorderRadius.circular(
+                                          22.0,
+                                        ),
                                       ),
                                     ),
                                     onPressed: isLoading
@@ -313,7 +309,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: !_isLoginMode
                                           ? Colors.white
-                                          : Colors.white.withValues(alpha: 0.16),
+                                          : Colors.white.withValues(
+                                              alpha: 0.16,
+                                            ),
                                       foregroundColor: !_isLoginMode
                                           ? _brandPrimary
                                           : Colors.white,
@@ -323,8 +321,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                         vertical: 10,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(22.0),
+                                        borderRadius: BorderRadius.circular(
+                                          22.0,
+                                        ),
                                       ),
                                     ),
                                     onPressed: isLoading
@@ -357,7 +356,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       border: Border.all(color: const Color(0xFFE2E8F0)),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF0F172A).withValues(alpha: 0.08),
+                          color: const Color(
+                            0xFF0F172A,
+                          ).withValues(alpha: 0.08),
                           blurRadius: 24,
                           offset: const Offset(0, 10),
                         ),
@@ -379,7 +380,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                   color: const Color(0xFFFEF2F2),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                      color: const Color(0xFFFECACA)),
+                                    color: const Color(0xFFFECACA),
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
@@ -595,8 +597,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                   backgroundColor: _brandAccent,
                                   foregroundColor: Colors.white,
                                   elevation: 2,
-                                  shadowColor:
-                                      _brandAccent.withValues(alpha: 0.4),
+                                  shadowColor: _brandAccent.withValues(
+                                    alpha: 0.4,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(24),
                                   ),
@@ -627,10 +630,12 @@ class _AuthScreenState extends State<AuthScreen> {
                               Row(
                                 children: [
                                   const Expanded(
-                                      child: Divider(color: Color(0xFFE2E8F0))),
+                                    child: Divider(color: Color(0xFFE2E8F0)),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 12),
+                                      horizontal: 12,
+                                    ),
                                     child: Text(
                                       'və ya',
                                       style: TextStyle(
@@ -641,7 +646,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                     ),
                                   ),
                                   const Expanded(
-                                      child: Divider(color: Color(0xFFE2E8F0))),
+                                    child: Divider(color: Color(0xFFE2E8F0)),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 14),
@@ -650,8 +656,9 @@ class _AuthScreenState extends State<AuthScreen> {
                               SizedBox(
                                 height: 48,
                                 child: OutlinedButton(
-                                  onPressed:
-                                      isLoading ? null : _handleGoogleSignIn,
+                                  onPressed: isLoading
+                                      ? null
+                                      : _handleGoogleSignIn,
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: const Color(0xFF1E293B),
                                     backgroundColor: Colors.white,
@@ -695,7 +702,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildBadge(Icons.verified_user_outlined, 'Təhlükəsiz giriş'),
+                    _buildBadge(
+                      Icons.verified_user_outlined,
+                      'Təhlükəsiz giriş',
+                    ),
                     const SizedBox(width: 14),
                     _buildBadge(Icons.sync_rounded, 'Veb ilə eyni hesab'),
                   ],
@@ -742,14 +752,9 @@ class _AuthScreenState extends State<AuthScreen> {
         backgroundColor: const Color(0xFF0A4D34),
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const ProustaWordmark(
-          fontSize: 22,
-          lightMode: true,
-        ),
+        title: const ProustaWordmark(fontSize: 22, lightMode: true),
       ),
-      body: SafeArea(
-        child: _buildAuthThreeLayout(context),
-      ),
+      body: SafeArea(child: _buildAuthThreeLayout(context)),
     );
   }
 }
@@ -765,9 +770,7 @@ class _GoogleColorIcon extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: _GoogleLogoPainter(),
-      ),
+      child: CustomPaint(painter: _GoogleLogoPainter()),
     );
   }
 }

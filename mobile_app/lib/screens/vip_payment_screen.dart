@@ -1,4 +1,4 @@
-import 'dart:io';
+import '../widgets/picked_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,7 +40,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
   List<VipPaketModel> _packages = [];
   List<BankMelumatModel> _banks = [];
   late String _selectedType;
-  File? _receiptFile;
+  XFile? _receiptFile;
   bool _isLoading = true;
   bool _isSubmitting = false;
   bool _isActivatingFromBalance = false;
@@ -129,10 +129,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
       await context.read<ElanProvider>().fetchElanlar(reset: true);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: _brandPrimary,
-        ),
+        SnackBar(content: Text(msg), backgroundColor: _brandPrimary),
       );
       Navigator.pop(context, true);
     } catch (e) {
@@ -158,14 +155,14 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
       );
       if (xfile != null) {
         setState(() {
-          _receiptFile = File(xfile.path);
+          _receiptFile = xfile;
         });
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Qəbz seçilə bilmədi: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Qəbz seçilə bilmədi: $e')));
     }
   }
 
@@ -202,10 +199,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: _brandPrimary,
-        ),
+        SnackBar(content: Text(msg), backgroundColor: _brandPrimary),
       );
       Navigator.pop(context, true);
     } catch (e) {
@@ -260,9 +254,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: _brandPrimary),
-            )
+          ? const Center(child: CircularProgressIndicator(color: _brandPrimary))
           : Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 640),
@@ -281,8 +273,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                           border: Border.all(color: const Color(0xFFE2E8F0)),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF0F172A)
-                                  .withValues(alpha: 0.05),
+                              color: const Color(
+                                0xFF0F172A,
+                              ).withValues(alpha: 0.05),
                               blurRadius: 16,
                               offset: const Offset(0, 4),
                             ),
@@ -442,7 +435,8 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                 title: 'VİP Elan',
                                 priceText:
                                     '${_priceForType('vip').toInt()} AZN',
-                                durationText: '${_daysForType('vip')} gün aktiv',
+                                durationText:
+                                    '${_daysForType('vip')} gün aktiv',
                                 subtitle: 'Axtarışda və siyahıda öndə',
                                 icon: Icons.star_rounded,
                                 accentColor: const Color(0xFF007B52),
@@ -519,22 +513,23 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                     onPressed: _isActivatingFromBalance
                                         ? null
                                         : (hasEnoughBalance
-                                            ? _activateFromBalance
-                                            : () async {
-                                                await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        const VipPaymentScreen(
-                                                      initialType: 'balans',
+                                              ? _activateFromBalance
+                                              : () async {
+                                                  await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const VipPaymentScreen(
+                                                            initialType:
+                                                                'balans',
+                                                          ),
                                                     ),
-                                                  ),
-                                                );
-                                                if (!context.mounted) return;
-                                                await context
-                                                    .read<AuthProvider>()
-                                                    .refreshProfile();
-                                              }),
+                                                  );
+                                                  if (!context.mounted) return;
+                                                  await context
+                                                      .read<AuthProvider>()
+                                                      .refreshProfile();
+                                                }),
                                     icon: _isActivatingFromBalance
                                         ? const SizedBox(
                                             width: 18,
@@ -548,7 +543,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                             hasEnoughBalance
                                                 ? Icons.bolt_rounded
                                                 : Icons
-                                                    .account_balance_wallet_rounded,
+                                                      .account_balance_wallet_rounded,
                                             size: 20,
                                           ),
                                     label: Text(
@@ -563,8 +558,8 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: hasEnoughBalance
                                           ? (_selectedType == 'super_vip'
-                                              ? const Color(0xFFD97706)
-                                              : _brandPrimary)
+                                                ? const Color(0xFFD97706)
+                                                : _brandPrimary)
                                           : const Color(0xFF0F172A),
                                       foregroundColor: Colors.white,
                                       shape: RoundedRectangleBorder(
@@ -614,8 +609,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                             border: Border.all(color: const Color(0xFFE2E8F0)),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF0F172A)
-                                    .withValues(alpha: 0.04),
+                                color: const Color(
+                                  0xFF0F172A,
+                                ).withValues(alpha: 0.04),
                                 blurRadius: 14,
                                 offset: const Offset(0, 4),
                               ),
@@ -648,8 +644,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                       });
                                     },
                                     child: AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 160),
+                                      duration: const Duration(
+                                        milliseconds: 160,
+                                      ),
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 14,
                                         vertical: 8,
@@ -662,8 +659,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                         border: Border.all(
                                           color: isSelected
                                               ? _brandPrimary
-                                              : _brandAccent
-                                                  .withValues(alpha: 0.3),
+                                              : _brandAccent.withValues(
+                                                  alpha: 0.3,
+                                                ),
                                         ),
                                       ),
                                       child: Text(
@@ -687,8 +685,8 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                 onChanged: (_) => setState(() {}),
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
+                                      decimal: true,
+                                    ),
                                 style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -754,8 +752,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                     color: _brandLight.withValues(alpha: 0.55),
                                     borderRadius: BorderRadius.circular(14),
                                     border: Border.all(
-                                      color:
-                                          _brandPrimary.withValues(alpha: 0.35),
+                                      color: _brandPrimary.withValues(
+                                        alpha: 0.35,
+                                      ),
                                       width: 1.4,
                                     ),
                                   ),
@@ -766,7 +765,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                             ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(13),
-                                              child: Image.file(
+                                              child: PickedImage(
                                                 _receiptFile!,
                                                 fit: BoxFit.cover,
                                               ),
@@ -785,8 +784,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                                     size: 18,
                                                   ),
                                                   onPressed: () {
-                                                    setState(() =>
-                                                        _receiptFile = null);
+                                                    setState(
+                                                      () => _receiptFile = null,
+                                                    );
                                                   },
                                                 ),
                                               ),
@@ -869,8 +869,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                 width: double.infinity,
                                 height: 50,
                                 child: ElevatedButton.icon(
-                                  onPressed:
-                                      _isSubmitting ? null : _submitPayment,
+                                  onPressed: _isSubmitting
+                                      ? null
+                                      : _submitPayment,
                                   icon: _isSubmitting
                                       ? const SizedBox(
                                           width: 20,
@@ -895,8 +896,9 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                                     backgroundColor: _brandPrimary,
                                     foregroundColor: Colors.white,
                                     elevation: 2,
-                                    shadowColor:
-                                        _brandPrimary.withValues(alpha: 0.35),
+                                    shadowColor: _brandPrimary.withValues(
+                                      alpha: 0.35,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(14),
                                     ),
@@ -1100,11 +1102,7 @@ class _VipPaymentScreenState extends State<VipPaymentScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.copy_rounded,
-                          color: Colors.white,
-                          size: 16,
-                        ),
+                        Icon(Icons.copy_rounded, color: Colors.white, size: 16),
                         SizedBox(width: 4),
                         Text(
                           'Kopyala',

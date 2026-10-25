@@ -22,6 +22,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List<ConversationModel> _conversations = [];
   bool _isLoading = false;
   String? _error;
+  bool _hasMore = false;
 
   @override
   void initState() {
@@ -29,17 +30,30 @@ class _MessagesScreenState extends State<MessagesScreen> {
     _loadConversations();
   }
 
-  Future<void> _loadConversations() async {
-    if (!ApiService.isAuthenticated) return;
+  Future<void> _loadConversations({bool more = false}) async {
+    if (!ApiService.isAuthenticated || _isLoading) return;
+    final sessionToken = ApiService.token;
     setState(() {
       _isLoading = true;
       _error = null;
     });
     try {
-      final list = await ApiService.getConversations();
-      if (mounted) {
+      final list = await ApiService.getConversations(
+        beforeId: more && _conversations.isNotEmpty
+            ? _conversations.last.lastMessageId
+            : null,
+      );
+      if (mounted && ApiService.token == sessionToken) {
         setState(() {
-          _conversations = list;
+          if (more) {
+            final ids = _conversations.map((item) => item.userId).toSet();
+            _conversations.addAll(
+              list.where((item) => !ids.contains(item.userId)),
+            );
+          } else {
+            _conversations = list;
+          }
+          _hasMore = list.length == 100;
         });
       }
     } catch (e) {
@@ -129,224 +143,219 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           ),
                         )
                       : _error != null && _conversations.isEmpty
-                          ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      _error!,
-                                      style: const TextStyle(
-                                          color: Color(0xFFDC2626)),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    ElevatedButton(
-                                      onPressed: _loadConversations,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: _brandPrimary,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      child: const Text('Yenidən cəhd et'),
-                                    ),
-                                  ],
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _error!,
+                                  style: const TextStyle(
+                                    color: Color(0xFFDC2626),
+                                  ),
                                 ),
-                              ),
-                            )
-                          : _conversations.isEmpty
-                              ? _buildEmptyConversationsState()
-                              : ListView.separated(
-                                  padding: const EdgeInsets.all(12),
-                                  itemCount: _conversations.length,
-                                  separatorBuilder: (_, _) =>
-                                      const SizedBox(height: 8),
-                                  itemBuilder: (context, index) {
-                                    final conv = _conversations[index];
-                                    final displayName =
-                                        conv.adSoyad.trim().isNotEmpty
-                                            ? conv.adSoyad
-                                            : conv.username;
-                                    final hasUnread = conv.unreadCount > 0;
+                                const SizedBox(height: 12),
+                                ElevatedButton(
+                                  onPressed: _loadConversations,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _brandPrimary,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  child: const Text('Yenidən cəhd et'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : _conversations.isEmpty
+                      ? _buildEmptyConversationsState()
+                      : ListView.separated(
+                          padding: const EdgeInsets.all(12),
+                          itemCount: _conversations.length + (_hasMore ? 1 : 0),
+                          separatorBuilder: (_, _) => const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            if (index == _conversations.length) {
+                              return TextButton(
+                                onPressed: _isLoading
+                                    ? null
+                                    : () => _loadConversations(more: true),
+                                child: const Text('Daha çox söhbət'),
+                              );
+                            }
+                            final conv = _conversations[index];
+                            final displayName = conv.adSoyad.trim().isNotEmpty
+                                ? conv.adSoyad
+                                : conv.username;
+                            final hasUnread = conv.unreadCount > 0;
 
-                                    return Material(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(14),
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(14),
-                                        onTap: () async {
-                                          await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => ChatDetailScreen(
-                                                otherUserId: conv.userId,
-                                                otherUserName: displayName,
-                                                elanId: conv.elanId,
-                                              ),
-                                            ),
-                                          );
-                                          _loadConversations();
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 14,
-                                            vertical: 12,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(14),
-                                            border: Border.all(
-                                              color: hasUnread
-                                                  ? _brandPrimary
-                                                      .withValues(alpha: 0.4)
-                                                  : const Color(0xFFE2E8F0),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 23,
-                                                backgroundColor: _brandLight,
-                                                backgroundImage:
-                                                    conv.avatar != null &&
-                                                            conv.avatar!
-                                                                .isNotEmpty
-                                                        ? CachedNetworkImageProvider(
-                                                            conv.avatar!)
-                                                        : null,
-                                                child: conv.avatar == null ||
-                                                        conv.avatar!.isEmpty
-                                                    ? Text(
-                                                        displayName.isNotEmpty
-                                                            ? displayName[0]
-                                                                .toUpperCase()
-                                                            : 'U',
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color: _brandPrimary,
-                                                          fontSize: 16,
-                                                        ),
-                                                      )
-                                                    : null,
-                                              ),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            displayName,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                              fontSize: 14.5,
-                                                              fontWeight: hasUnread
-                                                                  ? FontWeight
-                                                                      .w800
-                                                                  : FontWeight
-                                                                      .w700,
-                                                              color: const Color(
-                                                                  0xFF0F172A),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 6),
-                                                        Text(
-                                                          _formatTime(conv
-                                                              .lastMessageTime),
-                                                          style: TextStyle(
-                                                            fontSize: 11.5,
-                                                            fontWeight: hasUnread
-                                                                ? FontWeight
-                                                                    .w700
-                                                                : FontWeight
-                                                                    .w500,
-                                                            color: hasUnread
-                                                                ? _brandPrimary
-                                                                : const Color(
-                                                                    0xFF94A3B8),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            conv.lastMessage,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                              fontSize: 13,
-                                                              color: hasUnread
-                                                                  ? const Color(
-                                                                      0xFF1E293B)
-                                                                  : const Color(
-                                                                      0xFF64748B),
-                                                              fontWeight: hasUnread
-                                                                  ? FontWeight
-                                                                      .w600
-                                                                  : FontWeight
-                                                                      .w400,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        if (hasUnread)
-                                                          Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 8),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                              horizontal: 7,
-                                                              vertical: 2,
-                                                            ),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  _brandPrimary,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: Text(
-                                                              '${conv.unreadCount}',
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 10.5,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w800,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ],
+                            return Material(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ChatDetailScreen(
+                                        otherUserId: conv.userId,
+                                        otherUserName: displayName,
+                                        elanId: conv.elanId,
+                                      ),
+                                    ),
+                                  );
+                                  _loadConversations();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: hasUnread
+                                          ? _brandPrimary.withValues(alpha: 0.4)
+                                          : const Color(0xFFE2E8F0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 23,
+                                        backgroundColor: _brandLight,
+                                        backgroundImage:
+                                            conv.avatar != null &&
+                                                conv.avatar!.isNotEmpty
+                                            ? CachedNetworkImageProvider(
+                                                conv.avatar!,
+                                              )
+                                            : null,
+                                        child:
+                                            conv.avatar == null ||
+                                                conv.avatar!.isEmpty
+                                            ? Text(
+                                                displayName.isNotEmpty
+                                                    ? displayName[0]
+                                                          .toUpperCase()
+                                                    : 'U',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: _brandPrimary,
+                                                  fontSize: 16,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
+                                              )
+                                            : null,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    displayName,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 14.5,
+                                                      fontWeight: hasUnread
+                                                          ? FontWeight.w800
+                                                          : FontWeight.w700,
+                                                      color: const Color(
+                                                        0xFF0F172A,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  _formatTime(
+                                                    conv.lastMessageTime,
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontSize: 11.5,
+                                                    fontWeight: hasUnread
+                                                        ? FontWeight.w700
+                                                        : FontWeight.w500,
+                                                    color: hasUnread
+                                                        ? _brandPrimary
+                                                        : const Color(
+                                                            0xFF94A3B8,
+                                                          ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    conv.lastMessage,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: hasUnread
+                                                          ? const Color(
+                                                              0xFF1E293B,
+                                                            )
+                                                          : const Color(
+                                                              0xFF64748B,
+                                                            ),
+                                                      fontWeight: hasUnread
+                                                          ? FontWeight.w600
+                                                          : FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (hasUnread)
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                          left: 8,
+                                                        ),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 7,
+                                                          vertical: 2,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: _brandPrimary,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    child: Text(
+                                                      '${conv.unreadCount}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 10.5,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
+                                    ],
+                                  ),
                                 ),
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ),
             ),
@@ -531,9 +540,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final _messageCtrl = TextEditingController();
   final _scrollCtrl = ScrollController();
 
-  List<ChatMessageModel> _messages = [];
+  final List<ChatMessageModel> _messages = [];
   bool _isLoading = true;
   bool _isSending = false;
+  bool _fetching = false;
+  bool _hasOlder = true;
+  bool _loadingOlder = false;
   Timer? _pollTimer;
 
   @override
@@ -554,25 +566,58 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Future<void> _loadMessages({bool silent = false}) async {
-    if (!silent) {
-      setState(() => _isLoading = true);
-    }
+    if (_fetching || !mounted || !ApiService.isAuthenticated) return;
+    _fetching = true;
+    final sessionToken = ApiService.token;
+    if (!silent) setState(() => _isLoading = true);
     try {
-      final list = await ApiService.getChatMessages(widget.otherUserId);
-      if (mounted) {
-        final prevLen = _messages.length;
-        setState(() {
-          _messages = list;
-          _isLoading = false;
-        });
-        if (!silent || list.length > prevLen) {
-          _scrollToBottom();
-        }
-      }
+      final list = await ApiService.getChatMessages(
+        widget.otherUserId,
+        afterId: _messages.isNotEmpty ? _messages.last.id : null,
+      );
+      if (!mounted || ApiService.token != sessionToken) return;
+      setState(() {
+        if (_messages.isEmpty) _hasOlder = list.length == 100;
+        final ids = _messages.map((message) => message.id).toSet();
+        _messages.addAll(list.where((message) => !ids.contains(message.id)));
+        _messages.sort((a, b) => a.id.compareTo(b.id));
+        _isLoading = false;
+      });
+      if (list.isNotEmpty) _scrollToBottom();
     } catch (e) {
       if (mounted && !silent) {
         setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mesajlar yüklənmədi. Yenidən cəhd edin.'),
+          ),
+        );
       }
+    } finally {
+      _fetching = false;
+    }
+  }
+
+  Future<void> _loadOlder() async {
+    if (_loadingOlder || _messages.isEmpty) return;
+    setState(() => _loadingOlder = true);
+    final sessionToken = ApiService.token;
+    try {
+      final list = await ApiService.getChatMessages(
+        widget.otherUserId,
+        beforeId: _messages.first.id,
+      );
+      if (!mounted || ApiService.token != sessionToken) return;
+      setState(() {
+        final ids = _messages.map((message) => message.id).toSet();
+        _messages.insertAll(
+          0,
+          list.where((message) => !ids.contains(message.id)),
+        );
+        _hasOlder = list.length == 100;
+      });
+    } finally {
+      if (mounted) setState(() => _loadingOlder = false);
     }
   }
 
@@ -606,6 +651,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         metn: text,
         elanId: widget.elanId,
       );
+      if (!mounted) return;
       _messageCtrl.clear();
       if (mounted) {
         setState(() {
@@ -646,12 +692,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
             title: Row(
               children: const [
                 Icon(Icons.flag_outlined, color: Color(0xFFEF4444)),
                 SizedBox(width: 8),
-                Text('İstifadəçidən şikayət', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
+                Text(
+                  'İstifadəçidən şikayət',
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17),
+                ),
               ],
             ),
             content: SingleChildScrollView(
@@ -659,21 +710,31 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Şikayət səbəbini seçin:', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                  const Text(
+                    'Şikayət səbəbini seçin:',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   RadioGroup<String>(
                     groupValue: selectedReason,
                     onChanged: (val) {
-                      if (val != null) setDialogState(() => selectedReason = val);
+                      if (val != null) {
+                        setDialogState(() => selectedReason = val);
+                      }
                     },
                     child: Column(
                       children: reasons
-                          .map((r) => RadioListTile<String>(
-                                value: r['key']!,
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(r['label']!, style: const TextStyle(fontSize: 13.5)),
-                              ))
+                          .map(
+                            (r) => RadioListTile<String>(
+                              value: r['key']!,
+                              dense: true,
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                r['label']!,
+                                style: const TextStyle(fontSize: 13.5),
+                              ),
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
@@ -713,13 +774,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             qeyd: qeydCtrl.text.trim(),
                           );
                           if (ctx.mounted) Navigator.pop(ctx);
-                          messenger.showSnackBar(
-                            SnackBar(content: Text(msg)),
-                          );
+                          messenger.showSnackBar(SnackBar(content: Text(msg)));
                         } catch (e) {
                           setDialogState(() => isSubmitting = false);
                           messenger.showSnackBar(
-                            SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+                            SnackBar(
+                              content: Text(
+                                e.toString().replaceFirst('Exception: ', ''),
+                              ),
+                            ),
                           );
                         }
                       },
@@ -727,7 +790,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : const Text('Göndər'),
               ),
@@ -743,7 +809,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Text('İstifadəçini blokla', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: const Text(
+          'İstifadəçini blokla',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
         content: Text(
           '${widget.otherUserName} adlı istifadəçini bloklamaq istəyirsiniz?\n\nBloklandıqdan sonra onun elanları və mesajları sizə görünməyəcək.',
           style: const TextStyle(height: 1.45),
@@ -761,7 +830,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                final blocked = await ApiService.toggleBlockUser(widget.otherUserId);
+                final blocked = await ApiService.toggleBlockUser(
+                  widget.otherUserId,
+                );
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -779,7 +850,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               } catch (e) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+                    SnackBar(
+                      content: Text(
+                        e.toString().replaceFirst('Exception: ', ''),
+                      ),
+                    ),
                   );
                 }
               }
@@ -884,7 +959,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 value: 'report',
                 child: Row(
                   children: [
-                    Icon(Icons.flag_outlined, size: 20, color: Color(0xFFEF4444)),
+                    Icon(
+                      Icons.flag_outlined,
+                      size: 20,
+                      color: Color(0xFFEF4444),
+                    ),
                     SizedBox(width: 10),
                     Text('Şikayət et'),
                   ],
@@ -894,7 +973,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 value: 'block',
                 child: Row(
                   children: [
-                    Icon(Icons.block_rounded, size: 20, color: Color(0xFF64748B)),
+                    Icon(
+                      Icons.block_rounded,
+                      size: 20,
+                      color: Color(0xFF64748B),
+                    ),
                     SizedBox(width: 10),
                     Text('İstifadəçini blokla'),
                   ],
@@ -909,6 +992,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           constraints: const BoxConstraints(maxWidth: 720),
           child: Column(
             children: [
+              if (_hasOlder && _messages.isNotEmpty)
+                TextButton(
+                  onPressed: _loadingOlder ? null : _loadOlder,
+                  child: Text(
+                    _loadingOlder ? 'Yüklənir…' : 'Əvvəlki mesajları yüklə',
+                  ),
+                ),
               const Divider(height: 1, color: Color(0xFFE2E8F0)),
               Expanded(
                 child: _isLoading
@@ -916,36 +1006,36 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         child: CircularProgressIndicator(color: _brandPrimary),
                       )
                     : _messages.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'Mesaj yazaraq söhbətə başlayın',
-                              style: TextStyle(
-                                color: Color(0xFF64748B),
-                                fontSize: 13.5,
-                              ),
-                            ),
-                          )
-                        : ListView.separated(
-                            controller: _scrollCtrl,
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 16,
-                            ),
-                            itemCount: _messages.length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(height: 14.0),
-                            itemBuilder: (context, index) {
-                              final msg = _messages[index];
-                              final isMine = msg.isMine;
-                              return _buildChatTwoMessageRow(
-                                msg: msg,
-                                isMine: isMine,
-                                myInitial: myInitial,
-                                myAvatarUrl: currentUser?.profil.avatar,
-                              );
-                            },
+                    ? const Center(
+                        child: Text(
+                          'Mesaj yazaraq söhbətə başlayın',
+                          style: TextStyle(
+                            color: Color(0xFF64748B),
+                            fontSize: 13.5,
                           ),
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: _scrollCtrl,
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 16,
+                        ),
+                        itemCount: _messages.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: 14.0),
+                        itemBuilder: (context, index) {
+                          final msg = _messages[index];
+                          final isMine = msg.isMine;
+                          return _buildChatTwoMessageRow(
+                            msg: msg,
+                            isMine: isMine,
+                            myInitial: myInitial,
+                            myAvatarUrl: currentUser?.profil.avatar,
+                          );
+                        },
+                      ),
               ),
               // ChatTwoPage (chat2.dart) Floating Pill Input Bar
               SafeArea(
@@ -1022,10 +1112,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : const Icon(
-                                  Icons.send_rounded,
-                                  size: 19,
-                                ),
+                              : const Icon(Icons.send_rounded, size: 19),
                         ),
                       ),
                     ],
@@ -1048,8 +1135,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }) {
     const double radius = 20.0;
     return Row(
-      mainAxisAlignment:
-          isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isMine
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         if (!isMine) ...[
@@ -1071,8 +1159,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ],
         Flexible(
           child: Column(
-            crossAxisAlignment:
-                isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: isMine
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -1145,8 +1234,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             backgroundColor: const Color(0xFF0FA968),
             backgroundImage:
                 (myAvatarUrl != null && myAvatarUrl.trim().isNotEmpty)
-                    ? CachedNetworkImageProvider(myAvatarUrl)
-                    : null,
+                ? CachedNetworkImageProvider(myAvatarUrl)
+                : null,
             child: (myAvatarUrl == null || myAvatarUrl.trim().isEmpty)
                 ? Text(
                     myInitial,

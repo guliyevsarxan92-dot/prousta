@@ -54,7 +54,7 @@
     <!-- Cavab Vermə Düyməsi -->
     {% if request.user != mesaj.gonderici and mesaj.elan %}
     <div style="padding-top:16px;border-top:1px solid var(--border)">
-      <a href="{% url 'mesaj_yeni' mesaj.elan.pk %}" class="btn btn-primary">
+      <a href="{% url 'mesaj_cavab' mesaj.pk %}" class="btn btn-primary">
         {% include 'partials/ui_icon.html' with name='send' %}
         Cavab yaz
       </a>

@@ -19,8 +19,10 @@
     <div class="notice" style="margin-bottom:18px">
       {% include 'partials/ui_icon.html' with name='user' %}
       <div>
-        <strong>Usta:</strong>
+        <strong>Alıcı:</strong>
+        {% if receiver %}{{ receiver.get_full_name|default:receiver.username }}{% else %}
         {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}{{ elan.istifadeci.username }}{% endif %}
+        {% endif %}
         <div style="font-size:11px;color:var(--muted);margin-top:2px">Elan: {{ elan.bashliq }}</div>
       </div>
     </div>
@@ -29,7 +31,7 @@
       {% csrf_token %}
       <div class="field">
         <label for="id_metn">Mesajınız <span class="req">*</span></label>
-        <textarea id="id_metn" name="metn" placeholder="Xidmət, qiymət və ya işin detalları haqqında sualınızı yazın..." required style="min-height:140px"></textarea>
+        <textarea id="id_metn" name="metn" maxlength="5000" placeholder="Xidmət, qiymət və ya işin detalları haqqında sualınızı yazın..." required style="min-height:140px"></textarea>
       </div>
 
       <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center">

@@ -1,4 +1,4 @@
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.db.models import F
 from django.db import transaction
 from django.dispatch import receiver
@@ -25,41 +25,6 @@ def _sistem_istifadecisi():
         },
     )
     return user
-
-
-@receiver(pre_save, sender=Odenis)
-def odenis_tesdiq_signal(sender, instance, **kwargs):
-    instance._tesdiq_transition = False
-    if instance.pk:
-        try:
-            kohne = Odenis.objects.filter(pk=instance.pk).values('status').first()
-            if kohne and kohne['status'] != 'tesdiq_edildi' and instance.status == 'tesdiq_edildi':
-                instance._tesdiq_transition = True
-                if instance.nov == 'balans':
-                    Profil.objects.filter(
-                        istifadeci=instance.istifadeci
-                    ).update(balans=F('balans') + instance.mebleg)
-                elif instance.nov in ('vip', 'super_vip') and instance.elan:
-                    now = timezone.now()
-                    days = 30 if instance.nov == 'super_vip' else 10
-                    try:
-                        p = VipPaket.objects.filter(nov=instance.nov, aktiv=True).first()
-                        if p:
-                            days = p.muddet_gun
-                    except Exception:
-                        pass
-                    elan = instance.elan
-                    if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
-                        yeni_bitis = elan.vip_bitis + timedelta(days=days)
-                    else:
-                        yeni_bitis = now + timedelta(days=days)
-                    elan.vip_status = instance.nov
-                    elan.vip_bitis = yeni_bitis
-                    elan.vip_yenilendi = now
-                    elan.vip_siralama = 2 if instance.nov == 'super_vip' else 1
-                    elan.save(update_fields=['vip_status', 'vip_bitis', 'vip_yenilendi', 'vip_siralama'])
-        except Exception:
-            pass
 
 
 @receiver(post_save, sender=Odenis)
@@ -113,3 +78,63 @@ def odenis_tesdiq_mesaj(sender, instance, created, **kwargs):
             _gonder()
     except Exception:
         _gonder()
+
+
+@receiver(pre_save, sender=User)
+def revoke_tokens_on_password_change(sender, instance, **kwargs):
+    if instance.pk:
+        old = User.objects.filter(pk=instance.pk).values_list('password', flat=True).first()
+        if old is not None and old != instance.password:
+            from rest_framework.authtoken.models import Token
+            Token.objects.filter(user_id=instance.pk).delete()
+
+
+def _delete_after_commit(model, field, name, storage):
+    from .media_cleanup import enqueue
+    enqueue(name, 'receipts' if field == 'qebz' else 'default')
+
+
+from .models import Elan, ElanShekil, ReklamBanner, Kategori, Problem
+
+
+@receiver(post_delete)
+def cleanup_deleted_media(sender, instance, **kwargs):
+    fields = {ElanShekil: 'shekil', Profil: 'avatar', Odenis: 'qebz'}
+    field = fields.get(sender)
+    if field:
+        file = getattr(instance, field)
+        if file and file.name:
+            _delete_after_commit(sender, field, file.name, file.storage)
+
+
+@receiver(pre_save)
+def cleanup_replaced_media(sender, instance, **kwargs):
+    fields = {ElanShekil: 'shekil', Profil: 'avatar', Odenis: 'qebz'}
+    field = fields.get(sender)
+    if field and instance.pk:
+        old = sender.objects.filter(pk=instance.pk).first()
+        if old:
+            previous = getattr(old, field)
+            current = getattr(instance, field)
+            if previous and previous.name != getattr(current, 'name', None):
+                instance._obsolete_media = (sender, field, previous.name, previous.storage)
+
+
+@receiver(post_save)
+@receiver(post_delete)
+def invalidate_public_caches(sender, **kwargs):
+    from django.core.cache import cache
+    if sender == ReklamBanner:
+        transaction.on_commit(lambda: cache.delete('reklam_bannerleri'))
+    if sender == Kategori:
+        transaction.on_commit(lambda: cache.delete_many(['nav_kateqoriyalar', 'seo_indexable_kat_ids', 'prousta_llms_txt_v3']))
+    if sender in (Kategori, Problem, Elan):
+        transaction.on_commit(lambda: cache.delete_many(['seo_indexable_kat_ids', 'prousta_llms_txt_v4']))
+
+
+@receiver(post_save)
+def cleanup_replaced_media_after_save(sender, instance, **kwargs):
+    old = getattr(instance, '_obsolete_media', None)
+    if old:
+        del instance._obsolete_media
+        _delete_after_commit(*old)

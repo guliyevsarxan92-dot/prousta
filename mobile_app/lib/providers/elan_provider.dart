@@ -13,6 +13,20 @@ class ElanProvider extends ChangeNotifier {
   bool _hasNext = false;
   int _currentPage = 1;
 
+  int _requestGeneration = 0;
+  int? _userId;
+
+  void bindUser(int? userId) {
+    if (_userId == userId) return;
+    _userId = userId;
+    _requestGeneration++;
+    _favorites = [];
+    _elanlar = [];
+    _isLoadingMore = false;
+    _hasNext = false;
+    Future.microtask(() => fetchElanlar());
+  }
+
   String _searchQuery = '';
   String? _selectedCategorySlug;
   String? _selectedCategoryName;
@@ -32,48 +46,35 @@ class ElanProvider extends ChangeNotifier {
   String get selectedCity => _selectedCity;
 
   Future<void> loadInitialData() async {
-    _isLoading = true;
+    await Future.wait([
+      fetchElanlar(),
+      ApiService.getCategories()
+          .then((value) {
+            _categories = value;
+          })
+          .catchError((Object e) {
+            debugPrint('$e');
+          }),
+      ApiService.getBanners()
+          .then((value) {
+            _banners = value;
+          })
+          .catchError((Object e) {
+            debugPrint('$e');
+          }),
+    ]);
     notifyListeners();
-    try {
-      await Future.wait([
-        ApiService.getCategories().then((cats) {
-          _categories = cats;
-        }).catchError((e) {
-          debugPrint('Error loading categories: $e');
-        }),
-        ApiService.getBanners().then((b) {
-          _banners = b;
-        }).catchError((e) {
-          debugPrint('Error loading banners: $e');
-        }),
-        ApiService.getElanlar(
-          page: 1,
-          query: _searchQuery,
-          kategoriSlug: _selectedCategorySlug,
-          seher: _selectedCity,
-        ).then((elanData) {
-          _elanlar = elanData['results'] as List<ElanModel>;
-          _hasNext = elanData['hasNext'] as bool;
-          _currentPage = 1;
-        }).catchError((e) {
-          debugPrint('Error loading elanlar: $e');
-        }),
-      ]);
-    } catch (e) {
-      debugPrint('Error loading initial data: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
   }
 
   Future<void> fetchElanlar({bool reset = true}) async {
+    final generation = reset ? ++_requestGeneration : _requestGeneration;
     if (reset) {
+      _isLoadingMore = false;
       _isLoading = true;
       _currentPage = 1;
       notifyListeners();
     } else {
-      if (_isLoadingMore || !_hasNext) return;
+      if (_isLoading || _isLoadingMore || !_hasNext) return;
       _isLoadingMore = true;
       notifyListeners();
     }
@@ -86,6 +87,7 @@ class ElanProvider extends ChangeNotifier {
         kategoriSlug: _selectedCategorySlug,
         seher: _selectedCity,
       );
+      if (generation != _requestGeneration) return;
       final newItems = data['results'] as List<ElanModel>;
       if (reset) {
         _elanlar = newItems;
@@ -97,9 +99,11 @@ class ElanProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error fetching elanlar: $e');
     } finally {
-      _isLoading = false;
-      _isLoadingMore = false;
-      notifyListeners();
+      if (generation == _requestGeneration) {
+        _isLoading = false;
+        _isLoadingMore = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -132,8 +136,11 @@ class ElanProvider extends ChangeNotifier {
 
   Future<void> loadFavorites() async {
     if (!ApiService.isAuthenticated) return;
+    final userId = _userId;
     try {
-      _favorites = await ApiService.getFavorites();
+      final result = await ApiService.getFavorites();
+      if (_userId != userId) return;
+      _favorites = result;
       notifyListeners();
     } catch (_) {}
   }

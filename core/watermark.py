@@ -42,6 +42,8 @@ def filigran_yoxla(file_obj, filename=None):
             file_obj.seek(0)
 
         im = Image.open(file_obj)
+        if im.width * im.height > 20_000_000:
+            return True, 'Şəkil maksimum 20 MP ola bilər.'
 
         # 2. Şəkil metadatasında (EXIF, IPTC, PNG info) kənar sayt izi
         meta_str = ''
@@ -62,6 +64,7 @@ def filigran_yoxla(file_obj, filename=None):
                 return True, f"Şəkil məlumatlarında (metadata/EXIF) filiqran aşkar edildi ({kw})"
 
         # 3. Şəklin künclərində və kənarlarında loqo/filiqran nişanının vizual təhlili
+        im.thumbnail((800, 800), Image.Resampling.LANCZOS)
         w, h = im.size
         # Minimum analiz ölçüsü (çox kiçik şəkillər onsuz da standartdan kənardır)
         if w >= 150 and h >= 100:
@@ -166,8 +169,7 @@ def filigran_yoxla(file_obj, filename=None):
                             return True, f"Şəkildə {name} ({corner_name} hissəsində) aşkar edildi"
 
     except Exception:
-        # Fayl oxuma xətası baş verərsə digər validasiyalara mane olmamaq üçün susuruq
-        pass
+        return True, 'Şəkil oxuna bilmədi.'
     finally:
         if hasattr(file_obj, 'seek'):
             file_obj.seek(0)

@@ -9,6 +9,17 @@ from core.image_optimizer import (
 register = template.Library()
 
 
+@register.filter(name='absolute_media')
+def absolute_media(url):
+    if not url:
+        return ''
+    value = str(url)
+    if value.startswith(('https://', 'http://')):
+        return value
+    from core.seo import SITE_URL
+    return SITE_URL + '/' + value.lstrip('/')
+
+
 @register.filter(name='cld_opt')
 def cld_opt(image_or_url, transform='f_auto,q_auto'):
     """Şəkil obyektini və ya URL-i optimallaşdırır."""

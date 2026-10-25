@@ -27,6 +27,8 @@ def oxunmamis_mesaj(request):
     except Exception:
         reklamlar = {}
 
+    now = timezone.now()
+    reklamlar = {key: value for key, value in reklamlar.items() if not value.bitis_tarixi or value.bitis_tarixi > now}
     ctx = {
         'nav_kateqoriyalar': nav_kateqoriyalar,
         'YANDEX_VERIFICATION': getattr(settings, 'YANDEX_VERIFICATION', ''),

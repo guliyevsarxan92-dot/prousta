@@ -3,6 +3,21 @@
 from django.db import migrations, models
 
 
+def backfill_numbers(apps, schema_editor):
+    import uuid
+    Ad = apps.get_model('core', 'Elan')
+    manager = Ad.objects.using(schema_editor.connection.alias)
+    seen = set()
+    for row in manager.order_by('pk').iterator():
+        if not row.nomre or row.nomre in seen:
+            number = uuid.uuid4().hex[:10].upper()
+            while number in seen or manager.filter(nomre=number).exists():
+                number = uuid.uuid4().hex[:10].upper()
+            manager.filter(pk=row.pk).update(nomre=number)
+            row.nomre = number
+        seen.add(row.nomre)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +25,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(backfill_numbers, migrations.RunPython.noop),
         migrations.AlterField(
             model_name='elan',
             name='nomre',

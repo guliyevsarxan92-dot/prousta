@@ -85,7 +85,8 @@ class CategoryModel {
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    final subs = (json['alt_kateqoriyalar'] as List<dynamic>?)
+    final subs =
+        (json['alt_kateqoriyalar'] as List<dynamic>?)
             ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [];
@@ -105,11 +106,7 @@ class ElanShekilModel {
   final String? shekilUrl;
   final bool esas;
 
-  ElanShekilModel({
-    required this.id,
-    this.shekilUrl,
-    required this.esas,
-  });
+  ElanShekilModel({required this.id, this.shekilUrl, required this.esas});
 
   factory ElanShekilModel.fromJson(Map<String, dynamic> json) {
     return ElanShekilModel(
@@ -191,7 +188,8 @@ class ElanModel {
   }
 
   factory ElanModel.fromJson(Map<String, dynamic> json) {
-    final imgs = (json['shekillar'] as List<dynamic>?)
+    final imgs =
+        (json['shekillar'] as List<dynamic>?)
             ?.map((e) => ElanShekilModel.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [];
@@ -230,6 +228,7 @@ class ElanModel {
 }
 
 class ConversationModel {
+  final int lastMessageId;
   final int userId;
   final String username;
   final String adSoyad;
@@ -240,6 +239,7 @@ class ConversationModel {
   final int? elanId;
 
   ConversationModel({
+    this.lastMessageId = 0,
     required this.userId,
     required this.username,
     required this.adSoyad,
@@ -252,6 +252,7 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
+      lastMessageId: json['last_message_id'] ?? 0,
       userId: json['user_id'] ?? 0,
       username: json['username'] ?? '',
       adSoyad: json['ad_soyad'] ?? '',
@@ -329,7 +330,8 @@ class VipPaketModel {
       ad: json['ad'] ?? '',
       qiymet: double.tryParse(json['qiymet']?.toString() ?? '0') ?? 0.0,
       muddetGun: json['muddet_gun'] ?? 10,
-      ustunlukler: (json['ustunlukler'] as List<dynamic>?)
+      ustunlukler:
+          (json['ustunlukler'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],

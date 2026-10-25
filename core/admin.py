@@ -2,7 +2,8 @@ from datetime import timedelta
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
-from django.db import models
+from django.db import models, transaction
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -10,6 +11,20 @@ from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
+
+class SafeCSVWriter:
+    def __init__(self, stream):
+        import csv
+        self.writer = csv.writer(stream)
+
+    def writerow(self, values):
+        def safe(value):
+            if isinstance(value, str) and value.lstrip().startswith(('=', '+', '-', '@', '\t', '\r', '\n')):
+                return "'" + value
+            return value
+        self.writer.writerow([safe(value) for value in values])
+
 
 from unfold.admin import ModelAdmin, TabularInline, StackedInline
 from unfold.contrib.filters.admin import ChoicesDropdownFilter, RelatedDropdownFilter
@@ -64,6 +79,8 @@ def admin_pending_notifications_api(request):
     Admin panel üçün anlıq bildiriş API-si.
     Təsdiq gözləyən yeni elan və ödənişləri JSON olaraq qaytarır.
     """
+    if not (request.user.has_perm('core.view_elan') and request.user.has_perm('core.view_odenis')):
+        raise PermissionDenied
     try:
         elan_gozlemede = Elan.objects.filter(status='gozlemede')
         elan_count = elan_gozlemede.count()
@@ -521,6 +538,8 @@ class ElanAdmin(ModelAdmin):
         return custom_urls + urls
 
     def cixaris_view(self, request):
+        if not (self.has_view_permission(request) and request.user.has_perm("core.view_profil")):
+            raise PermissionDenied
         import csv
         import re
         from django.http import HttpResponse
@@ -670,7 +689,7 @@ class ElanAdmin(ModelAdmin):
             filename = f"prousta_ustalar_{timezone.now().strftime('%Y%m%d_%H%M')}.csv"
             response['Content-Disposition'] = f'attachment; filename="{filename}"'
             response.write('\ufeff')  # UTF-8 BOM for Microsoft Excel
-            writer = csv.writer(response)
+            writer = SafeCSVWriter(response)
             writer.writerow([
                 '№',
                 'Usta / Ad Soyad',
@@ -765,7 +784,13 @@ class OdenisAdmin(ModelAdmin):
         'elan__bashliq',
         'qeyd',
     ]
-    readonly_fields = ['qebz_goruntu_large', 'yaradildi']
+    readonly_fields = ['qebz_goruntu_large', 'yaradildi', 'applied_at']
+
+    def get_readonly_fields(self, request, obj=None):
+        fields = list(super().get_readonly_fields(request, obj))
+        if obj and obj.applied_at:
+            fields += ['istifadeci', 'elan', 'nov', 'mebleg', 'status']
+        return fields
     ordering = ['-yaradildi']
     list_per_page = 25
 
@@ -824,7 +849,7 @@ class OdenisAdmin(ModelAdmin):
                 '<a href="{}" target="_blank" title="Tam ölçüdə bax">'
                 '<img src="{}" style="height:50px;width:70px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0;"/>'
                 '</a>',
-                obj.qebz.url, obj.qebz.url
+                obj.receipt_url, obj.receipt_url
             )
         return '—'
     qebz_goruntu.short_description = 'Qəbz'
@@ -835,7 +860,7 @@ class OdenisAdmin(ModelAdmin):
                 '<a href="{}" target="_blank">'
                 '<img src="{}" style="max-height:350px;border-radius:8px;border:1px solid #cbd5e1;box-shadow:0 4px 12px rgba(0,0,0,0.08);"/>'
                 '</a>',
-                obj.qebz.url, obj.qebz.url
+                obj.receipt_url, obj.receipt_url
             )
         return 'Qəbz şəkli yüklənməyib'
     qebz_goruntu_large.short_description = 'Qəbz Şəkli'
@@ -847,18 +872,27 @@ class OdenisAdmin(ModelAdmin):
     @action(description='Seçilmiş ödənişləri TƏSDİQLƏ (Balans/VIP aktiv et)')
     def tesdiq_et_action(self, request, queryset):
         count = 0
-        with transaction.atomic():
-            for odenis in queryset:
-                if odenis.status != 'tesdiq_edildi':
-                    odenis.status = 'tesdiq_edildi'
-                    odenis.save()
+        for payment in queryset.order_by('pk'):
+            try:
+                if not payment.applied_at:
+                    payment.status = 'tesdiq_edildi'
+                    payment.save()
                     count += 1
-        self.message_user(request, f"{count} ödəniş uğurla təsdiqləndi.")
+            except ValidationError as exc:
+                self.message_user(request, ' '.join(exc.messages), level='ERROR')
+        self.message_user(request, f'{count} ödəniş təsdiqləndi.')
 
-    @action(description='Seçilmiş ödənişləri LƏĞV ET')
+    @action(description='Gözləyən ödənişləri LƏĞV ET')
     def legv_et_action(self, request, queryset):
-        count = queryset.update(status='legv_edildi')
-        self.message_user(request, f"{count} ödəniş ləğv edildi.")
+        count = 0
+        for payment in queryset.order_by('pk'):
+            try:
+                payment.status = 'legv_edildi'
+                payment.save()
+                count += 1
+            except ValidationError as exc:
+                self.message_user(request, ' '.join(exc.messages), level='ERROR')
+        self.message_user(request, f'{count} ödəniş ləğv edildi.')
 
 
 # ==============================================================================
@@ -1137,6 +1171,8 @@ class ReklamBannerAdmin(ModelAdmin):
         return custom_urls + urls
 
     def hesabat_view(self, request, banner_id):
+        if not (self.has_view_permission(request) and request.user.has_perm("core.view_bannerklik")):
+            raise PermissionDenied
         from django.shortcuts import get_object_or_404, render
         from django.http import HttpResponse
         from django.db.models.functions import TruncDate
@@ -1155,7 +1191,7 @@ class ReklamBannerAdmin(ModelAdmin):
             response = HttpResponse(content_type='text/csv; charset=utf-8')
             response['Content-Disposition'] = f'attachment; filename="banner_{banner.id}_hesabat_{now.strftime("%Y%m%d")}.csv"'
             response.write('\ufeff'.encode('utf8'))
-            writer = csv.writer(response)
+            writer = SafeCSVWriter(response)
             writer.writerow(['Banner', 'Mövqe', 'Tarix və Saat', 'Cihaz', 'IP Ünvanı', 'User-Agent', 'Referer'])
             for k in klikler_qs.order_by('-yaradildi')[:2000]:
                 writer.writerow([
@@ -1220,11 +1256,15 @@ class ReklamBannerAdmin(ModelAdmin):
     @action(description='Seçilmiş bannerləri AKTİV et')
     def aktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=True)
+        from django.core.cache import cache
+        cache.delete('reklam_bannerleri')
         self.message_user(request, "Bannerlər aktiv edildi.")
 
     @action(description='Seçilmiş bannerləri DEAKTİV et')
     def deaktivlesdir_action(self, request, queryset):
         queryset.update(aktiv=False)
+        from django.core.cache import cache
+        cache.delete('reklam_bannerleri')
         self.message_user(request, "Bannerlər deaktiv edildi.")
 
     @action(description='Seçilmiş bannerlərin statistikalarını SIFIRLA')
@@ -1274,7 +1314,7 @@ class BannerKlikAdmin(ModelAdmin):
         response = HttpResponse(content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = 'attachment; filename="banner_klik_qeydleri.csv"'
         response.write('\ufeff'.encode('utf8'))
-        writer = csv.writer(response)
+        writer = SafeCSVWriter(response)
         writer.writerow(['Banner', 'Cihaz', 'IP Ünvanı', 'User-Agent', 'Referer', 'Tarix'])
         for k in queryset:
             writer.writerow([

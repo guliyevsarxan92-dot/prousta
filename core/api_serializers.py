@@ -33,7 +33,7 @@ class AltKategoriSerializer(serializers.ModelSerializer):
         fields = ['id', 'ad', 'slug', 'ikon', 'elan_sayi']
 
     def get_elan_sayi(self, obj):
-        return Elan.objects.filter(kategori=obj, status='aktiv').count()
+        return self.context.get('category_counts', {}).get(obj.pk, 0)
 
 
 class KategoriSerializer(serializers.ModelSerializer):
@@ -45,12 +45,7 @@ class KategoriSerializer(serializers.ModelSerializer):
         fields = ['id', 'ad', 'slug', 'ikon', 'alt_kateqoriyalar', 'elan_sayi']
 
     def get_elan_sayi(self, obj):
-        from django.db.models import Q
-        return Elan.objects.filter(
-            status='aktiv'
-        ).filter(
-            Q(kategori=obj) | Q(kategori__ust_kategori=obj)
-        ).count()
+        return self.context.get('category_counts', {}).get(obj.pk, 0)
 
 
 class ElanShekilSerializer(serializers.ModelSerializer):
@@ -71,6 +66,11 @@ class ElanShekilSerializer(serializers.ModelSerializer):
 
 
 class ElanListSerializer(serializers.ModelSerializer):
+    vip_status = serializers.SerializerMethodField()
+
+    def get_vip_status(self, obj):
+        return obj.vip_status if obj.is_vip_aktiv() else "normal"
+
     esas_shekil = serializers.SerializerMethodField()
     kategori_ad = serializers.CharField(source='kategori.ad', read_only=True)
     kategori_slug = serializers.CharField(source='kategori.slug', read_only=True)
@@ -112,6 +112,11 @@ class ElanListSerializer(serializers.ModelSerializer):
 
 
 class ElanDetailSerializer(serializers.ModelSerializer):
+    vip_status = serializers.SerializerMethodField()
+
+    def get_vip_status(self, obj):
+        return obj.vip_status if obj.is_vip_aktiv() else "normal"
+
     shekillar = ElanShekilSerializer(many=True, read_only=True)
     kategori_ad = serializers.CharField(source='kategori.ad', read_only=True)
     kategori_slug = serializers.CharField(source='kategori.slug', read_only=True)
@@ -225,7 +230,7 @@ class OdenisSerializer(serializers.ModelSerializer):
     def get_qebz_url(self, obj):
         if not obj.qebz:
             return None
-        url = obj.qebz.url
+        url = obj.receipt_url
         request = self.context.get('request')
         if request and not url.startswith(('http://', 'https://')):
             return request.build_absolute_uri(url)

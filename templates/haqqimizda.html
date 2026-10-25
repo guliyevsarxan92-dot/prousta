@@ -1,41 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Haqqımızda — Bakıda Usta Tap Platforması | Prousta.az{% endblock %}
-{% block description %}Prousta.az — Bakıda və Azərbaycanda usta tapma platforması. Elektrik ustası, santexnik, kombi ustası, kondisioner ustası, havalandırma ustası, ev təmiri, mebel ustası və 100+ xidmət kateqoriyası bir yerdə.{% endblock %}
-{% block canonical %}/haqqimizda/{% endblock %}
-{% block canonical2 %}/haqqimizda/{% endblock %}
-{% block og_url %}/haqqimizda/{% endblock %}
-{% block og_title %}Haqqımızda — Prousta.az{% endblock %}
-{% block og_description %}Prousta.az — Azərbaycanda peşəkar xidmət elanları platforması.{% endblock %}
+
 {% block extra_head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AboutPage",
-  "name": "Prousta.az haqqında",
-  "url": "https://prousta.az/haqqimizda/",
-  "description": "Prousta.az — Azərbaycanda peşəkar xidmət elanları platforması. Elektrik, santexnik, təmir, məişət texnikası, avtomobil, gözəllik və digər xidmətlər üzrə minlərlə usta bir ünvanda.",
-  "inLanguage": "az-AZ",
-  "about": {
-    "@type": "Organization",
-    "name": "Prousta.az",
-    "url": "https://prousta.az",
-    "logo": "https://prousta.az/static/og-image.jpg",
-    "email": "info@prousta.az",
-    "telephone": "+994515888884",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "AZ",
-      "addressLocality": "Bakı"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Azerbaijan"
-    },
-    "description": "Azərbaycanda peşəkar usta və xidmət elanları platforması. Elektrik, santexnik, kombi, kondisioner, məişət texnikası, mebel, tikinti, avtomobil, gözəllik, IT və digər xidmətlər.",
-    "slogan": "Peşəkar Usta Tapın"
-  }
-}
-</script>
 {% endblock %}
 
 {% block content %}
@@ -62,7 +27,7 @@
     </div>
     <div>
       {% include 'partials/ui_icon.html' with name='shield' %}
-      <span><strong>Etibarlı</strong><small>yoxlanılmış elanlar</small></span>
+      <span><strong>Müqayisə edin</strong><small>xidmət elanlarını</small></span>
     </div>
     <div>
       {% include 'partials/ui_icon.html' with name='check' %}
@@ -77,7 +42,7 @@
       təcrübəli ustaları birləşdirən müasir onlayn elan platformasıdır. Saytımızda elektrik ustası,
       santexnik, kombi ustası, kondisioner quraşdırılması və təmiri, məişət texnikası təmiri,
       mebel yığılması, tikinti və təmir briqadaları, avtomobil təmiri, gözəllik və sağlamlıq xidmətləri,
-      IT və digər sahələr üzrə minlərlə elan yer alır.
+      IT və digər sahələr üzrə xidmət elanları təqdim olunur.
     </p>
     <p>
       Biz heç bir usta və ya müştəri arasında vasitəçilik komissiyası tutmuruq. Hər elanda ustanın əlaqə

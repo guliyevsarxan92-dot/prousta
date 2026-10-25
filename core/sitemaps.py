@@ -1,12 +1,21 @@
 from django.contrib.sitemaps import Sitemap
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.urls import reverse
 from django.utils import timezone
 from .models import Kategori, Elan, Problem
 from .seo import indexable_kategori_ids
 
 
-class AnaSehifeSitemap(Sitemap):
+class PublicSitemap(Sitemap):
+    protocol = 'https'
+
+    def get_urls(self, page=1, site=None, protocol=None):
+        from types import SimpleNamespace
+        # Technical/staging hosts must never leak into a submitted sitemap.
+        return super().get_urls(page=page, site=SimpleNamespace(domain='prousta.az'), protocol='https')
+
+
+class AnaSehifeSitemap(PublicSitemap):
     """Əsas səhifə — ən yüksək prioritet."""
     changefreq = 'daily'
     priority = 1.0
@@ -18,7 +27,7 @@ class AnaSehifeSitemap(Sitemap):
         return reverse(item)
 
 
-class KategoriSitemap(Sitemap):
+class KategoriSitemap(PublicSitemap):
     """Əsas kateqoriyalar — yalnız məzmunlu və indekslənə bilən səhifələr."""
     changefreq = 'daily'
     priority = 0.9
@@ -31,7 +40,7 @@ class KategoriSitemap(Sitemap):
         return reverse('xidmet_detail', args=[obj.slug])
 
 
-class AltKategoriSitemap(Sitemap):
+class AltKategoriSitemap(PublicSitemap):
     """Alt xidmət kateqoriyaları — axtarış tələbatı yüksək olan xidmətlər."""
     changefreq = 'daily'
     priority = 0.9
@@ -44,7 +53,7 @@ class AltKategoriSitemap(Sitemap):
         return reverse('xidmet_detail', args=[obj.slug])
 
 
-class ElanSitemap(Sitemap):
+class ElanSitemap(PublicSitemap):
     """Aktiv və müddəti bitməmiş elanlar."""
     changefreq = 'daily'
     priority = 0.8
@@ -56,16 +65,27 @@ class ElanSitemap(Sitemap):
             status='aktiv'
         ).filter(
             Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=now)
-        ).order_by('-yenilendi')
+        ).order_by('-yenilendi', '-pk').prefetch_related('shekillar')
 
     def lastmod(self, obj):
         return obj.yenilendi
+
+    def get_latest_lastmod(self):
+        return self.items().aggregate(latest=Max('yenilendi'))['latest']
+
+    def get_urls(self, page=1, site=None, protocol=None):
+        from .seo_metadata import absolute_url
+        urls = super().get_urls(page=page, site=site, protocol=protocol)
+        for item in urls:
+            item['images'] = [absolute_url(photo.shekil.url)
+                              for photo in item['item'].shekillar.all() if photo.shekil][:5]
+        return urls
 
     def location(self, obj):
         return obj.get_absolute_url()
 
 
-class ProblemSitemap(Sitemap):
+class ProblemSitemap(PublicSitemap):
     """Məlumatlandırıcı bloq və problem həlli məqalələri."""
     changefreq = 'weekly'
     priority = 0.7
@@ -76,6 +96,9 @@ class ProblemSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.yenilendi
 
+    def get_latest_lastmod(self):
+        return self.items().aggregate(latest=Max('yenilendi'))['latest']
+
     def location(self, obj):
         return obj.get_absolute_url()
 
@@ -83,7 +106,7 @@ class ProblemSitemap(Sitemap):
 from .locations import LOKASIYALAR
 
 
-class XidmetLokasiyaSitemap(Sitemap):
+class XidmetLokasiyaSitemap(PublicSitemap):
     """
     Bakı və Abşeron rayonları üzrə lokal xidmət səhifələri (/xidmet/<slug>/<lokasiya>/).
     Lokal SEO və Google axtarışları üçün yüksək dəyərli açar söz səhifələri.
@@ -92,20 +115,14 @@ class XidmetLokasiyaSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        valid_ids = indexable_kategori_ids()
-        kats = list(Kategori.objects.filter(pk__in=valid_ids).values_list('slug', flat=True))
-        lokasiya_slugs = list(LOKASIYALAR.keys())
-        results = []
-        for kat_slug in kats:
-            for lok_slug in lokasiya_slugs:
-                results.append((kat_slug, lok_slug))
-        return results
+        from .seo_locations import indexable_location_pairs
+        return indexable_location_pairs()
 
     def location(self, item):
         return reverse('xidmet_lokasiya_detail', args=[item[0], item[1]])
 
 
-class StatikSitemap(Sitemap):
+class StatikSitemap(PublicSitemap):
     """Statik köməkçi səhifələr."""
     changefreq = 'monthly'
     priority = 0.4

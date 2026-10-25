@@ -1,51 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Prousta.az — Bakıda Usta Tap | Peşəkar Usta Xidmətləri və Elanlar{% endblock %}
-{% block description %}Bakıda və Azərbaycanda elektrik, santexnik, kombi, kondisioner, mebel və 100+ usta xidməti. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və WhatsApp ilə əlaqə saxlayın!{% endblock %}
-{% block canonical %}/{% endblock %}{% block canonical2 %}/{% endblock %}{% block og_url %}/{% endblock %}{% block nav_index %}aktiv{% endblock %}
+
+{% block nav_index %}aktiv{% endblock %}
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'img/home/hero.webp' %}" type="image/webp">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "@id": "https://prousta.az/#faq",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Prousta.az-da usta necə tapılır?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Saytda axtardığınız xidmət kateqoriyasını seçin və ya axtarış bölməsinə ehtiyacınız olan ustanı (məs: kombi ustası, elektrik, santexnik) yazın. Çıxan elanlarda qiymətlərə, şəkillərə və usta məlumatlarına baxaraq birbaşa zəng və ya WhatsApp vasitəsilə əlaqə saxlayın."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Usta ilə əlaqə saxlamaq üçün ödəniş tələb olunurmu?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Xeyr! Prousta.az müştərilər üçün tamamilə pulsuzdur. Platformada heç bir vasitəçi komissiyası yoxdur, usta ilə birbaşa əlaqə saxlayırsınız."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Prousta.az-da hansı xidmətlər mövcuddur?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Kombi və kondisioner təmiri, santexnik, elektrik, mebel yığılması, məişət texnikası təmiri (soyuducu, paltaryuyan), ev təmiri və 100-dən çox kateqoriyada peşəkar usta xidmətləri mövcuddur."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Usta kimi necə elan yerləşdirmək olar?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Saytda pulsuz qeydiyyatdan keçərək «Elan yerləşdir» düyməsinə klikləyin. Göstərdiyiniz xidməti, qiyməti, əlaqə nömrənizi və gördüyünüz işlərin şəkillərini əlavə edərək minlərlə potensial müştəriyə çatın."
-      }
-    }
-  ]
-}
-</script>
 {% endblock %}
 {% block content %}
 <section class="market-hero" aria-labelledby="hero-title">
@@ -72,7 +30,7 @@
   {% if home_is_demo %}<p class="design-note">Dizayn nümunəsi · Aşağıdakı elanlar nümayiş üçündür.</p>{% endif %}
    <div class="service-grid" id="elanlar-grid">
     {% for elan in elanlar %}
-     {% include 'partials/home_service_card.html' %}
+     {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
      {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
        {% include 'partials/in_grid_ad_banner.html' %}
      {% endif %}
@@ -98,6 +56,8 @@
        </div>
       </div>
      </article>
+    {% empty %}
+      <div class="empty-state"><h3>Hazırda aktiv elan yoxdur</h3><p>Xidmət kateqoriyalarına baxın və ya öz elanınızı yerləşdirin.</p><a class="btn btn-primary" href="{% url 'elan_yarat' %}">Elan yerləşdir</a></div>
     {% endfor %}
    {% endfor %}
   </div>

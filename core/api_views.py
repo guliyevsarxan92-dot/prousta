@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Q, Max, Count, F
+from django.db.models import Q, Max, Count, F, Case, When, IntegerField, Subquery
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import (
     Elan, ElanShekil, Kategori, Profil, Favorit, Mesaj,
-    Odenis, BankMelumat, VipPaket, ReklamBanner, Shikayet, Bloklama, _AZ_MAP
+    Odenis, BankMelumat, VipPaket, ReklamBanner, Shikayet, Bloklama
 )
 from .api_serializers import (
     UserSerializer, ProfilSerializer, KategoriSerializer,
@@ -24,24 +24,57 @@ from .api_serializers import (
     VipPaketSerializer, BankMelumatSerializer, OdenisSerializer,
     ReklamBannerSerializer
 )
-from .views import _aciqlama_qadaga_yoxla, apply_fair_rotation
+from .rotation import apply_fair_rotation
+from .content import description_error as _aciqlama_qadaga_yoxla
+from .search import search_listings
 from .watermark import filigran_yoxla
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
 from django.conf import settings
 import secrets
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+from .validation import image_upload, money, phone, text
+from .listings import create_listing, update_listing, visible_listings, check_access, check_messaging
+from .payments import buy_vip, bump_listing
+from .authentication import issue_token
+from .identity import google_user
+from .throttles import AuthThrottle
+
+
+class ValidatedAPIView(APIView):
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if request.method not in ('GET', 'HEAD', 'OPTIONS'):
+            data = request.data
+            if not hasattr(data, 'items'):
+                raise ValidationError('Sorğu JSON obyekt və ya forma olmalıdır.')
+            text_fields = {'username', 'email', 'password', 'ad', 'soyad', 'telefon', 'sheher',
+                           'bashliq', 'acaqlama', 'metn', 'qeyd', 'nov', 'id_token', 'sebeb', 'confirm'}
+            for key, value in data.items():
+                if key in text_fields and (not isinstance(value, str) or len(value) > 10000):
+                    raise ValidationError(f'{key}: düzgün mətn daxil edin.')
+                if key in {'elan_id', 'user_id', 'kategori', 'kategori_id'} and value not in (None, ''):
+                    if not str(value).isascii() or not str(value).isdigit() or len(str(value)) > 18:
+                        raise ValidationError(f'{key}: düzgün identifikator daxil edin.')
+        if request.method == 'GET' and request.user.is_authenticated:
+            request._user_favorite_ids = set(Favorit.objects.filter(istifadeci=request.user).values_list('elan_id', flat=True))
+
 
 
 # -----------------------------------------------------------------------------
 # AUTH VIEWS
 # -----------------------------------------------------------------------------
 
-class LoginApiView(APIView):
+class LoginApiView(ValidatedAPIView):
+    authentication_classes = []
+    throttle_classes = [AuthThrottle]
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         username_or_email = request.data.get('username', '').strip()
-        password = request.data.get('password', '').strip()
+        password = request.data.get('password', '')
 
         if not username_or_email or not password:
             return Response(
@@ -64,7 +97,7 @@ class LoginApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        token, _ = Token.objects.get_or_create(user=user)
+        token = issue_token(user)
         user_serializer = UserSerializer(user, context={'request': request})
         return Response({
             'token': token.key,
@@ -73,13 +106,17 @@ class LoginApiView(APIView):
         })
 
 
-class RegisterApiView(APIView):
+class RegisterApiView(ValidatedAPIView):
+    authentication_classes = []
+    throttle_classes = [AuthThrottle]
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        username = request.data.get('username', '').strip().lower()
+        username = text(request.data.get('username', '').lower(), 'İstifadəçi adı', 150, minimum=8)
+        if not username.isalnum():
+            raise ValidationError('İstifadəçi adı yalnız hərf və rəqəmdən ibarət olmalıdır.')
         email = request.data.get('email', '').strip().lower()
-        password = request.data.get('password', '').strip()
+        password = request.data.get('password', '')
         ad = request.data.get('ad', '').strip()
         soyad = request.data.get('soyad', '').strip()
         telefon = request.data.get('telefon', '').strip()
@@ -88,13 +125,21 @@ class RegisterApiView(APIView):
         if not username or not password:
             return Response({'error': 'İstifadəçi adı və şifrə mütləqdir.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if len(password) < 6:
-            return Response({'error': 'Şifrə ən azı 6 simvol olmalıdır.'}, status=status.HTTP_400_BAD_REQUEST)
+        candidate = User(username=username, email=email, first_name=ad, last_name=soyad)
+        candidate.full_clean(exclude=['password'])
+        validate_password(password, candidate)
+        validate_email(email)
+        if username.startswith(('prousta_', 'google_')):
+            raise ValidationError('Bu istifadəçi adı rezerv edilib.')
+        text(ad, 'Ad', 50, minimum=0)
+        text(soyad, 'Soyad', 50, minimum=0)
+        telefon = phone(telefon, optional=True)
+        text(sheher, 'Şəhər', 100)
 
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username__iexact=username).exists():
             return Response({'error': 'Bu istifadəçi adı artıq götürülüb.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if email and User.objects.filter(email=email).exists():
+        if email and User.objects.filter(email__iexact=email).exists():
             return Response({'error': 'Bu email artıq qeydiyyatdan keçib.'}, status=status.HTTP_400_BAD_REQUEST)
 
         with transaction.atomic():
@@ -108,11 +153,11 @@ class RegisterApiView(APIView):
             profil, _ = Profil.objects.get_or_create(istifadeci=user)
             profil.ad = ad
             profil.soyad = soyad
-            profil.telefon = telefon
-            profil.sheher = sheher
+            profil.telefon = phone(telefon, optional=True)
+            profil.sheher = text(sheher, 'Şəhər', 100)
             profil.save()
 
-            token, _ = Token.objects.get_or_create(user=user)
+            token = issue_token(user)
 
         user_serializer = UserSerializer(user, context={'request': request})
         return Response({
@@ -122,7 +167,9 @@ class RegisterApiView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class GoogleLoginApiView(APIView):
+class GoogleLoginApiView(ValidatedAPIView):
+    authentication_classes = []
+    throttle_classes = [AuthThrottle]
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -136,35 +183,11 @@ class GoogleLoginApiView(APIView):
                 id_token_str, google_requests.Request(), client_id
             )
         except Exception as e:
-            return Response({'error': 'Google token etibarsızdır.', 'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Google token etibarsızdır.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        email = (info.get("email") or "").lower().strip()
-        if not email or not info.get("email_verified", False):
-            return Response({'error': 'Google email təsdiqlənməyib.'}, status=status.HTTP_401_UNAUTHORIZED)
+        user = google_user(info)
 
-        user = User.objects.filter(email__iexact=email).first()
-        if user is None:
-            base = (email.split("@")[0] or f"user{secrets.token_hex(3)}")[:26]
-            username = base
-            suffix = 0
-            while User.objects.filter(username=username).exists():
-                suffix += 1
-                username = f"{base}{suffix}"
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                first_name=(info.get("given_name") or "")[:30],
-                last_name=(info.get("family_name") or "")[:150],
-            )
-            user.set_unusable_password()
-            user.save()
-
-            profil, _ = Profil.objects.get_or_create(istifadeci=user)
-            profil.ad = user.first_name or ""
-            profil.soyad = user.last_name or ""
-            profil.save()
-
-        token, _ = Token.objects.get_or_create(user=user)
+        token = issue_token(user)
         user_serializer = UserSerializer(user, context={'request': request})
         return Response({
             'token': token.key,
@@ -173,7 +196,7 @@ class GoogleLoginApiView(APIView):
         })
 
 
-class LogoutApiView(APIView):
+class LogoutApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -181,7 +204,7 @@ class LogoutApiView(APIView):
         return Response({'message': 'Uğurla çıxış edildi.'})
 
 
-class DeleteAccountApiView(APIView):
+class DeleteAccountApiView(ValidatedAPIView):
     """Hesabın və bağlı bütün məlumatların (elanlar, mesajlar, favoritlər, profil) birdəfəlik silinməsi."""
     permission_classes = [permissions.IsAuthenticated]
 
@@ -207,19 +230,12 @@ class DeleteAccountApiView(APIView):
             )
 
         with transaction.atomic():
-            # Şəkil fayllarını diskdən də silirik
-            for shekil in ElanShekil.objects.filter(elan__istifadeci=user):
-                if shekil.shekil:
-                    shekil.shekil.delete(save=False)
-            profil = getattr(user, 'profil', None)
-            if profil and profil.avatar:
-                profil.avatar.delete(save=False)
             user.delete()  # CASCADE: Token, Profil, Elan, Mesaj, Favorit, Bloklama
 
         return Response({'message': 'Hesabınız və bütün məlumatlarınız silindi.'})
 
 
-class ProfileApiView(APIView):
+class ProfileApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
@@ -238,17 +254,19 @@ class ProfileApiView(APIView):
         avatar = request.FILES.get('avatar')
 
         if first_name is not None:
+            first_name = text(first_name, 'Ad', 50, minimum=0)
             user.first_name = first_name
             profil.ad = first_name
         if last_name is not None:
+            last_name = text(last_name, 'Soyad', 50, minimum=0)
             user.last_name = last_name
             profil.soyad = last_name
         if telefon is not None:
-            profil.telefon = telefon
+            profil.telefon = phone(telefon, optional=True)
         if sheher is not None:
-            profil.sheher = sheher
+            profil.sheher = text(sheher, 'Şəhər', 100)
         if avatar is not None:
-            profil.avatar = avatar
+            profil.avatar = image_upload(avatar)
 
         user.save()
         profil.save()
@@ -264,12 +282,20 @@ class ProfileApiView(APIView):
 # CATEGORIES VIEW
 # -----------------------------------------------------------------------------
 
-class CategoriesApiView(APIView):
+class CategoriesApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
-        serializer = KategoriSerializer(kateqoriyalar, many=True, context={'request': request})
+        counts = dict(visible_listings(request.user).order_by().values('kategori_id').annotate(
+            total=Count('pk')).values_list('kategori_id', 'total'))
+        parents = dict(Kategori.objects.values_list('pk', 'ust_kategori_id'))
+        totals = counts.copy()
+        for category_id, count in counts.items():
+            parent = parents.get(category_id)
+            if parent:
+                totals[parent] = totals.get(parent, 0) + count
+        serializer = KategoriSerializer(kateqoriyalar, many=True, context={'request': request, 'category_counts': totals})
         return Response(serializer.data)
 
 
@@ -277,13 +303,25 @@ class CategoriesApiView(APIView):
 # ELANLAR (ADS) VIEWS
 # -----------------------------------------------------------------------------
 
+def serialize_page(queryset, request, serializer_class):
+    if 'page' not in request.GET and 'page_size' not in request.GET:
+        # Preserve deployed v1 clients' array contract, with a hard resource cap.
+        response = Response(serializer_class(queryset[:1000], many=True, context={'request': request}).data)
+        response['X-Result-Limit'] = '1000'
+        response['Link'] = f'<{request.path}?page=1&page_size=50>; rel="first"'
+        return response
+    paginator = StandardResultsSetPagination()
+    page = paginator.paginate_queryset(queryset, request)
+    return paginator.get_paginated_response(serializer_class(page, many=True, context={'request': request}).data)
+
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 50
 
 
-class ElanlarListApiView(APIView):
+class ElanlarListApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
@@ -307,32 +345,16 @@ class ElanlarListApiView(APIView):
         if bloklanmis:
             qs = qs.exclude(istifadeci_id__in=bloklanmis)
 
-        if q:
-            # Azərbaycan hərfləri ilə həm əsli, həm transliterasiyalı axtarış (məs: kombi ustasi <-> kombi ustası)
-            q_az = q.translate(_AZ_MAP)
-            terms = {q, q_az}
-            q_filter = Q()
-            for term in terms:
-                q_filter |= (
-                    Q(bashliq__icontains=term) |
-                    Q(acaqlama__icontains=term) |
-                    Q(nomre__icontains=term) |
-                    Q(kategori__ad__icontains=term) |
-                    Q(kategori__ust_kategori__ad__icontains=term)
-                )
-            qs = qs.filter(q_filter)
-
         if kategori_slug:
             qs = qs.filter(
                 Q(kategori__slug=kategori_slug) |
                 Q(kategori__ust_kategori__slug=kategori_slug)
             )
 
-        if seher and seher != 'Bütün Azərbaycan':
-            qs = qs.filter(sheher__iexact=seher)
+        qs = search_listings(qs, q, seher)
 
         if vip_only:
-            qs = qs.filter(vip_status__in=['vip', 'super_vip'])
+            qs = qs.filter(vip_status__in=['vip', 'super_vip'], vip_bitis__gt=timezone.now())
 
         qs = apply_fair_rotation(qs, seed)
 
@@ -347,7 +369,7 @@ class ElanlarListApiView(APIView):
         return paginator.get_paginated_response(serializer.data)
 
 
-class ElanDetailApiView(APIView):
+class ElanDetailApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, pk):
@@ -356,109 +378,22 @@ class ElanDetailApiView(APIView):
             pk=pk
         )
 
+        check_access(elan, request.user)
         # Baxış sayını artırırıq
-        Elan.objects.filter(pk=pk).update(baxish_sayi=elan.baxish_sayi + 1)
+        Elan.objects.filter(pk=pk).update(baxish_sayi=F('baxish_sayi') + 1)
         elan.baxish_sayi += 1
 
         serializer = ElanDetailSerializer(elan, context={'request': request})
         return Response(serializer.data)
 
 
-class ElanCreateApiView(APIView):
+class ElanCreateApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
-        bashliq = request.data.get('bashliq', '').strip()
-        acaqlama = request.data.get('acaqlama', '').strip()
-        qiymet_raw = request.data.get('qiymet', '').strip()
-        kategori_id = request.data.get('kategori')
-        sheher = request.data.get('sheher', 'Bakı').strip()
-        telefon = request.data.get('telefon', '').strip()
-
-        if not bashliq or len(bashliq) < 5:
-            return Response({'error': 'Başlıq ən azı 5 simvol olmalıdır.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not acaqlama or len(acaqlama) < 15:
-            return Response({'error': 'Açıqlama ən azı 15 simvol olmalıdır.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        qadaga = _aciqlama_qadaga_yoxla(acaqlama)
-        if qadaga:
-            return Response({'error': qadaga}, status=status.HTTP_400_BAD_REQUEST)
-
-        qiymet = None
-        if qiymet_raw:
-            try:
-                qiymet = Decimal(qiymet_raw)
-                if qiymet < 0:
-                    return Response({'error': 'Qiymət mənfi ola bilməz.'}, status=status.HTTP_400_BAD_REQUEST)
-            except Exception:
-                return Response({'error': 'Qiymət formatı yanlışdır.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Telefon nömrəsi yoxlanışı (9 rəqəm və ya standart)
-        tel_digits = re.sub(r'\D', '', telefon)
-        if tel_digits.startswith('994') and len(tel_digits) == 12:
-            tel_digits = tel_digits[3:]
-        elif tel_digits.startswith('0') and len(tel_digits) == 10:
-            tel_digits = tel_digits[1:]
-
-        if len(tel_digits) != 9:
-            return Response({'error': 'Telefon nömrəsi 9 rəqəmdən ibarət olmalıdır (Məs: 50 123 45 67).'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            kategori = Kategori.objects.get(pk=kategori_id)
-        except (Kategori.DoesNotExist, ValueError):
-            return Response({'error': 'Kateqoriya tapılmadı.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Eyni kateqoriyada aktiv elan yoxlanışı
-        aktiv_elanlar = Elan.objects.filter(istifadeci=request.user, status__in=['aktiv', 'gozlemede'])
-        if aktiv_elanlar.filter(kategori=kategori).exists():
-            return Response({'error': 'Bu kateqoriyada artıq aktiv elanınız var!'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Pulsuz elan limiti yoxlanışı
-        PULSUZ_LIMIT = 4
-        if aktiv_elanlar.count() >= PULSUZ_LIMIT:
-            profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
-            if profil.balans < Decimal('1.00'):
-                return Response({'error': f'Pulsuz elan limitiniz ({PULSUZ_LIMIT}) bitib. Zəhmət olmasa balansınızı artırın.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        shekillar = request.FILES.getlist('shekillar') or request.FILES.getlist('images')
-        if not shekillar:
-            return Response({'error': 'Ən azı 1 şəkil yükləməlisiniz.'}, status=status.HTTP_400_BAD_REQUEST)
-        if len(shekillar) > 5:
-            return Response({'error': 'Maksimum 5 şəkil yükləyə bilərsiniz.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        for s in shekillar:
-            if s.size > 5 * 1024 * 1024:
-                return Response({'error': f'{s.name} ölçüsü 5MB-dan böyük ola bilməz.'}, status=status.HTTP_400_BAD_REQUEST)
-            var_filigran, xeta = filigran_yoxla(s)
-            if var_filigran:
-                return Response({'error': f'"{s.name}" şəklində filiqran/kənar loqo aşkar edildi: {xeta}'}, status=status.HTTP_400_BAD_REQUEST)
-
-        with transaction.atomic():
-            if aktiv_elanlar.count() >= PULSUZ_LIMIT:
-                profil = Profil.objects.select_for_update().get(istifadeci=request.user)
-                profil.balans -= Decimal('1.00')
-                profil.save(update_fields=['balans'])
-
-            elan = Elan.objects.create(
-                istifadeci=request.user,
-                kategori=kategori,
-                bashliq=bashliq,
-                acaqlama=acaqlama,
-                qiymet=qiymet,
-                sheher=sheher,
-                telefon=f"0{tel_digits}",
-                status='aktiv',
-                bitis_tarixi=timezone.now() + timezone.timedelta(days=30)
-            )
-
-            for i, shk in enumerate(shekillar):
-                ElanShekil.objects.create(
-                    elan=elan,
-                    shekil=shk,
-                    esas=(i == 0)
-                )
+        elan = create_listing(request.user, request.data,
+                              request.FILES.getlist('shekillar') or request.FILES.getlist('images'))
 
         serializer = ElanDetailSerializer(elan, context={'request': request})
         return Response({
@@ -467,81 +402,23 @@ class ElanCreateApiView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class ElanUpdateApiView(APIView):
+class ElanUpdateApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def patch(self, request, pk):
-        elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
-
-        bashliq = request.data.get('bashliq')
-        acaqlama = request.data.get('acaqlama')
-        qiymet_raw = request.data.get('qiymet')
-        sheher = request.data.get('sheher')
-        telefon = request.data.get('telefon')
-        kategori_id = request.data.get('kategori') or request.data.get('kategori_id')
-
-        if bashliq:
-            elan.bashliq = bashliq.strip()
-        if acaqlama:
-            qadaga = _aciqlama_qadaga_yoxla(acaqlama)
-            if qadaga:
-                return Response({'error': qadaga}, status=status.HTTP_400_BAD_REQUEST)
-            elan.acaqlama = acaqlama.strip()
-        if qiymet_raw is not None:
-            try:
-                elan.qiymet = Decimal(qiymet_raw) if str(qiymet_raw).strip() != '' else None
-            except Exception:
-                return Response({'error': 'Qiymət formatı yanlışdır.'}, status=status.HTTP_400_BAD_REQUEST)
-        if sheher:
-            elan.sheher = sheher.strip()
-        if telefon:
-            elan.telefon = telefon.strip()
-        if kategori_id:
-            try:
-                kategori = Kategori.objects.filter(pk=int(kategori_id)).first()
-                if kategori:
-                    elan.kategori = kategori
-            except Exception:
-                pass
-
-        # Mövcud silinəcək şəkillər
-        silinecek_idler = request.data.getlist('silinecek_shekiller') if hasattr(request.data, 'getlist') else request.data.get('silinecek_shekiller', [])
-        if silinecek_idler:
-            for s_id in silinecek_idler:
-                try:
-                    shk = ElanShekil.objects.filter(id=int(s_id), elan=elan).first()
-                    if shk:
-                        if shk.shekil:
-                            shk.shekil.delete(save=False)
-                        shk.delete()
-                except Exception:
-                    pass
-
-        # Yeni əlavə olunan şəkillər
-        yeni_shekillar = request.FILES.getlist('shekillar') if hasattr(request.FILES, 'getlist') else []
-        if yeni_shekillar:
-            has_esas = ElanShekil.objects.filter(elan=elan, esas=True).exists()
-            for i, shk in enumerate(yeni_shekillar):
-                ElanShekil.objects.create(
-                    elan=elan,
-                    shekil=shk,
-                    esas=(not has_esas and i == 0)
-                )
-
-        # Əgər əsas şəkil qalmayıbsa, birincini əsas edirik
-        if not ElanShekil.objects.filter(elan=elan, esas=True).exists():
-            first_shk = ElanShekil.objects.filter(elan=elan).first()
-            if first_shk:
-                first_shk.esas = True
-                first_shk.save(update_fields=['esas'])
-
-        elan.save()
+        get_object_or_404(Elan, pk=pk, istifadeci=request.user)
+        raw_ids = request.data.get('silinecek_shekiller', [])
+        if hasattr(request.data, 'getlist'):
+            raw_ids = request.data.getlist('silinecek_shekiller')
+            if len(raw_ids) == 1 and raw_ids[0].startswith('['):
+                raw_ids = raw_ids[0]
+        elan = update_listing(request.user, pk, request.data, request.FILES.getlist('shekillar'), raw_ids)
         serializer = ElanDetailSerializer(elan, context={'request': request})
         return Response({'elan': serializer.data, 'message': 'Elan yeniləndi.'})
 
 
-class ElanDeleteApiView(APIView):
+class ElanDeleteApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, pk):
@@ -550,19 +427,20 @@ class ElanDeleteApiView(APIView):
         return Response({'message': 'Elan silindi.'})
 
 
-class ElanClickApiView(APIView):
+class ElanClickApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, pk, nov):
         elan = get_object_or_404(Elan, pk=pk)
+        check_access(elan, request.user)
         if nov == 'zeng':
-            Elan.objects.filter(pk=pk).update(zeng_sayi=elan.zeng_sayi + 1)
+            Elan.objects.filter(pk=pk).update(zeng_sayi=F('zeng_sayi') + 1)
         elif nov == 'wp':
-            Elan.objects.filter(pk=pk).update(wp_sayi=elan.wp_sayi + 1)
+            Elan.objects.filter(pk=pk).update(wp_sayi=F('wp_sayi') + 1)
         return Response({'success': True})
 
 
-class MyElanlarApiView(APIView):
+class MyElanlarApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
@@ -570,29 +448,28 @@ class MyElanlarApiView(APIView):
         qs = Elan.objects.filter(istifadeci=request.user).select_related('kategori').prefetch_related('shekillar')
         if status_filter:
             qs = qs.filter(status=status_filter)
-        serializer = ElanListSerializer(qs.order_by('-yaradildi'), many=True, context={'request': request})
-        return Response(serializer.data)
+        return serialize_page(qs.order_by('-pk'), request, ElanListSerializer)
 
 
 # -----------------------------------------------------------------------------
 # FAVORITES VIEWS
 # -----------------------------------------------------------------------------
 
-class FavoritesListApiView(APIView):
+class FavoritesListApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         fav_elan_ids = Favorit.objects.filter(istifadeci=request.user).values_list('elan_id', flat=True)
-        elanlar = Elan.objects.filter(id__in=fav_elan_ids).select_related('kategori').prefetch_related('shekillar')
-        serializer = ElanListSerializer(elanlar, many=True, context={'request': request})
-        return Response(serializer.data)
+        elanlar = visible_listings(request.user).filter(id__in=fav_elan_ids).select_related('kategori').prefetch_related('shekillar')
+        return serialize_page(elanlar.order_by('-pk'), request, ElanListSerializer)
 
 
-class FavoriteToggleApiView(APIView):
+class FavoriteToggleApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
         elan = get_object_or_404(Elan, pk=pk)
+        check_access(elan, request.user)
         fav = Favorit.objects.filter(istifadeci=request.user, elan=elan).first()
         if fav:
             fav.delete()
@@ -610,16 +487,31 @@ class FavoriteToggleApiView(APIView):
 # MESSAGES VIEWS
 # -----------------------------------------------------------------------------
 
-class ConversationsApiView(APIView):
+class ConversationsApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        # İstifadəçinin bütün mesajlaşdığı şəxslər
-        mesajlar = Mesaj.objects.filter(Q(gonderici=user) | Q(alici=user)).order_by('-yaradildi')
+        blocked = Bloklama.bloklanmis_idler(user)
+        base = Mesaj.objects.filter(Q(gonderici=user) | Q(alici=user)).exclude(
+            Q(gonderici_id__in=blocked) | Q(alici_id__in=blocked))
+        latest = base.order_by().annotate(other=Case(
+            When(gonderici=user, then=F('alici_id')), default=F('gonderici_id'),
+            output_field=IntegerField())).values('other').annotate(last=Max('id')).values('last')
+        mesajlar = Mesaj.objects.filter(pk__in=Subquery(latest)).select_related(
+            'gonderici__profil', 'alici__profil').order_by('-pk')
+        before = request.GET.get('before_id')
+        if before:
+            try:
+                mesajlar = mesajlar.filter(pk__lt=int(before))
+            except ValueError:
+                raise ValidationError('Yanlış cursor.')
+        unread = dict(Mesaj.objects.filter(alici=user, oxundu=False).order_by().values(
+            'gonderici_id').annotate(total=Count('pk')).values_list('gonderici_id', 'total'))
         other_user_ids = set()
         conversations = []
-        bloklanmis = Bloklama.bloklanmis_idler(user)
+        bloklanmis = blocked
+        mesajlar = mesajlar[:100]
 
         for m in mesajlar:
             other_user = m.alici if m.gonderici == user else m.gonderici
@@ -627,7 +519,7 @@ class ConversationsApiView(APIView):
                 continue
             if other_user.id not in other_user_ids:
                 other_user_ids.add(other_user.id)
-                unread_count = Mesaj.objects.filter(gonderici=other_user, alici=user, oxundu=False).count()
+                unread_count = unread.get(other_user.pk, 0)
                 profil = getattr(other_user, 'profil', None)
                 ad_soyad = ""
                 if profil and (profil.ad or profil.soyad):
@@ -646,6 +538,7 @@ class ConversationsApiView(APIView):
                     'ad_soyad': ad_soyad,
                     'avatar': avatar_url,
                     'last_message': m.metn,
+                    'last_message_id': m.pk,
                     'last_message_time': m.yaradildi,
                     'unread_count': unread_count,
                     'elan_id': m.elan_id,
@@ -654,25 +547,42 @@ class ConversationsApiView(APIView):
         return Response(conversations)
 
 
-class ChatMessagesApiView(APIView):
+class ChatMessagesApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, other_user_id):
-        other_user = get_object_or_404(User, pk=other_user_id)
+        other_user = get_object_or_404(User, pk=other_user_id, is_active=True)
+        check_messaging(request.user, other_user.pk)
         # Mesajları oxunmuş kimi qeyd edirik
         Mesaj.objects.filter(gonderici=other_user, alici=request.user, oxundu=False).update(oxundu=True)
 
         mesajlar = Mesaj.objects.filter(
             (Q(gonderici=request.user) & Q(alici=other_user)) |
             (Q(gonderici=other_user) & Q(alici=request.user))
-        ).order_by('yaradildi')
+        ).select_related('gonderici__profil').order_by('-pk')
+        after = request.GET.get('after_id')
+        before = request.GET.get('before_id')
+        if after and before:
+            raise ValidationError('Yalnız bir cursor göndərin.')
+        try:
+            if after:
+                mesajlar = mesajlar.filter(pk__gt=int(after)).order_by('pk')
+            elif before:
+                mesajlar = mesajlar.filter(pk__lt=int(before))
+        except ValueError:
+            raise ValidationError('Yanlış cursor.')
+        results = list(mesajlar[:100])
+        if not after:
+            results.reverse()
+        mesajlar = results
 
         serializer = MesajSerializer(mesajlar, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, other_user_id):
-        other_user = get_object_or_404(User, pk=other_user_id)
-        metn = request.data.get('metn', '').strip()
+        other_user = get_object_or_404(User, pk=other_user_id, is_active=True)
+        check_messaging(request.user, other_user.pk)
+        metn = text(request.data.get('metn', ''), 'Mesaj', 5000)
         elan_id = request.data.get('elan_id')
 
         if not metn:
@@ -684,7 +594,9 @@ class ChatMessagesApiView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        elan = Elan.objects.filter(pk=elan_id).first() if elan_id else None
+        elan = get_object_or_404(visible_listings(request.user), pk=elan_id) if elan_id else None
+        if elan and elan.istifadeci_id not in (request.user.pk, other_user.pk):
+            raise ValidationError('Elan söhbət iştirakçılarına aid deyil.')
 
         mesaj = Mesaj.objects.create(
             gonderici=request.user,
@@ -701,7 +613,7 @@ class ChatMessagesApiView(APIView):
 # REPORT & BLOCK (Google Play UGC tələbi)
 # -----------------------------------------------------------------------------
 
-class ReportApiView(APIView):
+class ReportApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -736,7 +648,7 @@ class ReportApiView(APIView):
         )
 
 
-class BlockToggleApiView(APIView):
+class BlockToggleApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
@@ -751,7 +663,7 @@ class BlockToggleApiView(APIView):
         return Response({'blocked': True, 'message': 'İstifadəçi bloklandı. Onun elanları və mesajları sizə görünməyəcək.'})
 
 
-class BlockedUsersApiView(APIView):
+class BlockedUsersApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
@@ -772,7 +684,7 @@ class BlockedUsersApiView(APIView):
 # VIP & PAYMENTS VIEWS
 # -----------------------------------------------------------------------------
 
-class VipPackagesApiView(APIView):
+class VipPackagesApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
@@ -781,129 +693,27 @@ class VipPackagesApiView(APIView):
         return Response(serializer.data)
 
 
-class ElanActivateVipApiView(APIView):
+class ElanActivateVipApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        elan = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
-        profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
-        nov = request.data.get('nov', 'vip')
-
-        if nov not in ('vip', 'super_vip'):
-            return Response(
-                {'error': 'Yanlış VİP növü seçilib.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        paket = VipPaket.get_paket(nov)
-        qiymet = paket.qiymet
-        gun = paket.muddet_gun
-        now = timezone.now()
-        # Əgər elan artıq aktiv VIP-dirsə, vaxtı bitmədən təkrar VIP edilə bilməz
-        if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
-            if elan.vip_status == nov or elan.vip_status == 'super_vip':
-                bitis_str = elan.vip_bitis.strftime("%d.%m.%Y")
-                label = "Super VIP" if elan.vip_status == 'super_vip' else "VIP"
-                return Response(
-                    {'error': f'Bu elan artıq {label} statusundadır ({bitis_str}-dək aktivdir). Müddəti bitmədən yenidən {nov.upper()} edilə bilməz.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        with transaction.atomic():
-            updated = Profil.objects.filter(
-                pk=profil.pk, balans__gte=qiymet
-            ).update(balans=F('balans') - qiymet)
-            if not updated:
-                return Response(
-                    {
-                        'error': f'Balansınız kifayət deyil! Lazım olan: {qiymet} AZN (Cari balans: {profil.balans} AZN)',
-                        'insufficient_balance': True,
-                        'required': float(qiymet),
-                        'current_balance': float(profil.balans),
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            if elan.is_vip_aktiv() and elan.vip_bitis and elan.vip_bitis > now:
-                yeni_bitis = elan.vip_bitis + timedelta(days=gun)
-            else:
-                yeni_bitis = now + timedelta(days=gun)
-
-            elan.vip_status = nov
-            elan.vip_bitis = yeni_bitis
-            elan.vip_yenilendi = now
-            elan.vip_siralama = 1
-            elan.save()
-
-            Odenis.objects.create(
-                istifadeci=request.user,
-                elan=elan,
-                nov=nov,
-                mebleg=qiymet,
-                status='tesdiq_edildi'
-            )
-
-        profil.refresh_from_db()
-        return Response({
-            'message': f'Elanınız "{paket.ad}" edildi! Bitiş tarixi: {yeni_bitis.strftime("%d.%m.%Y")}.',
-            'vip_status': elan.vip_status,
-            'vip_bitis': yeni_bitis,
-            'balans': float(profil.balans),
-        })
+        get_object_or_404(Elan, pk=pk, istifadeci=request.user)
+        elan, profil, paket = buy_vip(request.user, pk, request.data.get('nov', 'vip'))
+        return Response({'message': f'Elanınız {paket.ad} edildi.', 'vip_status': elan.vip_status,
+                         'vip_bitis': elan.vip_bitis, 'balans': float(profil.balans)})
 
 
-class ElanIreliCekApiView(APIView):
+class ElanIreliCekApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        elan = get_object_or_404(Elan, pk=pk)
-        if elan.istifadeci != request.user and not request.user.is_superuser:
-            return Response({'error': 'Bu elanı idarə etmək icazəniz yoxdur.'}, status=status.HTTP_403_FORBIDDEN)
-        if elan.status != 'aktiv':
-            return Response({'error': 'Yalnız aktiv elanları irəli çəkmək mümkündür.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        IRELI_CEK_QIYMET = Decimal('1.00')
-        profil, _ = Profil.objects.get_or_create(istifadeci=request.user)
-
-        if profil.balans < IRELI_CEK_QIYMET:
-            return Response({
-                'error': f'Balansınız kifayət etmir. Cari balansınız: {profil.balans:.2f} AZN. Elanı irəli çəkmək üçün 1 AZN balans artırın.',
-                'insufficient_balance': True,
-                'required': 1.00,
-                'current_balance': float(profil.balans),
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        with transaction.atomic():
-            updated = Profil.objects.filter(pk=profil.pk, balans__gte=IRELI_CEK_QIYMET).update(
-                balans=F('balans') - IRELI_CEK_QIYMET
-            )
-            if not updated:
-                return Response({'error': 'Balansınız kifayət etmir.'}, status=status.HTTP_400_BAD_REQUEST)
-
-            now = timezone.now()
-            Elan.objects.filter(pk=elan.pk).update(
-                ireli_cekildi=now,
-                ireli_cekilme_sayi=F('ireli_cekilme_sayi') + 1
-            )
-            Odenis.objects.create(
-                istifadeci=request.user,
-                elan=elan,
-                nov='ireli_cek',
-                mebleg=IRELI_CEK_QIYMET,
-                status='tesdiq_edildi',
-                qeyd=f'#{elan.nomre} nömrəli elan mobil app-dan irəli çəkildi (1 AZN)'
-            )
-            profil.refresh_from_db(fields=['balans'])
-
-        return Response({
-            'success': True,
-            'message': f'“{elan.bashliq}” elanı uğurla ən ön sıraya çəkildi!',
-            'balans': float(profil.balans),
-            'elan_id': elan.pk
-        })
+        get_object_or_404(Elan, pk=pk)
+        elan, profil = bump_listing(request.user, pk)
+        return Response({'success': True, 'message': 'Elan irəli çəkildi.',
+                         'balans': float(profil.balans), 'elan_id': elan.pk})
 
 
-class BankInfoApiView(APIView):
+class BankInfoApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
@@ -912,7 +722,7 @@ class BankInfoApiView(APIView):
         return Response(serializer.data)
 
 
-class PaymentCreateApiView(APIView):
+class PaymentCreateApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
@@ -923,17 +733,18 @@ class PaymentCreateApiView(APIView):
         qebz = request.FILES.get('qebz')
         qeyd = request.data.get('qeyd', '').strip()
 
-        try:
-            mebleg = Decimal(mebleg_raw)
-            if mebleg <= 0:
-                return Response({'error': 'Məbləğ sıfırdan böyük olmalıdır.'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return Response({'error': 'Məbləğ formatı yanlışdır.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not qebz:
-            return Response({'error': 'Zəhmət olmasa ödəniş qəbzinin şəklini yükləyin.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        elan = Elan.objects.filter(pk=elan_id, istifadeci=request.user).first() if elan_id else None
+        if nov not in ('balans', 'vip', 'super_vip', 'ireli_cek'):
+            raise ValidationError('Yanlış ödəniş növü.')
+        mebleg = money(mebleg_raw, minimum=Decimal('0.01'), maximum=Decimal('500'))
+        qebz = image_upload(qebz)
+        elan = None
+        if nov != 'balans':
+            elan = get_object_or_404(visible_listings(request.user), pk=elan_id, istifadeci=request.user)
+            expected = Decimal('1.00') if nov == 'ireli_cek' else VipPaket.get_paket(nov).qiymet
+            if mebleg != expected:
+                raise ValidationError('Məbləğ seçilmiş xidmətin tarifinə uyğun deyil.')
+        elif elan_id:
+            raise ValidationError('Balans ödənişinə elan əlavə edilməməlidir.')
 
         odenis = Odenis.objects.create(
             istifadeci=request.user,
@@ -952,23 +763,22 @@ class PaymentCreateApiView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class MyPaymentsApiView(APIView):
+class MyPaymentsApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         odenisler = Odenis.objects.filter(istifadeci=request.user).order_by('-yaradildi')
-        serializer = OdenisSerializer(odenisler, many=True, context={'request': request})
-        return Response(serializer.data)
+        return serialize_page(odenisler.select_related('elan'), request, OdenisSerializer)
 
 
 # -----------------------------------------------------------------------------
 # BANNERS VIEW
 # -----------------------------------------------------------------------------
 
-class BannersApiView(APIView):
+class BannersApiView(ValidatedAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        banners = ReklamBanner.objects.filter(aktiv=True)
+        banners = ReklamBanner.objects.filter(aktiv=True).filter(Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=timezone.now()))
         serializer = ReklamBannerSerializer(banners, many=True, context={'request': request})
         return Response(serializer.data)

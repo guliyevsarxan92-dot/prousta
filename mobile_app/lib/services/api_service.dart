@@ -1,55 +1,108 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/models.dart';
 
-class ApiService {
-  static const String _envUrl = String.fromEnvironment('API_URL', defaultValue: '');
-  static String _resolvedBaseUrl = _envUrl.isNotEmpty
-      ? _envUrl
-      : (kReleaseMode ? 'https://prousta.az/api/v1' : 'http://127.0.0.1:8000/api/v1');
-  static bool _urlChecked = false;
+class ApiAuthException implements Exception {
+  @override
+  String toString() => 'Sessiyanın müddəti bitib. Yenidən daxil olun.';
+}
 
-  static String get baseUrl => _resolvedBaseUrl;
+class BoundedClient extends http.BaseClient {
+  final http.Client inner;
+  BoundedClient(this.inner);
 
-  static Future<void> ensureBaseUrl() async {
-    if (kReleaseMode) {
-      _resolvedBaseUrl = 'https://prousta.az/api/v1';
-      return;
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    final response = await inner
+        .send(request)
+        .timeout(const Duration(seconds: 30));
+    if (response.statusCode == 401) {
+      await response.stream.drain<void>().timeout(const Duration(seconds: 5));
+      throw ApiAuthException();
     }
-    if (_urlChecked || _envUrl.isNotEmpty) return;
-    _urlChecked = true;
-    try {
-      final res = await http
-          .get(Uri.parse('http://127.0.0.1:8000/api/v1/banners/'))
-          .timeout(const Duration(seconds: 2));
-      if (res.statusCode == 200) {
-        _resolvedBaseUrl = 'http://127.0.0.1:8000/api/v1';
-        return;
-      }
-    } catch (_) {}
-    _resolvedBaseUrl = 'https://prousta.az/api/v1';
+    return http.StreamedResponse(
+      response.stream.timeout(const Duration(seconds: 30)),
+      response.statusCode,
+      headers: response.headers,
+      request: response.request,
+      reasonPhrase: response.reasonPhrase,
+      isRedirect: response.isRedirect,
+      persistentConnection: response.persistentConnection,
+      contentLength: response.contentLength,
+    );
   }
 
+  @override
+  void close() => inner.close();
+}
+
+class ApiService {
+  static const String _envUrl = String.fromEnvironment(
+    'API_URL',
+    defaultValue: '',
+  );
+  static final String _resolvedBaseUrl = _envUrl.isNotEmpty
+      ? _envUrl
+      : (kReleaseMode
+            ? 'https://prousta.az/api/v1'
+            : 'http://127.0.0.1:8000/api/v1');
+  static http.Client _client = BoundedClient(http.Client());
+  static String get baseUrl => _resolvedBaseUrl;
+
+  @visibleForTesting
+  static void setClient(http.Client client) {
+    _client.close();
+    _client = BoundedClient(client);
+  }
+
+  static Future<void> ensureBaseUrl() async {
+    final uri = Uri.tryParse(_resolvedBaseUrl);
+    if (uri == null ||
+        uri.host.isEmpty ||
+        (kReleaseMode && uri.scheme != 'https')) {
+      throw StateError('API_URL düzgün HTTPS ünvanı olmalıdır.');
+    }
+  }
+
+  static dynamic decodeResponse(http.Response response) {
+    try {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } on FormatException {
+      throw Exception('Server cavabı düzgün deyil. Yenidən cəhd edin.');
+    }
+  }
+
+  static const _credentialStore = FlutterSecureStorage();
   static String? _token;
 
   static Future<void> init() async {
     await ensureBaseUrl();
     final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('auth_token');
+    var credential = await _credentialStore.read(key: 'auth_token');
+    final legacy = prefs.getString('auth_token');
+    if (credential == null && legacy != null) {
+      await _credentialStore.write(key: 'auth_token', value: legacy);
+      credential = legacy;
+    }
+    // Remove plaintext only after a successful secure read/write.
+    await prefs.remove('auth_token');
+    _token = credential;
   }
 
   static Future<void> setToken(String? token) async {
-    _token = token;
-    final prefs = await SharedPreferences.getInstance();
     if (token == null) {
-      await prefs.remove('auth_token');
+      await _credentialStore.delete(key: 'auth_token');
     } else {
-      await prefs.setString('auth_token', token);
+      await _credentialStore.write(key: 'auth_token', value: token);
     }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    _token = token;
   }
 
   static String? get token => _token;
@@ -67,9 +120,7 @@ class ApiService {
   }
 
   static Map<String, String> get _multipartHeaders {
-    final h = <String, String>{
-      'Accept': 'application/json',
-    };
+    final h = <String, String>{'Accept': 'application/json'};
     if (_token != null && _token!.isNotEmpty) {
       h['Authorization'] = 'Token $_token';
     }
@@ -80,17 +131,50 @@ class ApiService {
   // AUTH
   // ---------------------------------------------------------------------------
 
+  static Future<http.MultipartFile> _imagePart(String field, XFile file) async {
+    final bytes = await file.readAsBytes();
+    if (bytes.length > 5 * 1024 * 1024) {
+      throw Exception('Şəkil 5 MB-dan böyükdür.');
+    }
+    return http.MultipartFile.fromBytes(field, bytes, filename: file.name);
+  }
+
+  static Future<List<dynamic>> _privateList(
+    String path, {
+    Map<String, String>? params,
+  }) async {
+    final sessionToken = _token;
+    final result = <dynamic>[];
+    final parameters = <String, String>{...?params, 'page_size': '50'};
+    // Existing profile sheets show a full list; fetch each bounded page explicitly.
+    for (var page = 1; page <= 100; page++) {
+      parameters['page'] = '$page';
+      final uri = Uri.parse(
+        '$baseUrl/$path',
+      ).replace(queryParameters: parameters);
+      final response = await _client.get(uri, headers: _headers);
+      if (response.statusCode != 200) {
+        throw Exception('Məlumatlar yüklənə bilmədi.');
+      }
+      if (_token != sessionToken) throw ApiAuthException();
+      final data = decodeResponse(response);
+      if (data is List) return data;
+      result.addAll(data['results'] as List<dynamic>);
+      if (data['next'] == null) return result;
+    }
+    throw Exception('Siyahı çox böyükdür. Filtr tətbiq edin.');
+  }
+
   static Future<Map<String, dynamic>> login(
-      String usernameOrEmail, String password) async {
-    final res = await http.post(
+    String usernameOrEmail,
+    String password,
+  ) async {
+    final res = await _client.post(
       Uri.parse('$baseUrl/auth/login/'),
       headers: _headers,
-      body: jsonEncode({
-        'username': usernameOrEmail,
-        'password': password,
-      }),
+      body: jsonEncode({'username': usernameOrEmail, 'password': password}),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       await setToken(data['token']);
       return data;
@@ -107,7 +191,7 @@ class ApiService {
     required String telefon,
     String sheher = 'Bakı',
   }) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/auth/register/'),
       headers: _headers,
       body: jsonEncode({
@@ -120,7 +204,7 @@ class ApiService {
         'sheher': sheher,
       }),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 201 || res.statusCode == 200) {
       await setToken(data['token']);
       return data;
@@ -129,12 +213,12 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> googleLogin(String idToken) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/auth/google/'),
       headers: _headers,
       body: jsonEncode({'id_token': idToken}),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       await setToken(data['token']);
       return data;
@@ -144,21 +228,18 @@ class ApiService {
 
   static Future<void> logout() async {
     try {
-      await http.post(
-        Uri.parse('$baseUrl/auth/logout/'),
-        headers: _headers,
-      );
+      await _client.post(Uri.parse('$baseUrl/auth/logout/'), headers: _headers);
     } catch (_) {}
     await setToken(null);
   }
 
   static Future<AppUser> getProfile() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/auth/me/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
+      final data = decodeResponse(res);
       return AppUser.fromJson(data);
     }
     throw Exception('Profil məlumatları yüklənə bilmədi');
@@ -169,7 +250,7 @@ class ApiService {
     String? soyad,
     String? telefon,
     String? sheher,
-    File? avatarFile,
+    XFile? avatarFile,
   }) async {
     final req = http.MultipartRequest('PATCH', Uri.parse('$baseUrl/auth/me/'));
     req.headers.addAll(_multipartHeaders);
@@ -178,12 +259,12 @@ class ApiService {
     if (telefon != null) req.fields['telefon'] = telefon;
     if (sheher != null) req.fields['sheher'] = sheher;
     if (avatarFile != null) {
-      req.files.add(await http.MultipartFile.fromPath('avatar', avatarFile.path));
+      req.files.add(await _imagePart('avatar', avatarFile));
     }
 
-    final streamed = await req.send();
+    final streamed = await _client.send(req);
     final res = await http.Response.fromStream(streamed);
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       return AppUser.fromJson(data['user']);
     }
@@ -195,12 +276,12 @@ class ApiService {
   // ---------------------------------------------------------------------------
 
   static Future<List<CategoryModel>> getCategories() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/categories/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -209,12 +290,12 @@ class ApiService {
   }
 
   static Future<List<BannerModel>> getBanners() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/banners/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -234,9 +315,7 @@ class ApiService {
     bool vipOnly = false,
     int? userId,
   }) async {
-    final params = <String, String>{
-      'page': page.toString(),
-    };
+    final params = <String, String>{'page': page.toString()};
     if (query != null && query.isNotEmpty) params['q'] = query;
     if (kategoriSlug != null && kategoriSlug.isNotEmpty) {
       params['kategori'] = kategoriSlug;
@@ -248,10 +327,11 @@ class ApiService {
     if (userId != null) params['user_id'] = userId.toString();
 
     final uri = Uri.parse('$baseUrl/elanlar/').replace(queryParameters: params);
-    final res = await http.get(uri, headers: _headers);
+    final res = await _client.get(uri, headers: _headers);
     if (res.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
-      final results = (data['results'] as List<dynamic>?)
+      final data = decodeResponse(res);
+      final results =
+          (data['results'] as List<dynamic>?)
               ?.map((e) => ElanModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
@@ -265,12 +345,12 @@ class ApiService {
   }
 
   static Future<ElanModel> getElanDetail(int id) async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/elanlar/$id/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
+      final data = decodeResponse(res);
       return ElanModel.fromJson(data);
     }
     throw Exception('Elan tapılmadı');
@@ -285,8 +365,10 @@ class ApiService {
     required String telefon,
     required List<XFile> images,
   }) async {
-    final req =
-        http.MultipartRequest('POST', Uri.parse('$baseUrl/elanlar/create/'));
+    final req = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/elanlar/create/'),
+    );
     req.headers.addAll(_multipartHeaders);
     req.fields['bashliq'] = bashliq;
     req.fields['acaqlama'] = acaqlama;
@@ -302,8 +384,8 @@ class ApiService {
       final subtype = ext == 'png'
           ? 'png'
           : ext == 'webp'
-              ? 'webp'
-              : 'jpeg';
+          ? 'webp'
+          : 'jpeg';
       req.files.add(
         http.MultipartFile.fromBytes(
           'shekillar',
@@ -314,9 +396,9 @@ class ApiService {
       );
     }
 
-    final streamed = await req.send();
+    final streamed = await _client.send(req);
     final res = await http.Response.fromStream(streamed);
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 201 || res.statusCode == 200) {
       return ElanModel.fromJson(data['elan']);
     }
@@ -331,7 +413,7 @@ class ApiService {
     required String sheher,
     required String telefon,
     int? kategoriId,
-    List<File>? newImages,
+    List<XFile>? newImages,
     List<int>? deleteImageIds,
   }) async {
     final req = http.MultipartRequest(
@@ -347,20 +429,18 @@ class ApiService {
     if (kategoriId != null) req.fields['kategori_id'] = kategoriId.toString();
 
     if (deleteImageIds != null && deleteImageIds.isNotEmpty) {
-      for (final imgId in deleteImageIds) {
-        req.fields['silinecek_shekiller'] = imgId.toString();
-      }
+      req.fields['silinecek_shekiller'] = jsonEncode(deleteImageIds);
     }
 
     if (newImages != null && newImages.isNotEmpty) {
       for (final f in newImages) {
-        req.files.add(await http.MultipartFile.fromPath('shekillar', f.path));
+        req.files.add(await _imagePart('shekillar', f));
       }
     }
 
-    final streamed = await req.send();
+    final streamed = await _client.send(req);
     final res = await http.Response.fromStream(streamed);
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       return ElanModel.fromJson(data['elan']);
     }
@@ -368,7 +448,7 @@ class ApiService {
   }
 
   static Future<void> deleteElan(int id) async {
-    final res = await http.delete(
+    final res = await _client.delete(
       Uri.parse('$baseUrl/elanlar/$id/delete/'),
       headers: _headers,
     );
@@ -379,7 +459,7 @@ class ApiService {
 
   static Future<void> registerElanClick(int id, String nov) async {
     try {
-      await http.post(
+      await _client.post(
         Uri.parse('$baseUrl/elanlar/$id/click/$nov/'),
         headers: _headers,
       );
@@ -389,16 +469,10 @@ class ApiService {
   static Future<List<ElanModel>> getMyElanlar({String? status}) async {
     final params = <String, String>{};
     if (status != null && status.isNotEmpty) params['status'] = status;
-    final uri =
-        Uri.parse('$baseUrl/my-elanlar/').replace(queryParameters: params);
-    final res = await http.get(uri, headers: _headers);
-    if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
-      return list
-          .map((e) => ElanModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-    }
-    throw Exception('Elanlarınız yüklənə bilmədi');
+    final list = await _privateList('my-elanlar/', params: params);
+    return list
+        .map((e) => ElanModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   // ---------------------------------------------------------------------------
@@ -406,26 +480,19 @@ class ApiService {
   // ---------------------------------------------------------------------------
 
   static Future<List<ElanModel>> getFavorites() async {
-    final res = await http.get(
-      Uri.parse('$baseUrl/favorites/'),
-      headers: _headers,
-    );
-    if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
-      return list
-          .map((e) => ElanModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-    }
-    throw Exception('Seçilmişlər yüklənə bilmədi');
+    final list = await _privateList('favorites/');
+    return list
+        .map((e) => ElanModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   static Future<bool> toggleFavorite(int elanId) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/favorites/toggle/$elanId/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
+      final data = decodeResponse(res);
       return data['is_favorit'] ?? false;
     }
     throw Exception('Əməliyyat uğursuz oldu');
@@ -435,13 +502,17 @@ class ApiService {
   // MESSAGES
   // ---------------------------------------------------------------------------
 
-  static Future<List<ConversationModel>> getConversations() async {
-    final res = await http.get(
-      Uri.parse('$baseUrl/messages/conversations/'),
+  static Future<List<ConversationModel>> getConversations({
+    int? beforeId,
+  }) async {
+    final res = await _client.get(
+      Uri.parse('$baseUrl/messages/conversations/').replace(
+        queryParameters: {if (beforeId != null) 'before_id': '$beforeId'},
+      ),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => ConversationModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -449,13 +520,22 @@ class ApiService {
     throw Exception('Mesajlar yüklənə bilmədi');
   }
 
-  static Future<List<ChatMessageModel>> getChatMessages(int otherUserId) async {
-    final res = await http.get(
-      Uri.parse('$baseUrl/messages/$otherUserId/'),
+  static Future<List<ChatMessageModel>> getChatMessages(
+    int otherUserId, {
+    int? afterId,
+    int? beforeId,
+  }) async {
+    final res = await _client.get(
+      Uri.parse('$baseUrl/messages/$otherUserId/').replace(
+        queryParameters: {
+          if (afterId != null) 'after_id': '$afterId',
+          if (beforeId != null) 'before_id': '$beforeId',
+        },
+      ),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => ChatMessageModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -468,16 +548,13 @@ class ApiService {
     required String metn,
     int? elanId,
   }) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/messages/$otherUserId/'),
       headers: _headers,
-      body: jsonEncode({
-        'metn': metn,
-        'elan_id': ?elanId,
-      }),
+      body: jsonEncode({'metn': metn, 'elan_id': ?elanId}),
     );
     if (res.statusCode == 201 || res.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
+      final data = decodeResponse(res);
       return ChatMessageModel.fromJson(data);
     }
     throw Exception('Mesaj göndərilə bilmədi');
@@ -488,12 +565,12 @@ class ApiService {
   // ---------------------------------------------------------------------------
 
   static Future<List<VipPaketModel>> getVipPackages() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/vip-packages/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => VipPaketModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -502,12 +579,12 @@ class ApiService {
   }
 
   static Future<List<BankMelumatModel>> getBankInfo() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/bank-info/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list
           .map((e) => BankMelumatModel.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -519,21 +596,23 @@ class ApiService {
     required String nov,
     required String mebleg,
     int? elanId,
-    required File qebzFile,
+    required XFile qebzFile,
     String qeyd = '',
   }) async {
-    final req =
-        http.MultipartRequest('POST', Uri.parse('$baseUrl/payments/create/'));
+    final req = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/payments/create/'),
+    );
     req.headers.addAll(_multipartHeaders);
     req.fields['nov'] = nov;
     req.fields['mebleg'] = mebleg;
     if (elanId != null) req.fields['elan_id'] = elanId.toString();
     if (qeyd.isNotEmpty) req.fields['qeyd'] = qeyd;
-    req.files.add(await http.MultipartFile.fromPath('qebz', qebzFile.path));
+    req.files.add(await _imagePart('qebz', qebzFile));
 
-    final streamed = await req.send();
+    final streamed = await _client.send(req);
     final res = await http.Response.fromStream(streamed);
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 201 || res.statusCode == 200) {
       return data['message'] ?? 'Ödəniş qəbzi göndərildi!';
     }
@@ -544,12 +623,12 @@ class ApiService {
     required int elanId,
     required String nov,
   }) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/elanlar/$elanId/vip/'),
       headers: _headers,
       body: jsonEncode({'nov': nov}),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200 || res.statusCode == 201) {
       return data['message'] ?? 'Elanınız VİP edildi!';
     }
@@ -569,12 +648,12 @@ class ApiService {
       body['confirm'] = confirm;
     }
 
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/auth/delete-account/'),
       headers: _headers,
       body: jsonEncode(body),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       await setToken(null);
       return;
@@ -592,19 +671,17 @@ class ApiService {
     required String sebeb,
     String? qeyd,
   }) async {
-    final payload = <String, dynamic>{
-      'sebeb': sebeb,
-    };
+    final payload = <String, dynamic>{'sebeb': sebeb};
     if (elanId != null) payload['elan_id'] = elanId;
     if (userId != null) payload['user_id'] = userId;
     if (qeyd != null && qeyd.isNotEmpty) payload['qeyd'] = qeyd;
 
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/report/'),
       headers: _headers,
       body: jsonEncode(payload),
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 201 || res.statusCode == 200) {
       return data['message'] ?? 'Şikayətiniz qəbul edildi';
     }
@@ -612,11 +689,11 @@ class ApiService {
   }
 
   static Future<bool> toggleBlockUser(int userId) async {
-    final res = await http.post(
+    final res = await _client.post(
       Uri.parse('$baseUrl/users/$userId/block/'),
       headers: _headers,
     );
-    final data = jsonDecode(utf8.decode(res.bodyBytes));
+    final data = decodeResponse(res);
     if (res.statusCode == 200) {
       return data['blocked'] == true;
     }
@@ -624,12 +701,12 @@ class ApiService {
   }
 
   static Future<List<Map<String, dynamic>>> getBlockedUsers() async {
-    final res = await http.get(
+    final res = await _client.get(
       Uri.parse('$baseUrl/users/blocked/'),
       headers: _headers,
     );
     if (res.statusCode == 200) {
-      final list = jsonDecode(utf8.decode(res.bodyBytes)) as List<dynamic>;
+      final list = decodeResponse(res) as List<dynamic>;
       return list.cast<Map<String, dynamic>>();
     }
     return [];

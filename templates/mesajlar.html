@@ -67,6 +67,11 @@
       <p>Yeni mesajlar gəldikdə burada görünəcək.</p>
     </div>
     {% endif %}
+    <nav class="pager" aria-label="Gələn mesajların səhifələri">
+      {% if qelen.has_previous %}<a href="?in_page={{ qelen.previous_page_number }}">Əvvəlki</a>{% endif %}
+      <span>{{ qelen.number }} / {{ qelen.paginator.num_pages }}</span>
+      {% if qelen.has_next %}<a href="?in_page={{ qelen.next_page_number }}">Sonrakı</a>{% endif %}
+    </nav>
   </div>
 
   <!-- Göndərilən Mesajlar -->
@@ -106,6 +111,11 @@
       <p>Ustaların elanlarına baxaraq sual verə bilərsiniz.</p>
     </div>
     {% endif %}
+    <nav class="pager" aria-label="Göndərilən mesajların səhifələri">
+      {% if gonderilenler.has_previous %}<a href="?out_page={{ gonderilenler.previous_page_number }}#gonderilenler">Əvvəlki</a>{% endif %}
+      <span>{{ gonderilenler.number }} / {{ gonderilenler.paginator.num_pages }}</span>
+      {% if gonderilenler.has_next %}<a href="?out_page={{ gonderilenler.next_page_number }}#gonderilenler">Sonrakı</a>{% endif %}
+    </nav>
   </div>
 </div>
 
@@ -117,5 +127,6 @@ function showTab(id, btn){
   if (target) target.style.display = 'block';
   btn.classList.add('is-active');
 }
+if (window.location.hash === '#gonderilenler') showTab('gonderilenler', document.querySelectorAll('.tabs button')[1]);
 </script>
 {% endblock %}

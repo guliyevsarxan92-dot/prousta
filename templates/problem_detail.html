@@ -1,50 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}{% if problem.seo_title %}{{ problem.seo_title }}{% else %}{{ problem.bashliq }} — Səbəbi və Həlli | Prousta.az{% endif %}{% endblock %}
-{% block description %}{% if problem.seo_description %}{{ problem.seo_description }}{% else %}{{ problem.bashliq }} — niyə baş verir, necə həll olunur? Peşəkar usta tövsiyələri və Bakıda usta çağırmaq üçün Prousta.az{% endif %}{% endblock %}
-{% block keywords %}{{ problem.bashliq|lower }}, {{ problem.bashliq|lower }} həlli, {{ problem.bashliq|lower }} səbəbi, {{ problem.bashliq|lower }} Bakı, usta çağır Bakı, təmir Bakı, Prousta.az{% endblock %}
-{% block canonical %}/problemler/{{ problem.slug }}/{% endblock %}
-{% block canonical2 %}/problemler/{{ problem.slug }}/{% endblock %}
-{% block og_url %}/problemler/{{ problem.slug }}/{% endblock %}
-{% block og_title %}{% if problem.seo_title %}{{ problem.seo_title }}{% else %}{{ problem.bashliq }}{% endif %}{% endblock %}
-{% block og_description %}{% if problem.seo_description %}{{ problem.seo_description }}{% else %}{{ problem.bashliq }} — səbəbi və peşəkar həll yolu.{% endif %}{% endblock %}
+
 {% block extra_head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "{{ problem.bashliq|escapejs }}",
-  "description": "{% if problem.seo_description %}{{ problem.seo_description|escapejs }}{% else %}{{ problem.bashliq|escapejs }} — səbəbi və peşəkar həll yolu.{% endif %}",
-  "url": "https://prousta.az/problemler/{{ problem.slug }}/",
-  "datePublished": "{{ problem.yaradildi|date:'c' }}",
-  "dateModified": "{{ problem.yenilendi|date:'c' }}",
-  "inLanguage": "az-AZ",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Prousta.az",
-    "url": "https://prousta.az",
-    "logo": {"@type": "ImageObject", "url": "https://prousta.az/static/og-image.jpg"}
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://prousta.az/problemler/{{ problem.slug }}/"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Ana səhifə", "item": "https://prousta.az/"},
-    {"@type": "ListItem", "position": 2, "name": "Bloq və Təlimatlar", "item": "https://prousta.az/problemler/"}{% if problem.kategori %},
-    {"@type": "ListItem", "position": 3, "name": "{{ problem.kategori.ad|escapejs }}", "item": "https://prousta.az/problemler/?kategori={{ problem.kategori.slug }}"},
-    {"@type": "ListItem", "position": 4, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
-    {% else %},
-    {"@type": "ListItem", "position": 3, "name": "{{ problem.bashliq|escapejs }}", "item": "https://prousta.az/problemler/{{ problem.slug }}/"}
-    {% endif %}
-  ]
-}
-</script>
 {% endblock %}
 {% block style %}
 <style>
@@ -168,7 +124,7 @@
           {% endif %}
           <span class="pd-read-time">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            3-4 dəq oxu
+            {{ article_read_minutes }} dəq oxu
           </span>
         </div>
         <h1>{{ problem.bashliq }}</h1>
@@ -185,13 +141,20 @@
           {% endif %}
           <span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Prousta Mütəxəssis Rəyi
+            Prousta.az redaksiyası
           </span>
         </div>
       </header>
 
+      {% if article_summary %}<aside class="panel" aria-label="Qısa cavab" style="margin-bottom:20px"><strong>Qısa məlumat</strong><p>{{ article_summary }}</p></aside>{% endif %}
+      {% if article_toc %}
+      <nav class="panel" aria-label="Məqalənin mündəricatı" style="margin-bottom:24px">
+        <h2 style="font-size:18px;margin-bottom:10px">Bu məqalədə</h2>
+        <ul style="padding-left:20px">{% for section in article_toc %}<li><a href="#{{ section.anchor }}">{{ section.label }}</a></li>{% endfor %}</ul>
+      </nav>
+      {% endif %}
       <div class="pd-content">
-        {{ problem.metn|safe }}
+        {{ article_body|safe }}
       </div>
     </article>
 
@@ -199,7 +162,7 @@
     <div class="pd-cta">
       <span class="pd-cta-badge">Prousta Təcili Xidmət</span>
       <h2>Bu problemi həll edən usta lazımdır?</h2>
-      <p>{% if problem.kategori %}Bakı üzrə peşəkar <strong>{{ problem.kategori.ad }}</strong> ustaları{% else %}Peşəkar usta{% endif %} operativ çıxış və zəmanətlə xidmətinizdədir. Birbaşa zəng edin və ya WhatsApp ilə əlaqə saxlayın.</p>
+      <p>{% if problem.kategori %}<strong>{{ problem.kategori.ad }}</strong> üzrə{% else %}Uyğun xidmət üzrə{% endif %} elanları müqayisə edin. Gəliş vaxtını, qiyməti və zəmanət şərtlərini elan sahibi ilə razılaşdırın.</p>
       <div class="pd-cta-actions">
         <a href="tel:+994515888884" class="pd-cta-btn-call">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.53a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>

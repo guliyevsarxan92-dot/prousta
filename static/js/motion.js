@@ -322,3 +322,40 @@
   window.addEventListener('load', updateSideBannersPosition);
   updateSideBannersPosition();
 })();
+
+// Keyboard access for the site's custom payment dialogs.
+(function () {
+  'use strict';
+  document.querySelectorAll('[role="dialog"][aria-modal="true"]').forEach(function (dialog) {
+    var opener = null;
+    var wasOpen = false;
+    function isOpen() { return dialog.getClientRects().length > 0; }
+    new MutationObserver(function () {
+      var open = isOpen();
+      if (open && !wasOpen) {
+        opener = document.activeElement;
+        dialog.focus();
+      } else if (!open && wasOpen && opener && opener.isConnected) {
+        opener.focus();
+      }
+      wasOpen = open;
+    }).observe(dialog, {attributes: true, attributeFilter: ['style', 'class', 'hidden']});
+    dialog.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        var close = dialog.querySelector('button[onclick*="close"]');
+        if (close) close.click();
+        event.stopPropagation();
+      }
+      if (event.key !== 'Tab') return;
+      var items = Array.from(dialog.querySelectorAll('button:not([disabled]),a[href],input,select,textarea,[tabindex="0"]'))
+        .filter(function (item) { return item.getClientRects().length > 0; });
+      if (!items.length) { event.preventDefault(); dialog.focus(); return; }
+      var first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialog)) {
+        event.preventDefault(); first.focus();
+      }
+    });
+  });
+}());

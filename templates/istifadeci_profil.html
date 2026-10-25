@@ -25,12 +25,12 @@
           {% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{{ sahib.username }}{% endif %}
         </h1>
         <span class="badge" style="background:#eaf7f1;color:#007b52">
-          {% include 'partials/ui_icon.html' with name='shield' %} Doğrulanmış Usta
+          {% include 'partials/ui_icon.html' with name='user' %} Elan sahibi
         </span>
       </div>
       <div class="meta-row">
         <span>{% include 'partials/ui_icon.html' with name='calendar' %} {{ sahib.date_joined|date:"d.m.Y" }}-dən aktiv üzv</span>
-        <span>{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.count }} aktiv elan</span>
+        <span>{% include 'partials/ui_icon.html' with name='list' %} {{ elanlar.paginator.count }} aktiv elan</span>
         {% if sahib.profil.sheher %}<span>{% include 'partials/ui_icon.html' with name='pin' %} {{ sahib.profil.sheher }}</span>{% endif %}
       </div>
     </div>
@@ -40,7 +40,7 @@
   <section class="pg-section">
     <div class="sec-head">
       <h2>Ustanın aktiv elanları</h2>
-      <small>{{ elanlar.count }} elan</small>
+      <small>{{ elanlar.paginator.count }} elan</small>
     </div>
 
     <div class="service-grid">
@@ -55,6 +55,7 @@
         </div>
       {% endfor %}
     </div>
+    {% include 'partials/profile_pager.html' with page=elanlar key='page' label='Ustanın elanlarının səhifələri' %}
   </section>
 </div>
 {% endblock %}

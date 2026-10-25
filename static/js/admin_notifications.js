@@ -218,6 +218,14 @@
       opt.borderColor +
       ';display:flex;align-items:flex-start;gap:12px;transform:translateX(110%);transition:all .35s cubic-bezier(0.16, 1, 0.3, 1);font-family:inherit;';
 
+    function escapeText(value) {
+      var span = document.createElement('span');
+      span.textContent = value == null ? '' : String(value);
+      return span.innerHTML;
+    }
+    opt = Object.assign({}, opt, {
+      body: escapeText(opt.body), sub: escapeText(opt.sub), title: escapeText(opt.title)
+    });
     toast.innerHTML =
       '<div style="width:38px;height:38px;border-radius:10px;background:' +
       opt.iconBg +

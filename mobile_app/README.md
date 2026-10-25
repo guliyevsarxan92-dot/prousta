@@ -1,17 +1,12 @@
-# prousta_mobile
+# Prousta Flutter müştərisi
 
-A new Flutter project.
+Flutter 3.41.7 / Dart 3.11.5. Quraşdırma və test əmrləri əsas [README](../README.md)-dədir.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- API ünvanı: `--dart-define=API_URL=https://staging.example/api/v1`. Release-də HTTPS məcburidir.
+- API token secure storage-da saxlanılır. Android auto-backup deaktivdir; iOS signing profilində Runner.entitlements yoxlanmalıdır.
+- Google iOS: `ios/Flutter/GoogleSignIn.xcconfig.example` əsasında lokal konfiqurasiya yaradın. Düzgün iOS client ID və reversed ID tələb olunur.
+- Android release üçün `android/key.properties` və uyğun keystore tələb olunur. Bunlar Git-ə daxil edilmir. Debug signing-ə fallback yoxdur.
+- Şəkil yükləməsi XFile/bytes istifadə edir; web-də fayl sistemi yolu tələb etmir.
+- İcazələr və məbləğlər serverdə yoxlanır; müştəri qiymətləri təhlükəsizlik qərarı deyil.
+- Linux desktop üçün secure storage plugin-inin sistem keyring/libsecret tələblərini də təmin edin.
+- Buraxılışdan əvvəl `flutter analyze --fatal-infos`, `flutter test`, web/Android build və real iOS giriş/upload sınağı aparın.
