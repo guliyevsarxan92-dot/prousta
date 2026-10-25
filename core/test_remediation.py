@@ -399,3 +399,47 @@ class RemediationTests(TestCase):
             response = self.web.get('/health/')
         self.assertEqual(response.status_code, 503)
         self.assertNotContains(response, 'private details', status_code=503)
+
+    def test_first_ad_published_triggers_vip_message_and_subsequent_ads_do_not(self):
+        new_user = User.objects.create_user(username='usta_kamran', password='SecretPassword123!')
+        cat = Kategori.objects.create(ad='Mebel', slug='mebel-yeni-test')
+        
+        # 1. İlk elan gözləmədə yaradıldıqda mesaj getməməlidir
+        ad1 = Elan.objects.create(
+            istifadeci=new_user,
+            kategori=cat,
+            bashliq='Mebel ustası Kamran',
+            acaqlama='Yüksək keyfiyyətli mebel təmiri.',
+            status='gozlemede',
+        )
+        self.assertFalse(Mesaj.objects.filter(alici=new_user).exists())
+
+        # 2. Elan təsdiqlənib 'aktiv' olduqda ilk VIP məlumat mesajı getməlidir
+        with self.captureOnCommitCallbacks(execute=True):
+            ad1.status = 'aktiv'
+            ad1.save()
+        messages = Mesaj.objects.filter(alici=new_user)
+        self.assertEqual(messages.count(), 1)
+        msg = messages.first()
+        self.assertEqual(msg.gonderici.username, 'prousta_sistem')
+        self.assertEqual(msg.elan, ad1)
+        self.assertIn('İlk elanınız uğurla dərc olundu', msg.metn)
+        self.assertIn('«VIP et»', msg.metn)
+
+        # 3. Artıq aktiv olan elanı redaktə etdikdə təkrar mesaj getməməlidir
+        with self.captureOnCommitCallbacks(execute=True):
+            ad1.bashliq = 'Mebel ustası Kamran - Yenilənmiş'
+            ad1.save()
+        self.assertEqual(Mesaj.objects.filter(alici=new_user).count(), 1)
+
+        # 4. Həmin istifadəçinin 2-ci elanı dərc olunduqda təkrar mesaj getməməlidir
+        with self.captureOnCommitCallbacks(execute=True):
+            ad2 = Elan.objects.create(
+                istifadeci=new_user,
+                kategori=cat,
+                bashliq='İkinci mebel elanı',
+                acaqlama='İkinci elan mətni.',
+                status='aktiv',
+            )
+        self.assertEqual(Mesaj.objects.filter(alici=new_user).count(), 1)
+

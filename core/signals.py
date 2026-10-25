@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-from .models import Odenis, Profil, Mesaj, VipPaket
+from .models import Odenis, Profil, Mesaj, VipPaket, Elan
 
 @receiver(post_save, sender=User)
 def profil_yarat(sender, instance, created, **kwargs):
@@ -65,6 +65,69 @@ def odenis_tesdiq_mesaj(sender, instance, created, **kwargs):
                 gonderici=sistem,
                 alici=instance.istifadeci,
                 elan=instance.elan,
+                metn=metn,
+                oxundu=False,
+            )
+        except Exception:
+            pass
+
+    try:
+        if transaction.get_connection().in_atomic_block:
+            transaction.on_commit(_gonder)
+        else:
+            _gonder()
+    except Exception:
+        _gonder()
+
+
+@receiver(pre_save, sender=Elan)
+def track_elan_status_pre_save(sender, instance, **kwargs):
+    """Elanın aktiv statusa keçib-keçmədiyini izləyir."""
+    if instance.pk:
+        old_status = Elan.objects.filter(pk=instance.pk).values_list('status', flat=True).first()
+        instance._status_transitioned_to_aktiv = (old_status != 'aktiv' and instance.status == 'aktiv')
+    else:
+        instance._status_transitioned_to_aktiv = (instance.status == 'aktiv')
+
+
+@receiver(post_save, sender=Elan)
+def ilk_elan_vip_mesaj(sender, instance, created, **kwargs):
+    """İstifadəçinin ilk elanı aktiv olduqda avtomatik VIP məlumat mesajı göndərir."""
+    if instance.status != 'aktiv':
+        return
+    if not getattr(instance, '_status_transitioned_to_aktiv', False):
+        return
+
+    user = instance.istifadeci
+    if not user or user.username == 'prousta_sistem':
+        return
+
+    def _gonder():
+        try:
+            sistem = _sistem_istifadecisi()
+            if Mesaj.objects.filter(
+                alici=user,
+                gonderici=sistem,
+                metn__icontains='VIP elanlar ən üst sıralarda yer alır'
+            ).exists():
+                return
+
+            if Elan.objects.filter(istifadeci=user, status='aktiv').count() != 1:
+                return
+
+            metn = (
+                "Salam! İlk elanınız uğurla dərc olundu.\n\n"
+                "Daha çox müştəri və sifariş qazanmaq üçün elanınızı VIP edin!\n"
+                "VIP elanlar ən üst sıralarda yer alır, xüsusi nişanla fərqlənir "
+                "və adi elanlardan 10 qat daha çox zəng toplayır.\n\n"
+                "Elanınızın üzərindəki «VIP et» düyməsini sıxaraq dərhal aktiv edə bilərsiniz.\n\n"
+                "Uğurlu işlər!\n"
+                "Prousta.az"
+            )
+            Mesaj.objects.create(
+                gonderici=sistem,
+                alici=user,
+                elan=instance,
                 metn=metn,
                 oxundu=False,
             )
