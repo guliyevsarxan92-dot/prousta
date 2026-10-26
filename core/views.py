@@ -817,8 +817,12 @@ def odenis(request):
         'birbank_ready': birbank_gateway.is_configured,
     }
     if request.method == 'POST':
-        metod = request.POST.get('metod', 'birbank').strip().lower()
+        metod = request.POST.get('metod', 'qebz').strip().lower()
         if metod == 'birbank':
+            if not getattr(settings, 'BIRBANK_ENABLED', False) and not birbank_gateway.is_configured:
+                messages.info(request, 'Birbank ilə onlayn ödəniş tezliklə istifadəyə veriləcək. Zəhmət olmasa bank köçürməsi ilə ödəniş edin.')
+                return redirect('odenis')
+
             try:
                 amount = money(request.POST.get('mebleg'), minimum=Decimal('1.00'), maximum=Decimal('500.00'))
             except ValidationError as exc:

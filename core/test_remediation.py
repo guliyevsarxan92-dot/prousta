@@ -528,7 +528,7 @@ class RemediationTests(TestCase):
         self.assertRedirects(resp, '/profil/')
         self.assertTrue(User.objects.filter(pk=admin.pk).exists())
 
-    @override_settings(SECURE_SSL_REDIRECT=False)
+    @override_settings(SECURE_SSL_REDIRECT=False, BIRBANK_ENABLED=True)
     def test_birbank_payment_full_flow(self):
         user = User.objects.create_user(username='birbank_user', password='MyStrongPassword123!')
         client = Client()
