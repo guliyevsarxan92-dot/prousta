@@ -16,133 +16,244 @@
     <p>Balansınızı artıraraq elanlarınızı VIP edin və daha çox müştəri qazanın.</p>
   </div>
 
-  <!-- Addımlar -->
-  <div class="steps-grid" style="margin-bottom:22px">
-    <div class="step-card" style="min-height:auto">
-      <span class="step-number">1</span>
-      <div>
-        <strong>Köçürmə et</strong>
-        <small>Bank kartına istədiyiniz məbləği göndərin</small>
+  <!-- Ödəniş Metodu Seçimi (Tablar) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+    <button type="button" id="tabBirbankBtn" onclick="switchMetod('birbank')"
+      style="padding:16px 14px;border-radius:14px;border:2px solid #e11d48;background:#fff;cursor:pointer;text-align:left;transition:.2s;box-shadow:0 4px 14px rgba(225,29,72,0.1)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-weight:900;color:#e11d48;font-size:16px;letter-spacing:-0.4px">
+          <span style="background:#e11d48;color:#fff;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900">1</span>
+          birbank
+        </span>
+        <span style="background:#ffe4e6;color:#be123c;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px">DƏRHAL</span>
       </div>
-    </div>
-    <div class="step-card" style="min-height:auto">
-      <span class="step-number">2</span>
-      <div>
-        <strong>Qəbzi yüklə</strong>
-        <small>Ödəniş çeki şəklini formdan göndərin</small>
+      <div style="font-size:12.5px;font-weight:700;color:#0f172a">Bank kartı / Birbank</div>
+      <small style="color:#64748b;font-size:11px">Komissiyasız dərhal balansa oturur</small>
+    </button>
+
+    <button type="button" id="tabQebzBtn" onclick="switchMetod('qebz')"
+      style="padding:16px 14px;border-radius:14px;border:2px solid #e2e8f0;background:#fff;cursor:pointer;text-align:left;transition:.2s">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:14px;font-weight:800;color:#334155">Bank köçürməsi</span>
+        <span style="background:#f1f5f9;color:#64748b;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px">QƏBZ İLƏ</span>
       </div>
-    </div>
-    <div class="step-card" style="min-height:auto">
-      <span class="step-number">3</span>
-      <div>
-        <strong>Balans artır</strong>
-        <small>Təsdiqdən dərhal sonra balansınıza oturur</small>
-      </div>
-    </div>
+      <div style="font-size:12.5px;font-weight:700;color:#0f172a">Kartdan karta köçürmə</div>
+      <small style="color:#64748b;font-size:11px">Çekin şəkli yüklənir</small>
+    </button>
   </div>
 
-  <!-- Bank Kartı -->
-  {% if bank %}
-  <div class="panel" style="background:radial-gradient(ellipse at 55% 100%,#047753,#06463d 55%,#0d2828);color:#fff;border:0;margin-bottom:20px">
-    <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin-bottom:14px;color:#6cffb4">
-      {% include 'partials/ui_icon.html' with name='wallet' %}
-      Bank Rekvizitləri
-    </div>
-    <div class="stack" style="gap:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-        <span style="font-size:12px;color:#c4ddd5">Bank</span>
-        <strong>{{ bank.bank_adi }}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-        <span style="font-size:12px;color:#c4ddd5">Kart nömrəsi</span>
-        <div style="display:flex;align-items:center;gap:8px">
-          <strong id="kartNo" style="letter-spacing:1px">{{ bank.kart_nomresi }}</strong>
-          <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;padding:4px 10px;font-size:11px" onclick="copyText('kartNo', this)">
-            Kopyala
-          </button>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-        <span style="font-size:12px;color:#c4ddd5">Kart sahibi</span>
-        <strong>{{ bank.kart_sahibi }}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:12px;color:#c4ddd5">Ödəniş qeydi</span>
-        <strong>Prousta balans — {{ user.username }}</strong>
+  <!-- ============================================================ -->
+  <!-- BÖLMƏ 1: BİRBANK ONLAYN ÖDƏNİŞ FORMASI (ƏSAS) -->
+  <!-- ============================================================ -->
+  <div id="sectionBirbank" class="panel" style="border:1px solid #fed7aa;box-shadow:0 6px 20px rgba(0,0,0,0.04)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2 class="panel-title" style="margin:0;color:#be123c;display:flex;align-items:center;gap:8px">
+        <span style="background:#e11d48;color:#fff;width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900">1</span>
+        Birbank ilə onlayn ödəniş
+      </h2>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#64748b">
+        <span>Visa</span> • <span>Mastercard</span> • <span>Birbank</span> • <span>Apple Pay</span>
       </div>
     </div>
-  </div>
-  {% else %}
-  <div class="notice notice--warn" style="margin-bottom:20px">
-    {% include 'partials/ui_icon.html' with name='info' %}
-    <div>
-      Bank məlumatları hələ sistemə əlavə edilməyib. Zəhmət olmasa birbaşa <a href="https://wa.me/994515888884" target="_blank" style="font-weight:700;text-decoration:underline">WhatsApp dəstək xətti</a> ilə əlaqə saxlayın.
-    </div>
-  </div>
-  {% endif %}
 
-  <!-- Qəbz Yükləmə Formu -->
-  <div class="panel">
-    <h2 class="panel-title">
-      {% include 'partials/ui_icon.html' with name='check' %}
-      Qəbzi təqdim edin
-    </h2>
-
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" id="birbankForm">
       {% csrf_token %}
-      
-      <div class="field">
-        <label>Köçürdüyünüz məbləğ (₼) <span class="req">*</span></label>
-        <div class="chips" style="margin-bottom:8px">
-          <button type="button" class="chip mebleg-btn" onclick="setMebleg(5, this)">5 ₼</button>
-          <button type="button" class="chip mebleg-btn" onclick="setMebleg(10, this)">10 ₼</button>
-          <button type="button" class="chip mebleg-btn" onclick="setMebleg(20, this)">20 ₼</button>
-          <button type="button" class="chip mebleg-btn" onclick="setMebleg(50, this)">50 ₼</button>
-        </div>
-        <input id="mebleg" name="mebleg" type="number" step="any" placeholder="Məsələn: 10" required>
-      </div>
+      <input type="hidden" name="metod" value="birbank">
 
       <div class="field">
-        <label>Köçürmə qəbzinin şəkli (skrinşot) <span class="req">*</span></label>
-        <div class="upload-box" style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:.2s" onclick="document.getElementById('qebzInput').click()">
-          <div style="width:44px;height:44px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px">
-            {% include 'partials/ui_icon.html' with name='camera' %}
-          </div>
-          <p id="qebzText" style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">Qəbzin şəklini seçmək üçün klikləyin</p>
-          <small style="color:var(--muted)">JPG, PNG formatında</small>
+        <label style="font-weight:700;font-size:13.5px;color:#0f172a;margin-bottom:8px;display:block">
+          Məbləği seçin və ya daxil edin (₼) <span class="req">*</span>
+        </label>
+        <div class="chips" style="margin-bottom:12px;gap:8px">
+          <button type="button" class="chip mebleg-btn-bb" onclick="setBbMebleg(1, this)" style="font-weight:700">1 ₼</button>
+          <button type="button" class="chip mebleg-btn-bb is-active" onclick="setBbMebleg(5, this)" style="font-weight:700">5 ₼</button>
+          <button type="button" class="chip mebleg-btn-bb" onclick="setBbMebleg(10, this)" style="font-weight:700">10 ₼</button>
+          <button type="button" class="chip mebleg-btn-bb" onclick="setBbMebleg(20, this)" style="font-weight:700">20 ₼</button>
+          <button type="button" class="chip mebleg-btn-bb" onclick="setBbMebleg(50, this)" style="font-weight:700">50 ₼</button>
+          <button type="button" class="chip mebleg-btn-bb" onclick="setBbMebleg(100, this)" style="font-weight:700">100 ₼</button>
         </div>
-        <input type="file" id="qebzInput" name="qebz" accept="image/*" style="display:none" onchange="showQebzName(this)">
+        <div style="position:relative">
+          <input id="bbMeblegInput" name="mebleg" type="number" step="any" min="1" max="500" value="5" placeholder="Məsələn: 10" required
+            style="font-size:18px;font-weight:800;padding:12px 14px;border:2px solid #cbd5e1;border-radius:10px;width:100%">
+          <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:800;font-size:16px;color:#64748b">₼ AZN</span>
+        </div>
+        <small style="color:#64748b;font-size:11.5px;margin-top:4px;display:block">Minimum 1 ₼, maksimum 500 ₼</small>
       </div>
 
-      <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">
-        {% include 'partials/ui_icon.html' with name='send' %}
-        Təsdiq üçün sorğu göndər
+      <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:12px;padding:14px;margin:18px 0;display:flex;align-items:flex-start;gap:12px">
+        <div style="color:#e11d48;margin-top:2px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+        </div>
+        <div style="font-size:12.5px;color:#881337;line-height:1.45">
+          <strong>Təhlükəsiz Ödəniş:</strong> Düyməni sıxdıqda Kapital Bank-ın rəsmi 3D Secure qorunan ödəniş səhifəsinə yönləndiriləcəksiniz. Ödəniş tamamlanan kimi məbləğ dərhal balansınıza köçürüləcək.
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg" type="submit" style="background:linear-gradient(135deg,#e11d48,#be123c);border-color:#be123c;font-weight:800;font-size:15.5px;padding:15px;box-shadow:0 6px 18px rgba(225,29,72,0.25)">
+        <span style="display:inline-flex;align-items:center;gap:8px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+          Birbank ilə dərhal ödə
+        </span>
       </button>
     </form>
+  </div>
 
-    <div class="notice" style="margin-top:16px">
-      {% include 'partials/ui_icon.html' with name='clock' %}
-      <div style="font-size:12px">
-        Qəbz yoxlandıqdan sonra məbləğ qısa müddət ərzində balansınıza oturacaq. Hər hansı sualınız olarsa, <a href="https://wa.me/994515888884" target="_blank" style="color:#007b52;font-weight:700">WhatsApp</a> vasitəsilə əlaqə saxlaya bilərsiniz.
+  <!-- ============================================================ -->
+  <!-- BÖLMƏ 2: KÖHNƏ MANUAL KÖÇÜRMƏ (QƏBZ İLƏ) -->
+  <!-- ============================================================ -->
+  <div id="sectionQebz" style="display:none">
+    <!-- Addımlar -->
+    <div class="steps-grid" style="margin-bottom:20px">
+      <div class="step-card" style="min-height:auto">
+        <span class="step-number">1</span>
+        <div>
+          <strong>Köçürmə et</strong>
+          <small>Bank kartına istədiyiniz məbləği göndərin</small>
+        </div>
       </div>
+      <div class="step-card" style="min-height:auto">
+        <span class="step-number">2</span>
+        <div>
+          <strong>Qəbzi yüklə</strong>
+          <small>Ödəniş çeki şəklini formdan göndərin</small>
+        </div>
+      </div>
+      <div class="step-card" style="min-height:auto">
+        <span class="step-number">3</span>
+        <div>
+          <strong>Balans artır</strong>
+          <small>Təsdiqdən sonra balansınıza oturur</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Kartı Rekvizitləri -->
+    {% if bank %}
+    <div class="panel" style="background:radial-gradient(ellipse at 55% 100%,#047753,#06463d 55%,#0d2828);color:#fff;border:0;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin-bottom:14px;color:#6cffb4">
+        {% include 'partials/ui_icon.html' with name='wallet' %}
+        Bank Rekvizitləri
+      </div>
+      <div class="stack" style="gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
+          <span style="font-size:12px;color:#c4ddd5">Bank</span>
+          <strong>{{ bank.bank_adi }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
+          <span style="font-size:12px;color:#c4ddd5">Kart nömrəsi</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <strong id="kartNo" style="letter-spacing:1px">{{ bank.kart_nomresi }}</strong>
+            <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;padding:4px 10px;font-size:11px" onclick="copyText('kartNo', this)">
+              Kopyala
+            </button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
+          <span style="font-size:12px;color:#c4ddd5">Kart sahibi</span>
+          <strong>{{ bank.kart_sahibi }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#c4ddd5">Ödəniş qeydi</span>
+          <strong>Prousta balans — {{ user.username }}</strong>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Qəbz Yükləmə Formu -->
+    <div class="panel">
+      <h2 class="panel-title">
+        {% include 'partials/ui_icon.html' with name='check' %}
+        Qəbzi təqdim edin
+      </h2>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="metod" value="qebz">
+
+        <div class="field">
+          <label>Köçürdüyünüz məbləğ (₼) <span class="req">*</span></label>
+          <div class="chips" style="margin-bottom:8px">
+            <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(5, this)">5 ₼</button>
+            <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(10, this)">10 ₼</button>
+            <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(20, this)">20 ₼</button>
+            <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(50, this)">50 ₼</button>
+          </div>
+          <input id="qebzMeblegInput" name="mebleg" type="number" step="any" placeholder="Məsələn: 10">
+        </div>
+
+        <div class="field">
+          <label>Köçürmə qəbzinin şəkli (skrinşot) <span class="req">*</span></label>
+          <div class="upload-box" style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:.2s" onclick="document.getElementById('qebzInput').click()">
+            <div style="width:44px;height:44px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px">
+              {% include 'partials/ui_icon.html' with name='camera' %}
+            </div>
+            <p id="qebzText" style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">Qəbzin şəklini seçmək üçün klikləyin</p>
+            <small style="color:var(--muted)">JPG, PNG formatında</small>
+          </div>
+          <input type="file" id="qebzInput" name="qebz" accept="image/*" style="display:none" onchange="showQebzName(this)">
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">
+          {% include 'partials/ui_icon.html' with name='send' %}
+          Təsdiq üçün sorğu göndər
+        </button>
+      </form>
     </div>
   </div>
 </div>
 
 <script>
-function setMebleg(val, btn){
-  document.getElementById('mebleg').value = val;
-  document.querySelectorAll('.mebleg-btn').forEach(function(b){ b.classList.remove('is-active'); });
+function switchMetod(metod) {
+  var secBb = document.getElementById('sectionBirbank');
+  var secQebz = document.getElementById('sectionQebz');
+  var btnBb = document.getElementById('tabBirbankBtn');
+  var btnQebz = document.getElementById('tabQebzBtn');
+
+  if (metod === 'birbank') {
+    secBb.style.display = 'block';
+    secQebz.style.display = 'none';
+    btnBb.style.borderColor = '#e11d48';
+    btnBb.style.boxShadow = '0 4px 14px rgba(225,29,72,0.15)';
+    btnQebz.style.borderColor = '#e2e8f0';
+    btnQebz.style.boxShadow = 'none';
+  } else {
+    secBb.style.display = 'none';
+    secQebz.style.display = 'block';
+    btnQebz.style.borderColor = '#007b52';
+    btnQebz.style.boxShadow = '0 4px 14px rgba(0,123,82,0.15)';
+    btnBb.style.borderColor = '#e2e8f0';
+    btnBb.style.boxShadow = 'none';
+  }
+}
+
+function setBbMebleg(val, btn) {
+  document.getElementById('bbMeblegInput').value = val;
+  document.querySelectorAll('.mebleg-btn-bb').forEach(function(b){ b.classList.remove('is-active'); });
   btn.classList.add('is-active');
 }
-function showQebzName(input){
+
+function setQebzMebleg(val, btn) {
+  document.getElementById('qebzMeblegInput').value = val;
+  document.querySelectorAll('.mebleg-btn-qebz').forEach(function(b){ b.classList.remove('is-active'); });
+  btn.classList.add('is-active');
+}
+
+function showQebzName(input) {
   if (input.files && input.files[0]) {
     document.getElementById('qebzText').textContent = 'Seçildi: ' + input.files[0].name;
   }
 }
-function copyText(id, btn){
+
+function copyText(id, btn) {
   var text = document.getElementById(id).textContent.trim();
-  if(navigator.clipboard && window.isSecureContext){
+  if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text).then(function(){ showCopied(btn); });
   } else {
     var ta = document.createElement('textarea');
@@ -153,7 +264,8 @@ function copyText(id, btn){
     showCopied(btn);
   }
 }
-function showCopied(btn){
+
+function showCopied(btn) {
   var original = btn.textContent;
   btn.textContent = 'Kopyalandı ✓';
   btn.style.background = 'rgba(255,255,255,.4)';

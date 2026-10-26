@@ -766,6 +766,7 @@ class OdenisAdmin(ModelAdmin):
     list_display = [
         'istifadeci_link',
         'nov_badge',
+        'metod_badge',
         'mebleg_display',
         'status_badge',
         'elan_link',
@@ -775,6 +776,7 @@ class OdenisAdmin(ModelAdmin):
     list_filter = [
         ('status', ChoicesDropdownFilter),
         ('nov', ChoicesDropdownFilter),
+        ('metod', ChoicesDropdownFilter),
         'yaradildi',
     ]
     search_fields = [
@@ -782,9 +784,10 @@ class OdenisAdmin(ModelAdmin):
         'istifadeci__email',
         'elan__nomre',
         'elan__bashliq',
+        'xarici_id',
         'qeyd',
     ]
-    readonly_fields = ['qebz_goruntu_large', 'yaradildi', 'applied_at']
+    readonly_fields = ['qebz_goruntu_large', 'xarici_id', 'xarici_status', 'yaradildi', 'applied_at']
 
     def get_readonly_fields(self, request, obj=None):
         fields = list(super().get_readonly_fields(request, obj))
@@ -806,6 +809,16 @@ class OdenisAdmin(ModelAdmin):
             url, u.username, tel
         )
     istifadeci_link.short_description = 'İstifadəçi'
+
+    @display(
+        description='Metod',
+        label={
+            'birbank': 'primary',
+            'qebz': 'secondary',
+        }
+    )
+    def metod_badge(self, obj):
+        return obj.metod, obj.get_metod_display()
 
     @display(
         description='Növ',

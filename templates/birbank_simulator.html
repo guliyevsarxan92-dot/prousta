@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Birbank Ödəniş Gateway (Sınaq) — Prousta.az{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<div class="pg pg--narrow">
+  <div class="panel" style="max-width:480px;margin:30px auto;border-radius:18px;border:1px solid #fed7aa;box-shadow:0 12px 30px rgba(0,0,0,0.08);background:#ffffff;overflow:hidden">
+    <!-- Birbank Brand Header -->
+    <div style="background:linear-gradient(135deg, #e11d48, #be123c);padding:24px 22px;color:#fff;text-align:center">
+      <div style="display:inline-flex;align-items:center;gap:8px;font-size:20px;font-weight:900;letter-spacing:-0.5px">
+        <span style="background:#fff;color:#e11d48;width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:18px;font-weight:900">1</span>
+        birbank
+      </div>
+      <div style="font-size:12px;opacity:0.9;margin-top:4px;font-weight:600">Kapital Bank Sınaq Ödəniş Gateway</div>
+    </div>
+
+    <!-- Payment details -->
+    <div style="padding:24px">
+      <div style="text-align:center;margin-bottom:20px">
+        <small style="color:#64748b;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px">Ödəniləcək məbləğ</small>
+        <div style="font-size:34px;font-weight:900;color:#0f172a;margin-top:2px">
+          {{ amount }} <span style="font-size:24px;font-weight:700">₼</span>
+        </div>
+      </div>
+
+      <div style="background:#f8fafc;border-radius:12px;padding:14px;border:1px solid #e2e8f0;margin-bottom:22px;font-size:13px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="color:#64748b">Təyinat:</span>
+          <strong>Prousta.az Balans Artırma</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="color:#64748b">Sifariş №:</span>
+          <strong>#{{ odenis.pk }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:#64748b">İstifadəçi:</span>
+          <strong>{{ user.username }}</strong>
+        </div>
+      </div>
+
+      <div class="notice notice--warn" style="margin-bottom:20px;font-size:12px">
+        {% include 'partials/ui_icon.html' with name='info' %}
+        <div>
+          <strong>Sınaq rejimi:</strong> Bu səhifə Kapital Bank API açarları inteqrasiya olunana qədər və ya test mühitində ödəniş axınını sınaqdan keçirmək üçündür.
+        </div>
+      </div>
+
+      <form method="post" style="display:flex;flex-direction:column;gap:10px">
+        {% csrf_token %}
+        <button type="submit" name="action" value="approve" class="btn btn-primary btn-block btn-lg" style="background:#e11d48;border-color:#e11d48;padding:14px;font-weight:800;font-size:15px">
+          Kartla ödənişi təsdiqlə (Uğurlu)
+        </button>
+        <button type="submit" name="action" value="cancel" class="btn btn-outline btn-block" style="padding:12px;color:#64748b">
+          İmtina et və geri qayıt
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

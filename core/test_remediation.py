@@ -528,4 +528,99 @@ class RemediationTests(TestCase):
         self.assertRedirects(resp, '/profil/')
         self.assertTrue(User.objects.filter(pk=admin.pk).exists())
 
+    @override_settings(SECURE_SSL_REDIRECT=False)
+    def test_birbank_payment_full_flow(self):
+        user = User.objects.create_user(username='birbank_user', password='MyStrongPassword123!')
+        client = Client()
+        client.login(username='birbank_user', password='MyStrongPassword123!')
+
+        # 1. POST /odenis/ ilə Birbank ödənişi başladılır
+        resp = client.post('/odenis/', {'metod': 'birbank', 'mebleg': '25'})
+        self.assertEqual(resp.status_code, 302)
+        odenis = Odenis.objects.filter(istifadeci=user, metod='birbank').first()
+        self.assertIsNotNone(odenis)
+        self.assertEqual(odenis.mebleg, Decimal('25.00'))
+        self.assertEqual(odenis.status, 'gozlemede')
+        self.assertTrue(odenis.xarici_id.startswith('SIM-') or len(odenis.xarici_id) > 0)
+
+        # 2. Uğurlu ödəniş callback-i qəbul edilir
+        ugurlu_resp = client.get(f'/odenis/birbank/ugurlu/?odenis_id={odenis.pk}&STATUS=FullyPaid')
+        self.assertEqual(ugurlu_resp.status_code, 200)
+        self.assertContains(ugurlu_resp, 'Ödəniş uğurla tamamlandı')
+        odenis.refresh_from_db()
+        self.assertEqual(odenis.status, 'tesdiq_edildi')
+        user.profil.refresh_from_db()
+        self.assertEqual(user.profil.balans, Decimal('25.00'))
+
+        # 3. İmtina/xəta ssenarisi yoxlanılır
+        failed_odenis = Odenis.objects.create(
+            istifadeci=user, nov='balans', mebleg=Decimal('15.00'),
+            metod='birbank', status='gozlemede', xarici_id='SIM-fail-test'
+        )
+        fail_resp = client.get(f'/odenis/birbank/ugursuz/?odenis_id={failed_odenis.pk}&reason=Kartda_kifayet_qeder_vesait_yoxdur')
+        self.assertEqual(fail_resp.status_code, 200)
+        self.assertContains(fail_resp, 'Ödəniş baş tutmadı')
+        failed_odenis.refresh_from_db()
+        self.assertEqual(failed_odenis.status, 'legv_edildi')
+        user.profil.refresh_from_db()
+        # Balans dəyişməz qalmalıdır
+        self.assertEqual(user.profil.balans, Decimal('25.00'))
+
+    @override_settings(
+        SECURE_SSL_REDIRECT=False,
+        BIRBANK_ENV='test',
+        BIRBANK_MERCHANT_ID='test_merchant',
+        BIRBANK_MERCHANT_SECRET='test_secret',
+    )
+    def test_birbank_payment_with_mocked_gateway(self):
+        user = User.objects.create_user(username='birbank_api_user', password='MyStrongPassword123!')
+        client = Client()
+        client.login(username='birbank_api_user', password='MyStrongPassword123!')
+
+        class MockResponse:
+            def __init__(self, json_data, status_code=200):
+                self._json = json_data
+                self.status_code = status_code
+                self.content = b'{"ok": true}'
+
+            def json(self):
+                return self._json
+
+        # 1. Kapital Bank API create_order cavabı simulyasiya edilir
+        mock_create = MockResponse({
+            'order': {
+                'id': 776655,
+                'hppUrl': 'https://pg.kapitalbank.az',
+                'password': 'test_token_pwd',
+                'status': 'Preparing'
+            }
+        })
+        with patch('requests.post', return_value=mock_create):
+            resp = client.post('/odenis/', {'metod': 'birbank', 'mebleg': '50'})
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.url, 'https://pg.kapitalbank.az/flex?id=776655&password=test_token_pwd')
+
+        odenis = Odenis.objects.filter(istifadeci=user, metod='birbank').first()
+        self.assertIsNotNone(odenis)
+        self.assertEqual(odenis.xarici_id, '776655')
+
+        # 2. Kapital Bank API check_order_status cavabı simulyasiya edilir
+        mock_check = MockResponse({
+            'order': {
+                'id': 776655,
+                'status': 'FullyPaid',
+                'amount': 50.00,
+                'currency': 'AZN'
+            }
+        })
+        with patch('requests.get', return_value=mock_check):
+            ugurlu_resp = client.get(f'/odenis/birbank/ugurlu/?odenis_id={odenis.pk}')
+            self.assertEqual(ugurlu_resp.status_code, 200)
+
+        odenis.refresh_from_db()
+        self.assertEqual(odenis.status, 'tesdiq_edildi')
+        self.assertEqual(odenis.xarici_status, 'FullyPaid')
+        user.profil.refresh_from_db()
+        self.assertEqual(user.profil.balans, Decimal('50.00'))
+
 

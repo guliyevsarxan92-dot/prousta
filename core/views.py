@@ -32,6 +32,7 @@ from .rotation import apply_fair_rotation
 from .validation import image_upload, listing_values, money, phone, text
 from .listings import create_listing, update_listing, visible_listings, check_access, check_messaging, check_duplicate, reactivate_listing
 from .payments import buy_vip, bump_listing
+from .birbank import birbank_gateway
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.contrib.auth.password_validation import validate_password
 from .locations import LOKASIYALAR, POPULAR_LOKASIYALAR, get_lokasiya
@@ -236,18 +237,28 @@ def xidmet_detail(request, slug, lokasiya=None):
 
     # SEO: daxili linkləmə — eyni qrupdan digər xidmətlər və əlaqəli bələdçilər
     indexable_ids = indexable_kategori_ids()
+    from .service_content import get_content
+    brief = get_content(aktiv_kategori)
+    related_slugs = brief['related'] if brief else []
+    curated_related = list(
+        Kategori.objects.filter(slug__in=related_slugs)
+        .exclude(pk=aktiv_kategori.pk)
+    )
+    curated_related.sort(key=lambda category: related_slugs.index(category.slug))
+    curated_related = [category for category in curated_related if category.pk in indexable_ids]
     if aktiv_kategori.ust_kategori_id:
-        oxsar_kateqoriyalar = [
+        siblings = [
             k for k in Kategori.objects.filter(ust_kategori_id=aktiv_kategori.ust_kategori_id)
             .exclude(pk=aktiv_kategori.pk).order_by('pk')
             if k.pk in indexable_ids
         ]
     else:
-        oxsar_kateqoriyalar = [
+        siblings = [
             k for k in Kategori.objects.filter(ust_kategori__isnull=True)
             .exclude(pk=aktiv_kategori.pk).order_by('pk')
             if k.pk in indexable_ids
         ]
+    oxsar_kateqoriyalar = (curated_related + [k for k in siblings if k not in curated_related])[:8]
     problemler = Problem.objects.filter(aktiv=True).filter(
         Q(kategori=aktiv_kategori) | Q(kategori__ust_kategori=aktiv_kategori)
     )[:6]
@@ -800,18 +811,148 @@ def elan_ireli_cek(request, pk):
 
 @login_required
 def odenis(request):
-    ctx = {'bank': BankMelumat.objects.filter(aktiv=True).first()}
+    ctx = {
+        'bank': BankMelumat.objects.filter(aktiv=True).first(),
+        'birbank_env': getattr(settings, 'BIRBANK_ENV', 'test'),
+        'birbank_ready': birbank_gateway.is_configured,
+    }
     if request.method == 'POST':
-        try:
-            amount = money(request.POST.get('mebleg'), minimum=Decimal('0.01'), maximum=Decimal('500'))
-            receipt = image_upload(request.FILES.get('qebz'))
-            Odenis.objects.create(istifadeci=request.user, nov='balans', mebleg=amount, qebz=receipt)
-        except ValidationError as exc:
-            messages.error(request, ' '.join(exc.messages))
+        metod = request.POST.get('metod', 'birbank').strip().lower()
+        if metod == 'birbank':
+            try:
+                amount = money(request.POST.get('mebleg'), minimum=Decimal('1.00'), maximum=Decimal('500.00'))
+            except ValidationError as exc:
+                messages.error(request, ' '.join(exc.messages))
+                return render(request, 'odenis.html', ctx)
+
+            odenis_obj = Odenis.objects.create(
+                istifadeci=request.user,
+                nov='balans',
+                mebleg=amount,
+                metod='birbank',
+                status='gozlemede',
+                qeyd='Birbank onlayn ödəniş'
+            )
+            success_url = request.build_absolute_uri(reverse('birbank_ugurlu')) + f"?odenis_id={odenis_obj.pk}"
+            fail_url = request.build_absolute_uri(reverse('birbank_ugursuz')) + f"?odenis_id={odenis_obj.pk}"
+
+            res = birbank_gateway.create_order(
+                odenis_id=odenis_obj.pk,
+                amount=amount,
+                description=f"Prousta balans #{odenis_obj.pk} ({request.user.username})",
+                success_url=success_url,
+                fail_url=fail_url,
+            )
+            if res.get('success'):
+                odenis_obj.xarici_id = res.get('order_id')
+                odenis_obj.save(update_fields=['xarici_id'])
+                return redirect(res.get('redirect_url'))
+            else:
+                odenis_obj.status = 'legv_edildi'
+                odenis_obj.qeyd = res.get('error', 'Gateway xətası')
+                odenis_obj.save(update_fields=['status', 'qeyd'])
+                messages.error(request, f"Birbank ödəniş sisteminə qoşularkən xəta: {res.get('error')}")
+                return render(request, 'odenis.html', ctx)
+
+        elif metod == 'qebz':
+            try:
+                amount = money(request.POST.get('mebleg'), minimum=Decimal('0.01'), maximum=Decimal('500.00'))
+                receipt = image_upload(request.FILES.get('qebz'))
+                Odenis.objects.create(
+                    istifadeci=request.user,
+                    nov='balans',
+                    mebleg=amount,
+                    metod='qebz',
+                    qebz=receipt,
+                    status='gozlemede'
+                )
+            except ValidationError as exc:
+                messages.error(request, ' '.join(exc.messages))
+            else:
+                messages.success(request, 'Sorğunuz yoxlanışa göndərildi.')
+                return redirect('profil')
         else:
-            messages.success(request, 'Sorğunuz yoxlanışa göndərildi.')
-            return redirect('profil')
+            messages.error(request, 'Yanlış ödəniş metodu seçilib.')
+
     return render(request, 'odenis.html', ctx)
+
+
+@login_required
+def birbank_ugurlu(request):
+    odenis_id = request.GET.get('odenis_id')
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
+
+    res = birbank_gateway.check_order_status(odenis_obj.xarici_id)
+    if res.get('verified'):
+        if odenis_obj.status != 'tesdiq_edildi':
+            odenis_obj.status = 'tesdiq_edildi'
+            odenis_obj.xarici_status = res.get('status', 'FullyPaid')
+            odenis_obj.save()
+        profil = request.user.profil
+        return render(request, 'odenis_netice.html', {
+            'success': True,
+            'odenis': odenis_obj,
+            'mebleg': odenis_obj.mebleg,
+            'balans': profil.balans,
+        })
+    else:
+        return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}&reason={res.get('status', 'Unverified')}")
+
+
+@login_required
+def birbank_ugursuz(request):
+    odenis_id = request.GET.get('odenis_id')
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
+    reason = request.GET.get('reason') or request.GET.get('STATUS') or 'Ödəniş ləğv edildi və ya rədd edildi'
+    if odenis_obj.status == 'gozlemede':
+        odenis_obj.status = 'legv_edildi'
+        odenis_obj.xarici_status = str(reason)[:50]
+        odenis_obj.save(update_fields=['status', 'xarici_status'])
+    return render(request, 'odenis_netice.html', {
+        'success': False,
+        'odenis': odenis_obj,
+        'mebleg': odenis_obj.mebleg,
+        'xeta': reason,
+    })
+
+
+@login_required
+def birbank_simulator(request):
+    """Lokal / sınaq mühitində Birbank ödəniş səhifəsinin simulyasiyası."""
+    odenis_id = request.GET.get('odenis_id')
+    amount = request.GET.get('amount', '10.00')
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'approve':
+            return redirect(reverse('birbank_ugurlu') + f"?odenis_id={odenis_obj.pk}&STATUS=FullyPaid")
+        else:
+            return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}&reason=İstifadəçi imtina etdi")
+
+    return render(request, 'birbank_simulator.html', {
+        'odenis': odenis_obj,
+        'amount': amount,
+        'user': request.user,
+    })
+
+
+@csrf_exempt
+def birbank_callback(request):
+    order_id = request.GET.get('ID') or request.POST.get('id')
+    status_val = request.GET.get('STATUS') or request.POST.get('status')
+    if order_id:
+        odenis_obj = Odenis.objects.filter(xarici_id=order_id).first()
+        if odenis_obj and odenis_obj.status == 'gozlemede':
+            res = birbank_gateway.check_order_status(order_id)
+            if res.get('verified'):
+                odenis_obj.status = 'tesdiq_edildi'
+                odenis_obj.xarici_status = res.get('status', 'FullyPaid')
+                odenis_obj.save()
+            elif status_val and str(status_val).lower() in ('declined', 'canceled', 'rejected'):
+                odenis_obj.status = 'legv_edildi'
+                odenis_obj.xarici_status = str(status_val)[:50]
+                odenis_obj.save(update_fields=['status', 'xarici_status'])
+    return HttpResponse('OK', content_type='text/plain')
 
 
 @login_required

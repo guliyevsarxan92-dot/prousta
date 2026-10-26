@@ -425,3 +425,12 @@ LOGGING = {
     'handlers': {'console': {'class': 'logging.StreamHandler'}},
     'loggers': {'core': {'handlers': ['console'], 'level': 'INFO', 'propagate': False}},
 }
+
+# -----------------------------------------------------------------------------
+# Birbank (Kapital Bank) E-Commerce Ödəniş Sistemi
+# -----------------------------------------------------------------------------
+BIRBANK_ENV = os.getenv('BIRBANK_ENV', 'test').lower()  # 'test' və ya 'prod'
+BIRBANK_MERCHANT_ID = os.getenv('BIRBANK_MERCHANT_ID', '')
+BIRBANK_MERCHANT_SECRET = os.getenv('BIRBANK_MERCHANT_SECRET', '')
+BIRBANK_TEST_URL = os.getenv('BIRBANK_TEST_URL', 'https://precheckout.kapitalbank.az/api')
+BIRBANK_PROD_URL = os.getenv('BIRBANK_PROD_URL', 'https://checkout.kapitalbank.az/api')

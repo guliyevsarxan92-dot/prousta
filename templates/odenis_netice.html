@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Ödəniş Nəticəsi — Prousta.az{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<div class="pg pg--narrow">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'odenis' %}">Balans Artır</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">Ödəniş Nəticəsi</span>
+  </nav>
+
+  <div class="panel" style="text-align:center;padding:40px 24px;border-radius:18px;max-width:540px;margin:20px auto">
+    {% if success %}
+      <div style="width:72px;height:72px;background:#eaf7f1;color:#007b52;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h1 style="font-size:24px;font-weight:800;color:#0f172a;margin:0 0 8px">Ödəniş uğurla tamamlandı!</h1>
+      <p style="color:#64748b;font-size:14.5px;margin:0 0 24px">
+        Balansınıza <strong>{{ mebleg }} ₼</strong> məbləğ dərhal əlavə olundu.
+      </p>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:24px;text-align:left">
+        <div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid #e2e8f0;font-size:13.5px">
+          <span style="color:#64748b">Əməliyyat nömrəsi:</span>
+          <strong>#{{ odenis.pk }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:13.5px">
+          <span style="color:#64748b">Ödəniş metodu:</span>
+          <span style="color:#e11d48;font-weight:700">Birbank / Bank kartı</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;font-size:13.5px">
+          <span style="color:#64748b">Ödənilən məbləğ:</span>
+          <strong style="color:#007b52">{{ mebleg }} ₼</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding-top:8px;font-size:14px">
+          <span style="color:#64748b">Cari balansınız:</span>
+          <strong style="color:#0f172a;font-size:16px">{{ balans }} ₼</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="{% url 'profil' %}" class="btn btn-primary" style="padding:12px 24px">
+          {% include 'partials/ui_icon.html' with name='wallet' %}
+          Profilə qayıt
+        </a>
+        <a href="{% url 'elan_siyahi' %}" class="btn btn-outline" style="padding:12px 24px">
+          Elanlara bax
+        </a>
+      </div>
+
+    {% else %}
+      <div style="width:72px;height:72px;background:#fef2f2;color:#ef4444;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+
+      <h1 style="font-size:24px;font-weight:800;color:#0f172a;margin:0 0 8px">Ödəniş baş tutmadı</h1>
+      <p style="color:#64748b;font-size:14px;margin:0 0 24px">
+        {{ xeta }}
+      </p>
+
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="{% url 'odenis' %}" class="btn btn-primary" style="padding:12px 24px">
+          Yenidən cəhd et
+        </a>
+        <a href="{% url 'profil' %}" class="btn btn-outline" style="padding:12px 24px">
+          Profilə qayıt
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

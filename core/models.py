@@ -295,13 +295,20 @@ class Odenis(models.Model):
         ('balans', 'Balans Artırma'),
         ('ireli_cek', 'İrəli Çəkmə'),
     ]
+    METOD = [
+        ('birbank', 'Birbank / Bank kartı'),
+        ('qebz', 'Bank köçürməsi (Qəbz)'),
+    ]
 
     istifadeci = models.ForeignKey(User, on_delete=models.CASCADE, related_name='odenisler')
     elan = models.ForeignKey(Elan, on_delete=models.SET_NULL, null=True, blank=True)
     nov = models.CharField(max_length=20, choices=NOV)
+    metod = models.CharField(max_length=20, choices=METOD, default='birbank')
     mebleg = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS, default='gozlemede')
     qebz = models.ImageField(upload_to='qebzler/', storage=receipt_storage, null=True, blank=True)
+    xarici_id = models.CharField(max_length=120, blank=True, null=True, db_index=True)
+    xarici_status = models.CharField(max_length=50, blank=True)
     applied_at = models.DateTimeField(null=True, blank=True, editable=False)
     qeyd = models.TextField(blank=True)
     yaradildi = models.DateTimeField(auto_now_add=True)
