@@ -869,6 +869,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = context.watch<AuthProvider>().user;
+    final isSystem = widget.otherUserName.toLowerCase().contains('sistem');
     final myInitial = (currentUser != null && currentUser.fullName.isNotEmpty)
         ? currentUser.fullName[0].toUpperCase()
         : 'M';
@@ -885,16 +886,22 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             CircleAvatar(
               radius: 19,
               backgroundColor: _brandLight,
-              child: Text(
-                widget.otherUserName.isNotEmpty
-                    ? widget.otherUserName[0].toUpperCase()
-                    : 'U',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: _brandPrimary,
-                  fontSize: 15,
-                ),
-              ),
+              child: isSystem
+                  ? const Icon(
+                      Icons.campaign_rounded,
+                      color: _brandPrimary,
+                      size: 20,
+                    )
+                  : Text(
+                      widget.otherUserName.isNotEmpty
+                          ? widget.otherUserName[0].toUpperCase()
+                          : 'U',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: _brandPrimary,
+                        fontSize: 15,
+                      ),
+                    ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -913,14 +920,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    (widget.elanTitle != null && widget.elanTitle!.isNotEmpty)
-                        ? 'Online • ${widget.elanTitle!}'
-                        : 'Online',
+                    isSystem
+                        ? 'Rəsmi Bildiriş'
+                        : (widget.elanTitle != null && widget.elanTitle!.isNotEmpty)
+                            ? 'Online • ${widget.elanTitle!}'
+                            : 'Online',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11.5,
-                      color: Color(0xFF0FA968),
+                      color: isSystem
+                          ? const Color(0xFF007B52)
+                          : const Color(0xFF0FA968),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -938,7 +949,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               size: 21,
             ),
           ),
-          PopupMenuButton<String>(
+          if (!isSystem)
+            PopupMenuButton<String>(
             icon: const Icon(
               Icons.more_vert_rounded,
               color: Color(0xFF0F172A),

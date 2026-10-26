@@ -15,15 +15,42 @@ def profil_yarat(sender, instance, created, **kwargs):
 
 def _sistem_istifadecisi():
     """Sistem bildirişləri üçün göndərici istifadəçi (yaradılır əgər yoxdursa)."""
-    user, _ = User.objects.get_or_create(
+    user, created = User.objects.get_or_create(
         username='prousta_sistem',
         defaults={
             'email': 'sistem@prousta.az',
             'first_name': 'Prousta',
             'last_name': 'Sistem',
-            'is_active': False,
+            'is_active': True,
         },
     )
+    update_fields = []
+    if not user.is_active:
+        user.is_active = True
+        update_fields.append('is_active')
+    if user.first_name != 'Prousta':
+        user.first_name = 'Prousta'
+        update_fields.append('first_name')
+    if user.last_name != 'Sistem':
+        user.last_name = 'Sistem'
+        update_fields.append('last_name')
+    if user.has_usable_password():
+        user.set_unusable_password()
+        update_fields.append('password')
+    if update_fields:
+        user.save(update_fields=update_fields)
+
+    profil, _ = Profil.objects.get_or_create(istifadeci=user)
+    p_updates = []
+    if profil.ad != 'Prousta':
+        profil.ad = 'Prousta'
+        p_updates.append('ad')
+    if profil.soyad != 'Sistem':
+        profil.soyad = 'Sistem'
+        p_updates.append('soyad')
+    if p_updates:
+        profil.save(update_fields=p_updates)
+
     return user
 
 

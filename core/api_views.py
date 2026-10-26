@@ -2,6 +2,7 @@ import re
 from datetime import timedelta
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -551,7 +552,14 @@ class ChatMessagesApiView(ValidatedAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, other_user_id):
-        other_user = get_object_or_404(User, pk=other_user_id, is_active=True)
+        other_user = get_object_or_404(User, pk=other_user_id)
+        if not other_user.is_active and other_user.username != 'prousta_sistem':
+            has_messages = Mesaj.objects.filter(
+                (Q(gonderici=request.user) & Q(alici=other_user)) |
+                (Q(gonderici=other_user) & Q(alici=request.user))
+            ).exists()
+            if not has_messages:
+                raise Http404
         check_messaging(request.user, other_user.pk)
         # Mesajları oxunmuş kimi qeyd edirik
         Mesaj.objects.filter(gonderici=other_user, alici=request.user, oxundu=False).update(oxundu=True)
@@ -580,7 +588,9 @@ class ChatMessagesApiView(ValidatedAPIView):
         return Response(serializer.data)
 
     def post(self, request, other_user_id):
-        other_user = get_object_or_404(User, pk=other_user_id, is_active=True)
+        other_user = get_object_or_404(User, pk=other_user_id)
+        if not other_user.is_active and other_user.username != 'prousta_sistem':
+            return Response({'error': 'Bu istifadəçi qeyri-aktivdir.'}, status=status.HTTP_400_BAD_REQUEST)
         check_messaging(request.user, other_user.pk)
         metn = text(request.data.get('metn', ''), 'Mesaj', 5000)
         elan_id = request.data.get('elan_id')
@@ -594,9 +604,13 @@ class ChatMessagesApiView(ValidatedAPIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        elan = get_object_or_404(visible_listings(request.user), pk=elan_id) if elan_id else None
-        if elan and elan.istifadeci_id not in (request.user.pk, other_user.pk):
-            raise ValidationError('Elan söhbət iştirakçılarına aid deyil.')
+        elan = None
+        if elan_id:
+            elan = Elan.objects.filter(pk=elan_id).first()
+            if not elan:
+                raise ValidationError('Elan tapılmadı.')
+            if elan.istifadeci_id not in (request.user.pk, other_user.pk):
+                raise ValidationError('Elan söhbət iştirakçılarına aid deyil.')
 
         mesaj = Mesaj.objects.create(
             gonderici=request.user,
@@ -655,6 +669,8 @@ class BlockToggleApiView(ValidatedAPIView):
         hedef = get_object_or_404(User, pk=user_id)
         if hedef.id == request.user.id:
             return Response({'error': 'Özünüzü bloklaya bilməzsiniz.'}, status=status.HTTP_400_BAD_REQUEST)
+        if hedef.username == 'prousta_sistem':
+            return Response({'error': 'Sistem istifadəçisini bloklamaq mümkün deyil.'}, status=status.HTTP_400_BAD_REQUEST)
 
         obj, created = Bloklama.objects.get_or_create(bloklayan=request.user, bloklanan=hedef)
         if not created:

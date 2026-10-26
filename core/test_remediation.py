@@ -11,7 +11,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import connection
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
@@ -442,6 +442,57 @@ class RemediationTests(TestCase):
                 status='aktiv',
             )
         self.assertEqual(Mesaj.objects.filter(alici=new_user).count(), 1)
+
+    @override_settings(SECURE_SSL_REDIRECT=False)
+    def test_first_ad_system_message_can_be_read_and_replied_via_api(self):
+        new_user = User.objects.create_user(username='usta_revan', password='SecretPassword123!')
+        cat = Kategori.objects.create(ad='Santexnik', slug='santexnik-api-test')
+        with self.captureOnCommitCallbacks(execute=True):
+            ad = Elan.objects.create(
+                istifadeci=new_user,
+                kategori=cat,
+                bashliq='Santexnik Revan Usta',
+                acaqlama='Santexnika təmiri.',
+                status='aktiv',
+            )
+
+        # Mesaj prousta_sistem tərəfindən göndərilməlidir
+        sistem_msg = Mesaj.objects.filter(alici=new_user).first()
+        self.assertIsNotNone(sistem_msg)
+        sistem_user = sistem_msg.gonderici
+        self.assertEqual(sistem_user.username, 'prousta_sistem')
+        self.assertTrue(sistem_user.is_active)
+
+        # API ilə söhbətlər siyahısı gətirilir
+        api = APIClient()
+        api.force_authenticate(user=new_user)
+        conv_resp = api.get('/api/v1/messages/conversations/')
+        self.assertEqual(conv_resp.status_code, 200)
+        self.assertEqual(len(conv_resp.data), 1)
+        self.assertEqual(conv_resp.data[0]['user_id'], sistem_user.pk)
+        self.assertEqual(conv_resp.data[0]['unread_count'], 1)
+
+        # API ilə sistem mesajı oxunur (404 verməməlidir)
+        msg_resp = api.get(f'/api/v1/messages/{sistem_user.pk}/')
+        self.assertEqual(msg_resp.status_code, 200)
+        self.assertEqual(len(msg_resp.data), 1)
+        self.assertEqual(msg_resp.data[0]['id'], sistem_msg.pk)
+        sistem_msg.refresh_from_db()
+        self.assertTrue(sistem_msg.oxundu)
+
+        # API ilə sistem istifadəçisinə cavab yazılır (201 verməlidir)
+        reply_resp = api.post(
+            f'/api/v1/messages/{sistem_user.pk}/',
+            {'metn': 'Salam, VIP status üçün ödənişi necə edə bilərəm?', 'elan_id': ad.pk},
+            format='json'
+        )
+        self.assertEqual(reply_resp.status_code, 201)
+        self.assertTrue(Mesaj.objects.filter(gonderici=new_user, alici=sistem_user).exists())
+
+        # Sistem istifadəçisini bloklamaq cəhdi rədd edilməlidir
+        block_resp = api.post(f'/api/v1/users/{sistem_user.pk}/block/')
+        self.assertEqual(block_resp.status_code, 400)
+        self.assertFalse(Bloklama.objects.filter(bloklayan=new_user, bloklanan=sistem_user).exists())
 
     def test_web_account_deletion_flow(self):
         user = User.objects.create_user(username='silinecek_user', password='MyStrongPassword123!')
