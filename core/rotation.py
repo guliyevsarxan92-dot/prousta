@@ -23,7 +23,6 @@ def apply_fair_rotation(qs, seed):
         When(vip_status__in=['vip', 'super_vip'], vip_bitis__gt=timezone.now(), then=Value(1)),
         default=Value(0), output_field=IntegerField()))
     order_fields.append(F('_effective_vip_rank').desc())
-    order_fields.append(F('ireli_cekildi').desc(nulls_last=True))
 
     if connection.vendor == 'postgresql':
         return qs.annotate(
@@ -31,10 +30,12 @@ def apply_fair_rotation(qs, seed):
         ).order_by(
             *order_fields,
             '_seed_hash',
+            F('ireli_cekildi').desc(nulls_last=True),
             F('yaradildi').desc(),
         )
     return qs.order_by(
         *order_fields,
+        F('ireli_cekildi').desc(nulls_last=True),
         F('vip_yenilendi').desc(nulls_last=True),
         F('yaradildi').desc(),
     )
