@@ -22,46 +22,14 @@
 
   <section class="pg-hero">
     <h1>{{ aktiv_kategori.ad }} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
-    <p>{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üçün {{ aktiv_kategori.ad|lower }} axtarışı: bütün ərazilərdən uyğun elanları və qiymətləri müqayisə edin. {{ lokasiya_melumat.erazi }} ünvanlarına gəlişi usta ilə razılaşdırın.{% else %}{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% endif %}</p>
     <form class="search-bar" method="get" role="search">
       <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Bu kateqoriyada axtar" aria-label="Bu kateqoriyada axtar"></label>
       <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
     </form>
   </section>
 
-  <section class="panel pg-section" aria-label="Xidmət üzrə qısa məlumat">
-    <h2 style="font-size:18px;margin-bottom:10px">{{ aktiv_kategori.ad }} üzrə qısa məlumat</h2>
-    <dl>
-      {% if lokasiya_melumat %}<dt><strong>Elanında {{ lokasiya_melumat.ad }} göstərənlər</strong></dt><dd>{{ local_listing_count|default:0 }} elan. Digər ərazilərin elanları da aşağıda göstərilir.</dd>{% endif %}
-      <dt><strong>Elanlarda göstərilən qiymətlər</strong></dt>
-      <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Qiymət elan sahibi ilə razılaşdırılır.{% endif %} Yekun məbləğ işin həcmi, material və gəliş şərtlərindən asılıdır.</dd>
-      <dt><strong>Xidmətin razılaşdırılması</strong></dt><dd>Ünvanı, vaxtı, işin həcmini və zəmanət şərtlərini elan sahibi ilə birbaşa dəqiqləşdirin.</dd>
-    </dl>
-    {% if local_listings %}<p style="margin-top:12px"><strong>Ərazisini {{ lokasiya_melumat.ad }} göstərən elanlar:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
-  </section>
-
-  {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}
-  <div class="chips pg-section" style="margin-top:-10px">
-    {% for alt in alts %}<a class="chip" href="{% if lokasiya %}{% url 'xidmet_lokasiya_detail' alt.slug lokasiya %}{% else %}{% url 'xidmet_detail' alt.slug %}{% endif %}">{{ alt.ad }}</a>{% endfor %}
-  </div>
-  {% endif %}{% endwith %}
-
-  <!-- Rayon və Qəsəbələr üzrə Lokal SEO Keçidləri -->
-  <div class="pg-section" style="margin-top:-6px;margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--tx)">
-      {% include 'partials/ui_icon.html' with name='map-pin' %} <span>Rayon və Qəsəbə üzrə ustalar:</span>
-    </div>
-    <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
-      <a class="chip" href="{% url 'xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Bütün ərazilər</a>
-      {% for lok in butun_lokasiyalar %}
-      <a class="chip" href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori.ad }} {{ lok.ad }}">{{ lok.ad }}</a>
-      {% endfor %}
-    </div>
-  </div>
-
   <section class="pg-section">
     <div class="sec-head"><h2>{% if axtaris %}“{{ axtaris }}” üzrə nəticələr{% else %}{{ aktiv_kategori.ad }} elanları{% endif %}</h2></div>
-    <p class="muted">Ərazi fərq etmədən bütün uyğun elanlar göstərilir. Xidmət ünvanını və gəliş imkanını usta ilə dəqiqləşdirin.</p>
     <div class="service-grid">
       {% for elan in elanlar %}
         {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
@@ -76,8 +44,8 @@
           <p>Başqa açar söz yoxlayın və ya bu xidmətin bütün elanlarına baxın.</p>
           <a href="{{ request.path }}" class="btn btn-primary">Bütün xidmət elanları</a>
           {% else %}
-          <h3>Bu kateqoriyada hələ aktiv elan yoxdur</h3>
-          <p>{{ aktiv_kategori.ad }} üzrə ilk elanı yerləşdirən siz olun və müştərilər sizi dərhal tapsın!</p>
+          <h3>Hazırda bu xidmət üzrə elan yoxdur</h3>
+          <p>{{ aktiv_kategori.ad }} üzrə yeni elanlar yerləşdirildikdə burada görünəcək.</p>
           <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Pulsuz elan yerləşdir {% include 'partials/ui_icon.html' with name='arrow' %}</a>
           {% endif %}
         </div>
@@ -85,6 +53,37 @@
     </div>
     {% include 'partials/pager.html' with page=elanlar q=axtaris page_range=page_range elan_seed=elan_seed %}
   </section>
+
+  <section class="panel pg-section" aria-label="Xidmət üzrə qısa məlumat">
+    <h2 style="font-size:18px;margin-bottom:10px">{{ aktiv_kategori.ad }} üzrə qısa məlumat</h2>
+    <p>{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üçün {{ aktiv_kategori.ad|lower }} axtarışı: bütün ərazilərdən uyğun elanları və qiymətləri müqayisə edin. {{ lokasiya_melumat.erazi }} ünvanlarına gəlişi usta ilə razılaşdırın.{% else %}{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% endif %}</p>
+    <dl>
+      {% if lokasiya_melumat and local_listing_count %}<dt><strong>Elanında {{ lokasiya_melumat.ad }} göstərənlər</strong></dt><dd>{{ local_listing_count }} elan.</dd>{% endif %}
+      <dt><strong>Elanlarda göstərilən qiymətlər</strong></dt>
+      <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Qiymət elan sahibi ilə razılaşdırılır.{% endif %} Yekun məbləğ işin həcmi, material və gəliş şərtlərindən asılıdır.</dd>
+      <dt><strong>Xidmətin razılaşdırılması</strong></dt><dd>Ünvanı, vaxtı, işin həcmini və zəmanət şərtlərini elan sahibi ilə birbaşa dəqiqləşdirin.</dd>
+    </dl>
+    {% if local_listings %}<p style="margin-top:12px"><strong>Ərazisini {{ lokasiya_melumat.ad }} göstərən elanlar:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+  </section>
+
+  {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}
+  <div class="chips pg-section">
+    {% for alt in alts %}<a class="chip" href="{% if lokasiya %}{% url 'xidmet_lokasiya_detail' alt.slug lokasiya %}{% else %}{% url 'xidmet_detail' alt.slug %}{% endif %}">{{ alt.ad }}</a>{% endfor %}
+  </div>
+  {% endif %}{% endwith %}
+
+  <!-- Rayon və Qəsəbələr üzrə Lokal SEO Keçidləri -->
+  <div class="pg-section" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--tx)">
+      {% include 'partials/ui_icon.html' with name='map-pin' %} <span>Rayon və Qəsəbə üzrə ustalar:</span>
+    </div>
+    <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
+      <a class="chip" href="{% url 'xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Bütün ərazilər</a>
+      {% for lok in butun_lokasiyalar %}
+      <a class="chip" href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori.ad }} {{ lok.ad }}">{{ lok.ad }}</a>
+      {% endfor %}
+    </div>
+  </div>
 
   <!-- Əlaqəli Xidmətlər (SEO Daxili Linklər) -->
   {% if oxsar_kateqoriyalar %}
