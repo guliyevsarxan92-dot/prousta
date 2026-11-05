@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from . import views
 from . import mobile_auth
 from . import receipts
@@ -55,6 +55,7 @@ urlpatterns = [
     path('odenis/tesdiq/<int:pk>/', views.odenis_tesdiq, name='odenis_tesdiq'),
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('llms.txt', views.llms_txt, name='llms_txt'),
+    path('BingSiteAuth.xml', TemplateView.as_view(template_name='BingSiteAuth.xml', content_type='application/xml'), name='bing_site_auth'),
     path('gizlilik/', views.gizlilik, name='gizlilik'),
     path('istifade-sertleri/', views.istifade_sertleri, name='istifade_sertleri'),
     path('haqqimizda/', views.haqqimizda, name='haqqimizda'),
