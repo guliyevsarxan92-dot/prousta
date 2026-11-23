@@ -222,9 +222,34 @@ def invalidate_public_caches(sender, **kwargs):
         transaction.on_commit(lambda: cache.delete_many(['seo_indexable_kat_ids', 'prousta_llms_txt_v4']))
 
 
+@receiver(post_save, sender=Elan)
+def indexnow_elan_notify(sender, instance, **kwargs):
+    """Aktiv elan yaradıldıqda və ya yeniləndikdə IndexNow vasitəsilə axtarış sistemlərinə bildir."""
+    if instance.status == 'aktiv' and (not instance.bitis_tarixi or instance.bitis_tarixi > timezone.now()):
+        try:
+            url = instance.get_absolute_url()
+            from .indexnow import submit_urls_now
+            transaction.on_commit(lambda: submit_urls_now([url]))
+        except Exception:
+            pass
+
+
+@receiver(post_save, sender=Problem)
+def indexnow_problem_notify(sender, instance, **kwargs):
+    """Məqalə/problem əlavə edildikdə və ya yeniləndikdə IndexNow-a bildir."""
+    if getattr(instance, 'aktiv', True):
+        try:
+            url = instance.get_absolute_url()
+            from .indexnow import submit_urls_now
+            transaction.on_commit(lambda: submit_urls_now([url]))
+        except Exception:
+            pass
+
+
 @receiver(post_save)
 def cleanup_replaced_media_after_save(sender, instance, **kwargs):
     old = getattr(instance, '_obsolete_media', None)
     if old:
         del instance._obsolete_media
         _delete_after_commit(*old)
+

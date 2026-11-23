@@ -3,7 +3,7 @@ from django.contrib.sitemaps.views import sitemap
 from core.seo_discovery import sitemap_index
 from core.sitemaps import (
     AnaSehifeSitemap, KategoriSitemap, AltKategoriSitemap, StatikSitemap,
-    ElanSitemap, ProblemSitemap, XidmetLokasiyaSitemap
+    ElanSitemap, ProblemSitemap, XidmetLokasiyaSitemap, ServiceGuideSitemap
 )
 
 sitemaps = {
@@ -14,6 +14,7 @@ sitemaps = {
     'elanlar': ElanSitemap,
     'problemler': ProblemSitemap,
     'statik': StatikSitemap,
+    'xidmet_beledcileri': ServiceGuideSitemap,
 }
 from django.urls import path, include
 from django.conf import settings

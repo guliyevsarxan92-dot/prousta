@@ -4,11 +4,13 @@ from . import views
 from . import mobile_auth
 from . import receipts
 from .health import readiness
+from .indexnow import indexnow_key_view
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('health/', readiness, name='health'),
+    re_path(r'^(?P<key>[a-zA-Z0-9]{16,64})\.txt$', indexnow_key_view, name='indexnow_key'),
     path('mobile/google-login/', mobile_auth.mobile_google_login, name='mobile_google_login'),
     path('mobile/session/', mobile_auth.mobile_session, name='mobile_session'),
     path('qeydiyyat/', views.qeydiyyat, name='qeydiyyat'),
