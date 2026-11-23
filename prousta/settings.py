@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'prousta.urls'
@@ -90,14 +91,16 @@ if not _active_db_url:
 if 'pooler.supabase.com:5432' in _active_db_url:
     _active_db_url = _active_db_url.replace(':5432', ':6543')
 
+_is_pooler = 'pooler.supabase.com' in _active_db_url
 DATABASES = {
     'default': {
         **dj_database_url.parse(
             _active_db_url,
-            conn_max_age=0,
+            conn_max_age=0 if _is_pooler else 60,
+            conn_health_checks=not _is_pooler,
             ssl_require=True if 'supabase' in _active_db_url else (not DEBUG),
         ),
-        'DISABLE_SERVER_SIDE_CURSORS': True,
+        **({'DISABLE_SERVER_SIDE_CURSORS': True} if _is_pooler else {}),
     }
 }
 
@@ -175,6 +178,15 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
+# Cookie və brauzer təhlükəsizliyi (bütün mühitlər)
+SESSION_COOKIE_HTTPONLY = True          # JS sessiya cookie-sini oxuya bilməz (XSS ilə oğurluq qarşısı)
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', str(14 * 24 * 3600)))  # 14 gün
+X_FRAME_OPTIONS = 'SAMEORIGIN'          # Başqa saytlar Prousta-nı iframe-ə sala bilməz (clickjacking)
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'  # Google login popup-u üçün
+PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()'
+
 LOGIN_URL = '/giris/'
 TRUSTED_PROXY_CIDRS = [cidr.strip() for cidr in os.getenv(
     'TRUSTED_PROXY_CIDRS', '127.0.0.1/32,::1/128'
@@ -184,6 +196,7 @@ SECURE_REDIRECT_EXEMPT = [r'^health/$']
 # Axtarış sistemləri təsdiq kodları (Google Search Console / Yandex Webmaster)
 GOOGLE_SITE_VERIFICATION = os.getenv('GOOGLE_SITE_VERIFICATION', '')
 YANDEX_VERIFICATION = os.getenv('YANDEX_VERIFICATION', '')
+INDEXNOW_KEY = os.getenv('INDEXNOW_KEY', '82fe8929a2fa1e046663f389a81e502c').strip()
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

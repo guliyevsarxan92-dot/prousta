@@ -43,6 +43,11 @@ class BirbankGateway:
     def is_configured(self):
         return bool(self.merchant_id and self.merchant_secret)
 
+    @property
+    def simulator_allowed(self):
+        """Simulyasiya (pulsuz təsdiq) yalnız lokal DEBUG mühitində mümkündür."""
+        return bool(getattr(settings, 'DEBUG', False)) and not self.is_configured
+
     def _get_auth_header(self):
         token = f"{self.merchant_id}:{self.merchant_secret}".encode('utf-8')
         encoded = base64.b64encode(token).decode('ascii')
@@ -61,6 +66,9 @@ class BirbankGateway:
         cancel_url = cancel_url or fail_url
 
         if not self.is_configured:
+            if not self.simulator_allowed:
+                logger.error("Birbank konfiqurasiya edilməyib; production-da simulyasiya qadağandır.")
+                return {'success': False, 'error': 'Onlayn ödəniş hazırda əlçatan deyil.'}
             logger.info("Birbank konfiqurasiyası tapılmadı. Simulyasiya rejimi aktivləşdirilir.")
             simulated_id = f"SIM-{odenis_id}-{int(amount_decimal * 100)}"
             sim_url = reverse('birbank_simulator') + f"?odenis_id={odenis_id}&amount={amount_decimal}"
@@ -115,17 +123,16 @@ class BirbankGateway:
                 }
             else:
                 err_msg = data.get('message') or data.get('error') or f"Status: {response.status_code}"
-                logger.error(f"Birbank create_order xətası: {err_msg} - {response.text}")
+                logger.error("Birbank create_order xətası: status=%s message=%s", response.status_code, err_msg)
                 return {
                     'success': False,
-                    'error': str(err_msg),
-                    'raw': data
+                    'error': 'Bank ödəniş sifarişini qəbul etmədi.',
                 }
-        except Exception as e:
+        except Exception:
             logger.exception("Birbank create_order bağlantı xətası")
             return {
                 'success': False,
-                'error': f"Bağlantı xətası: {str(e)}"
+                'error': 'Bank ilə əlaqə qurulmadı.'
             }
 
     def check_order_status(self, order_id):
@@ -136,6 +143,9 @@ class BirbankGateway:
             return {'verified': False, 'status': 'Unknown'}
 
         if str(order_id).startswith('SIM-'):
+            if not self.simulator_allowed:
+                logger.warning("Production-da simulyasiya sifarişi rədd edildi: %s", order_id)
+                return {'verified': False, 'status': 'SimulatorDisabled'}
             return {
                 'verified': True,
                 'status': 'FullyPaid',
@@ -170,11 +180,11 @@ class BirbankGateway:
                 'status': f"HTTP_{response.status_code}",
                 'raw': data
             }
-        except Exception as e:
+        except Exception:
             logger.exception("Birbank check_order_status xətası")
             return {
                 'verified': False,
-                'status': f"Error: {str(e)}"
+                'status': 'GatewayError'
             }
 
 

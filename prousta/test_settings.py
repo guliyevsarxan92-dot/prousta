@@ -16,6 +16,7 @@ STORAGES = {
 }
 CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+INDEXNOW_KEY = ''  # Test fixtures must never notify external search engines.
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 # Optional local-only PostgreSQL integration database. Never accepts a remote host.

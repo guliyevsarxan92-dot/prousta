@@ -10,6 +10,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Scan repository for leaked secrets and sensitive files
+        run: python3 scripts/check_secrets.py
       - run: pip install -r requirements.txt
       - run: python manage.py check --settings=prousta.test_settings
       - run: python manage.py makemigrations --check --dry-run --settings=prousta.test_settings
