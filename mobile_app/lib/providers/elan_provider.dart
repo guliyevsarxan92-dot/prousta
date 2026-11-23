@@ -12,6 +12,7 @@ class ElanProvider extends ChangeNotifier {
   bool _isLoadingMore = false;
   bool _hasNext = false;
   int _currentPage = 1;
+  String? _errorMessage;
 
   int _requestGeneration = 0;
   int? _userId;
@@ -39,6 +40,7 @@ class ElanProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isLoadingMore => _isLoadingMore;
   bool get hasNext => _hasNext;
+  String? get errorMessage => _errorMessage;
 
   String get searchQuery => _searchQuery;
   String? get selectedCategorySlug => _selectedCategorySlug;
@@ -71,6 +73,7 @@ class ElanProvider extends ChangeNotifier {
     if (reset) {
       _isLoadingMore = false;
       _isLoading = true;
+      _errorMessage = null;
       _currentPage = 1;
       notifyListeners();
     } else {
@@ -94,10 +97,15 @@ class ElanProvider extends ChangeNotifier {
       } else {
         _elanlar.addAll(newItems);
       }
+      _errorMessage = null;
       _hasNext = data['hasNext'] as bool;
       _currentPage = pageToFetch;
     } catch (e) {
       debugPrint('Error fetching elanlar: $e');
+      if (generation == _requestGeneration && reset) {
+        _errorMessage =
+            'Elanlar yüklənə bilmədi. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.';
+      }
     } finally {
       if (generation == _requestGeneration) {
         _isLoading = false;

@@ -8,11 +8,38 @@ class AuthProvider extends ChangeNotifier {
   AppUser? _user;
   bool _isLoading = false;
   bool _initialized = false;
+  bool _handlingUnauthorized = false;
+
+  AuthProvider() {
+    ApiService.onUnauthorized = handleUnauthorized;
+  }
 
   AppUser? get user => _user;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _user != null && ApiService.isAuthenticated;
   bool get initialized => _initialized;
+
+  Future<void> handleUnauthorized() async {
+    if (_handlingUnauthorized) return;
+    _handlingUnauthorized = true;
+    try {
+      await ApiService.setToken(null);
+      if (_user != null) {
+        _user = null;
+        notifyListeners();
+      }
+    } finally {
+      _handlingUnauthorized = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (ApiService.onUnauthorized == handleUnauthorized) {
+      ApiService.onUnauthorized = null;
+    }
+    super.dispose();
+  }
 
   Future<void> initialize() async {
     if (_initialized) return;

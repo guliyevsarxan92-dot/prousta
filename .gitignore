@@ -28,5 +28,6 @@ deploy.sh
 **/key.properties
 **/google-services.json
 **/GoogleService-Info.plist
+mobile_app/ios/Flutter/GoogleSignIn.xcconfig
 *service-account*.json
 mobile_app/android/.kotlin/

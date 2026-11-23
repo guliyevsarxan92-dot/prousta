@@ -624,4 +624,34 @@ class RemediationTests(TestCase):
         user.profil.refresh_from_db()
         self.assertEqual(user.profil.balans, Decimal('50.00'))
 
+    def test_api_elanlar_list_excludes_expired_and_detail_dedupes_views(self):
+        expired = Elan.objects.create(
+            istifadeci=self.user,
+            kategori=self.category,
+            bashliq='Müddəti bitmiş API elanı',
+            acaqlama='Peşəkar xidmət və texniki dəstək.',
+            telefon='+994501234567',
+            status='aktiv',
+            bitis_tarixi=timezone.now() - timedelta(minutes=5),
+        )
+        list_resp = APIClient().get('/api/v1/elanlar/')
+        self.assertEqual(list_resp.status_code, 200)
+        ids = [item['id'] for item in list_resp.data['results']]
+        self.assertIn(self.ad.pk, ids)
+        self.assertNotIn(expired.pk, ids)
+
+        # Owner view does not increment baxish_sayi
+        start_views = self.ad.baxish_sayi
+        self.assertEqual(self.api.get(f'/api/v1/elanlar/{self.ad.pk}/').status_code, 200)
+        self.ad.refresh_from_db()
+        self.assertEqual(self.ad.baxish_sayi, start_views)
+
+        # Distinct visitor increments once, repeat from same IP is deduplicated
+        visitor = APIClient()
+        self.assertEqual(visitor.get(f'/api/v1/elanlar/{self.ad.pk}/', REMOTE_ADDR='198.51.100.10').status_code, 200)
+        self.assertEqual(visitor.get(f'/api/v1/elanlar/{self.ad.pk}/', REMOTE_ADDR='198.51.100.10').status_code, 200)
+        self.ad.refresh_from_db()
+        self.assertEqual(self.ad.baxish_sayi, start_views + 1)
+
+
 

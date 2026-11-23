@@ -6,6 +6,7 @@ import '../models/models.dart';
 import '../providers/auth_provider.dart';
 import '../providers/elan_provider.dart';
 import '../services/api_service.dart';
+import '../widgets/moderation_dialogs.dart';
 import 'auth_screen.dart';
 import 'messages_screen.dart';
 import 'seller_elanlar_screen.dart';
@@ -212,113 +213,19 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
       );
       return;
     }
-
-    String selectedReason = 'saxta';
-    final qeydCtrl = TextEditingController();
-    bool isSubmitting = false;
-
-    final reasons = [
-      {'key': 'saxta', 'label': 'Saxta elan / fırıldaqçılıq'},
-      {'key': 'spam', 'label': 'Spam və ya təkrarlanan elan'},
-      {'key': 'uygunsuz', 'label': 'Uyğunsuz / təhqiramiz məzmun'},
-      {'key': 'tehdid', 'label': 'Təhdid və ya təqib'},
-      {'key': 'diger', 'label': 'Digər'},
-    ];
-
-    showDialog(
+    showReportContentDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            title: Row(
-              children: const [
-                Icon(Icons.flag_outlined, color: Color(0xFFEF4444)),
-                SizedBox(width: 8),
-                Text('Elan haqqında şikayət', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-              ],
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Şikayət səbəbini seçin:', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-                  const SizedBox(height: 8),
-                  RadioGroup<String>(
-                    groupValue: selectedReason,
-                    onChanged: (val) {
-                      if (val != null) setDialogState(() => selectedReason = val);
-                    },
-                    child: Column(
-                      children: reasons
-                          .map((r) => RadioListTile<String>(
-                                value: r['key']!,
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(r['label']!, style: const TextStyle(fontSize: 13.5)),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: qeydCtrl,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      hintText: 'Əlavə qeyd (istəyə bağlı)',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
-                child: const Text('İmtina'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEF4444),
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: isSubmitting
-                    ? null
-                    : () async {
-                        setDialogState(() => isSubmitting = true);
-                        final messenger = ScaffoldMessenger.of(context);
-                        try {
-                          final msg = await ApiService.reportContent(
-                            elanId: elan.id,
-                            userId: sellerId > 0 ? sellerId : null,
-                            sebeb: selectedReason,
-                            qeyd: qeydCtrl.text.trim(),
-                          );
-                          if (ctx.mounted) Navigator.pop(ctx);
-                          messenger.showSnackBar(
-                            SnackBar(content: Text(msg)),
-                          );
-                        } catch (e) {
-                          setDialogState(() => isSubmitting = false);
-                          messenger.showSnackBar(
-                            SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-                          );
-                        }
-                      },
-                child: isSubmitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Göndər'),
-              ),
-            ],
-          );
-        },
-      ),
+      title: 'Elan haqqında şikayət',
+      initialReason: 'saxta',
+      elanId: elan.id,
+      userId: sellerId > 0 ? sellerId : null,
+      reasons: const [
+        {'key': 'saxta', 'label': 'Saxta elan / fırıldaqçılıq'},
+        {'key': 'spam', 'label': 'Spam və ya təkrarlanan elan'},
+        {'key': 'uygunsuz', 'label': 'Uyğunsuz / təhqiramiz məzmun'},
+        {'key': 'tehdid', 'label': 'Təhdid və ya təqib'},
+        {'key': 'diger', 'label': 'Digər'},
+      ],
     );
   }
 
@@ -330,56 +237,13 @@ class _ElanDetailScreenState extends State<ElanDetailScreen>
       );
       return;
     }
-
-    showDialog(
+    showBlockUserDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Text('İstifadəçini blokla', style: TextStyle(fontWeight: FontWeight.w600)),
-        content: Text(
-          '$sellerName adlı istifadəçini bloklamaq istəyirsiniz?\n\nBloklandıqdan sonra onun elanları və mesajları sizə görünməyəcək.',
-          style: const TextStyle(height: 1.45),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('İmtina'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF4444),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              try {
-                final blocked = await ApiService.toggleBlockUser(sellerId);
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        blocked
-                            ? '$sellerName bloklandı'
-                            : '$sellerName blokdan çıxarıldı',
-                      ),
-                    ),
-                  );
-                  if (blocked) {
-                    Navigator.pop(context); // Detail səhifəsindən çıxır
-                  }
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-                  );
-                }
-              }
-            },
-            child: const Text('Blokla'),
-          ),
-        ],
-      ),
+      userId: sellerId,
+      userName: sellerName,
+      onBlocked: () {
+        if (mounted) Navigator.pop(context);
+      },
     );
   }
 

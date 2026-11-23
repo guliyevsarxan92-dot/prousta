@@ -474,11 +474,24 @@ class _AuthScreenState extends State<AuthScreen> {
                                 style: const TextStyle(fontSize: 14),
                                 decoration: _inputDecoration(
                                   label: 'İstifadəçi adı',
+                                  hint: 'Ən azı 8 simvol, yalnız hərf və rəqəm',
                                   icon: Icons.alternate_email_rounded,
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
+                                  final v = value?.trim() ?? '';
+                                  if (v.isEmpty) {
                                     return 'İstifadəçi adı daxil edin';
+                                  }
+                                  if (v.length < 8) {
+                                    return 'İstifadəçi adı ən azı 8 simvol olmalıdır';
+                                  }
+                                  if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(v)) {
+                                    return 'İstifadəçi adı yalnız hərf və rəqəmdən ibarət olmalıdır';
+                                  }
+                                  final lower = v.toLowerCase();
+                                  if (lower.startsWith('prousta_') ||
+                                      lower.startsWith('google_')) {
+                                    return 'Bu istifadəçi adı rezerv edilib';
                                   }
                                   return null;
                                 },
@@ -580,8 +593,13 @@ class _AuthScreenState extends State<AuthScreen> {
                                 if (value == null || value.isEmpty) {
                                   return 'Şifrə daxil edin';
                                 }
-                                if (!_isLoginMode && value.length < 6) {
-                                  return 'Şifrə ən azı 6 simvol olmalıdır';
+                                if (!_isLoginMode) {
+                                  if (value.length < 8) {
+                                    return 'Şifrə ən azı 8 simvol olmalıdır';
+                                  }
+                                  if (RegExp(r'^\d+$').hasMatch(value)) {
+                                    return 'Şifrə yalnız rəqəmlərdən ibarət ola bilməz';
+                                  }
                                 }
                                 return null;
                               },

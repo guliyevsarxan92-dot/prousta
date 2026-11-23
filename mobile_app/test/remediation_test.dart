@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -166,4 +167,58 @@ void main() {
       expect(user.id, 1);
     },
   );
+
+  test(
+    'active session 401 automatically clears token and logs out AuthProvider',
+    () async {
+      await ApiService.setToken('live-token');
+      ApiService.setClient(
+        MockClient((request) async => http.Response('{"id":7,"profil":{}}', 200)),
+      );
+      final provider = AuthProvider();
+      await provider.initialize();
+      expect(provider.isAuthenticated, isTrue);
+
+      ApiService.setClient(
+        MockClient((request) async => http.Response('{"detail":"Invalid token."}', 401)),
+      );
+      await expectLater(ApiService.getFavorites(), throwsA(isA<ApiAuthException>()));
+      await Future<void>.delayed(Duration.zero);
+      expect(ApiService.token, isNull);
+      expect(provider.user, isNull);
+      expect(provider.isAuthenticated, isFalse);
+      provider.dispose();
+    },
+  );
+
+  test('createElan rejects images larger than 5 MB before uploading', () async {
+    final oversized = XFile.fromData(
+      Uint8List(5 * 1024 * 1024 + 1),
+      name: 'huge.jpg',
+    );
+    await expectLater(
+      ApiService.createElan(
+        bashliq: 'Kombi təmiri',
+        acaqlama: 'Peşəkar kombi təmiri və texniki xidmət.',
+        kategoriId: 1,
+        sheher: 'Bakı',
+        telefon: '501234567',
+        images: [oversized],
+      ),
+      throwsA(
+        predicate<Object>((e) => e.toString().contains('5 MB')),
+      ),
+    );
+  });
+
+  test('ElanProvider surfaces errorMessage when initial fetch fails', () async {
+    ApiService.setClient(
+      MockClient((request) async => throw Exception('No network')),
+    );
+    final provider = ElanProvider();
+    await provider.fetchElanlar(reset: true);
+    expect(provider.errorMessage, isNotNull);
+    expect(provider.elanlar, isEmpty);
+    provider.dispose();
+  });
 }

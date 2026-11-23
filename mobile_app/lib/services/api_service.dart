@@ -23,6 +23,9 @@ class BoundedClient extends http.BaseClient {
         .timeout(const Duration(seconds: 30));
     if (response.statusCode == 401) {
       await response.stream.drain<void>().timeout(const Duration(seconds: 5));
+      if (request.headers.containsKey('Authorization')) {
+        ApiService.notifyUnauthorized();
+      }
       throw ApiAuthException();
     }
     return http.StreamedResponse(
@@ -79,6 +82,13 @@ class ApiService {
 
   static const _credentialStore = FlutterSecureStorage();
   static String? _token;
+  static void Function()? onUnauthorized;
+
+  static void notifyUnauthorized() {
+    if (_token != null && _token!.isNotEmpty) {
+      onUnauthorized?.call();
+    }
+  }
 
   static Future<void> init() async {
     await ensureBaseUrl();
@@ -131,12 +141,28 @@ class ApiService {
   // AUTH
   // ---------------------------------------------------------------------------
 
-  static Future<http.MultipartFile> _imagePart(String field, XFile file) async {
+  static Future<http.MultipartFile> _imagePart(
+    String field,
+    XFile file, {
+    String fallbackName = 'photo.jpg',
+  }) async {
     final bytes = await file.readAsBytes();
     if (bytes.length > 5 * 1024 * 1024) {
       throw Exception('Şəkil 5 MB-dan böyükdür.');
     }
-    return http.MultipartFile.fromBytes(field, bytes, filename: file.name);
+    final name = file.name.isNotEmpty ? file.name : fallbackName;
+    final ext = name.split('.').last.toLowerCase();
+    final subtype = ext == 'png'
+        ? 'png'
+        : ext == 'webp'
+        ? 'webp'
+        : 'jpeg';
+    return http.MultipartFile.fromBytes(
+      field,
+      bytes,
+      filename: name,
+      contentType: http.MediaType('image', subtype),
+    );
   }
 
   static Future<List<dynamic>> _privateList(
@@ -378,21 +404,8 @@ class ApiService {
     req.fields['telefon'] = telefon;
 
     for (final xfile in images) {
-      final bytes = await xfile.readAsBytes();
-      final name = xfile.name.isNotEmpty ? xfile.name : 'elan_photo.jpg';
-      final ext = name.split('.').last.toLowerCase();
-      final subtype = ext == 'png'
-          ? 'png'
-          : ext == 'webp'
-          ? 'webp'
-          : 'jpeg';
       req.files.add(
-        http.MultipartFile.fromBytes(
-          'shekillar',
-          bytes,
-          filename: name,
-          contentType: http.MediaType('image', subtype),
-        ),
+        await _imagePart('shekillar', xfile, fallbackName: 'elan_photo.jpg'),
       );
     }
 

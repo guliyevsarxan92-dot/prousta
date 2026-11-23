@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Q, Max, Count, F, Case, When, IntegerField, Subquery
+from django.core.cache import cache
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -334,17 +335,13 @@ class ElanlarListApiView(ValidatedAPIView):
         seed = request.GET.get('seed', 'mobile')
 
         qs = (
-            Elan.objects.filter(status='aktiv')
+            visible_listings(request.user)
             .select_related('kategori')
             .prefetch_related('shekillar')
         )
 
         if user_id and user_id.isdigit():
             qs = qs.filter(istifadeci_id=int(user_id))
-
-        bloklanmis = Bloklama.bloklanmis_idler(request.user)
-        if bloklanmis:
-            qs = qs.exclude(istifadeci_id__in=bloklanmis)
 
         if kategori_slug:
             qs = qs.filter(
@@ -380,9 +377,15 @@ class ElanDetailApiView(ValidatedAPIView):
         )
 
         check_access(elan, request.user)
-        # Baxış sayını artırırıq
-        Elan.objects.filter(pk=pk).update(baxish_sayi=F('baxish_sayi') + 1)
-        elan.baxish_sayi += 1
+        # Baxış sayını yalnız elan sahibi olmayan ziyarətçi üçün (IP üzrə 6 saat limitli) artırırıq
+        is_owner = request.user.is_authenticated and request.user.pk == elan.istifadeci_id
+        if not is_owner:
+            ip = request.META.get('REMOTE_ADDR') or 'unknown'
+            cache_key = f'viewed_elan_ip_{pk}_{ip}'
+            if not cache.get(cache_key):
+                Elan.objects.filter(pk=pk).update(baxish_sayi=F('baxish_sayi') + 1)
+                elan.baxish_sayi += 1
+                cache.set(cache_key, 1, 3600 * 6)
 
         serializer = ElanDetailSerializer(elan, context={'request': request})
         return Response(serializer.data)

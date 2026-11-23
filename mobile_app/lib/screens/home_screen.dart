@@ -529,6 +529,57 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   )
+                else if (elanProvider.errorMessage != null &&
+                    displayedElanlar.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFEF2F2),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Icon(
+                                Icons.wifi_off_rounded,
+                                size: 36,
+                                color: Color(0xFFDC2626),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              elanProvider.errorMessage!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF17262A),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            ElevatedButton.icon(
+                              onPressed: () => elanProvider.loadInitialData(),
+                              icon: const Icon(Icons.refresh_rounded, size: 18),
+                              label: const Text('Yenidən cəhd et'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF007B52),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                 else if (displayedElanlar.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
@@ -619,12 +670,12 @@ class _HomeScreenState extends State<HomeScreen> {
   static const List<Map<String, String>> _fallbackCategories = [
     {'ad': 'Elektrik', 'slug': 'elektrik'},
     {'ad': 'Santexnik', 'slug': 'santexnik'},
-    {'ad': 'Təmir və tikinti', 'slug': 'temir-ve-tikinti'},
-    {'ad': 'Mebel ustası', 'slug': 'mebel'},
+    {'ad': 'Təmir və tikinti', 'slug': 'temir-tikinti'},
+    {'ad': 'Mebel ustası', 'slug': 'mebel-interyer'},
     {'ad': 'Məişət texnikası', 'slug': 'meiset-texnikasi'},
-    {'ad': 'Rəngsaz', 'slug': 'rengsaz'},
-    {'ad': 'Təmizlik', 'slug': 'temizlik'},
-    {'ad': 'Digər xidmətlər', 'slug': 'diger'},
+    {'ad': 'Rəngsaz', 'slug': 'malyar-ustasi'},
+    {'ad': 'Təmizlik', 'slug': 'temizlik-xidmeti'},
+    {'ad': 'Digər xidmətlər', 'slug': 'diger-ustalar'},
   ];
 
   IconData _getCategoryIcon(String text) {
