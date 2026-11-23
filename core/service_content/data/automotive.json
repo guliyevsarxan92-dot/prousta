@@ -1,0 +1,82 @@
+{
+  "avtomobil-temiri": {
+    "name": "Avtomobil təmiri", "heading": "Avtomobil təmiri — nasazlıq, diaqnostika və smeta",
+    "description": "Avtomobil təmiri üçün marka, model, buraxılış ili və simptomları bildirin. Diaqnostika, hissə və iş haqqını ayrı göstərən təklif istəyin.",
+    "intro": "Bu kateqoriya müxtəlif avtomobil təmiri işlərini birləşdirir. Təhlükəsiz hərəkətə mane olan nasazlıqda avtomobili sürməmək və uyğun yardım çağırmaq barədə qərarı vəziyyətə görə verin.",
+    "scope": ["Avtomobil və simptom məlumatının toplanması", "Razılaşdırılmış yoxlama və təmir", "Hissə, görülən iş və yekun yoxlamanın izahı"],
+    "pricing": ["Nasazlığın mürəkkəbliyi və diaqnostika", "Ehtiyat hissəsinin növü və mövcudluğu", "Əmək, əlavə iş və zəmanət şərtləri"],
+    "prepare": ["Marka, model və buraxılış ili", "Panel xəbərdarlıqları və simptomlar", "Əvvəl görülmüş təmir barədə məlumat"],
+    "questions": [["Təmirə başlamazdan əvvəl smeta verilirmi?", "Diaqnostika haqqını, ehtiyat hissəsinin qiymətini və əlavə iş üçün təsdiq qaydasını əvvəlcədən soruşun."], ["Dəyişən hissəni görə bilərəm?", "Köhnə hissənin qaytarılması və işin görülməsini təsdiqləyən sənədləşmə barədə əvvəl razılaşın."]],
+    "queries": ["avtomobil təmiri", "avtomobil ustası", "avtomobil diaqnostikası"], "related": ["avtomobil-ustasi", "teker-temiri-ustasi", "avtomobil-malyar-ustasi"], "sources": []
+  },
+  "avtomobil-ustasi": {
+    "name": "Avtomobil ustası", "heading": "Avtomobil ustası — xidmət növü və avtomobil məlumatı",
+    "description": "Usta seçərkən avtomobilin marka-modelini, nasazlıq əlamətlərini və tələb olunan işi bildirin. Diaqnostika və təmir razılaşmasını yazılı dəqiqləşdirin.",
+    "intro": "Mühərrik, elektrik, asqı və digər təmir sahələri fərqli təcrübə tələb edir. Müraciətdə konkret simptomları qeyd edin və təmir qərarından əvvəl görüləcək yoxlamanı soruşun.",
+    "scope": ["Simptom və avtomobil məlumatının dəqiqləşdirilməsi", "Razılaşdırılmış diaqnostika və usta işi", "Nəticə və əlavə ehtiyacların izahı"],
+    "pricing": ["İş növü və diaqnostika", "Hissə və material tələbi", "İş yeri və təmir müddəti"],
+    "prepare": ["Avtomobilin marka və modeli", "Nasazlığın nə vaxt və necə baş verməsi", "Panel işıqları və mövcud foto/video"],
+    "questions": [["Usta hansı avtomobillərə xidmət etdiyini necə yoxlayım?", "Marka və model üzrə oxşar iş təcrübəsini, diaqnostika üsulunu və təmirə daxil olan mərhələləri soruşun."], ["Diaqnostika təmir qiymətinə daxildir?", "Yoxlama haqqının təmirə hesablanıb-hesablanmadığını əvvəlcədən dəqiqləşdirin."]],
+    "queries": ["avtomobil ustası", "maşın ustası", "avtomobil nasazlığının təmiri"], "related": ["avtomobil-temiri", "teker-temiri-ustasi", "avtomobil-oturacaq"], "sources": []
+  },
+  "teker-temiri-ustasi": {
+    "name": "Təkər təmiri ustası", "heading": "Təkər təmiri və seçimi — ölçü, zədə və uyğunluq",
+    "description": "Təkər təmirində zədənin yerini və təkərin ölçü işarələrini bildirin. Təmirin uyğunluğu və alternativ dəyişmə variantını ustadan qiymətləndirməsini istəyin.",
+    "intro": "Təkərin yan divarındakı ölçü, yük və sürət işarələri uyğun seçimə kömək edir. Təzyiq və istifadəyə dair göstəricilər üçün avtomobil istehsalçısının məlumatını əsas götürün.",
+    "scope": ["Ölçü və zədə barədə ilkin məlumat", "Usta tərəfindən təkərin yoxlanması", "Uyğun olduqda təmir və balanslama təklifi"],
+    "pricing": ["Təkərin növü və ölçüsü", "Zədənin yeri və təmir üsulu", "Sökülmə, balans və əlavə xidmətlər"],
+    "prepare": ["Təkərin yan divarının fotosu", "Zədənin və xəbərdarlıq əlamətinin təsviri", "Avtomobilin marka-modeli"],
+    "questions": [["Hər təkər zədəsi təmir olunur?", "Təmirin mümkünlüyünü təkəri yoxlayan usta müəyyən etməlidir; uyğun deyilsə, təhlükəsiz əvəzləmə variantı soruşun."], ["Yeni təkər seçərkən hansı məlumat lazımdır?", "Mövcud ölçü işarələrini və avtomobil istehsalçısının uyğunluq göstəricilərini tutuşdurun."]],
+    "queries": ["təkər təmiri ustası", "şin təmiri", "avtomobil təkəri seçimi"], "related": ["avtomobil-ustasi", "avtomobil-temiri", "diger-avtomobil"], "sources": ["michelin-tyre"]
+  },
+  "avtomobil-malyar-ustasi": {
+    "name": "Avtomobil malyar ustası", "heading": "Avtomobil rənglənməsi — panel, rəng və hazırlıq",
+    "description": "Avtomobil rənglənməsində zədələnən paneli, rəng uyğunluğunu və hazırlıq işlərini təklifdə ayırın. Əvvəlki boya və kuzov zədələrini bildirin.",
+    "intro": "Yerli panel rənglənməsi ilə bir neçə detalın bərpası iş həcminə görə fərqlənir. Fotoşəkillə yanaşı avtomobilə baxış və rəng kodunun yoxlanmasını planlaşdırın.",
+    "scope": ["Kuzovun və boya qatının qiymətləndirilməsi", "Səthin hazırlığı və razılaşdırılmış rəngləmə", "Rəng uyğunluğu və təhvil yoxlaması"],
+    "pricing": ["Panel sayı və əvvəlki zədələr", "Hazırlıq və rəng materialı", "Sökülmə, qoruma və yekun işləmə"],
+    "prepare": ["Zədəli hissənin fotoşəkli", "Avtomobilin rəng kodu varsa məlumatı", "Əvvəlki təmir və boya tarixçəsi"],
+    "questions": [["Rəng bütün kuzovla eyni görünəcək?", "Rəng kodu və mövcud boya vəziyyətinin yoxlanmasını, nümunə təsdiqini və təhvil baxışını razılaşdırın."], ["Smeta yalnız boya materialını göstərir?", "Səth hazırlığı, sökülmə-yığım və material sərfini əmək haqqından ayrıca soruşun."]],
+    "queries": ["avtomobil malyarı", "maşın rənglənməsi", "avtomobil kuzov boyası"], "related": ["avtomobil-temiri", "avtomobil-ustasi", "avtomobil-oturacaq"], "sources": []
+  },
+  "avtomobil-oturacaq": {
+    "name": "Avtomobil oturacağı", "heading": "Avtomobil oturacağının üzlənməsi və təmiri",
+    "description": "Avtomobil oturacağı işində üzlük, dolğu, tikiş və mexanizm təmirini ayırın. Avtomobil modelini və oturacaq funksiyalarını sifarişdə qeyd edin.",
+    "intro": "Oturacağın sökülməsi, qızdırma və elektrik bağlantıları işin mürəkkəbliyini dəyişə bilər. Ustaya model, zədənin fotosu və oturacaqda olan funksiyalar barədə məlumat verin.",
+    "scope": ["Üzlük və oturacaq mexanizminin qiymətləndirilməsi", "Razılaşdırılmış üzləmə və dolğu işi", "Yığım və funksiyaların yoxlanması"],
+    "pricing": ["Oturacaq sayı və konstruksiyası", "Üzlük materialı və tikiş detalları", "Sökülmə, elektrik funksiyaları və montaj"],
+    "prepare": ["Avtomobilin marka və modeli", "Zədənin və oturacaq funksiyalarının fotosu", "İstənilən material və rəng"],
+    "questions": [["Dəri və parça üzlük arasında nəyi müqayisə edim?", "Nümunələri, qulluq tələblərini, istifadə rahatlığını və materialın qiymətə daxil olmasını yoxlayın."], ["Oturacaq qızdırıcısı işdən sonra yoxlanılır?", "Elektrik funksiyalarının qorunması və təhvil zamanı yoxlanması barədə əvvəlcədən razılaşın."]],
+    "queries": ["avtomobil oturacağı üzlənməsi", "maşın salonunun təmiri", "avtomobil oturacağı təmiri"], "related": ["avtomobil-malyar-ustasi", "avtomobil-temiri", "avtomobil-temizliyi"], "sources": []
+  },
+  "avtomobil-temizliyi": {
+    "name": "Avtomobil təmizliyi", "heading": "Avtomobil təmizliyi — salon və kuzov xidmətləri",
+    "description": "Avtomobil təmizliyində salon, kuzov və oturacaq işlərinin daxilolmasını soruşun. Avtomobilin ölçüsü və çirklənmə vəziyyəti qiymətə təsir edir.",
+    "intro": "Adi yuma ilə salonun dərin təmizliyi fərqli vaxt və üsul tələb edir. Dəri, parça və elektron hissələrə uyğun istifadə edilən vasitələr barədə xidmət göstərənlə danışın.",
+    "scope": ["Avtomobil və tələb olunan sahələrin baxışı", "Razılaşdırılmış salon və ya kuzov təmizliyi", "Yekun yoxlama və istifadə təlimatı"],
+    "pricing": ["Avtomobil ölçüsü və çirklənmə dərəcəsi", "Təmizlənəcək səth və xidmət növü", "Qoruyucu işləmə və əlavə xidmətlər"],
+    "prepare": ["Avtomobilin tipi və ölçüsü", "Ləkə və qoxu kimi xüsusi tələblər", "Uşaq oturacağı və şəxsi əşyalar barədə məlumat"],
+    "questions": [["Salon təmizliyindən sonra avtomobil nə vaxt hazır olur?", "İşin müddətini, quruma qaydasını və maşının götürülmə vaxtını xidmət göstərənlə əvvəl dəqiqləşdirin."], ["Təmizləmə vasitələri materiala uyğundur?", "Dəri və digər həssas səthlər üçün hansı üsuldan istifadə olunacağını soruşun."]],
+    "queries": ["avtomobil təmizliyi", "salonun kimyəvi təmizlənməsi", "avtomobil salonu yuma"], "related": ["avtomobil-oturacaq", "avtomobil-ustasi", "diger-avtomobil"], "sources": []
+  },
+  "avtomobil-acar-ustasi": {
+    "name": "Avtomobil açar ustası", "heading": "Avtomobil açarı — ehtiyat, proqramlaşdırma və uyğunluq",
+    "description": "Avtomobil açarı üçün marka, model və il məlumatını verin. Uyğunluq yoxlaması, proqramlaşdırma və ehtiyat açar şərtlərini soruşun.",
+    "intro": "Mexaniki açar, pult və elektron açar həlləri avtomobil modelinə görə dəyişə bilər. Təhlükəsizlik üçün açarın avtomobilə uyğunlaşdırılmasını səlahiyyətli və yoxlanıla bilən xidmətlə razılaşdırın.",
+    "scope": ["Avtomobil və açar sisteminin müəyyənləşdirilməsi", "Razılaşdırılmış açar hazırlanması və ya bərpası", "Uyğunlaşdırma və işləkliyin yoxlanması"],
+    "pricing": ["Marka, model və açar sistemi", "Açar blankı və elektron komponent", "Proqramlaşdırma və yerində xidmət"],
+    "prepare": ["Avtomobilin marka və buraxılış ili", "Mövcud açarın və pultun vəziyyəti", "Mülkiyyət və şəxsiyyət təsdiqi üçün lazım ola biləcək sənədlər"],
+    "questions": [["Yeni açar üçün avtomobil sənədi lazımdır?", "Xidmət göstərənin təhlükəsiz mülkiyyət yoxlaması və qəbul etdiyi sənədləri əvvəlcədən soruşun."], ["Açar hazırlığına pultun proqramlanması daxildir?", "Blank, transponder, pult, proqramlaşdırma və avtomobildə sınaq mərhələlərini təklifdə yoxlayın."]],
+    "queries": ["avtomobil açar ustası", "maşın açarı hazırlanması", "avtomobil pultu proqramlaşdırma"], "related": ["avtomobil-temiri", "avtomobil-ustasi", "diger-avtomobil"], "sources": []
+  },
+  "diger-avtomobil": {
+    "name": "Digər avtomobil xidmətləri", "heading": "Digər avtomobil xidmətləri — problemi və modeli qeyd edin",
+    "description": "Standart avtomobil kateqoriyalarına düşməyən tapşırıq üçün avtomobil modelini, ehtiyacı və yeri təsvir edin. Təklifdə diaqnostika və hissə xərclərini ayırın.",
+    "intro": "Bu bölmə ayrıca göstərilməyən avtomobil xidmətləri üçündür. İşin təhlükəsizlik, kuzov, salon və ya aksesuarla bağlı olduğunu izah edin ki, uyğun icraçı seçilsin.",
+    "scope": ["Avtomobil və ehtiyacın dəqiqləşdirilməsi", "Razılaşdırılmış xidmət və ya quraşdırma", "Nəticənin və əlavə şərtlərin izahı"],
+    "pricing": ["İşin növü və avtomobil modeli", "Hissə, material və diaqnostika", "Yerində və ya servis işi"],
+    "prepare": ["Marka, model və buraxılış ili", "Tapşırığın foto və qısa təsviri", "Əvvəl görülmüş iş barədə məlumat"],
+    "questions": [["Uyğun avtomobil ustasını necə seçmək olar?", "İşin növü üzrə təcrübəni, tələb olunan hissələri və təklifdəki mərhələləri dəqiqləşdirin."], ["Qiymət dəyişərsə işə davam edilir?", "Əlavə işin əvvəlcədən təsdiqi və smetanın dəyişmə qaydasını yazılı razılaşdırın."]],
+    "queries": ["avtomobil xidməti", "maşın ustası", "avtomobil aksesuar quraşdırılması"], "related": ["avtomobil-temiri", "avtomobil-ustasi", "teker-temiri-ustasi"], "sources": []
+  }
+}

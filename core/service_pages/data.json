@@ -1,0 +1,673 @@
+{
+  "kombi-ustasi": {
+    "name": "Kombi təmiri və servis",
+    "category": "kombi-ustasi",
+    "title": "Kombi təmiri və servis Bakıda | Prousta.az",
+    "description": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
+    "summary": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
+    "scope": [
+      [
+        "Diaqnostika",
+        "Ekrandakı xəta kodu, isti su və isitmə rejimindəki fərq ilkin məlumatdır. Səbəb cihazın yoxlanması ilə müəyyənləşdirilməlidir."
+      ],
+      [
+        "Təmir",
+        "Plata, nasos, sensor və istilik dəyişdiricisi kimi hissələrin təmiri və ya dəyişməsi baxışdan sonra təklif edilir. Dəyişmənin səbəbini soruşun."
+      ],
+      [
+        "Planlı servis",
+        "Mövsümi texniki baxış ilə konkret nasazlığın təmiri fərqli iş həcmidir. Servisə daxil olan yoxlamaları cihazın təlimatı ilə dəqiqləşdirin."
+      ]
+    ],
+    "pricing": [
+      "Çağırış və diaqnostika haqqı",
+      "İşçilik və hissənin ayrıca qiyməti",
+      "Yerində təmir, sökülmə və təkrar gəliş"
+    ],
+    "prepare": [
+      "Marka/model və Ekrandakı xəta kodu",
+      "İsti su və radiatorlarda müşahidə edilən fərq",
+      "Əvvəlki təmir və dəyişdirilmiş hissələr"
+    ],
+    "checks": [
+      "Nasazlığın səbəbi və görülmüş iş izah edilib",
+      "Razılaşdırılmış iş rejimləri yoxlanılıb",
+      "Hissə, məbləğ və zəmanət şərtləri qeyd olunub"
+    ],
+    "faq": [
+      [
+        "Kombi servisi ilə yuyulma eyni xidmətdir?",
+        "Servis cihazın baxış və texniki xidmət işlərini, yuyulma isə müəyyən konturun təmizlənməsini əhatə edə bilər. Hər ikisinin iş həcmini ayrıca soruşun."
+      ],
+      [
+        "Xəta kodu dəqiq təmir qiymətini göstərirmi?",
+        "Xeyr. Kodun mənası marka və modeldən asılıdır. Hissə və işçilik qiymətini diaqnostikadan sonra təsdiqləyin."
+      ],
+      [
+        "Brendin rəsmi servisini necə yoxlayım?",
+        "İcraçının rəsmi servis iddiasını istehsalçının öz əlaqə kanalı ilə yoxlayın. Platformadakı elan və VIP nişanı rəsmi servis təsdiqi deyil."
+      ]
+    ],
+    "related": [
+      "kombi-yuyulmasi",
+      "su-sizma",
+      "qazan-yuyulmasi"
+    ],
+    "sources": [
+      "viessmann-service"
+    ],
+    "terms": []
+  },
+  "kombi-yuyulmasi": {
+    "name": "Kombi və radiator yuyulması",
+    "category": "kombi-ustasi",
+    "title": "Kombi və radiator yuyulması Bakıda | Prousta.az",
+    "description": "Kombi ilə radiator xəttinin yuyulmasını ayırın. Radiator sayı və yuyulacaq kontur bildirildikdən sonra yekun məbləğ icraçı ilə dəqiqləşdirilir.",
+    "summary": "Kombi ilə radiator xəttinin yuyulmasını ayırın. Radiator sayı və yuyulacaq kontur bildirildikdən sonra yekun məbləğ icraçı ilə dəqiqləşdirilir.",
+    "scope": [
+      [
+        "Kombi konturu",
+        "Kombinin istilik dəyişdiricisinin təmizlənməsi ilə evin bütün isitmə xəttinin yuyulmasını ayırın. Hansı hissələrə müdaxilə ediləcəyini əvvəl soruşun."
+      ],
+      [
+        "Radiator və isti döşəmə",
+        "Radiatorların və kollektor xətlərinin sayı işi planlamaq üçün vacibdir. Zəif isinmənin səbəbi təkcə çöküntü olmaya bilər; baxışdan sonra üsul seçilməlidir."
+      ],
+      [
+        "Materiala uyğun üsul",
+        "Təmizləyici və üsul cihazın materialına, vəziyyətinə və istehsalçı təlimatına uyğun seçilməlidir. Köhnəlmiş sistemin vəziyyəti əvvəl qiymətləndirilməlidir."
+      ]
+    ],
+    "pricing": [
+      "Başlanğıc təklifin əhatəsi",
+      "Radiator və isti döşəmə xəttinin sayı",
+      "Əlavə təmir, material və işə giriş imkanı"
+    ],
+    "prepare": [
+      "Kombi markası və modeli",
+      "Radiatorların və isti döşəmə xətlərinin sayı",
+      "Hansı otaqların zəif isindiyi və əvvəlki yuyulma"
+    ],
+    "checks": [
+      "Razılaşdırılan konturların hamısı üzrə iş qeydə alınıb",
+      "Yekun dövriyyə və bağlantılar icraçı tərəfindən yoxlanılıb",
+      "Sonrakı qulluq və zəmanət şərti izah edilib"
+    ],
+    "faq": [
+      [
+        "Başlanğıc qiymət bütün radiatorların yuyulmasına aiddirmi?",
+        "Başlanğıc təklif yekun məbləğ deyil. Radiator sayı və yuyulacaq kontur bildirildikdən sonra məbləğ ayrıca təsdiqlənir."
+      ],
+      [
+        "Yuyulma qaz sərfini mütləq azaldırmı?",
+        "Nəticə sistemin vəziyyəti və problemin səbəbindən asılıdır. Sabit faizlə qənaət və ya nasazlığın mütləq həlli əvvəlcədən vəd edilmir."
+      ],
+      [
+        "Radiatorun altı soyuqdursa dərhal yuyulmalıdır?",
+        "Bu əlamət təkbaşına üsul seçmək üçün yetərli deyil. Dövriyyə, tənzimləmə və çöküntü ehtimalı baxışda qiymətləndirilməlidir."
+      ]
+    ],
+    "related": [
+      "kombi-ustasi",
+      "qazan-yuyulmasi",
+      "santexnik"
+    ],
+    "sources": [
+      "fernox-cleaning"
+    ],
+    "terms": [
+      "yuyul",
+      "yuma",
+      "radiator"
+    ]
+  },
+  "su-sizma": {
+    "name": "Su sızma təyini",
+    "category": "su-sizma",
+    "title": "Su sızma təyini Bakıda | Prousta.az",
+    "description": "Gizli su sızmasının təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyinetmə ilə boru təmirinin iş həcmini ayırın.",
+    "summary": "Gizli su sızmasının təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyinetmə ilə boru təmirinin iş həcmini ayırın.",
+    "scope": [
+      [
+        "Termal baxış",
+        "Termal kamera səthdə temperatur fərqini göstərir; divarın içini birbaşa görmür. Nəmlik işarəsi sızmanın səbəbinin ayrıca yoxlanmasını əvəz etmir."
+      ],
+      [
+        "Akustik və xətt yoxlaması",
+        "Boru materialına, xəttə girişə və vəziyyətə görə uyğun diaqnostika üsulu seçilir. İcraçıdan həmin üsulun niyə uyğun olduğunu soruşun."
+      ],
+      [
+        "Təyin və təmir",
+        "Sızma yerinin araşdırılması, borunun təmiri və kafel/divarın bərpası fərqli işlərdir. Sökülmə ehtimalını və əlavə işi əvvəl razılaşdırın."
+      ]
+    ],
+    "pricing": [
+      "Təyinetmə təklifinin dəqiq əhatəsi",
+      "Yoxlanacaq xətt və sahələrin sayı",
+      "Boru təmiri, sökülmə və səthin bərpası"
+    ],
+    "prepare": [
+      "Nəmlənən yerin və yaxın bağlantıların şəkli",
+      "Sızmanın davamlı və ya fasiləli olması",
+      "İsti/soyuq su, isitmə və qonşuya axma barədə müşahidə"
+    ],
+    "checks": [
+      "Yoxlanan xətt və müəyyən edilən sahə izah olunub",
+      "Təyin nəticəsi foto və ya qeyd ilə təqdim edilib",
+      "Təmir lazımdırsa həcmi ayrıca razılaşdırılıb"
+    ],
+    "faq": [
+      [
+        "Təyinetmə qiymətinə təmir də daxildirmi?",
+        "Təyinetmə və borunun təmiri ayrı işlər ola bilər. Boru təmiri və səthin bərpasının daxil olub-olmadığını sifarişdən əvvəl icraçı ilə dəqiqləşdirin."
+      ],
+      [
+        "Termal kamera sızmanı hər halda dəqiq tapırmı?",
+        "Termal görüntü temperatur fərqinə əsaslanır və şəraitdən asılıdır. Nəticə uyğun əlavə yoxlamalarla qiymətləndirilməlidir; bütün hallarda qırmadan həll vədi düzgün olmaz."
+      ],
+      [
+        "Qonşunun tavanındakı ləkə mütləq mənim su borumdandır?",
+        "Ləkə mənbəni təkbaşına təsdiqləmir. Su, isitmə, drenaj və başqa mümkün mənbələrin baxışda fərqləndirilməsini istəyin."
+      ]
+    ],
+    "related": [
+      "santexnik",
+      "kanalizasiya-ustasi",
+      "kombi-ustasi"
+    ],
+    "sources": [
+      "flir-leaks"
+    ],
+    "terms": []
+  },
+  "kanalizasiya-ustasi": {
+    "name": "Kanalizasiya açılması",
+    "category": "kanalizasiya-ustasi",
+    "title": "Kanalizasiya açılması Bakıda | Prousta.az",
+    "description": "Kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın. Təklifdə əlavə işləri ayrıca göstərin.",
+    "summary": "Kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın. Təklifdə əlavə işləri ayrıca göstərin.",
+    "scope": [
+      [
+        "Tıxanmanın sərhədi",
+        "Tək bir moyka və ya unitazda problem ilə bir neçə nöqtədə suyun geri qayıtması fərqli baxış tələb edir. Hansı nöqtələrin təsirləndiyini bildirin."
+      ],
+      [
+        "Kamera və açma avadanlığı",
+        "Kamera xəttin içinin yoxlanmasına xidmət edir; özü tıxacı açmır. Açma üsulu borunun vəziyyəti və giriş imkanına görə seçilməlidir."
+      ],
+      [
+        "Təkrarlanan tutulma",
+        "Xəttin təkrar tutulmasında yalnız axını müvəqqəti açmaqla kifayətlənməyin. Baxış nəticəsini, səbəbi və mümkün növbəti işi soruşun."
+      ]
+    ],
+    "pricing": [
+      "Təklifin əhatə etdiyi xətt və iş həcmi",
+      "Kamera baxışının daxil olub-olmaması",
+      "Ümumi xətt, sökülmə və əlavə müdaxilə"
+    ],
+    "prepare": [
+      "Tutulan nöqtə: moyka, unitaz, döşəmə trapı və ya ümumi xətt",
+      "Digər nöqtələrdə suyun geri qayıdıb-qayıtmaması",
+      "Əvvəl tökülmüş kimyəvi vasitə və aparılmış müdaxilə"
+    ],
+    "checks": [
+      "Razılaşdırılmış nöqtələrdə axın yoxlanılıb",
+      "Geri qayıtma və bağlantı vəziyyəti qiymətləndirilib",
+      "Təkrar tutulma halında müraciət şərti izah olunub"
+    ],
+    "faq": [
+      [
+        "Kanalizasiya açma təklifində nə dəqiqləşdirilməlidir?",
+        "Xəttin növünü, kamera baxışını, sökülmə və əlavə işləri sifarişdən əvvəl icraçı ilə təsdiqləyin."
+      ],
+      [
+        "Kamera ilə baxış kanalizasiyanı açırmı?",
+        "Kamera diaqnostika üçündür. Borunun açılması ayrıca uyğun avadanlıq və üsulla görülür."
+      ],
+      [
+        "Açıldıqdan sonra nəyi yoxlamalıyam?",
+        "İcraçıdan razılaşdırılmış nöqtələrdə axını göstərməsini, təkrarlanma səbəbi görünürsə izah etməsini və zəmanət şərtini bildirməsini istəyin."
+      ]
+    ],
+    "related": [
+      "santexnik",
+      "su-sizma"
+    ],
+    "sources": [
+      "ridgid-inspection"
+    ],
+    "terms": []
+  },
+  "santexnik": {
+    "name": "Santexnik xidməti",
+    "category": "santexnik",
+    "title": "Santexnik xidməti Bakıda | Prousta.az",
+    "description": "Kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını ayrıca razılaşdırın.",
+    "summary": "Kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını ayrıca razılaşdırın.",
+    "scope": [
+      [
+        "Kiçik təmir",
+        "Damcılayan kran, su buraxan sifon və çən mexanizmi üçün hissə dəyişimi ilə komplekt dəyişimi təkliflərini ayırın."
+      ],
+      [
+        "Quraşdırma",
+        "Unitaz, moyka, duş və cihaz bağlantısında mövcud çıxış ölçüləri, bərkidilmə və uyğun material əvvəl dəqiqləşdirilməlidir."
+      ],
+      [
+        "Xətt işi",
+        "Yeni boru çəkilişində marşrut, material, birləşmələr və bağlanmadan əvvəl qəbul yoxlaması ayrıca razılaşdırılmalıdır."
+      ]
+    ],
+    "pricing": [
+      "İşçilik ilə materialın ayrı məbləği",
+      "Sökülmə, daşınma və səthin bərpası",
+      "Əlavə iş və təkrar gəliş şərti"
+    ],
+    "prepare": [
+      "Avadanlığın və bağlantıların şəkli",
+      "Dəyişdiriləcək hissə və ya iş siyahısı",
+      "Ünvan və giriş üçün uyğun vaxt"
+    ],
+    "checks": [
+      "Yeni bağlantılar və razılaşdırılmış iş rejimi yoxlanılıb",
+      "Görülmüş iş və material siyahısı verilib",
+      "Əlavə xərc və zəmanət razılaşmaya uyğundur"
+    ],
+    "faq": [
+      [
+        "Materialı kim almalıdır?",
+        "Materialı sizin, yoxsa icraçının təmin etdiyini əvvəl təsdiqləyin. Model, ölçü və qiymətə razılıq verilmədən alış edilməsin."
+      ],
+      [
+        "Sızma təyini ilə santexnik təmiri fərqlənirmi?",
+        "Gizli sızmanın mənbəyinin tapılması ayrıca diaqnostika, borunun bərpası isə təmir işi ola bilər. Hər iki həcmi təklifdə ayırın."
+      ],
+      [
+        "İşi necə qəbul edim?",
+        "Dəyişən bağlantıları və razılaşdırılmış funksiyanı icraçı ilə yoxlayın. İşin təsvirini, material və zəmanət şərtlərini saxlayın."
+      ]
+    ],
+    "related": [
+      "su-sizma",
+      "kanalizasiya-ustasi",
+      "boyler-yuyulmasi"
+    ],
+    "sources": [],
+    "terms": []
+  },
+  "havalandirma-ustasi": {
+    "name": "Havalandırma xidməti",
+    "category": "havalandirma-ustasi",
+    "title": "Havalandırma xidməti Bakıda | Prousta.az",
+    "description": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
+    "summary": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
+    "scope": [
+      [
+        "Yeni sistem",
+        "Montaj üçün obyektin istifadəsi, hava kanallarının marşrutu, giriş-çıxış və avadanlıq işi birlikdə planlaşdırılmalıdır."
+      ],
+      [
+        "Mövcud kanal",
+        "Təmizlənəcək xəttin əlçatanlığı və çirklənmənin növü iş həcminə təsir edir. Filtr və kanalı eyni iş kimi qəbul etməyin."
+      ],
+      [
+        "Restoran zontu",
+        "Yağ filtri, zont, kanal və fan/mühərrik üzrə təklif olunan işləri ayrı yazdırın. İşdən əvvəl və sonra sənədləşmə istəyin."
+      ]
+    ],
+    "pricing": [
+      "Kanal ölçüləri və çıxışa giriş",
+      "Avadanlıq, material və montaj/təmizlik ayrımı",
+      "İş saatı, hündürlük və təhvil ölçmələri"
+    ],
+    "prepare": [
+      "Məkanın istifadəsi və sahəsi",
+      "Kanal, zont və avadanlığın şəkilləri",
+      "Mövcud problem və iş saatı məhdudiyyəti"
+    ],
+    "checks": [
+      "Razılaşdırılmış hissələr üzrə iş tamamlanıb",
+      "İş rejimi və tələb olunan ölçmələr göstərilib",
+      "Təmizlənməyən və ya əlçatmaz hissələr qeyd edilib"
+    ],
+    "faq": [
+      [
+        "Havalandırma üçün kondisioner kifayətdirmi?",
+        "Soyutma ilə xarici hava mübadiləsi ayrı tələblərdir. Model və sistemin layihəsinə uyğun həlli icraçı ilə dəqiqləşdirin."
+      ],
+      [
+        "Motor gücünü artırmaq hər problemi həll edirmi?",
+        "Kanal marşrutu, filtr, çıxış və əvəzedici hava birlikdə qiymətləndirilməlidir. Təkcə güc rəqəmi uyğunluğu təsdiqləmir."
+      ],
+      [
+        "Montaj və təmizlik üçün hansı bölməni seçim?",
+        "Yeni sistem üçün quraşdırma, mövcud kanal üçün təmizlik, restoran avadanlığı üçün zont və mühərrik bələdçisinə keçin."
+      ]
+    ],
+    "related": [
+      "havalandirma-qurasdirilmasi",
+      "havalandirma-temizlenmesi",
+      "zont-muherrik-temizlenmesi"
+    ],
+    "sources": [
+      "greenheck-air"
+    ],
+    "terms": []
+  },
+  "havalandirma-qurasdirilmasi": {
+    "name": "Havalandırma quraşdırılması",
+    "category": "havalandirma-ustasi",
+    "title": "Havalandırma quraşdırılması Bakıda | Prousta.az",
+    "description": "Ev, ofis və restoran üçün havalandırma quraşdırılması: kanal marşrutu, avadanlıq, hava mübadiləsi və təhvil yoxlamasını eyni təklifdə dəqiqləşdirin.",
+    "summary": "Ev, ofis və restoran üçün havalandırma quraşdırılması: kanal marşrutu, avadanlıq, hava mübadiləsi və təhvil yoxlamasını eyni təklifdə dəqiqləşdirin.",
+    "scope": [
+      [
+        "Layihə və ehtiyac",
+        "Məkanın istifadəsini və mövcud planını paylaşın. Mətbəxdən hava sorulması ilə təmiz hava verilməsi ayrıca nəzərə alınmalıdır."
+      ],
+      [
+        "Kanal və avadanlıq",
+        "Kanal materialı, ölçüsü, marşrutu, ventilyator və əlavə hissələr smetada açıq göstərilməlidir."
+      ],
+      [
+        "Qəbul",
+        "Səs, titrəmə və razılaşdırılmış hava axını tələblərinin necə yoxlanacağını montajdan əvvəl razılaşdırın."
+      ]
+    ],
+    "pricing": [
+      "Layihə/ölçü işinin ayrıca haqqı",
+      "Kanalın materialı, uzunluğu və avadanlıq",
+      "Hündürlük, elektrik işi və ölçmə protokolu"
+    ],
+    "prepare": [
+      "Plan və məkanın istifadə məqsədi",
+      "Çıxış nöqtəsi və mümkün kanal marşrutu",
+      "İş saatı və səsə dair məhdudiyyətlər"
+    ],
+    "checks": [
+      "Smeta ilə quraşdırılan hissələr uyğun gəlir",
+      "Razılaşdırılmış yoxlamalar təqdim olunub",
+      "Xidmət üçün giriş nöqtələri və qulluq izah olunub"
+    ],
+    "faq": [
+      [
+        "Qiyməti yalnız sahəyə görə hesablamaq olarmı?",
+        "Sahə ilkin məlumatdır. Məkanın istifadəsi, kanal marşrutu və avadanlıq seçimi bilinmədən yekun smeta dəqiq sayılmır."
+      ],
+      [
+        "Restoran üçün yalnız sorucu fan kifayətdirmi?",
+        "Sorulan havanın yerini dolduran hava da planlaşdırılmalıdır. Sistem həlli məkan və layihə üzrə müəyyən edilməlidir."
+      ],
+      [
+        "Layihə qiymətə daxildirmi?",
+        "Ölçü, layihə, avadanlıq, montaj və təhvil ölçmələrinin hər birinin təklifə daxil olub-olmadığını yazılı təsdiqləyin."
+      ]
+    ],
+    "related": [
+      "havalandirma-ustasi",
+      "havalandirma-temizlenmesi",
+      "zont-muherrik-temizlenmesi"
+    ],
+    "sources": [
+      "greenheck-air"
+    ],
+    "terms": [
+      "qurasdir",
+      "montaj",
+      "kanal"
+    ]
+  },
+  "havalandirma-temizlenmesi": {
+    "name": "Havalandırma təmizlənməsi",
+    "category": "havalandirma-ustasi",
+    "title": "Havalandırma təmizlənməsi Bakıda | Prousta.az",
+    "description": "Havalandırma kanallarının təmizlənməsi üçün xəttin sərhədini, giriş nöqtələrini və foto hesabatı razılaşdırın. Filtr işi ilə kanal işini ayırın.",
+    "summary": "Havalandırma kanallarının təmizlənməsi üçün xəttin sərhədini, giriş nöqtələrini və foto hesabatı razılaşdırın. Filtr işi ilə kanal işini ayırın.",
+    "scope": [
+      [
+        "İlkin baxış",
+        "Hansı kanal hissələrinin baxışa və təmizləməyə açıq olduğunu müəyyənləşdirin. Məkanın istifadəsini və əvvəlki qulluq tarixini bildirin."
+      ],
+      [
+        "Təmizlik həcmi",
+        "Filtr, diffuzor və kanal daxili ayrı hissələrdir. Smetada hər birini və əlçatmaz hissələri qeyd etdirin."
+      ],
+      [
+        "Sənədləşmə",
+        "İşdən əvvəl/sonra eyni hissələrin görüntüləri və görülən iş siyahısı qəbul prosesini aydınlaşdırır."
+      ]
+    ],
+    "pricing": [
+      "Kanal ölçüsü, uzunluğu və giriş nöqtələri",
+      "Çirklənmə və sökülmə ehtiyacı",
+      "İş vaxtı və tələb olunan hesabat"
+    ],
+    "prepare": [
+      "Kanal sxemi və ya ümumi şəkillər",
+      "Son təmizlik və dəyişdirilmiş filtrlər",
+      "Obyektin işlədiyi saatlar"
+    ],
+    "checks": [
+      "Razılaşdırılmış hissələrin foto qeydi var",
+      "Əlçatmaz hissələr ayrıca göstərilib",
+      "Yığılma və iş rejimi yoxlanılıb"
+    ],
+    "faq": [
+      [
+        "Filtri dəyişmək kanal təmizliyi sayılırmı?",
+        "Xeyr. Filtr dəyişimi və kanalın içinin təmizlənməsi ayrı işlərdir. Təklifdə hansı hissələrə xidmət göstərildiyini soruşun."
+      ],
+      [
+        "Hər təmizlik dezinfeksiya da deməkdir?",
+        "Xeyr. Dezinfeksiya ayrıca məqsəd, uyğun məhsul və tətbiq şərtləri tələb edən işdir; avtomatik əlavə xidmət kimi qəbul edilməməlidir."
+      ],
+      [
+        "Təmizlik intervalı nə qədərdir?",
+        "Obyektin istifadəsi və istehsalçı qulluq tələbinə görə plan qurulmalıdır. Bütün sistemlər üçün eyni müddət vəd etmək düzgün deyil."
+      ]
+    ],
+    "related": [
+      "zont-muherrik-temizlenmesi",
+      "havalandirma-qurasdirilmasi",
+      "havalandirma-ustasi"
+    ],
+    "sources": [
+      "greenheck-maintenance"
+    ],
+    "terms": [
+      "temiz",
+      "yuyul",
+      "yuma"
+    ]
+  },
+  "zont-muherrik-temizlenmesi": {
+    "name": "Zont və mühərrik təmizlənməsi",
+    "category": "havalandirma-ustasi",
+    "title": "Zont və mühərrik təmizlənməsi Bakıda | Prousta.az",
+    "description": "Restoran və kafe zontu, yağ filtrləri, kanal və fan/mühərrik üçün təmizlik həcmini ayrı razılaşdırın. Əvvəl/sonra foto və iş rejimi yoxlaması istəyin.",
+    "summary": "Restoran və kafe zontu, yağ filtrləri, kanal və fan/mühərrik üçün təmizlik həcmini ayrı razılaşdırın. Əvvəl/sonra foto və iş rejimi yoxlaması istəyin.",
+    "scope": [
+      [
+        "Zont və yağ filtri",
+        "Görünən səthin silinməsi ilə filtr və zont daxili yağ təmizliyi fərqli iş həcmləridir. İşlənəcək hissələri əvvəl müəyyənləşdirin."
+      ],
+      [
+        "Fan və elektrik mühərriki",
+        "Fan çarxı və korpusu ilə elektrik mühərriki eyni detal deyil. Təmizlik və elektrik hissəsinə müdaxilə istehsalçı qaydasına uyğun ayrıca planlaşdırılmalıdır."
+      ],
+      [
+        "Kanal və təhvil",
+        "Zontdan sonrakı kanalın hansı hissəsinin təklifə daxil olduğunu göstərin. Təkrar işə salınma və müşahidə edilən səs/titrəmənin yoxlanmasını razılaşdırın."
+      ]
+    ],
+    "pricing": [
+      "Zont və filtr sayı/ölçüsü",
+      "Kanal və fan hissələrinə giriş",
+      "Sökülmə, elektrik xidməti və işdənkənar saat"
+    ],
+    "prepare": [
+      "Zont, filtr və fan etiketinin şəkli",
+      "Mətbəxin iş saatı və avadanlıq sayı",
+      "Yağlanma və səs/titrəmə müşahidəsi"
+    ],
+    "checks": [
+      "Əvvəl/sonra eyni hissələr sənədləşdirilib",
+      "Ayrılmış hissələrin yığılması yoxlanılıb",
+      "İş rejimi və gələcək qulluq tələbi izah olunub"
+    ],
+    "faq": [
+      [
+        "Mühərrik təmizliyi fanın yuyulması ilə eynidirmi?",
+        "Xeyr. Elektrik mühərriki, fan çarxı və korpus üçün uyğun müdaxilə fərqlənə bilər. Modelə aid qulluq qaydası əsas götürülməlidir."
+      ],
+      [
+        "Yalnız zontu təmizlətmək kifayətdirmi?",
+        "Kanalların, filtrlərin və fanın vəziyyəti də baxışda qiymətləndirilməlidir. Təklifin sərhədi və daxil olmayan hissələr açıq yazılmalıdır."
+      ],
+      [
+        "İşi restoran açıq olanda görmək olar?",
+        "Giriş, avadanlığın dayandırılması və mətbəxin iş rejimi üzrə plan icraçı və obyektin məsul şəxsi ilə əvvəl razılaşdırılmalıdır."
+      ]
+    ],
+    "related": [
+      "havalandirma-temizlenmesi",
+      "havalandirma-qurasdirilmasi"
+    ],
+    "sources": [
+      "greenheck-maintenance"
+    ],
+    "terms": [
+      "zont",
+      "motor",
+      "muherrik",
+      "ulitka",
+      "salyangoz"
+    ]
+  },
+  "boyler-yuyulmasi": {
+    "name": "Boyler sisteminin yuyulması",
+    "category": "ariston-ustasi",
+    "title": "Boyler sisteminin yuyulması Bakıda | Prousta.az",
+    "description": "Boyler yuyulmasında çən, serpantin və su dövranının iş həcmini ayırın. Model, həcm və uyğun qulluq qaydasına görə xidmət təklifi alın.",
+    "summary": "Boyler yuyulmasında çən, serpantin və su dövranının iş həcmini ayırın. Model, həcm və uyğun qulluq qaydasına görə xidmət təklifi alın.",
+    "scope": [
+      [
+        "Cihazın tipi",
+        "Elektrik yığıcı su qızdırıcısı ilə ayrıca istilik mənbəyindən qızdırılan boyler fərqlidir. Marka ilə yanaşı tipi və həcmi göstərin."
+      ],
+      [
+        "Çən və serpantin",
+        "Yuyulacaq hissə və suyun istifadə məqsədi uyğun üsul seçiminə təsir edir. Çən daxili qulluq ilə isitmə konturunu eyni iş saymayın."
+      ],
+      [
+        "Servis hissələri",
+        "Modeldə nəzərdə tutulursa anod, conta və başqa qulluq hissələrinin baxış və dəyişimi ayrıca razılaşdırılmalıdır."
+      ]
+    ],
+    "pricing": [
+      "Boylerin həcmi, tipi və servisə giriş",
+      "Çən və ya serpantin üzrə işin sərhədi",
+      "Sökülmə, dəyişən hissə və təkrar işə salınma"
+    ],
+    "prepare": [
+      "Model etiketinin və bağlantıların şəkli",
+      "Həcm və qızdırma üsulu",
+      "Qızdırma vaxtı, səs və son qulluq barədə məlumat"
+    ],
+    "checks": [
+      "Görülmüş işin hansı hissələri əhatə etdiyi yazılıb",
+      "Dəyişən hissələr və bağlantılar yoxlanılıb",
+      "İstehsalçıya uyğun qulluq planı izah olunub"
+    ],
+    "faq": [
+      [
+        "Boyler yuyulması kombi yuyulması ilə eynidirmi?",
+        "Xeyr. Avadanlıq, su konturları və servis hissələri fərqlənir. Model və həcmi bildirərək ayrıca təklif alın."
+      ],
+      [
+        "Hər boyler eyni məhlulla yuyulurmu?",
+        "Üsul cihazın materialına və təlimatına uyğun seçilməlidir. İsitmə xətti üçün məhsulun istifadə suyu tərəfinə avtomatik uyğun olduğu düşünülməməlidir."
+      ],
+      [
+        "Anod dəyişimi qiymətə daxildirmi?",
+        "Cihazda anod varsa onun baxışı, lazım gəldikdə dəyişimi və hissə haqqını əvvəlcədən soruşun. Bütün modellərdə eyni qulluq qaydası olmur."
+      ]
+    ],
+    "related": [
+      "qazan-yuyulmasi",
+      "kombi-yuyulmasi",
+      "santexnik"
+    ],
+    "sources": [
+      "ariston-descaling"
+    ],
+    "terms": [
+      "boyler",
+      "boiler",
+      "serpantin",
+      "cen"
+    ]
+  },
+  "qazan-yuyulmasi": {
+    "name": "Qazan sisteminin yuyulması",
+    "category": "kombi-ustasi",
+    "title": "Qazan sisteminin yuyulması Bakıda | Prousta.az",
+    "description": "Qazan və qazanxana sisteminin yuyulması üçün avadanlıq, kontur və işin dayandırılma planını bildirin. Boyler və radiator işini ayrıca razılaşdırın.",
+    "summary": "Qazan və qazanxana sisteminin yuyulması üçün avadanlıq, kontur və işin dayandırılma planını bildirin. Boyler və radiator işini ayrıca razılaşdırın.",
+    "scope": [
+      [
+        "Avadanlığın sərhədi",
+        "Divar kombisi, yer tipli istilik qazanı və böyük qazanxana eyni sifariş deyil. Avadanlığın modelini və sistemdəki rolunu göstərin."
+      ],
+      [
+        "Yuyulacaq kontur",
+        "İstilik dəyişdiricisi ilə boru/radiator xəttinin işini ayırın. Baxış nəticəsi və istehsalçı qaydası əsasında uyğun təklif alın."
+      ],
+      [
+        "Dayanma və təhvil",
+        "Obyektdə isitmə və isti suya fasilənin vaxtı, giriş icazələri və yenidən işə salınmada məsul şəxslər əvvəl müəyyən edilməlidir."
+      ]
+    ],
+    "pricing": [
+      "Model, güc və konturun həcmi",
+      "Obyektin dayanma və giriş şərtləri",
+      "Material, avadanlıq və qəbul yoxlamaları"
+    ],
+    "prepare": [
+      "Qazan etiketi və sistemin sxemi",
+      "Konturlar, boyler və nasoslar barədə məlumat",
+      "Planlı dayanma pəncərəsi və əvvəlki servis"
+    ],
+    "checks": [
+      "Razılaşdırılmış kontur üzrə iş sənədləşdirilib",
+      "Təhvil yoxlaması məsul şəxslə tamamlanıb",
+      "Əlavə nasazlıq və sonrakı qulluq ayrıca izah edilib"
+    ],
+    "faq": [
+      [
+        "Qazan yuyulması üçün kombinin qiyməti keçərlidirmi?",
+        "Avtomatik deyil. Qazanın tipi, konturun həcmi və giriş şərtləri fərqləndiyi üçün ayrıca iş həcmi və məbləğ razılaşdırılır."
+      ],
+      [
+        "Yuyulma bütün nasazlıqları aradan qaldırırmı?",
+        "Xeyr. Çöküntü ilə hissə, idarəetmə və ya dövriyyə nasazlığı fərqləndirilməlidir. Əvvəl diaqnostika və müdaxilə planı lazımdır."
+      ],
+      [
+        "Sənaye buxar qazanı üçün eyni sifariş kifayətdirmi?",
+        "Xeyr. Belə avadanlıq ayrıca ixtisas və iş planı tələb edə bilər. İcraçının məhz həmin tip avadanlıq üzrə imkanını təsdiqləyin."
+      ]
+    ],
+    "related": [
+      "boyler-yuyulmasi",
+      "kombi-yuyulmasi",
+      "kombi-ustasi"
+    ],
+    "sources": [
+      "viessmann-service"
+    ],
+    "terms": [
+      "qazan",
+      "qazanxana"
+    ]
+  }
+}

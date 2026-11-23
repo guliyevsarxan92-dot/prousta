@@ -25,6 +25,19 @@ def legacy():
     return json.loads((ROOT / 'legacy_fingerprints.json').read_text(encoding='utf-8'))
 
 
+@lru_cache(maxsize=1)
+def sources():
+    return json.loads((ROOT / 'sources.json').read_text(encoding='utf-8'))
+
+
+def source_links(category):
+    content = get_content(category)
+    if not content:
+        return []
+    manifest = sources()
+    return [manifest[key] for key in content['sources'] if key in manifest]
+
+
 def fingerprint(text):
     return hashlib.sha256(' '.join(text.split()).encode()).hexdigest()
 

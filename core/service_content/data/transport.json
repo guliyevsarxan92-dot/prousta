@@ -1,0 +1,92 @@
+{
+  "neqliyyat-texnika": {
+    "name": "Nəqliyyat və texnika", "heading": "Nəqliyyat və texnika xidmətləri — tutum, marşrut, müddət",
+    "description": "Nəqliyyat və texnika sifarişində yük, məsafə, iş sahəsi və vaxtı bildirin. Yanacaq, operator və əlavə gediş xərclərini təklifdə ayırın.",
+    "intro": "Daşıma, evakuasiya və texnika icarəsi fərqli hazırlıq tələb edir. Alt xidməti seçərək giriş şəraiti və yük ölçülərini əvvəlcədən qeyd edin.",
+    "scope": ["Tapşırıq və sahə şərtlərinin dəqiqləşdirilməsi", "Uyğun nəqliyyat və ya texnikanın planlanması", "Daşıma və işin razılaşdırılmış təhvili"],
+    "pricing": ["Məsafə, müddət və yük/tutum", "Operator, yanacaq və yükləmə", "Gözləmə, giriş və əlavə gedişlər"],
+    "prepare": ["Başlanğıc və təyinat ünvanı", "Yükün ölçüsü, çəkisi və xüsusiyyəti", "Giriş, vaxt və gözləmə şərtləri"],
+    "questions": [["Nəqliyyat təklifində yanacaq daxildir?", "Yanacaq, operator, yükləmə, boşaltma və gözləmə haqqını ayrı dəqiqləşdirin."], ["Texnika sahəyə daxil ola bilər?", "Giriş ölçüsü, örtük, maneələr və iş üçün tələb olunan yerləşmə sahəsini icraçıya bildirin."]],
+    "queries": ["nəqliyyat xidməti", "texnika icarəsi", "yük daşıma və texnika"], "related": ["yukdasima", "texnika-icaresi", "evakuator-xidmeti"], "sources": []
+  },
+  "evakuator-xidmeti": {
+    "name": "Evakuator xidməti", "heading": "Evakuator çağırışı — yer, avtomobil və çatdırılma nöqtəsi",
+    "description": "Evakuator sifarişində dəqiq yeri, avtomobil tipini, təkər və giriş vəziyyətini bildirin. Daşıma məsafəsi və əlavə yükləmə şərtlərini razılaşdırın.",
+    "intro": "Avtomobilin hərəkət edib-etməməsi və yol şəraiti uyğun evakuator seçiminə təsir edir. Dəqiq ünvan və təhlükəsiz əlaqə nöqtəsi paylaşın.",
+    "scope": ["Avtomobil və mövqenin dəqiqləşdirilməsi", "Uyğun evakuatorun göndərilməsi", "Razılaşdırılmış ünvana yükləmə və daşıma"],
+    "pricing": ["Gediş məsafəsi və vaxt", "Avtomobilin tipi və vəziyyəti", "Yükləmə mürəkkəbliyi və gözləmə"],
+    "prepare": ["Canlı lokasiya və yaxın orientir", "Avtomobilin marka və tipi", "Təkər, sükan və giriş vəziyyəti"],
+    "questions": [["Evakuator qiymətinə çatdırılma ünvanı daxildir?", "Başlanğıc, təyinat, minimum gediş və gecə/gözləmə şərtlərini əvvəlcədən soruşun."], ["Aşağı parkinqdən avtomobil çıxarmaq olar?", "Hündürlük, giriş və avtomobilin hərəkət vəziyyətini dispetçerə bildirin; uyğun texnikanı o təsdiqləsin."]],
+    "queries": ["evakuator xidməti", "avtomobil evakuatoru", "maşının daşınması"], "related": ["avtomobil-temiri", "yukdasima", "diger-neqliyyat"], "sources": []
+  },
+  "zibil-dasima": {
+    "name": "Zibil daşıma", "heading": "Zibil və tullantı daşınması — həcm, növ və giriş",
+    "description": "Tullantı daşıma sifarişində materialın növünü, təxmini həcmi, mərtəbə və giriş şəraitini bildirin. Yükləmə və utilizasiya şərtlərini ayrıca soruşun.",
+    "intro": "Məişət əşyalarının daşınması tikinti və həcmli tullantı işindən fərqlənə bilər. Tullantının növünü düzgün təsvir edin və qəbul edilən materiallar barədə xidmət göstərənlə dəqiqləşdirin.",
+    "scope": ["Tullantı növü və həcminin qiymətləndirilməsi", "Yükləmə və daşınmanın razılaşdırılması", "Təyinat və qəbul şərtlərinin təsdiqi"],
+    "pricing": ["Həcm, çəki və tullantı növü", "Mərtəbə, lift və yükləmə", "Məsafə və qəbul/utilizasiya şərtləri"],
+    "prepare": ["Tullantının şəkli və təxmini həcmi", "Mərtəbə və giriş məlumatı", "Ünvan və əlçatan vaxt"],
+    "questions": [["Tikinti tullantısı ilə məişət əşyası eyni tariflə daşınır?", "Tullantı növü, yükləmə və qəbul qaydası fərqli ola bilər; kateqoriyanı sifarişdən əvvəl təsdiqləyin."], ["Yükləmə xidməti qiymətə daxildir?", "İşçi sayı, mərtəbədən endirmə, konteyner və daşımanın daxilolmasını soruşun."]],
+    "queries": ["zibil daşıma xidməti", "tullantı daşınması", "tikinti tullantılarının çıxarılması"], "related": ["yukdasima", "texnika-icaresi", "diger-neqliyyat"], "sources": []
+  },
+  "yukdasima": {
+    "name": "Yükdaşıma", "heading": "Yükdaşıma — yük ölçüsü, ünvan və yükləmə planı",
+    "description": "Yükdaşıma sifarişində yüklərin sayını, ölçü və çəkisini, mərtəbələri və ünvanları bildirin. Daşıyıcı, qablaşdırma və yükləmə xidmətlərini ayırın.",
+    "intro": "Bir neçə qutu, mebel və ya iri yük üçün nəqliyyat və işçi tələbi fərqlənir. Ünvanlara giriş, lift və dayanacaq məlumatı gecikmələrin qarşısını almağa kömək edir.",
+    "scope": ["Yükün və marşrutun dəqiqləşdirilməsi", "Nəqliyyat və yükləmə planı", "Daşıma və təyinatda boşaltma"],
+    "pricing": ["Məsafə və yük həcmi", "Mərtəbə, lift və daşıyıcı sayı", "Qablaşdırma və gözləmə vaxtı"],
+    "prepare": ["Yükün siyahısı və fotoşəkli", "Hər iki ünvanda mərtəbə/lift məlumatı", "Daşıma vaxtı və giriş məhdudiyyəti"],
+    "questions": [["Yükdaşıma təklifində neçə işçi nəzərdə tutulur?", "Nəqliyyat, yükləyici sayı, qablaşdırma və hər ünvandakı daşıma işini ayrıca razılaşdırın."], ["Yük zədələnsə məsuliyyət necə müəyyən edilir?", "Qablaşdırma, təhvil-təslim və zədə barədə bildiriş qaydasını sifarişdən əvvəl soruşun."]],
+    "queries": ["yükdaşıma xidməti", "yük daşıyan maşın", "mebel daşıma"], "related": ["evakuator-xidmeti", "zibil-dasima", "avtomobil-icaresi"], "sources": []
+  },
+  "avtomobil-icaresi": {
+    "name": "Avtomobil icarəsi", "heading": "Avtomobil icarəsi — müddət, yürüş və təhvil qaydası",
+    "description": "Avtomobil icarəsində tarixləri, yürüş limitini, depozit və sığorta şərtlərini müqavilədə yoxlayın. Avtomobilin təhvil vəziyyətini qeyd edin.",
+    "intro": "İcarə qiymətini yalnız günlük məbləğlə müqayisə etməyin: limit, əlavə sürücü, gecikmə və yanacaq qaydaları yekun xərcə təsir edə bilər. Sənədləri və təhvil aktını oxuyun.",
+    "scope": ["Tarix, avtomobil sinfi və istifadə planı", "İcarə və müqavilə şərtlərinin təsdiqi", "Avtomobilin təhvil və geri qəbul baxışı"],
+    "pricing": ["İcarə müddəti və avtomobil modeli", "Yürüş, sığorta və depozit", "Çatdırılma, əlavə sürücü və gecikmə"],
+    "prepare": ["İcarə tarixləri və istifadə marşrutu", "Sürücü vəsiqəsi və tələb olunan sənədlər", "Avtomobil sinfi və əlavə ehtiyaclar"],
+    "questions": [["Depozit nə vaxt qaytarılır?", "Depozitin məbləği, çıxılma halları və qaytarılma müddətinin müqavilədə necə göstərildiyini yoxlayın."], ["Avtomobili götürəndə nələri qeyd edim?", "Mövcud zədə, yanacaq səviyyəsi, yürüş və təhvil edilmiş aksesuarları aktda qeyd edin."]],
+    "queries": ["avtomobil icarəsi", "maşın kirayəsi", "günlük avtomobil icarəsi"], "related": ["yukdasima", "evakuator-xidmeti", "texnika-icaresi"], "sources": []
+  },
+  "qaldirici-qurgu-icaresi": {
+    "name": "Qaldırıcı qurğu icarəsi", "heading": "Qaldırıcı qurğu icarəsi — hündürlük, yük və sahə",
+    "description": "Qaldırıcı qurğu icarəsində iş hündürlüyünü, yükü, səth və giriş şəraitini bildirin. Operator, çatdırılma və istifadə müddətini təklifdə dəqiqləşdirin.",
+    "intro": "Qurğunun növü və yerləşmə tələbi iş sahəsinə uyğun olmalıdır. Texniki seçim və təhlükəsiz iş planını qurğu təchizatçısı və məsul mütəxəssislə təsdiqləyin.",
+    "scope": ["İş hündürlüyü və sahə girişinin qiymətləndirilməsi", "Uyğun qurğunun çatdırılması və ya operatorla təqdimatı", "Razılaşdırılmış müddətin tamamlanması"],
+    "pricing": ["Qurğu tipi və icarə müddəti", "Operator və çatdırılma", "Sahə hazırlığı və əlavə növbə"],
+    "prepare": ["İş hündürlüyü və yük məlumatı", "Sahənin şəkli və giriş ölçüsü", "İcarə tarixləri və iş saatları"],
+    "questions": [["Operator icarə qiymətinə daxildir?", "Qurğunun operatorla verilməsini, çatdırılmanı və yanacaq/enerji şərtlərini ayrıca soruşun."], ["Sahə qurğu üçün uyğundur?", "Səthin, yamacın, maneələrin və giriş eninin uyğunluğunu təchizatçı ilə iş başlamazdan əvvəl yoxlayın."]],
+    "queries": ["qaldırıcı qurğu icarəsi", "manlift kirayəsi", "qaldırıcı platforma"], "related": ["texnika-icaresi", "anbar-tikintisi", "beton-isleri"], "sources": []
+  },
+  "texnika-icaresi": {
+    "name": "Texnika icarəsi", "heading": "Tikinti texnikası icarəsi — iş həcmi və sahə uyğunluğu",
+    "description": "Texnika icarəsində görüləcək işi, sahənin ölçü və girişini, müddəti və operator ehtiyacını bildirin. Daşınma, yanacaq və gözləmə xərclərini ayırın.",
+    "intro": "Ekskavator, yükləyici və digər texnika fərqli iş və sahə tələbinə malikdir. Texnikanı yalnız adla seçməyin; işin həcmi və torpaq şəraiti barədə məlumat verin.",
+    "scope": ["İşin və sahənin tələblərinin toplanması", "Uyğun texnika və operatorun razılaşdırılması", "İcarə müddəti və sahəyə çatdırılma"],
+    "pricing": ["Texnika növü və iş saatı", "Operator, yanacaq və çatdırılma", "Gözləmə və sahə şərtləri"],
+    "prepare": ["Görüləcək iş və təxmini həcm", "Sahənin şəkli, giriş və maneələr", "Tarix və lazım olan iş saatı"],
+    "questions": [["Texnika operatorla verilir?", "Operator, yanacaq, minimum icarə müddəti və iş saatlarının hesablanmasını təsdiqləyin."], ["Texnika sahəyə çata bilməzsə nə baş verir?", "Giriş ölçüləri və sahə hazırlığını əvvəlcədən paylaşın; çatdırılma və gözləmə qaydasını yazılı alın."]],
+    "queries": ["texnika icarəsi", "ekskavator icarəsi", "tikinti texnikası kirayəsi"], "related": ["qaldirici-qurgu-icaresi", "anbar-tikintisi", "asfalt-isleri"], "sources": []
+  },
+  "travego-kirayesi": {
+    "name": "Travego kirayəsi", "heading": "Travego icarəsi — sərnişin sayı, marşrut və tarix",
+    "description": "Travego sifarişində sərnişin sayını, marşrutu, tarix və dayanacaqları bildirin. Sürücü, yanacaq, gözləmə və əlavə məsafə şərtlərini dəqiqləşdirin.",
+    "intro": "Şəhərlərarası səfər, tədbir və transfer üçün cədvəl və oturacaq ehtiyacı əvvəlcədən razılaşdırılmalıdır. Nəqliyyat vasitəsinin təqdim edilən xidmətə uyğunluğunu təsdiqləyin.",
+    "scope": ["Marşrut və sərnişin sayının planlanması", "Avtobus və sürücünün razılaşdırılması", "Gediş, dayanacaq və geri dönüş planı"],
+    "pricing": ["Marşrut, məsafə və müddət", "Gözləmə və gecələmə ehtiyacı", "Yanacaq, sürücü və əlavə dayanacaqlar"],
+    "prepare": ["Sərnişin sayı və tarix", "Başlanğıc, dayanacaq və təyinatlar", "Baqaj və xüsusi giriş ehtiyacları"],
+    "questions": [["Kirayə qiymətinə sürücü və yanacaq daxildir?", "Sürücü, yanacaq, park, gözləmə və əlavə məsafə hesabını təklifdə ayrı dəqiqləşdirin."], ["Marşrut dəyişəndə qiymət dəyişir?", "Dayanacaq və vaxt cədvəlini əvvəl təqdim edin; sonradan dəyişiklik üçün razılaşma qaydasını soruşun."]],
+    "queries": ["Travego kirayəsi", "Travego icarəsi", "sərnişin avtobusu sifarişi"], "related": ["avtomobil-icaresi", "yukdasima", "diger-neqliyyat"], "sources": []
+  },
+  "diger-neqliyyat": {
+    "name": "Digər nəqliyyat xidmətləri", "heading": "Digər nəqliyyat xidmətləri — yük, marşrut və vaxt",
+    "description": "Digər nəqliyyat tələbi üçün sərnişin və ya yük növünü, marşrutu, tutumu və tarixləri yazın. Əlavə xərcləri sifarişdən əvvəl dəqiqləşdirin.",
+    "intro": "Bu bölmə ayrıca göstərilməyən daşıma və nəqliyyat sifarişləri üçündür. Yükün xüsusiyyəti və ya səfərin dayanacaqları uyğun nəqliyyat seçiminə kömək edir.",
+    "scope": ["Tapşırıq, marşrut və tutumun dəqiqləşdirilməsi", "Uyğun nəqliyyatın və vaxtın razılaşdırılması", "Daşıma və xidmətin yekunlaşdırılması"],
+    "pricing": ["Məsafə və müddət", "Nəqliyyat vasitəsi və tutum", "Gözləmə, yanacaq və yükləmə"],
+    "prepare": ["Başlanğıc və təyinat ünvanları", "Sərnişin/yük sayı və xüsusiyyəti", "Tarix, vaxt və giriş məlumatı"],
+    "questions": [["Nəqliyyat tələbi dəqiq alt xidmətə uyğun deyil?", "Marşrutu, yükü və tutumu təsvir edin; uyğun maşın və xidmət sərhədi aydınlaşsın."], ["Əlavə gediş və gözləmə necə hesablanır?", "Tarix, dayanacaq və gözləmə ehtiyacını sifariş zamanı bildirin və qaydanı yazılı təsdiqləyin."]],
+    "queries": ["nəqliyyat xidməti", "sifarişlə nəqliyyat", "yük və sərnişin daşınması"], "related": ["yukdasima", "avtomobil-icaresi", "evakuator-xidmeti"], "sources": []
+  }
+}

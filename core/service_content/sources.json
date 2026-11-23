@@ -1,0 +1,82 @@
+{
+  "google-helpful": {
+    "label": "Google Search Central — faydalı və insan üçün yazılmış məzmun",
+    "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+  },
+  "bosch-model": {
+    "label": "Bosch — cihazın model nömrəsinin tapılması",
+    "url": "https://www.bosch-home.co.uk/customer-service/get-support/where-to-find-the-model-number"
+  },
+  "apple-service": {
+    "label": "Apple — cihazı servisə hazırlamaq",
+    "url": "https://support.apple.com/en-us/109519"
+  },
+  "azerigas-emergency": {
+    "label": "Transparency Azerbaijan — qaz təhlükəsizliyi bukleti",
+    "url": "https://transparency.az/alac/transpfiles/Booklet_7_GAZ.pdf"
+  },
+  "schueco-sliding": {
+    "label": "Schüco — sürüşən və qaldır-sürüşdür sistemləri",
+    "url": "https://www.schueco.com/schueco/architects/products/sliding-systems"
+  },
+  "nhs-physio": {
+    "label": "NHS — fizioterapiya və ilkin qiymətləndirmə",
+    "url": "https://www.nhs.uk/tests-and-treatments/physiotherapy/"
+  },
+  "aad-laser": {
+    "label": "American Academy of Dermatology — lazer epilyasiyasına hazırlıq",
+    "url": "https://www.aad.org/public/cosmetic/hair-removal/laser-hair-removal-preparation"
+  },
+  "cdc-cleaning": {
+    "label": "CDC — evdə təmizlik və dezinfeksiya",
+    "url": "https://www.cdc.gov/hygiene/about/when-and-how-to-clean-and-disinfect-your-home.html"
+  },
+  "adobe-print": {
+    "label": "Adobe — çap fayllarında printer nişanları və kəsim payı",
+    "url": "https://helpx.adobe.com/au/indesign/desktop/print/page-set-up-and-printer-marks/set-printer-marks.html"
+  },
+  "ikea-kitchen": {
+    "label": "IKEA — mətbəx ölçülərinin götürülməsi",
+    "url": "https://www.ikea.com/us/en/customer-service/services/kitchen-measuring/"
+  },
+  "michelin-tyre": {
+    "label": "Michelin — təkər ölçü işarələrinin izahı",
+    "url": "https://www.michelin.co.uk/auto/advice/tyre-basics/tyre-markings-explained"
+  },
+  "asan-translation": {
+    "label": "Azərbaycan Ədliyyə Nazirliyi — notarial tərcümə xidməti",
+    "url": "https://justice.gov.az/az/digital-justice/notarial-tercume-xidmeti"
+  },
+  "competitor-mebel": {
+    "label": "Xidmət.az — mebel ustası xidmət səhifəsi (bazar nümunəsi)",
+    "url": "https://xidmet.az/mebel-ustasi"
+  },
+  "fernox-cleaning": {
+    "label": "Fernox — isitmə sisteminin təmizlənməsi və məhsul uyğunluğu",
+    "url": "https://fernox.com/residential-solutions/cleaner-f3-500ml/"
+  },
+  "flir-leaks": {
+    "label": "FLIR — termal görüntü ilə nəmlik və sızma axtarışının imkanları",
+    "url": "https://www.flir.com/discover/professional-tools/how-to-detect-a-water-leak-with-thermal-imaging/"
+  },
+  "ridgid-inspection": {
+    "label": "RIDGID — boru kamerası və xətt diaqnostikası",
+    "url": "https://www.ridgid.com/us/en/diagnostic-tools"
+  },
+  "greenheck-air": {
+    "label": "Greenheck — sorulan havanın əvəzlənməsi və havalandırma",
+    "url": "https://www.greenheck.com/resources/blog/what-is-make-up-air"
+  },
+  "greenheck-maintenance": {
+    "label": "Greenheck — fan və mühərrik üzrə texniki xidmət təlimatı (PDF)",
+    "url": "https://content.greenheck.com/public/DAMProd/Original/10023/PCUMaintenance_General_GFC.pdf"
+  },
+  "ariston-descaling": {
+    "label": "Ariston — su qızdırıcısında ərp və texniki qulluq",
+    "url": "https://www.ariston.com/en-sa/the-comfort-way/news/how-to-clean-and-descale-your-water-heater/"
+  },
+  "viessmann-service": {
+    "label": "Viessmann — qazana servis və yekun yoxlamalar",
+    "url": "https://www.viessmann.co.uk/en/heating-advice/boilers/when-does-a-boiler-need-its-first-service.html"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "reklam-dizayn": {
+    "name": "Reklam və dizayn", "heading": "Reklam və dizayn xidmətləri — tapşırıqdan hazır fayla",
+    "description": "Reklam və dizayn sifarişində auditoriyanı, istifadə formatını, ölçüləri və təhvil fayllarını əvvəlcədən razılaşdırın. İstehsal xərclərini dizayn işindən ayırın.",
+    "intro": "Bu kateqoriya çap, reklam istehsalı, dizayn və foto-video xidmətlərini birləşdirir. Ehtiyacınıza uyğun alt xidməti seçin və təklifdə konsept, düzəliş sayı, istehsal və istifadə hüquqlarını dəqiqləşdirin.",
+    "scope": ["Tapşırıq və auditoriyanın dəqiqləşdirilməsi", "Konsept, maket və razılaşdırılmış düzəlişlər", "Rəqəmsal fayl və ya istehsal təhvili"],
+    "pricing": ["İş həcmi və format sayı", "Çəkiliş, material və istehsal xərci", "Düzəliş, müddət və istifadə hüquqları"],
+    "prepare": ["Məqsəd və hədəf auditoriya", "Mətn, loqo və mövcud brend materialı", "Ölçü, kanal və təhvil formatı"],
+    "questions": [["Dizayn təklifinə neçə düzəliş daxildir?", "Düzəliş mərhələlərinin sayı və yeni konseptin əlavə iş sayılması təklifdə göstərilməlidir."], ["Çap qiyməti dizayn haqqına daxildirmi?", "Maket, çap tirajı, material, kəsim və çatdırılma xərclərini ayrı sətirlərdə dəqiqləşdirin."]],
+    "queries": ["reklam dizayn xidməti", "qrafik dizayner", "reklam hazırlanması"], "related": ["dizayn-xidmeti", "cap-isleri", "reklam-xidmetleri"], "sources": []
+  },
+  "cap-isleri": {
+    "name": "Çap işləri", "heading": "Çap işləri — fayl, kağız və tirajı dəqiqləşdirin",
+    "description": "Vizit kartı, buklet və digər çap sifarişlərində ölçü, kağız, rəng, tiraj və son işləməni eyniləşdirərək qiymət alın.",
+    "intro": "Çapa hazır faylın ölçü və rəng parametrləri sifarişə uyğun olmalıdır. Kəsim payı, qatlama və digər texniki tələbləri seçdiyiniz mətbəə ilə əvvəlcədən təsdiqləyin.",
+    "scope": ["Faylın texniki yoxlanması", "Razılaşdırılmış material və tirajda çap", "Kəsim və əlavə son işləmə"],
+    "pricing": ["Format, tiraj və kağız növü", "Rəng və çap üsulu", "Laminasiya, qatlama və çatdırılma"],
+    "prepare": ["Çapa hazır maket və ölçü", "Tiraj və istifadə məqsədi", "Kağız və son işləmə istəyi"],
+    "questions": [["Çap üçün fayl hansı formatda verilməlidir?", "Mətbəədən tələb olunan fayl formatı, rəng rejimi və kəsim payı barədə texniki şərti alın."], ["Eyni dizayn üçün qiymətlər niyə fərqlənir?", "Kağız çəkisi, çap texnologiyası, tiraj və son işləmə komplekti məbləği dəyişir. Eyni parametrlərlə təklif istəyin."]],
+    "queries": ["çap xidməti", "vizit kartı çapı", "buklet çapı"], "related": ["reklam-xidmetleri", "vinil-bannerler", "dizayn-xidmeti"], "sources": ["adobe-print"]
+  },
+  "reklam-xidmetleri": {
+    "name": "Reklam xidmətləri", "heading": "Reklam xidməti — kanal, auditoriya və nəticə ölçümü",
+    "description": "Reklam sifarişində məqsədi, auditoriyanı, yerləşdirmə kanalını və hesabat formasını müəyyən edin. Reklam büdcəsi ilə xidmət haqqını ayırın.",
+    "intro": "Reklamın formatı biznes məqsədindən asılıdır. İcraçıdan iş planını, istifadə olunan platformaları, büdcənin idarə edilməsini və nəticənin hansı göstəricilərlə təqdim olunacağını soruşun.",
+    "scope": ["Məqsəd və auditoriya planı", "Razılaşdırılmış kreativ və yerləşdirmə", "Nəticələrin hesabatı və növbəti addımlar"],
+    "pricing": ["Kanal və kampaniya müddəti", "Kreativ istehsalın həcmi", "Reklam büdcəsi və hesabat işi"],
+    "prepare": ["Məhsul və xidmət məlumatı", "Hədəf auditoriya və coğrafiya", "Mövcud büdcə və ölçmə imkanı"],
+    "questions": [["Reklam büdcəsi xidmət haqqına daxildirmi?", "Platformaya ödənən büdcəni və icraçının xidmət haqqını ayrı dəqiqləşdirin."], ["Nəticə necə izlənəcək?", "Kampaniya başlamazdan əvvəl ölçüləcək göstəriciləri, hesabat tezliyini və giriş hüquqlarını razılaşdırın."]],
+    "queries": ["reklam xidməti", "rəqəmsal reklam", "reklam kampaniyası"], "related": ["smm-xidmeti", "seo-xidmeti", "video-xidmetleri"], "sources": []
+  },
+  "interyer-dizayn": {
+    "name": "İnteryer dizayn", "heading": "İnteryer dizayn — plan, material və layihə həcmi",
+    "description": "İnteryer dizayn təklifində ölçü planı, funksional zonalar, vizual materiallar və işçi çertyojların daxil olub-olmadığını müqayisə edin.",
+    "intro": "Dizayn konsepti ilə təmirə lazım olan texniki sənədlər eyni xidmət olmaya bilər. Layihənin hansı mərhələlərinin hazırlanacağını və müəllif nəzarətinin daxil olub-olmadığını soruşun.",
+    "scope": ["Məkanın ölçülməsi və ehtiyacların toplanması", "Planlaşdırma və vizual konsept", "Razılaşdırılmış çertyoj və material siyahısı"],
+    "pricing": ["Məkanın sahəsi və otaq sayı", "Vizualizasiya və çertyojların həcmi", "Müəllif nəzarəti və əlavə düzəlişlər"],
+    "prepare": ["Mövcud plan və ölçülər", "İstifadəçi sayı və funksional ehtiyaclar", "Bəyəndiyiniz üslub nümunələri və büdcə çərçivəsi"],
+    "questions": [["İnteryer layihəsi ustalar üçün çertyojları əhatə edir?", "Elektrik, santexnika və mebel ölçüləri kimi icra sənədlərinin siyahısını təklifdə yoxlayın."], ["Dizayn qiymətinə materiallar daxildir?", "Dizaynerin işi ilə mebel və tikinti materiallarının satınalma məbləğini ayrı hesablayın."]],
+    "queries": ["interyer dizayn xidməti", "ev dizaynı", "interyer layihəsi"], "related": ["dizayn-xidmeti", "ev-temiri", "metbex-mebelleri"], "sources": []
+  },
+  "dizayn-xidmeti": {
+    "name": "Dizayn xidməti", "heading": "Dizayn xidməti — məqsəd, format və təhvil faylları",
+    "description": "Qrafik və rəqəmsal dizayn sifarişində istifadə yerini, ölçüləri, brend materiallarını və təhvil formatlarını dəqiqləşdirin.",
+    "intro": "“Dizayn” müxtəlif işləri ifadə edə bilər: loqo, sosial media maketi, qablaşdırma və ya təqdimat. Konkret nəticəni yazın ki, təklifin həcmi aydın və müqayisə edilə bilən olsun.",
+    "scope": ["Tapşırıq və mövcud materialların təhlili", "Konsept və razılaşdırılmış dizayn variantları", "Təyinatına uyğun yekun fayllar"],
+    "pricing": ["Konsept və format sayı", "Düzəliş mərhələləri", "Mənbə faylı və istifadə hüquqları"],
+    "prepare": ["Dizaynın istifadə yeri", "Mətn və brend faylları", "Ölçü və istənilən fayl formatı"],
+    "questions": [["Dizaynerdən hansı faylları təhvil almalıyam?", "İstifadə məqsədinə uyğun ixrac fayllarını və mənbə faylının verilib-verilmədiyini əvvəlcədən razılaşdırın."], ["Dizayn təklifində düzəlişlər necə hesablanır?", "Daxil olan düzəliş mərhələsini və tapşırıq dəyişəndə əlavə iş qaydasını yazılı dəqiqləşdirin."]],
+    "queries": ["dizayn xidməti", "qrafik dizayn", "loqo dizaynı"], "related": ["interyer-dizayn", "reklam-dizayn", "smm-xidmeti"], "sources": []
+  },
+  "vinil-bannerler": {
+    "name": "Vinil bannerlər", "heading": "Vinil banner sifarişi — ölçü, material və montaj",
+    "description": "Banner sifarişində ölçü, yerləşəcəyi mühit, material, çap və bərkitmə üsulunu dəqiqləşdirin. Dizayn, istehsal və montajı ayrı göstərən təklif alın.",
+    "intro": "Bannerin açıq və ya qapalı məkanda istifadəsi material və bərkitmə seçiminə təsir edir. Faylın ölçüsünü və görünmə məsafəsini istehsalçı ilə təsdiqləyin.",
+    "scope": ["Ölçü və materialın seçilməsi", "Maketin yoxlanması və çap", "Razılaşdırılmış kənar işləmə və montaj"],
+    "pricing": ["Bannerin ölçüsü və materialı", "Çap, kənar bərkitmə və aksesuar", "Montaj yeri və çatdırılma"],
+    "prepare": ["Ölçü və quraşdırılma yeri", "Maket və ya reklam mətni", "Montaj səthinin şəkli"],
+    "questions": [["Banner üçün fayl ölçüsü necə olmalıdır?", "Çap provayderindən son ölçü, kəsim və fayl keyfiyyəti tələblərini alın."], ["Montaj qiymətə daxildirmi?", "Çap, halqa və kənar tikişi, çatdırılma və yüksəklikdə montajın daxilolmasını ayrı soruşun."]],
+    "queries": ["vinil banner sifarişi", "banner çapı", "reklam banneri hazırlanması"], "related": ["cap-isleri", "reklam-xidmetleri", "dizayn-xidmeti"], "sources": ["adobe-print"]
+  },
+  "video-xidmetleri": {
+    "name": "Video xidmətləri", "heading": "Video çəkilişi və montajı — ssenari, çəkiliş, təhvil",
+    "description": "Video sifarişində məqsədi, müddəti, çəkiliş günlərini, montajı və yekun formatları dəqiqləşdirin. Avadanlıq və əlavə istehsal xərclərini ayırın.",
+    "intro": "Reklam rolikinin, tədbir çəkilişinin və sosial media videosunun istehsal planı fərqlidir. Çəkiliş yeri, iştirakçılar və istifadə kanalı barədə ilkin məlumat verin.",
+    "scope": ["Brief və çəkiliş planı", "Razılaşdırılmış çəkiliş və montaj", "Kanal ölçülərinə uyğun yekun fayllar"],
+    "pricing": ["Çəkiliş müddəti və heyət", "Montaj, qrafika və səsləndirmə", "İştirakçı, məkan və istifadə hüquqları"],
+    "prepare": ["Video məqsədi və auditoriya", "Mətn, brend materialı və nümunə", "Çəkiliş yeri və yayım platforması"],
+    "questions": [["Video xidmətinə montaj daxildirmi?", "Çəkiliş saatını, montaj versiyalarını, subtitrləri və düzəliş sayını ayrıca yoxlayın."], ["Mənbə video faylları verilirmi?", "Yekun ixracla xam materialın təhvili fərqli razılaşmadır; bunu sifarişdən əvvəl bildirin."]],
+    "queries": ["video çəkilişi xidməti", "reklam videosu çəkilişi", "video montajı"], "related": ["foto-xidmetleri", "reklam-xidmetleri", "smm-xidmeti"], "sources": []
+  },
+  "foto-xidmetleri": {
+    "name": "Foto xidmətləri", "heading": "Foto çəkilişi — format, məkan və təhvil planı",
+    "description": "Foto çəkilişi üçün məqsədi, çəkiliş müddətini, məkanı, redaktə həcmini və istifadə hüquqlarını əvvəlcədən razılaşdırın.",
+    "intro": "Tədbir, məhsul və portret çəkilişlərinin hazırlığı fərqlənir. Lazım olan kadr sayını, fonu və yekun şəkillərin hansı platformada istifadə ediləcəyini bildirin.",
+    "scope": ["Çəkiliş formatı və planı", "Foto çəkilişi və ilkin seçim", "Razılaşdırılmış redaktə və faylların təhvili"],
+    "pricing": ["Çəkiliş müddəti və məkan sayı", "Redaktə olunacaq şəkillərin həcmi", "Studiya, rekvizit və istifadə hüquqları"],
+    "prepare": ["Çəkiliş məqsədi və nümunələr", "Məhsul, iştirakçı və məkan siyahısı", "İstənilən ölçü və təhvil müddəti"],
+    "questions": [["Çəkilişdən neçə foto təhvil verilir?", "Seçilmiş və redaktə olunmuş şəkillərin sayını, fayl ölçülərini və təhvil formatını razılaşdırın."], ["Fotoşəkillər reklamda istifadə edilə bilər?", "İstifadə məqsədini və hüquq şərtlərini fotoqrafla əvvəlcədən yazılı dəqiqləşdirin."]],
+    "queries": ["foto çəkilişi xidməti", "məhsul foto çəkilişi", "tədbir fotoqrafı"], "related": ["video-xidmetleri", "reklam-xidmetleri", "dizayn-xidmeti"], "sources": []
+  },
+  "diger-reklam": {
+    "name": "Digər reklam xidmətləri", "heading": "Digər reklam xidmətləri — konkret nəticəni müəyyən edin",
+    "description": "Standart alt kateqoriyaya düşməyən reklam işi üçün məqsədi, auditoriyanı, istehsal həcmini və təhvil nəticəsini qısa təsvir edin.",
+    "intro": "Bu bölmə reklam və dizayn siyahısında ayrıca göstərilməyən tapşırıqlar üçündür. Xidmətin strategiya, istehsal, yerləşdirmə və ya bir neçə mərhələni əhatə etdiyini dəqiqləşdirin.",
+    "scope": ["Tələbin və auditoriyanın dəqiqləşdirilməsi", "Razılaşdırılmış kreativ və icra", "Təhvil və nəticə hesabatı"],
+    "pricing": ["İstehsal və format sayı", "Material və yerləşdirmə büdcəsi", "Müddət və düzəlişlər"],
+    "prepare": ["Reklam məqsədi", "Mövcud brend və məhsul məlumatı", "Kanal, auditoriya və vaxt çərçivəsi"],
+    "questions": [["Alt kateqoriya yoxdursa necə müraciət edim?", "Tapşırığın məqsədini, gözlənilən faylı və icra yerini yazın; uyğun xidmət növü aydınlaşar."], ["Yerləşdirmə büdcəsi ayrıca hesablanır?", "İstehsal haqqı, media büdcəsi və əlavə xərcləri təklifdə bir-birindən ayırın."]],
+    "queries": ["reklam xidmətləri", "reklam sifarişi", "dizayn və reklam"], "related": ["reklam-xidmetleri", "dizayn-xidmeti", "cap-isleri"], "sources": []
+  }
+}

@@ -1,0 +1,17 @@
+<section class="panel service-intro pg-section" aria-label="Xidmət və sifariş məlumatı">
+  <div>
+    <span class="service-kicker">Xidmət seçimi bələdçisi</span>
+    <p>{{ priority_service.summary }}</p>
+    <div class="service-jumps"><a href="#service-scope">İşin həcmi</a><a href="#service-pricing">Qiymətə təsir edənlər</a><a href="#service-request">Sifarişə hazırlaş</a></div>
+  </div>
+  {% if service_provider %}
+  <aside class="service-offer" aria-label="Elan sahibinin xidmət təklifi">
+    <span class="service-kicker">Elan sahibinin təklifi</span>
+    <a class="service-owner" href="{{ service_provider.profile_url }}">{{ service_provider.name }}</a>
+    {% if service_provider.price %}<strong class="service-amount">{{ service_provider.price.label }}</strong><p>{{ service_provider.price.note }}</p>{% else %}<p>Qiymət iş həcminə görə icraçı ilə razılaşdırılır.</p>{% endif %}
+    <p><strong>Zəmanətli xidmət təklifi.</strong> Müddəti, əhatə olunan işi və təkrar müraciət şərtini sifarişdən əvvəl icraçı ilə dəqiqləşdirin.</p>
+    <div class="service-offer-actions"><a class="btn btn-primary" href="{{ service_provider.whatsapp }}" target="_blank" rel="noopener">Sifarişi WhatsApp-da dəqiqləşdir</a><a class="btn btn-outline" href="tel:{{ service_provider.phone }}">İcraçıya zəng et</a></div>
+    <small>Xidmətin icraçısı elan sahibidir. Bu əlaqə xidmət sifarişi üçündür.</small>
+  </aside>
+  {% endif %}
+</section>

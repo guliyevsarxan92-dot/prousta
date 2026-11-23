@@ -1,0 +1,102 @@
+{
+  "it-biznes": {
+    "name": "İT və biznes xidmətləri", "heading": "İT və biznes xidmətləri — tapşırıq, həcm və nəticə",
+    "description": "İT xidmətində məqsədi, istifadəçi və sistem sayını, təhvil nəticəsini və dəstək ehtiyacını yazılı dəqiqləşdirin.",
+    "intro": "Bu bölmə sayt, tətbiq, rəqəmsal marketinq, uçot və peşəkar xidmətləri birləşdirir. Uyğun alt xidmət seçin; texniki əhatə dairəsi və təqdim ediləcək fayllar razılaşmada göstərilsin.",
+    "scope": ["Tapşırıq və mövcud sistemlərin təhlili", "Razılaşdırılmış iş mərhələləri", "Təhvil, girişlər və dəstək sərhədi"],
+    "pricing": ["Xidmət həcmi və mürəkkəblik", "İnteqrasiya, istifadəçi və məzmun miqdarı", "Dəstək və sonrakı dəyişikliklər"],
+    "prepare": ["Məqsəd və mövcud həll", "İstifadəçi, məzmun və sistem məlumatı", "Vaxt çərçivəsi və tələb olunan təhvil"],
+    "questions": [["Xidmət bitəndə hansı fayllar və girişlər veriləcək?", "Hesab sahibi, mənbə faylları, sənədlər və sonrakı dəstək barədə təklifdə konkret razılaşın."], ["Əlavə iş necə hesablanır?", "Əhatə dairəsinə daxil olan tapşırıqları və dəyişiklik sorğularının təsdiq qaydasını yazılı göstərin."]],
+    "queries": ["İT xidmətləri", "biznes üçün rəqəmsal xidmətlər", "proqram təminatı xidməti"], "related": ["veb-sayt", "mobil-tetbiq", "smm-xidmeti"], "sources": []
+  },
+  "veb-sayt": {
+    "name": "Veb sayt", "heading": "Veb sayt hazırlanması — məqsəd, səhifələr və idarəetmə",
+    "description": "Sayt sifarişində səhifə, mobil görünüş, inteqrasiya və idarəetməni dəqiqləşdirin. Domen və hosting hesabının sahibi siz olun.",
+    "intro": "Sayt layihəsinin əhatəsi biznes məqsədinə görə dəyişir. Dizayn, proqramlaşdırma, məzmun köçürmə, analitika və texniki dəstəyin təklifə daxil olub-olmadığını ayrıca yoxlayın.",
+    "scope": ["Məqsəd, istifadəçi və səhifə xəritəsi", "Dizayn və mobil uyğun işlək sayt", "Təhvil, hesablar və idarəetmə təlimi"],
+    "pricing": ["Səhifə sayı və funksiyalar", "Dizayn və məzmun hazırlanması", "İnteqrasiya, domen və sonrakı dəstək"],
+    "prepare": ["Biznes və sayt məqsədi", "Loqo, mətn, şəkil və mövcud sayt", "Lazım olan formalar və inteqrasiyalar"],
+    "questions": [["Domen və hosting kimin hesabında olmalıdır?", "Mülkiyyət və giriş məlumatlarının sifarişçidə saxlanmasını, yenilənmə ödənişlərini və təhvil qaydasını razılaşdırın."], ["Sayt istifadəyə veriləndən sonra texniki dəstək daxildir?", "Zəmanət, yeniləmə, təhlükəsizlik və məzmun dəyişikliklərinin sərhədini müqavilədə dəqiqləşdirin."]],
+    "queries": ["veb sayt hazırlanması", "sayt sifarişi", "biznes saytı hazırlanması"], "related": ["mobil-tetbiq", "seo-xidmeti", "dizayn-xidmeti"], "sources": []
+  },
+  "mobil-tetbiq": {
+    "name": "Mobil tətbiq", "heading": "Mobil tətbiq hazırlanması — platforma və funksiyalar",
+    "description": "Mobil tətbiq sifarişində platformaları, istifadəçi ssenarilərini, backend inteqrasiyalarını və mağaza yayıma dəstəyini dəqiqləşdirin.",
+    "intro": "Tətbiq layihəsi ekran dizaynından əlavə məlumat modeli, server API-si, test və yayıma hazırlığı əhatə edə bilər. İlk versiyaya daxil olan funksiyaları yazılı prioritetləşdirin.",
+    "scope": ["İstifadəçi ssenarisi və texniki tələblər", "Tətbiq və lazım olan server inteqrasiyası", "Test, mənbə kodu və yayıma hazırlıq"],
+    "pricing": ["Platforma və funksiyaların sayı", "Backend, ödəniş və xarici inteqrasiyalar", "Test, mağaza materialı və sonrakı dəstək"],
+    "prepare": ["Hədəf istifadəçi və əsas tapşırıqlar", "Mövcud API və dizayn faylları", "İlk versiya üçün vacib funksiyalar"],
+    "questions": [["Tətbiq mənbə kodu sifarişçiyə veriləcək?", "Kod, dizayn, server hesabları, imza açarları və sənədlərin təhvil qaydasını əvvəlcədən yazılı təsdiqləyin."], ["Tətbiqin mağazada yayımlanması qiymətə daxildir?", "Hesab açılması, mağaza materialları, yoxlama prosesi və sonrakı versiya dəstəyini ayırın."]],
+    "queries": ["mobil tətbiq hazırlanması", "Android tətbiqi sifarişi", "iOS tətbiqi hazırlanması"], "related": ["veb-sayt", "seo-xidmeti", "smm-xidmeti"], "sources": []
+  },
+  "smm-xidmeti": {
+    "name": "SMM xidməti", "heading": "SMM xidməti — kontent planı, hesablar və hesabat",
+    "description": "SMM təklifində platformaları, paylaşım sayını, çəkiliş və dizaynı, reklam büdcəsini və hesabat göstəricilərini ayrı yoxlayın.",
+    "intro": "Sosial media hesabının idarəsi ilə reklam kampaniyası fərqli işlərdir. Hesab sahibi və girişləri biznesdə saxlayın, paylaşım təsdiqi və şərh cavablandırma qaydasını razılaşdırın.",
+    "scope": ["Auditoriya və kontent istiqamətinin müəyyənləşdirilməsi", "Razılaşdırılmış plan üzrə material və paylaşım", "Hesab fəaliyyəti barədə dövri hesabat"],
+    "pricing": ["Platforma və paylaşım həcmi", "Foto, video və dizayn istehsalı", "Reklam büdcəsi və icma idarəetməsi"],
+    "prepare": ["Biznes profili və auditoriya", "Məhsul məlumatı və brend materialları", "Mövcud hesablar və təsdiq prosesi"],
+    "questions": [["SMM xidmətinə reklam büdcəsi daxildir?", "İcra haqqını, platforma büdcəsini və yaradıcı istehsal xərclərini ayrı göstərin."], ["Hesabın administrator girişi kimdə qalmalıdır?", "Hesab sahibliyini biznesdə saxlayın, məhdud rol verin və əməkdaşlıq bitəndə girişin ləğv qaydasını müəyyənləşdirin."]],
+    "queries": ["SMM xidməti", "sosial media idarəçiliyi", "Instagram səhifə idarəsi"], "related": ["reklam-xidmetleri", "seo-xidmeti", "dizayn-xidmeti"], "sources": []
+  },
+  "seo-xidmeti": {
+    "name": "SEO xidməti", "heading": "SEO xidməti — texniki yoxlama, məzmun və ölçmə",
+    "description": "SEO sifarişində texniki audit, məzmun işi, prioritetlər və hesabatı dəqiqləşdirin. Reytinq zəmanəti deyil, yoxlanıla bilən iş və ölçmə planı istəyin.",
+    "intro": "Axtarış görünürlüğü saytın texniki vəziyyəti, faydalı məzmun və real istifadəçi ehtiyacından asılıdır. Hesab girişlərini təhlükəsiz verin və dəyişikliklərin təsdiq/hesabat prosesini əvvəlcədən razılaşdırın.",
+    "scope": ["Texniki və axtarış görünürlüğü yoxlaması", "Prioritetli düzəliş və faydalı səhifə məzmunu", "Ölçülə bilən hesabat və növbəti addımlar"],
+    "pricing": ["Sayt və dil sayı", "Texniki problemlərin və səhifələrin həcmi", "Məzmun, rəqəmsal ölçmə və hesabat"],
+    "prepare": ["Sayt ünvanı və xidmət sahələri", "Axtarış konsolu/analitika barədə məlumat", "Biznesin əsas təklifləri və müştəri sualları"],
+    "questions": [["SEO-da konkret nəticəyə zəmanət verilirmi?", "Axtarış nəticələri dəyişkəndir; konkret nəticə zəmanətindən çox görüləcək iş, ölçmə və hesabat şərtlərini müqavilədə dəqiqləşdirin."], ["SEO xidməti üçün hansı girişlər lazımdır?", "Lazım olan platformalara məhdud səlahiyyət verin; parol paylaşmayın və hesab sahibliyini özünüzdə saxlayın."]],
+    "queries": ["SEO xidməti", "saytın SEO optimizasiyası", "texniki SEO auditi"], "related": ["veb-sayt", "reklam-xidmetleri", "smm-xidmeti"], "sources": ["google-helpful"]
+  },
+  "muhasibatliq": {
+    "name": "Mühasibatlıq", "heading": "Mühasibatlıq xidməti — sənəd və hesabatlar",
+    "description": "Mühasibatlıq xidməti seçərkən fəaliyyət növünü, sənəd və əməliyyat həcmini, hesabat dövrünü və məsuliyyət bölgüsünü dəqiqləşdirin.",
+    "intro": "Biznesin ölçüsü və əməliyyatları uçot işinin həcmini dəyişir. Girişlər, sənəd mübadiləsi, hesabat təqvimi və məxfi məlumatların qorunması qaydasını xidmət başlamazdan əvvəl razılaşdırın.",
+    "scope": ["Mövcud uçot və ehtiyacların toplanması", "Razılaşdırılmış dövr üzrə sənəd və hesabat işi", "Müştəriyə təhvil və sualların cavablandırılması"],
+    "pricing": ["Əməliyyat və sənəd sayı", "İşçi, filial və hesabat həcmi", "Əlavə məsləhət və düzəliş işi"],
+    "prepare": ["Fəaliyyət və hüquqi şəxs barədə məlumat", "Mövcud uçot və sənəd siyahısı", "Hesabat dövrü və daxili məsul şəxs"],
+    "questions": [["Hansı sənədlər dövri təqdim olunmalıdır?", "Sənəd siyahısını, formatı, son tarixləri və məlumatın ötürülmə kanalını xidmət göstərənlə razılaşdırın."], ["Mühasibat sisteminin hesabları kimdə qalır?", "Sistem sahibini, rol səlahiyyətlərini, arxiv nüsxələrini və əməkdaşlıq bitdikdə girişin bağlanmasını yazılı müəyyən edin."]],
+    "queries": ["mühasibatlıq xidməti", "mühasib xidməti", "biznes üçün mühasibat"], "related": ["huquqi-xidmetler", "tercume-xidmeti", "veb-sayt"], "sources": []
+  },
+  "huquqi-xidmetler": {
+    "name": "Hüquqi xidmətlər", "heading": "Hüquqi xidmət — məsələ, sənəd və xidmət sərhədi",
+    "description": "Hüquqi xidmətə müraciətdə məsələnin növünü, tarixləri və sənədləri təqdim edin. Məsləhətin əhatəsini, məxfilik və ödəniş şərtlərini hüquqşünasla razılaşdırın.",
+    "intro": "Hüquqi nəticə faktlardan və tətbiq olunan qaydalardan asılıdır; bu səhifə hüquqi məsləhət deyil. Sənədləri paylaşmazdan əvvəl xidmət göstərənin təcrübəsini və məxfilik qaydasını yoxlayın.",
+    "scope": ["Məsələ və sənədlərin ilkin müzakirəsi", "Razılaşdırılmış araşdırma və məsləhət", "Sənəd hazırlanması və təhvil sərhədi"],
+    "pricing": ["Məsələnin mürəkkəbliyi və sənəd həcmi", "Məsləhət, sənəd və təmsilçilik mərhələləri", "Təcili iş və əlavə görüşlər"],
+    "prepare": ["Məsələnin tarix sırası ilə təsviri", "Əlaqəli müqavilə və yazışmalar", "Gizli məlumatların təhlükəsiz ötürülməsi"],
+    "questions": [["İlk hüquqi konsultasiyaya nə aparım?", "Əsas sənədləri, tarixləri və suallarınızı hazırlayın; hüquqşünasdan hansı əlavə materialın lazım olacağını soruşun."], ["Xidmət məhkəmədə təmsilçiliyi əhatə edir?", "Məsləhət, sənəd hazırlığı və təmsilçilik fərqli işlərdir; konkret daxilolmaları yazılı razılaşdırın."]],
+    "queries": ["hüquqi xidmət", "hüquqşünas konsultasiyası", "müqavilə hüquqi yoxlanışı"], "related": ["muhasibatliq", "tercume-xidmeti", "diger-it-biznes"], "sources": []
+  },
+  "tercume-xidmeti": {
+    "name": "Tərcümə xidməti", "heading": "Tərcümə xidməti — dil, məqsəd və təsdiq tələbi",
+    "description": "Tərcümə sifarişində dilləri, sənədin həcmini, istifadə ediləcəyi qurumu və son tarixi bildirin. Notarial təsdiq və əlavə rəsmiləşdirməni ayrıca yoxlayın.",
+    "intro": "Sənəd tərcüməsində tələb olunan formatı sənədi qəbul edən qurum müəyyən edə bilər. Tərcümə, notarial təsdiq və digər rəsmiləşdirmələrin ayrı mərhələlər olduğunu nəzərə alın.",
+    "scope": ["Sənəd, dil və məqsədin dəqiqləşdirilməsi", "Razılaşdırılmış tərcümə və redaktə", "Təhvil və tələb olunursa təsdiq mərhələsi"],
+    "pricing": ["Dil cütü və mətn həcmi", "Mətnin ixtisaslaşma və formatı", "Təcili təhvil və təsdiq mərhələləri"],
+    "prepare": ["Oxunaqlı sənəd və əlavə səhifələr", "Mənbə və hədəf dil", "Tərcüməni qəbul edəcək qurumun tələbi"],
+    "questions": [["Hər rəsmi sənədə notarial təsdiq lazımdır?", "Tələbi sənədi qəbul edən qurumdan dəqiqləşdirin; tərcümə və notarial hərəkət ayrı xidmət ola bilər."], ["Tərcümə qiyməti necə hesablanır?", "Səhifə/söz hesabı, möhür və əlavələr, formatlama və təsdiq xərcini əvvəlcədən soruşun."]],
+    "queries": ["tərcümə xidməti", "sənəd tərcüməsi", "notarial tərcümə"], "related": ["huquqi-xidmetler", "muhasibatliq", "repetitor"], "sources": ["asan-translation"]
+  },
+  "repetitor": {
+    "name": "Repetitor", "heading": "Repetitor seçimi — fənn, səviyyə və dərs planı",
+    "description": "Repetitor axtarışında fənni, hazırkı səviyyəni, məqsədi və dərs formatını qeyd edin. İlk görüşdə plan, material və irəliləyişin necə izlənəcəyini soruşun.",
+    "intro": "Məktəb mövzularının möhkəmləndirilməsi və imtahan hazırlığı fərqli proqram tələb edə bilər. Şagirdin məqsəd və vaxt çərçivəsini müəllimlə bölüşün.",
+    "scope": ["Səviyyə və öyrənmə məqsədinin müəyyənləşdirilməsi", "Razılaşdırılmış dərs planı", "Mövzu təkrarı və irəliləyiş barədə rəy"],
+    "pricing": ["Fənn, səviyyə və dərs müddəti", "Fərdi və ya qrup formatı", "Dərs yeri, material və hazırlıq"],
+    "prepare": ["Fənn və hazırkı səviyyə", "Məqsəd, imtahan və vaxt aralığı", "Çətinlik çəkilən mövzular"],
+    "questions": [["İlk dərs sınaq dərsi sayılır?", "İlkin görüşün müddətini, ödənişini və səviyyə qiymətləndirməsi olub-olmadığını soruşun."], ["Dərslər onlayn və ya evdə keçirilir?", "Format, ünvan, texniki ehtiyac və ləğv/dəyişiklik şərtlərini əvvəlcədən razılaşdırın."]],
+    "queries": ["repetitor xidməti", "fənn müəllimi", "imtahana hazırlıq müəllimi"], "related": ["tercume-xidmeti", "dizayn-xidmeti", "diger-it-biznes"], "sources": []
+  },
+  "diger-it-biznes": {
+    "name": "Digər İT və biznes xidmətləri", "heading": "Digər İT və biznes xidmətləri — tapşırıq və təhvil",
+    "description": "Siyahıda olmayan İT və biznes tapşırığı üçün mövcud sistemi, məqsədi, tələb olunan nəticəni və giriş ehtiyacını təsvir edin.",
+    "intro": "Bu kateqoriya ayrıca göstərilməyən peşəkar rəqəmsal və biznes xidmətləri üçündür. Xidmət sərhədini, məlumat girişlərini və təhvil formatını əvvəlcədən razılaşdırın.",
+    "scope": ["Ehtiyacın və mövcud həllin müzakirəsi", "Razılaşdırılmış iş planının icrası", "Nəticə, sənəd və girişlərin təhvili"],
+    "pricing": ["Tapşırıq və sistem mürəkkəbliyi", "Məlumat və inteqrasiya həcmi", "Dəstək və əlavə dəyişikliklər"],
+    "prepare": ["Məqsəd və gözlənilən nəticə", "Mövcud sistem, fayl və məlumatlar", "Müddət və əlaqələndirici şəxs"],
+    "questions": [["Bu iş üçün məxfi məlumat paylaşmaq lazımdır?", "Məlumatın minimumunu, təhlükəsiz ötürmə kanalını və girişin nə vaxt bağlanacağını razılaşdırın."], ["İşin təhvili necə təsdiqlənir?", "Qəbul meyarlarını, faylları və açıq qalan dəstək öhdəliyini sifarişdən əvvəl yazılı müəyyən edin."]],
+    "queries": ["İT biznes xidməti", "rəqəmsal biznes dəstəyi", "İT mütəxəssis xidməti"], "related": ["veb-sayt", "muhasibatliq", "huquqi-xidmetler"], "sources": []
+  }
+}

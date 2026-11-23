@@ -1,0 +1,42 @@
+{
+  "anbar-tikintisi": {
+    "name": "Anbar tikintisi", "heading": "Anbar tikintisi — sahə, konstruksiya və logistika",
+    "description": "Anbar layihəsi üçün istifadə məqsədi, yük tələbi, giriş və kommunikasiya planını dəqiqləşdirin. Təklifləri eyni layihə həcminə görə müqayisə edin.",
+    "intro": "Saxlama, istehsal və paylama anbarlarının planı fərqlənir. Sahə seçimi və konstruksiya barədə qərarları texniki layihəyə əsaslandırın; torpaq, icazə və qoşulma şərtlərini ayrıca yoxlayın.",
+    "scope": ["İstifadə tələbi və sahə planı", "Konstruksiya, örtük və kommunikasiya işləri", "Giriş, döşəmə və təhvil mərhələləri"],
+    "pricing": ["Sahə, hündürlük və konstruksiya həlli", "Döşəmə və mühəndis sistemləri", "Nəqliyyat girişi və layihə mərhələləri"],
+    "prepare": ["Sahənin planı və təyinatı", "Saxlanacaq yük və hərəkət sxemi", "Mövcud kommunikasiya məlumatı"],
+    "questions": [["Anbar smetasında nələr ayrıca göstərilməlidir?", "Layihələndirmə, konstruksiya, döşəmə, kommunikasiya və sahə hazırlığını ayrı sətirlərdə istəyin."], ["Təklifləri necə ədalətli müqayisə edim?", "Eyni plan, texniki göstəricilər, material komplekti və təhvil sərhədi əsasında müqayisə edin; fərqli həcmli təkliflər eyni qiyməti ifadə etmir."]],
+    "queries": ["anbar tikintisi", "anbar tikintisi smeta", "anbar layihələndirilməsi"], "related": ["a-frame-evler", "beton-isleri", "texnika-icaresi"], "sources": []
+  },
+  "a-frame-evler": {
+    "name": "A-frame evlər", "heading": "A-frame ev tikintisi — layihə və komplekt seçimi",
+    "description": "A-frame ev sifarişində layihə, təməl, karkas, izolyasiya və daxili tamamlanma həcmini ayırın. Sahə və istifadə məqsədini əvvəlcədən bildirin.",
+    "intro": "A-frame evin görünüşü layihənin texniki tələblərini əvəz etmir. Daimi və ya mövsümi istifadəni, sahənin xüsusiyyətlərini və kommunikasiyaları layihəçiyə çatdırın.",
+    "scope": ["Sahəyə uyğun layihə və ölçülər", "Təməl və karkasın qurulması", "Örtük, izolyasiya və razılaşdırılmış tamamlanma"],
+    "pricing": ["Layihə sahəsi və komplektasiya", "Təməl və karkas materialları", "İzolyasiya, pəncərə və daxili işlər"],
+    "prepare": ["Torpaq sahəsinin planı", "İstifadə və otaq tələbləri", "Kommunikasiya və giriş məlumatları"],
+    "questions": [["A-frame ev qiymətinə daxili təmir daxildirmi?", "Təklifdə karkas, izolyasiya, pəncərə və daxili tamamlanmanın sərhədini ayrıca yoxlayın."], ["Hazır layihəni hər sahədə tətbiq etmək olar?", "Sahənin relyefi, torpaq və yerli texniki tələblər layihəyə təsir edə bilər. Uyğunluğu mütəxəssis qiymətləndirməlidir."]],
+    "queries": ["A-frame ev tikintisi", "A frame ev layihəsi", "A-frame ev qiyməti"], "related": ["anbar-tikintisi", "ev-temiri", "interyer-dizayn"], "sources": []
+  },
+  "manqal-ustasi": {
+    "name": "Manqal ustası", "heading": "Manqal tikintisi — ölçü, material və baca planı",
+    "description": "Həyət manqalı üçün yer, istifadə məqsədi, material və tüstü çıxışını birlikdə planlaşdırın. Hazır konstruksiya ilə fərdi tikintinin komplektini müqayisə edin.",
+    "intro": "Manqal qurğusunun yeri, küləyin istiqaməti və yaxın səthlər istifadəyə təsir edir. Baca və yanğına davamlılıq həllərini müvafiq mütəxəssislə layihələndirin.",
+    "scope": ["Yer və ölçü planı", "Əsas, üzlük və ocaq konstruksiyası", "Baca və əlavə iş səthlərinin razılaşdırılması"],
+    "pricing": ["Ölçü və konstruksiya növü", "Daş, kərpic və üzlük seçimi", "Baca, iş səthi və sahə hazırlığı"],
+    "prepare": ["Quraşdırma yerinin şəkli", "İstifadəçi sayı və ölçü istəyi", "Su, qaz və elektrik yaxınlığı barədə məlumat"],
+    "questions": [["Manqal layihəsində baca ayrıca hesablanır?", "Baca, çıxış və montaj işlərinin smetaya daxil olub-olmadığını aydınlaşdırın."], ["Hazır manqal ilə yerində tikinti nə ilə fərqlənir?", "Ölçü, material, əsas hazırlığı və montaj daxilolmaları fərqlənir. Təklifləri tam komplekt üzrə müqayisə edin."]],
+    "queries": ["manqal ustası", "həyətdə manqal tikintisi", "manqal tikilməsi"], "related": ["beton-isleri", "sauna-tikintisi", "ev-temiri"], "sources": []
+  },
+  "diger-temir": {
+    "name": "Digər təmir", "heading": "Digər təmir işləri — tapşırığı düzgün təsvir edin",
+    "description": "Siyahıda olmayan təmir işi üçün problemin yerini, əhatə dairəsini və gözlənilən nəticəni yazın. İcraçının təcrübəsini və iş sərhədini əvvəlcədən dəqiqləşdirin.",
+    "intro": "Bu bölmə konkret usta kateqoriyasına uyğun gəlməyən təmir müraciətləri üçündür. Təsviri və fotoşəkilləri paylaşın; elektrik, qaz və konstruktiv risk olan işlərdə uyğun ixtisaslı icraçı seçin.",
+    "scope": ["Tapşırığın və sahənin ilkin dəqiqləşdirilməsi", "Razılaşdırılmış təmir və quraşdırma", "İş həcminin yoxlanması və təhvil"],
+    "pricing": ["Problemin növü və iş həcmi", "Material və ehtiyat hissələri", "Yerində baxış və əlavə işlər"],
+    "prepare": ["Problemin qısa təsviri", "Məkanın və mövcud vəziyyətin şəkli", "İstənilən vaxt və nəticə"],
+    "questions": [["Ümumi təmir müraciətində qiymət necə hesablanır?", "Tapşırığın detalları və material tələbi dəqiqləşdikdən sonra müqayisə edilə bilən təklif istəyin."], ["İş üçün usta seçərkən nə soruşum?", "Oxşar iş təcrübəsini, təklifə daxil olan mərhələləri, materialı və yekun təhvil şərtini soruşun."]],
+    "queries": ["təmir ustası", "xırda təmir işləri", "ev təmiri ustası"], "related": ["ev-temiri", "usta-xidmetleri", "elektrik"], "sources": []
+  }
+}

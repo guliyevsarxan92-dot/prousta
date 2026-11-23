@@ -20,7 +20,7 @@
     "queries": ["krosna ustası", "peyk antenası quraşdırılması", "antena siqnal yoxdur"], "related": ["televizor-ustasi", "elektrik"], "sources": []
   },
   "kamera-ustasi": {
-    "name": "Kamera ustası", "heading": "Təhlükəsizlik kamerası ustası — quraşdırma və sistem xidməti",
+    "name": "Kamera ustası", "heading": "Kamera ustası — sistem quraşdırılması",
     "description": "Müşahidə kamerası quraşdırılması, qeyd və uzaqdan baxış problemləri üçün xidmət seçin. Kamera sayı, kabel və məlumat girişlərini dəqiqləşdirin.",
     "intro": "Müşahidə kamerası sistemində görüntü, yazma və uzaqdan giriş ayrı yoxlanır. Yeni quraşdırmada müşahidə nöqtələrini, işıq şəraitini və saxlama tələbinizi əvvəlcədən bildirin.",
     "scope": ["Kamera və qeyd cihazı montajı", "Şəbəkə və uzaqdan giriş sazlaması", "Yazma və görüntü probleminin baxışı"],
@@ -30,7 +30,7 @@
     "queries": ["kamera quraşdırılması", "təhlükəsizlik kamerası ustası", "müşahidə sistemi servisi"], "related": ["elektrik", "komputer-ustasi", "foto-video-aparatlar"], "sources": []
   },
   "printer-ustasi": {
-    "name": "Printer ustası", "heading": "Printer təmiri — çap keyfiyyəti, kağız və şəbəkə problemləri",
+    "name": "Printer ustası", "heading": "Printer təmiri — çap və şəbəkə problemləri",
     "description": "Printer və çoxfunksiyalı cihaz üçün təmir seçin. Model, çap nümunəsi, kartric tipi və şəbəkə bağlantısı barədə məlumat hazırlayın.",
     "intro": "Kağızın ilişməsi, solğun çap və kompüterdən çapın getməməsi fərqli işlərdir. Lazer və mürəkkəbli cihazın modelini, problemli çap nümunəsini və bağlantı tipini bildirin.",
     "scope": ["Çap və kağız ötürməsinin baxışı", "Kartric və çap hissəsinin diaqnostikası", "Şəbəkə və sürücü sazlanması"],
@@ -40,7 +40,7 @@
     "queries": ["printer ustası", "printer təmiri", "printer çap etmir"], "related": ["komputer-ustasi", "cap-isleri"], "sources": []
   },
   "diger-elektronika": {
-    "name": "Digər elektronika ustaları", "heading": "Digər elektron cihazların təmiri — modelə uyğun diaqnostika",
+    "name": "Digər elektronika ustaları", "heading": "Elektron cihaz təmiri — modelə uyğun diaqnostika",
     "description": "Audio, oyun və ayrıca bölməsi olmayan elektron cihaz üçün servis seçin. Model, enerji adapteri, nasazlıq və təhvil şərtlərini dəqiqləşdirin.",
     "intro": "Təmir ediləcək cihazın tam modelini yazın; yalnız marka adı uyğun servis seçməyə kifayət etməyə bilər. Adapter və qoşulan aksesuarın problemə təsirini də bildirin.",
     "scope": ["Audio və media avadanlığı baxışı", "Oyun və digər elektron cihazlar", "Uyğun model üzrə komponent diaqnostikası"],

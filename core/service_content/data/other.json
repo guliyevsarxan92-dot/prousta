@@ -1,0 +1,52 @@
+{
+  "diger-ustalar": {
+    "name": "Digər ustalar", "heading": "Digər usta xidmətləri — işin növünü və yerini göstərin",
+    "description": "Standart usta kateqoriyalarına uyğun gəlməyən iş üçün tapşırığı, məkanı və gözlənilən nəticəni təsvir edin. Təklifdə material və iş sərhədini dəqiqləşdirin.",
+    "intro": "Bu ümumi bölmə ayrıca göstərilməyən usta xidmətləri üçündür. İş elektrik, qaz, konstruksiya və ya digər təhlükəsizlik tələbi daşıyırsa, müvafiq təcrübəsi olan icraçı seçin.",
+    "scope": ["Tapşırıq və iş sahəsinin dəqiqləşdirilməsi", "Razılaşdırılmış usta işi və material", "Yekun baxış və görülən işin izahı"],
+    "pricing": ["İşin növü və həcmi", "Material, hissə və sahə hazırlığı", "Yerində baxış və əlavə iş"],
+    "prepare": ["İşin qısa təsviri və fotoşəkil", "Ünvan və giriş şəraiti", "İstənilən vaxt və nəticə"],
+    "questions": [["Kateqoriyada işimi tapa bilmirəmsə necə müraciət edim?", "Tapşırığın məqsədini, görüləcəyi yeri və mümkün şəkilləri paylaşın; uyğun xidmət sahəsi dəqiqləşsin."], ["Usta qiyməti necə təsdiqlənməlidir?", "İşə başlamazdan əvvəl materialı, əmək haqqını və əlavə iş üçün təsdiq qaydasını razılaşdırın."]],
+    "queries": ["usta xidməti", "usta çağırışı", "ev üçün usta"], "related": ["diger-temir", "usta-xidmetleri", "insaat-materiallari"], "sources": []
+  },
+  "usta-xidmetleri": {
+    "name": "Usta xidmətləri", "heading": "Usta xidmətləri — tapşırığa uyğun mütəxəssis tapın",
+    "description": "Usta axtarışında görüləcək işi, yeri, ölçü və mövcud vəziyyəti təsvir edin. Bir neçə təklifi eyni tapşırıq və material şərtləri ilə müqayisə edin.",
+    "intro": "Ümumi usta bölməsi kiçik təmir, quraşdırma və ev işləri üçün müraciət toplamağa kömək edir. Konkret sahə məlumdursa, uyğun ixtisas kateqoriyasından istifadə edin.",
+    "scope": ["Tapşırığın və vaxtın razılaşdırılması", "İşin həcmi və materialların təsdiqi", "İcra və nəticənin yoxlanması"],
+    "pricing": ["Tapşırıq və sərf olunan vaxt", "Material və alət tələbi", "Yol və əlavə işlər"],
+    "prepare": ["İşin təsviri və foto", "Ünvan və əlçatan vaxt", "Materialın kim tərəfindən alınacağı"],
+    "questions": [["Ustaya işdən əvvəl şəkil göndərmək faydalıdır?", "Bəli, foto və ölçülər ilkin qiymətləndirməyə kömək edir, amma yerində baxışın əvəzi olmaya bilər."], ["Material alışını kim təşkil edir?", "Material siyahısı, alış qəbzi, artıq qalan material və çatdırılma qaydasını əvvəl razılaşdırın."]],
+    "queries": ["usta xidmətləri", "ev ustası", "təmir ustası çağırmaq"], "related": ["diger-ustalar", "diger-temir", "elektrik"], "sources": []
+  },
+  "metal-qebulu": {
+    "name": "Metal qəbulu", "heading": "Metal qəbulu — növ, çəki və təhvil şərtləri",
+    "description": "Metal təhvilində materialın növünü, təxmini həcmi və yerləşdiyi ünvanı bildirin. Çəkinin ölçülməsi, daşınma və qəbul şərtlərini əvvəlcədən soruşun.",
+    "intro": "Metal növü və qarışıq materialların ayrılması qəbul qaydasına təsir edə bilər. Qiymətləndirmə üsulunu, çəkini necə ölçəcəklərini və yükləmənin kimə aid olduğunu dəqiqləşdirin.",
+    "scope": ["Material növü və həcmin ilkin qiymətləndirilməsi", "Təhvil və daşınma planının razılaşdırılması", "Çəki və qəbulun sənədləşdirilməsi"],
+    "pricing": ["Metal növü və təmizliyi", "Çəki və çeşidləmə", "Daşınma, yükləmə və qəbul məntəqəsi"],
+    "prepare": ["Materialın foto və təxmini miqdarı", "Ünvan və yükləmə şəraiti", "Qəbul üçün tələb olunan sənəd barədə sorğu"],
+    "questions": [["Metalın çəkisi harada ölçülür?", "Tərəzinin yeri, ölçmə ardıcıllığı və çəki qeydi barədə təhvil verməzdən əvvəl razılaşın."], ["Daşınma xidməti qəbul qiymətinə daxildir?", "Yükləmə, nəqliyyat və çeşidləmənin ayrıca hesablanıb-hesablanmadığını soruşun."]],
+    "queries": ["metal qəbulu", "metal tullantıların qəbulu", "metalın daşınması"], "related": ["zibil-dasima", "yukdasima", "insaat-materiallari"], "sources": []
+  },
+  "trenajor-temiri": {
+    "name": "Trenajor təmiri", "heading": "Trenajor təmiri — model, nasazlıq və ehtiyat hissəsi",
+    "description": "Trenajor təmirində cihazın marka-modelini, nasazlıq əlamətini və ekrandakı xətanı bildirin. Diaqnostika, hissə və yerində xidmət xərclərini ayırın.",
+    "intro": "Qaçış aparatı, velotrenajor və digər avadanlıqların hissə və quruluşu fərqlənir. Elektriklə işləyən trenajoru sökmədən əvvəl istehsalçı təlimatına əməl edin və ustaya dəqiq model məlumatı göndərin.",
+    "scope": ["Model və nasazlıq məlumatının toplanması", "Razılaşdırılmış diaqnostika və təmir", "İşləkliyin yoxlanması və qulluq məlumatı"],
+    "pricing": ["Cihaz modeli və nasazlığın mürəkkəbliyi", "Ehtiyat hissəsinin mövcudluğu", "Yerində baxış, daşınma və sazlama"],
+    "prepare": ["Marka, model və seriya məlumatı", "Xəta kodu və nasazlığın videosu", "Cihazın quraşdırıldığı yer"],
+    "questions": [["Trenajor yerində təmir olunur?", "Cihazın ölçüsü və nasazlıqdan asılı olaraq yerində baxış və ya servisə daşınma lazım ola bilər."], ["Ehtiyat hissəsinin uyğunluğunu necə yoxlayım?", "Model/seriya nömrəsi üzrə hissənin uyğunluğunu və quraşdırma qiymətini təmirə başlamazdan əvvəl təsdiqləyin."]],
+    "queries": ["trenajor təmiri", "qaçış aparatı ustası", "idman avadanlığı təmiri"], "related": ["diger-temir", "meiset-texnikasi", "elektrik"], "sources": []
+  },
+  "insaat-materiallari": {
+    "name": "İnşaat materialları", "heading": "İnşaat materialları — spesifikasiya, miqdar və çatdırılma",
+    "description": "İnşaat materialı sifarişində məhsulun ölçü və texniki göstəricisini, miqdarını və çatdırılma ünvanını dəqiqləşdirin. Məhsul və logistika qiymətlərini ayırın.",
+    "intro": "Oxşar adlı məhsullar ölçü, marka və istifadə göstəricilərinə görə fərqlənə bilər. Layihə və ya usta siyahısındakı spesifikasiyanı təchizatçıya təqdim edin.",
+    "scope": ["Material siyahısı və miqdarın dəqiqləşdirilməsi", "Məhsulun uyğunluq və mövcudluğunun yoxlanması", "Çatdırılma və təhvil şərtlərinin razılaşdırılması"],
+    "pricing": ["Məhsul tipi, marka və ölçü", "Sifariş həcmi və qablaşdırma", "Çatdırılma məsafəsi və boşaltma"],
+    "prepare": ["Material siyahısı və spesifikasiya", "Təxmini miqdar və təyinat", "Ünvan, mərtəbə və boşaltma imkanı"],
+    "questions": [["Material miqdarını necə dəqiq hesablayım?", "Layihə və ölçülərə əsaslanan siyahı alın; artıq və çatışmayan məhsul ehtimalını usta və ya layihəçi ilə yoxlayın."], ["Çatdırılma və boşaltma eyni xidmətdir?", "Maşının ünvana çatması, boşaltma, mərtəbəyə qaldırma və geri qaytarma şərtlərini ayrı soruşun."]],
+    "queries": ["inşaat materialları", "tikinti materialları sifarişi", "inşaat materialı çatdırılması"], "related": ["beton-isleri", "anbar-tikintisi", "diger-ustalar"], "sources": []
+  }
+}

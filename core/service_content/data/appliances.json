@@ -20,8 +20,8 @@
     "queries": ["kondisioner ustası", "kondisioner təmizlənməsi", "kondisioner quraşdırılması"], "related": ["havalandirma-ustasi", "elektrik"], "sources": ["bosch-model"]
   },
   "kombi-ustasi": {
-    "name": "Kombi ustası", "heading": "Kombi ustası — nasazlıq diaqnostikası və texniki xidmət",
-    "description": "Kombi yanmır, xəta göstərir və ya radiatorlar isinmir? Modelə uyğun servis elanlarını, baxış haqqını və təmir şərtlərini müqayisə edin.",
+    "name": "Kombi ustası", "heading": "Kombi təmiri və servis — xidmət və sifariş bələdçisi",
+    "description": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
     "intro": "İsitmə və isti su rejimində müşahidə etdiyiniz fərqi ustaya izah edin. Ekrandakı xəta kodu, cihaz modeli və problemin başlama vaxtı ilkin baxışın planlaşdırılmasına kömək edir; bunlar təkbaşına diaqnoz deyil.",
     "scope": ["Xəta kodlarının və işləmə rejiminin yoxlanması", "İsti su və isitmə probleminin diaqnostikası", "Planlı servis və hissə dəyişimi təklifi"],
     "pricing": ["Baxış və çağırışın ayrıca haqqı", "Modelə uyğun ehtiyat hissəsi", "Kombi ilə radiator xəttinin ayrı işləri"],
@@ -40,7 +40,7 @@
     "queries": ["soyuducu ustası", "soyuducu soyutmur", "soyuducu təmiri qiyməti"], "related": ["meiset-texnikasi", "elektrik"], "sources": ["bosch-model"]
   },
   "paltaryuyan-ustasi": {
-    "name": "Paltaryuyan ustası", "heading": "Paltaryuyan təmiri — su alma, boşaltma və sıxma problemləri",
+    "name": "Paltaryuyan ustası", "heading": "Paltaryuyan təmiri — su və sıxma nasazlıqları",
     "description": "Paltaryuyan su almır, suyu atmır və ya sıxmır? Model və proqram əlamətinə uyğun servis elanlarını, diaqnostika və hissə qiymətini müqayisə edin.",
     "intro": "Problemin proqramın hansı mərhələsində yarandığını qeyd edin. Model, ekrandakı kod və suyun cihazda qalıb-qalmaması ilkin müraciəti dəqiqləşdirir; baraban və elektronika işi eyni təmir sayılmır.",
     "scope": ["Su alma və boşaltma probleminin yoxlanması", "Sıxma və baraban səsinin diaqnostikası", "Elektron idarəetmə və hissə təmir təklifi"],
@@ -70,8 +70,8 @@
     "queries": ["Ariston ustası", "su qızdırıcısı təmiri", "Ariston su qızdırmır"], "related": ["kombi-ustasi", "santexnik", "pitiminutka-ustasi"], "sources": ["bosch-model"]
   },
   "havalandirma-ustasi": {
-    "name": "Havalandırma ustası", "heading": "Havalandırma ustası — kanal, aspirasiya və hava axını işləri",
-    "description": "Ev, ofis və obyekt üçün havalandırma xidmətlərini müqayisə edin. Sahə, kanal xətti, səs və işin layihə-montaj həcmini əvvəlcədən dəqiqləşdirin.",
+    "name": "Havalandırma ustası", "heading": "Havalandırma xidməti — xidmət və sifariş bələdçisi",
+    "description": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
     "intro": "Mətbəx aspiratoru bağlantısı ilə obyektin tam havalandırma layihəsi fərqli sifarişlərdir. Məkanın istifadəsini, mövcud kanalları və səs tələbinizi bildirərək uyğun iş həcmi üçün təklif alın.",
     "scope": ["Hava kanalı və aspirasiya montajı", "Ventilyator və çıxış xəttinin xidməti", "Mövcud sistemin hava axını üzrə baxışı"],
     "pricing": ["Kanalın ölçüsü və marşrutu", "Avadanlıq və səs tələbləri", "Layihə ilə montajın ayrıca həcmi"],
@@ -140,7 +140,7 @@
     "queries": ["tozsoran təmiri", "robot tozsoran servisi", "tozsoran ustası"], "related": ["diger-elektronika", "meiset-texnikasi"], "sources": []
   },
   "tikis-masini-ustasi": {
-    "name": "Tikiş maşını ustası", "heading": "Tikiş maşını təmiri — tikiş keyfiyyəti və mexanizm xidməti",
+    "name": "Tikiş maşını ustası", "heading": "Tikiş maşını təmiri — tikiş və mexanizm",
     "description": "Məişət və sənaye tikiş maşını üçün uyğun usta seçin. Tikiş atlama, sap qırma və mexanizm əlamətlərini model məlumatı ilə birlikdə bildirin.",
     "intro": "Tikişin atlanması, sapın qırılması və materialın irəliləməməsi barədə əlamətləri qeyd edin. Məişət maşını, overlok və sənaye avadanlığına xidmət göstərilməsi imkanını ayrıca dəqiqləşdirin.",
     "scope": ["Tikiş və material ötürməsinin yoxlanması", "Mexanizm sazlanması üzrə baxış", "Motor və idarəetmə probleminin diaqnostikası"],

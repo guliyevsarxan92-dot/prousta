@@ -1,0 +1,102 @@
+{
+  "gozellik-saglamliq": {
+    "name": "Gözəllik və sağlamlıq", "heading": "Gözəllik və sağlamlıq — mütəxəssis seçimi",
+    "description": "Gözəllik və sağlamlıq xidmətində ehtiyacınızı, mütəxəssisi, müddəti və məkanı dəqiqləşdirin. İstifadə olunan vasitə və qiymət şərtlərini soruşun.",
+    "intro": "Bu bölmədə fərqli xidmət növləri var. Alt xidməti seçin, sağlamlıq tarixçəsi və mümkün risklərlə bağlı sualları xidmət göstərən ixtisaslı mütəxəssisə verin.",
+    "scope": ["Ehtiyac və xidmət formatının müəyyənləşdirilməsi", "Mütəxəssislə ilkin məsləhətləşmə", "Razılaşdırılmış xidmət və sonrakı məlumat"],
+    "pricing": ["Xidmətin növü və müddəti", "İstifadə olunan material və avadanlıq", "Mütəxəssis, məkan və əlavə seanslar"],
+    "prepare": ["Xidmət məqsədi və gözlənti", "Əvvəlki təcrübə və paylaşılmalı sağlamlıq məlumatı", "Tarix və məkan seçimi"],
+    "questions": [["Mütəxəssis seçərkən nəyi yoxlayım?", "Təcrübə və uyğun təlim barədə məlumatı, konsultasiyanı, gigiyena və xidmət sərhədini dəqiqləşdirin."], ["Qiymətə konsultasiya daxildirmi?", "İlkin görüş, xidmət, material və sonrakı baxışın ayrıca hesablanıb-hesablanmadığını soruşun."]],
+    "queries": ["gözəllik xidməti", "sağlamlıq xidməti", "gözəllik mütəxəssisi"], "related": ["masaj-xidmeti", "sac-ustasi", "lazer-epilyasiyasi"], "sources": []
+  },
+  "fizioterapiya": {
+    "name": "Fizioterapiya", "heading": "Fizioterapiya — ilkin qiymətləndirmə və plan",
+    "description": "Fizioterapiya müraciətində məqsədi və əvvəlki tibbi məlumatı bildirin. İlkin qiymətləndirmə və seans planının necə qurulduğunu soruşun.",
+    "intro": "İlkin görüşdə ehtiyac və hərəkət məhdudiyyətləri müzakirə oluna, plan isə qiymətləndirmədən sonra müəyyənləşə bilər. Onlayn mətn tibbi qiymətləndirməni əvəz etmir.",
+    "scope": ["İlkin ehtiyac və tarixçənin müzakirəsi", "Mütəxəssis tərəfindən funksional qiymətləndirmə", "Razılaşdırılmış fərdi plan və izləmə"],
+    "pricing": ["İlkin qiymətləndirmə və görüş müddəti", "İstifadə olunan avadanlıq və üsullar", "Planlaşdırılan görüş sayı və məkan"],
+    "prepare": ["Müraciət səbəbi və başlanma vaxtı", "Əvvəlki müayinə və müalicə məlumatı", "Dərman və sağlamlıq vəziyyəti barədə mütəxəssisə bildiriləcək məlumat"],
+    "questions": [["Neçə seans lazım olacağını əvvəl bilmək olar?", "Seans planı ehtiyacın qiymətləndirilməsindən sonra mütəxəssislə müzakirə olunmalıdır."], ["İlk görüşə hansı sənədləri aparım?", "Əvvəlki müayinələrin və müalicə qeydlərinin faydalı olub-olmadığını xidmət göstərənlə dəqiqləşdirin."]],
+    "queries": ["fizioterapiya xidməti", "fizioterapevt qəbulu", "fizioterapiya konsultasiyası"], "related": ["masaj-xidmeti", "diger-saglamliq", "temizlik-xidmeti"], "sources": ["nhs-physio"]
+  },
+  "masaj-xidmeti": {
+    "name": "Masaj xidməti", "heading": "Masaj xidməti — məqsəd, növ və sağlamlıq məlumatı",
+    "description": "Masaj sifarişində xidmətin məqsədini, müddətini və seans yerini dəqiqləşdirin. Sağlamlıq vəziyyəti və məhdudiyyətlər barədə mütəxəssislə əvvəl danışın.",
+    "intro": "Masaj növləri və xidmət göstərənlərin hazırlığı fərqlənir. Tibbi şikayət və ya zədə olduqda masajı müalicə kimi qəbul etmədən əvvəl uyğun səhiyyə mütəxəssisindən məsləhət alın.",
+    "scope": ["Xidmət növü və məqsədin müzakirəsi", "Seans və istifadə olunacaq vasitələrin razılaşdırılması", "Seansdan sonrakı ümumi məlumat"],
+    "pricing": ["Seans müddəti və formatı", "Mütəxəssis və xidmət yeri", "Əlavə üsul və məhsullar"],
+    "prepare": ["Seans məqsədi və üstünlük", "Mütəxəssisə bildirilməli sağlamlıq məhdudiyyəti", "Məkan və vaxt seçimi"],
+    "questions": [["Masaj növünü necə seçmək olar?", "Məqsədinizi bildirin və xidmət göstərənin hazırlığını, seansın sərhədlərini soruşun."], ["Sağlamlıq vəziyyətini əvvəlcədən bildirmək lazımdır?", "Bəli, təhlükəsizliyə təsir edə biləcək vəziyyət və narahatlıqları seansdan əvvəl mütəxəssisə deyin."]],
+    "queries": ["masaj xidməti", "masaj sifarişi", "masaj mütəxəssisi"], "related": ["fizioterapiya", "gozellik-saglamliq", "diger-saglamliq"], "sources": []
+  },
+  "sac-ustasi": {
+    "name": "Saç ustası", "heading": "Saç ustası — kəsim, rəng və xidmət gözləntisi",
+    "description": "Saç kəsimi və ya rəngləmə istəyi, əvvəlki işlənmə və xidmət yerini bildirin. Materialı və əlavə mərhələləri qiymətdə dəqiqləşdirin.",
+    "intro": "Foto nümunə nəticənin istiqamətini izah edir, amma saçın başlanğıc vəziyyəti yekun görünüşə təsir edə bilər. Rəng və kimyəvi prosedurdan əvvəl mütəxəssislə uyğunluğu danışın.",
+    "scope": ["İstək və saç vəziyyətinin müzakirəsi", "Razılaşdırılmış kəsim, forma və ya rəng xidməti", "Yekun görünüş və qulluq barədə məlumat"],
+    "pricing": ["Saçın uzunluğu və sıxlığı", "Rəng, material və sərf olunan vaxt", "Əlavə mərhələlər və xidmət formatı"],
+    "prepare": ["İstədiyiniz nəticənin şəkli", "Saçın əvvəlki rəng və prosedur tarixçəsi", "Allergiya və həssaslıq məlumatı"],
+    "questions": [["Saç rəngi bir seansda alınacaq?", "Nəticə başlanğıc rəngindən və saç tarixçəsindən asılı ola bilər; mərhələləri və gözləntini əvvəl danışın."], ["Material qiymətə daxildir?", "İstifadə ediləcək məhsulu və əlavə qulluq mərhələlərinin hesablanmasını soruşun."]],
+    "queries": ["saç ustası", "saç kəsimi", "saç boyama xidməti"], "related": ["makiyaj-ustasi", "dirnaq-ustasi", "lazer-epilyasiyasi"], "sources": []
+  },
+  "lazer-epilyasiyasi": {
+    "name": "Lazer epilyasiyası", "heading": "Lazer epilyasiyası — konsultasiya, cihaz və hazırlıq",
+    "description": "Lazer epilyasiyası seçərkən mütəxəssis təcrübəsini, cihaz və dəri tipinə uyğunluğu, risk müzakirəsini və qiymətə daxil olan zonaları soruşun.",
+    "intro": "Prosedurdan əvvəl konsultasiyada dəri və tüklə bağlı məlumat, dərman istifadəsi və mümkün risklər müzakirə edilməlidir. Seans sayı və nəticə fərdi qiymətləndirilir; zəmanətli nəticə iddialarına ehtiyatla yanaşın.",
+    "scope": ["Mütəxəssislə ilkin konsultasiya", "Dəri tipi və xidmət zonasının qiymətləndirilməsi", "Razılaşdırılmış seans və sonrakı qulluq məlumatı"],
+    "pricing": ["Xidmət zonalarının sayı və ölçüsü", "Seans müddəti və istifadə olunan cihaz", "Konsultasiya və paket şərtləri"],
+    "prepare": ["Əvvəlki prosedurlar və dəri tarixçəsi", "Dərman və həssaslıq barədə məlumat", "Konsultasiyada verilən hazırlıq təlimatları"],
+    "questions": [["Neçə seans lazım olacaq?", "Seans ehtiyacı insana və zonaya görə dəyişə bilər; konsultasiyada fərdi plan istəyin."], ["Mütəxəssislə hansı riskləri danışım?", "Dəri tarixçəsi, dərmanlar və əvvəlki prosedurları açıqlayın; mümkün əks təsirlər və qulluq göstərişlərini soruşun."]],
+    "queries": ["lazer epilyasiyası", "lazer epilyasiya konsultasiyası", "lazer epilyasiya qiyməti"], "related": ["sac-ustasi", "makiyaj-ustasi", "dirnaq-ustasi"], "sources": ["aad-laser"]
+  },
+  "makiyaj-ustasi": {
+    "name": "Makiyaj ustası", "heading": "Makiyaj ustası — üslub, məkan və hazırlıq",
+    "description": "Makiyaj sifarişində tədbirin vaxtını, istədiyiniz üslubu və xidmət yerini bildirin. Sınaq görüşü, kosmetika və əlavə xidmətləri əvvəlcədən razılaşdırın.",
+    "intro": "Gündəlik makiyaj, tədbir və çəkiliş makiyajının hazırlığı fərqlənir. Nümunə şəkillər paylaşın, dəri həssaslığı və istifadə edilməsini istəmədiyiniz məhsulları bildirin.",
+    "scope": ["Üslub və tədbir ehtiyacının müəyyənləşdirilməsi", "Razılaşdırılmış makiyaj xidməti", "Təhvil vaxtı və istifadə olunan məhsulların izahı"],
+    "pricing": ["Makiyaj növü və mürəkkəbliyi", "Sınaq seansı və əlavə iştirakçılar", "Məkana gediş və vaxt"],
+    "prepare": ["Tədbir və hazır olma vaxtı", "Üslub nümunəsi və geyim rəngi", "Dəri həssaslığı və üstünlüklər"],
+    "questions": [["Makiyaj xidmətinə kirpik daxildir?", "Kirpik, saç düzümü, sınaq və məkana gedişin təklifə daxil olub-olmadığını soruşun."], ["Allergiya riskini necə nəzərə alım?", "Həssaslıq və əvvəlki reaksiyalar barədə ustaya əvvəl məlumat verin; istifadə olunacaq məhsulları dəqiqləşdirin."]],
+    "queries": ["makiyaj ustası", "toy makiyajı", "makiyaj xidməti"], "related": ["sac-ustasi", "dirnaq-ustasi", "lazer-epilyasiyasi"], "sources": []
+  },
+  "dirnaq-ustasi": {
+    "name": "Dırnaq ustası", "heading": "Dırnaq xidməti — prosedur, material və gigiyena",
+    "description": "Dırnaq xidməti sifarişində prosedur növünü, mövcud örtüyü və istədiyiniz dizaynı bildirin. Alətlərin gigiyenası və əlavə çıxarılma haqqını soruşun.",
+    "intro": "Manikür, örtük və mövcud materialın çıxarılması fərqli xidmət addımlarıdır. Dırnaq və dəri həssaslığını ustaya bildirin, narahatlıq olarsa xidmətin dayandırılması barədə danışın.",
+    "scope": ["Mövcud vəziyyət və istək barədə danışıq", "Razılaşdırılmış dırnaq xidməti", "Örtük və qulluq qaydasının izahı"],
+    "pricing": ["Prosedur növü və mövcud örtük", "Dizayn və əlavə material", "Çıxarılma və təmir işi"],
+    "prepare": ["İstənilən dizayn nümunəsi", "Mövcud örtük barədə məlumat", "Dəri və material həssaslığı"],
+    "questions": [["Köhnə örtüyün çıxarılması xidmətə daxildir?", "Çıxarılma, manikür, örtük və dizaynın qiymətdə necə hesablandığını ayrı soruşun."], ["Alətlərin gigiyenası barədə nə soruşum?", "Alətlərin təmizlənməsi və birdəfəlik material qaydalarını xidmət göstərənlə dəqiqləşdirin."]],
+    "queries": ["dırnaq ustası", "manikür xidməti", "dırnaq dizaynı"], "related": ["makiyaj-ustasi", "sac-ustasi", "gozellik-saglamliq"], "sources": []
+  },
+  "temizlik-xidmeti": {
+    "name": "Təmizlik xidməti", "heading": "Təmizlik xidməti — sahə və iş həcmi",
+    "description": "Təmizlik sifarişində sahəni, otaq sayını, çirklənmə vəziyyətini və tələb olunan işləri bildirin. Avadanlıq, vasitə və əlavə xidmətlərin daxilolmasını soruşun.",
+    "intro": "Gündəlik təmizlik, köçdən sonrakı təmizlik və xüsusi səthlərin işlənməsi fərqli hazırlıq tələb edir. Həssas səthləri və vasitə istifadəsi ilə bağlı məhdudiyyətləri əvvəl qeyd edin.",
+    "scope": ["Sahə və təmizlik siyahısının razılaşdırılması", "Razılaşdırılmış otaq və səthlərin təmizlənməsi", "İşin yekun baxışı"],
+    "pricing": ["Sahə, otaq sayı və iş həcmi", "Çirklənmə və xüsusi səthlər", "Avadanlıq, vasitə və əlavə işlər"],
+    "prepare": ["Ünvan, sahə və otaq sayı", "Xüsusi səth və ləkələrin şəkli", "Əşyaların yerdəyişməsi və giriş qaydası"],
+    "questions": [["Təmizlik vasitələrini kim təmin edir?", "Vasitələrin, avadanlığın və sərf materiallarının təklifə daxil olub-olmadığını yoxlayın."], ["Təmizlik və dezinfeksiya eyni xidmətdir?", "Tapşırığın adi təmizlik, yoxsa xüsusi dezinfeksiya olduğunu dəqiqləşdirin; istifadə ediləcək məhsulun təlimatına əməl olunmasını soruşun."]],
+    "queries": ["təmizlik xidməti", "ev təmizliyi", "ofis təmizliyi"], "related": ["dezinfeksiya-xidmeti", "diger-saglamliq", "masaj-xidmeti"], "sources": ["cdc-cleaning"]
+  },
+  "dezinfeksiya-xidmeti": {
+    "name": "Dezinfeksiya xidməti", "heading": "Dezinfeksiya xidməti — sahə və təhlükəsiz istifadə",
+    "description": "Dezinfeksiyada sahəni, məqsədi və istifadə ediləcək məhsulu dəqiqləşdirin. İşdən sonra məkanın istifadəyə qaytarılma şərtini soruşun.",
+    "intro": "Təmizlik və dezinfeksiya eyni addım deyil; məhsul etiketi və tətbiq təlimatı vacibdir. Uşaqlar, ev heyvanları və həssas şəxslər barədə xidməti göstərənə öncədən məlumat verin.",
+    "scope": ["Sahə və ehtiyacın qiymətləndirilməsi", "Uyğun məhsul və iş üsulunun razılaşdırılması", "Tətbiq və məkanın yenidən istifadəsi barədə təlimat"],
+    "pricing": ["Sahənin ölçüsü və səth növü", "İş üsulu və istifadə olunan məhsul", "Hazırlıq, təkrar tətbiq və giriş məhdudiyyəti"],
+    "prepare": ["Sahənin və ehtiyacın təsviri", "Uşaq, heyvan və həssas şəxslərin məlumatı", "Məhsulun tətbiqindən sonrakı istifadə planı"],
+    "questions": [["Dezinfeksiyadan sonra nə vaxt məkana qayıtmaq olar?", "Məhsulun etiketindəki gözləmə və havalandırma göstərişlərini xidmət göstərənlə dəqiqləşdirin."], ["Fərqli təmizləyiciləri qarışdırmaq olarmı?", "Məhsulları qarışdırmayın; etiket və mütəxəssisin təhlükəsizlik göstərişlərinə əməl edin."]],
+    "queries": ["dezinfeksiya xidməti", "ev dezinfeksiyası", "ofis dezinfeksiyası"], "related": ["temizlik-xidmeti", "diger-saglamliq", "gozellik-saglamliq"], "sources": ["cdc-cleaning"]
+  },
+  "diger-saglamliq": {
+    "name": "Digər sağlamlıq xidmətləri", "heading": "Digər sağlamlıq xidmətləri — mütəxəssis seçimi",
+    "description": "Siyahıda olmayan sağlamlıq xidməti üçün ehtiyacınızı təsvir edin. Tibbi qərarları ixtisaslı mütəxəssislə müzakirə edin.",
+    "intro": "Bu bölmə ayrıca göstərilməyən sağlamlıq və qulluq xidmətləri üçün müraciət sahəsidir. Təcili vəziyyətdə onlayn xidmət siyahısına güvənməyin, yerli təcili yardım kanalına müraciət edin.",
+    "scope": ["Xidmət tələbinin və məkanın dəqiqləşdirilməsi", "Uyğun mütəxəssislə ilkin danışıq", "Razılaşdırılmış xidmət sərhədi və davam planı"],
+    "pricing": ["Xidmət növü və müddəti", "Mütəxəssis və məkan", "Məsləhətləşmə və əlavə görüşlər"],
+    "prepare": ["Ehtiyacın qısa təsviri", "Əvvəlki tibbi məlumat barədə mütəxəssisə deyiləcək faktlar", "Xidmət yeri və vaxt seçimi"],
+    "questions": [["Uyğun mütəxəssisi necə müəyyən edim?", "Təcrübə və ixtisas məlumatını, xidmətin sərhədini və müraciətinizə uyğunluğunu birbaşa soruşun."], ["Onlayn məsləhət tibbi müayinəni əvəz edirmi?", "Xidmət formatının məhdudiyyətlərini öyrənin; diaqnoz və müalicə qərarını müvafiq səhiyyə mütəxəssisi ilə verin."]],
+    "queries": ["sağlamlıq xidməti", "sağlamlıq mütəxəssisi", "sağlamlıq konsultasiyası"], "related": ["fizioterapiya", "masaj-xidmeti", "gozellik-saglamliq"], "sources": []
+  }
+}

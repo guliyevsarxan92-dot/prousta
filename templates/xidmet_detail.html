@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-{% load seo_tags %}
+{% load seo_tags static %}
 
 {% block extra_head %}
+{% if priority_service %}<link rel="stylesheet" href="{% static 'css/service-guides.css' %}"><script defer src="{% static 'js/service-request.js' %}"></script>{% endif %}
 {% if elanlar.has_previous %}<link rel="prev" href="{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
 {% if elanlar.has_next %}<link rel="next" href="{% if lokasiya %}/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
 {% endblock %}
@@ -21,12 +22,14 @@
   </nav>
 
   <section class="pg-hero">
-    <h1>{{ aktiv_kategori.ad }} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
+    <h1>{% if priority_service %}{{ priority_service.name }}{% else %}{{ aktiv_kategori.ad }}{% endif %} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
     <form class="search-bar" method="get" role="search">
       <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Bu kateqoriyada axtar" aria-label="Bu kateqoriyada axtar"></label>
       <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>
     </form>
   </section>
+
+  {% if priority_service %}{% include 'partials/service_intro.html' %}{% endif %}
 
   <section class="pg-section">
     <div class="sec-head"><h2>{% if axtaris %}“{{ axtaris }}” üzrə nəticələr{% else %}{{ aktiv_kategori.ad }} elanları{% endif %}</h2></div>
@@ -58,12 +61,12 @@
     <h2 style="font-size:18px;margin-bottom:10px">{{ aktiv_kategori.ad }} üzrə qısa məlumat</h2>
     <p>{% if lokasiya_melumat %}{{ lokasiya_melumat.tam_ad }} üçün {{ aktiv_kategori.ad|lower }} axtarışı: bütün ərazilərdən uyğun elanları və qiymətləri müqayisə edin. {{ lokasiya_melumat.erazi }} ünvanlarına gəlişi usta ilə razılaşdırın.{% else %}{{ aktiv_kategori.ad }} üzrə aktiv elanlar və peşəkar ustalar. Qiymətləri müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.{% endif %}</p>
     <dl>
-      {% if lokasiya_melumat and local_listing_count %}<dt><strong>Elanında {{ lokasiya_melumat.ad }} göstərənlər</strong></dt><dd>{{ local_listing_count }} elan.</dd>{% endif %}
+      {% if lokasiya_melumat and local_listing_count %}<dt><strong>{% if has_declared_coverage %}{{ lokasiya_melumat.ad }} üzrə xidmət əhatəsi{% else %}Elanında {{ lokasiya_melumat.ad }} göstərənlər{% endif %}</strong></dt><dd>{{ local_listing_count }} elan.{% if has_declared_coverage %} Say yer məlumatı və elan sahibinin bildirdiyi xidmət əhatəsinə əsaslanır.{% endif %}</dd>{% endif %}
       <dt><strong>Elanlarda göstərilən qiymətlər</strong></dt>
       <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Qiymət elan sahibi ilə razılaşdırılır.{% endif %} Yekun məbləğ işin həcmi, material və gəliş şərtlərindən asılıdır.</dd>
       <dt><strong>Xidmətin razılaşdırılması</strong></dt><dd>Ünvanı, vaxtı, işin həcmini və zəmanət şərtlərini elan sahibi ilə birbaşa dəqiqləşdirin.</dd>
     </dl>
-    {% if local_listings %}<p style="margin-top:12px"><strong>Ərazisini {{ lokasiya_melumat.ad }} göstərən elanlar:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+    {% if local_listings %}<p style="margin-top:12px"><strong>{{ lokasiya_melumat.ad }} üzrə xidmət məlumatı olan elanlar:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
   </section>
 
   {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}

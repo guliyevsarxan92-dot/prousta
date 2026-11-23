@@ -1,0 +1,21 @@
+.service-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:24px;align-items:start}
+.service-intro>div:only-child{grid-column:1/-1}
+.service-intro p{margin:10px 0;line-height:1.7}
+.service-kicker{display:block;font-size:11px;font-weight:750;color:#007b52;letter-spacing:.4px}
+.service-jumps,.service-offer-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.service-jumps a,.service-deep-guide .prose a{color:#006c4a;text-decoration:underline;text-underline-offset:3px}
+.service-offer{background:#eef8f2;border:1px solid #cde5d7;border-radius:12px;padding:18px;min-width:0}
+.service-owner{display:block;font-weight:700;margin:5px 0;color:#006c4a;text-decoration:underline}
+.service-amount{font-size:30px;line-height:1.2;display:block;margin:8px 0;color:#064e3b}
+.service-offer p,.service-offer small{font-size:13px}.service-offer small{display:block;color:#475569}
+.service-scope-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.service-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.service-check-grid>.panel{margin:0}
+.service-request-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.service-field-wide{grid-column:1/-1}
+.service-request label{display:block;font-size:13px;font-weight:650;color:#243b32}
+.service-request input,.service-request textarea{display:block;width:100%;box-sizing:border-box;border:1px solid #bccfc4;border-radius:8px;padding:11px;margin:6px 0 12px;font:inherit;color:#172c22;background:#fff}
+.service-request :is(input,textarea):focus-visible{outline:3px solid #a7e4c6;outline-offset:2px}
+.service-request button:disabled{opacity:.5;cursor:default}
+.service-request-result{margin-top:18px}.service-deep-guide section{scroll-margin-top:100px}
+@media(max-width:720px){.service-intro,.service-check-grid,.service-scope-grid,.service-request-fields{grid-template-columns:1fr}.service-field-wide{grid-column:auto}.service-offer-actions .btn{white-space:normal;text-align:center;justify-content:center}.service-jumps{gap:12px}.service-intro{padding:18px}}

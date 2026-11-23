@@ -1,0 +1,72 @@
+{
+  "mebel-interyer": {
+    "name": "Mebel və interyer", "heading": "Mebel və interyer işləri — ölçü, material və montaj",
+    "description": "Mebel ölçüsü, materialı, mexanizmi və montaj daxilolmalarını dəqiqləşdirin. Fərdi istehsal və hazır mebeli eyni komplekt üzrə müqayisə edin.",
+    "intro": "Mebel layihəsində görünüş qədər məkan ölçüsü, istifadə məqsədi və quraşdırma şəraiti də vacibdir. Uyğun alt xidməti seçin, ölçü və kommunikasiya məlumatını icraçı ilə təsdiqləyin.",
+    "scope": ["Məkan və ölçülərin dəqiqləşdirilməsi", "Material, konstruksiya və mexanizmlərin seçimi", "Çatdırılma, yığım və yekun sazlama"],
+    "pricing": ["Ölçü və korpus materialı", "Fasad, mexanizm və aksesuarlar", "Çatdırılma və montaj mürəkkəbliyi"],
+    "prepare": ["Məkanın ölçüsü və fotoşəkli", "İstifadə və saxlama tələbləri", "Bəyəndiyiniz nümunələr və büdcə çərçivəsi"],
+    "questions": [["Mebel təklifində montaj daxildirmi?", "Çatdırılma, yığım, bərkitmə və qablaşdırmanın çıxarılmasını ayrıca yoxlayın."], ["Material seçimini necə müqayisə edim?", "Korpus və fasad materialını, qalınlıq və mexanizmləri təklifdə konkret qeyd etdirin."]],
+    "queries": ["mebel ustası", "fərdi mebel hazırlanması", "mebel sifarişi"], "related": ["mebel-ustasi", "metbex-mebelleri", "interyer-dizayn"], "sources": ["ikea-kitchen"]
+  },
+  "metbex-mebelleri": {
+    "name": "Mətbəx mebellərinin quraşdırılması", "heading": "Mətbəx mebeli — ölçü, texnika və kommunikasiya planı",
+    "description": "Mətbəx mebeli sifarişində divar ölçülərini, texnika yerlərini və su-elektrik çıxışlarını eyni plan üzərində dəqiqləşdirin.",
+    "intro": "Mətbəx layihəsində soyuducu, soba, yuyucu və iş səthinin yeri mebel ölçüsünə təsir edir. Sifarişdən əvvəl məkanı ölçdürün və texnika modellərinin ölçülərini dizaynla tutuşdurun.",
+    "scope": ["Divar, künc və kommunikasiya ölçüləri", "Dolab, fasad və iş səthinin hazırlanması", "Quraşdırma və razılaşdırılmış sazlama"],
+    "pricing": ["Dolabların sayı və ölçüləri", "Fasad, iş səthi və mexanizm seçimi", "Texnika inteqrasiyası və montaj"],
+    "prepare": ["Mətbəxin planı və ölçüləri", "Texnikanın model və ölçü məlumatı", "Su, qaz və elektrik çıxışlarının yeri"],
+    "questions": [["Mətbəx ölçüsünü özüm götürə bilərəm?", "İlkin plan faydalıdır, amma istehsaldan əvvəl quraşdırıcı ölçüləri yerində yoxlamalıdır."], ["Texnika mebel qiymətinə daxildir?", "Texnikanın alınması, daşınması, mebelə inteqrasiyası və qoşulmasının kimə aid olduğunu ayırın."]],
+    "queries": ["mətbəx mebeli sifarişi", "mətbəx mebeli hazırlanması", "mətbəx mebeli quraşdırılması"], "related": ["mebel-ustasi", "vitrin-yigmaq", "interyer-dizayn"], "sources": ["ikea-kitchen"]
+  },
+  "vitrin-yigmaq": {
+    "name": "Vitrin yığılması", "heading": "Vitrin yığılması — ölçü, yük və işıqlandırma",
+    "description": "Mağaza və sərgi vitrini sifarişində nümayiş olunacaq məhsulu, ölçüləri, rəf yükünü, işıqlandırma və montaj yerini dəqiqləşdirin.",
+    "intro": "Vitrinin görünüşü ilə yanaşı məhsulun təhlükəsiz yerləşməsi və gündəlik istifadəsi də nəzərə alınmalıdır. Hazır vitrin yığımı ilə fərdi istehsalın qiymət və təhvil sərhədini müqayisə edin.",
+    "scope": ["Məhsul və məkan ölçülərinin toplanması", "Korpus, rəf və şüşə elementlərin yığılması", "Yerində yerləşdirmə və razılaşdırılmış işıq"],
+    "pricing": ["Ölçü və material komplekti", "Şüşə, rəf və işıqlandırma", "Çatdırılma, bərkitmə və quraşdırma"],
+    "prepare": ["Vitrin yerinin ölçüsü", "Nümayiş məhsullarının çəkisi və ölçüsü", "İşıq və elektrik çıxışı barədə məlumat"],
+    "questions": [["Vitrin yığımına çatdırılma daxildir?", "Çatdırılma, yerə qaldırma, bərkitmə və qablaşdırmanın çıxarılmasını dəqiqləşdirin."], ["Şüşə rəflərin yük həddi necə seçilir?", "İstifadə olunacaq şüşə və bərkitmə üzrə istehsalçı göstəricilərini və icraçının təklifini yazılı alın."]],
+    "queries": ["vitrin yığılması", "mağaza vitrini hazırlanması", "vitrin mebeli"], "related": ["mebel-ustasi", "ofis-mebelleri", "metbex-mebelleri"], "sources": []
+  },
+  "divan-kreslo-ustasi": {
+    "name": "Divan və kreslo ustası", "heading": "Divan və kreslo təmiri — üzlük, karkas və dolğu",
+    "description": "Divan və kreslo təmirində üzlüyün dəyişməsi, karkas bərpası və dolğu yenilənməsini ayrı dəqiqləşdirin. Parça nümunəsini və iş həcmini əvvəl görün.",
+    "intro": "Yalnız üzlük dəyişməsi ilə karkas və oturacaq bərpası fərqli işlərdir. Mebelin modelini, zədələnən hissələri və daşınma imkanını ustaya göstərin.",
+    "scope": ["Mebelin və zədənin qiymətləndirilməsi", "Razılaşdırılmış karkas, dolğu və üzlük işi", "Yekun yığım və təhvil"],
+    "pricing": ["Mebelin ölçüsü və sökülmə ehtiyacı", "Parça, dolğu və karkas materialı", "Daşınma və təmir mürəkkəbliyi"],
+    "prepare": ["Mebelin müxtəlif bucaqlardan fotosu", "Zədənin və istənilən nəticənin təsviri", "Parça nümunəsi və rəng seçimi"],
+    "questions": [["Divanı evdən aparmaq lazımdır?", "İşin yerində görülüb-görülmədiyini, daşınma və geri çatdırılma xərcini soruşun."], ["Üzlük parçasını kim seçir?", "Möhkəmlik, təmizlənmə və rəng nümunələrini müqayisə edib seçimi işə başlamazdan əvvəl təsdiqləyin."]],
+    "queries": ["divan təmiri", "kreslo üzlüyü dəyişmə", "yumşaq mebel ustası"], "related": ["mebel-ustasi", "ofis-mebelleri", "diger-mebel"], "sources": []
+  },
+  "ofis-mebelleri": {
+    "name": "Ofis mebelləri", "heading": "Ofis mebeli — iş yeri, ölçü və komplektasiya",
+    "description": "Ofis mebeli sifarişində işçi sayı, masa ölçüsü, saxlama və ümumi məkan planını göstərin. Çatdırılma və yığımı məhsul qiymətindən ayırın.",
+    "intro": "Fərdi masa, qəbul zonası və ümumi iş yerləri müxtəlif mebel həlləri tələb edir. Məkan planını və gündəlik istifadə ehtiyacını paylaşaraq komplekt təklifi alın.",
+    "scope": ["İş sahəsinin və sayın planlanması", "Masa, oturacaq və saxlama mebelinin seçimi", "Çatdırılma və yerində yığım"],
+    "pricing": ["Məhsul sayı və ölçülər", "Material və mexanizmlər", "Çatdırılma, mərtəbə və montaj"],
+    "prepare": ["Ofisin planı və işçi sayı", "Mövcud mebel və çatışmayan hissələr", "Çatdırılma ünvanı və vaxt aralığı"],
+    "questions": [["Ofis mebelində yığım xidmətə daxildir?", "Məhsulun, çatdırılmanın, yığımın və köhnə mebelin çıxarılmasının daxilolmasını dəqiqləşdirin."], ["Fərdi ölçüdə masa sifariş etmək olar?", "Ölçü, kabel keçidləri, material və təhvil müddətini istehsala başlamazdan əvvəl razılaşdırın."]],
+    "queries": ["ofis mebeli", "ofis mebeli sifarişi", "ofis masası hazırlanması"], "related": ["mebel-ustasi", "vitrin-yigmaq", "metbex-mebelleri"], "sources": []
+  },
+  "mebel-ustasi": {
+    "name": "Mebel ustası", "heading": "Mebel ustası — istehsal, təmir və quraşdırma",
+    "description": "Mebel ustasına müraciətdə işin yeni istehsal, montaj və ya təmir olduğunu bildirin. Ölçü, material, aksesuar və təhvil şərtlərini yazılı təsdiqləyin.",
+    "intro": "Mebel işinin növü təklifə və müddətə təsir edir. Foto, ölçü və gözlənilən nəticə paylaşın; material və montajın qiymətə daxil olub-olmadığını dəqiqləşdirin.",
+    "scope": ["Tapşırıq və ölçülərin dəqiqləşdirilməsi", "Razılaşdırılmış istehsal, təmir və ya yığım", "Montaj və yekun yoxlama"],
+    "pricing": ["İşin növü və ölçüsü", "Material, fasad və mexanizm", "Çatdırılma və yerində quraşdırma"],
+    "prepare": ["Mebelin şəkli və ölçüsü", "İstənilən dəyişikliklərin siyahısı", "Material və rəng seçimi"],
+    "questions": [["Mebel sifarişi üçün ölçünü kim götürür?", "Ölçünü kimin təsdiqləyəcəyini və səhv ölçü zamanı məsuliyyət qaydasını əvvəlcədən razılaşdırın."], ["Materialın markası təklifdə göstərilməlidir?", "Müqayisə üçün material, mexanizm və aksesuarların konkret model və ya xüsusiyyətini yazılı alın."]],
+    "queries": ["mebel ustası", "mebel yığılması", "mebel təmiri"], "related": ["metbex-mebelleri", "divan-kreslo-ustasi", "ofis-mebelleri"], "sources": ["competitor-mebel"]
+  },
+  "diger-mebel": {
+    "name": "Digər mebel xidmətləri", "heading": "Digər mebel işləri — ölçü və sifariş həcmi",
+    "description": "Standart mebel bölmələrinə düşməyən iş üçün əşyanın növünü, ölçüləri, vəziyyətini və istənilən nəticəni təsvir edin.",
+    "intro": "Bu kateqoriya ayrıca göstərilməyən mebel hazırlanması, uyğunlaşdırma və təmir müraciətləri üçündür. Tapşırığın fotosu və ölçüsü uyğun icraçı seçməyi asanlaşdırır.",
+    "scope": ["Əşyanın və iş yerinin qiymətləndirilməsi", "Material və iş üsulunun razılaşdırılması", "Təmir, istehsal və ya quraşdırmanın təhvili"],
+    "pricing": ["Əşyanın ölçüsü və mürəkkəbliyi", "Material və ehtiyat hissələri", "Daşınma və montaj"],
+    "prepare": ["Əşyanın foto və ölçüləri", "Gözlənilən nəticənin təsviri", "Məkan və çatdırılma məlumatı"],
+    "questions": [["Alt mebel xidməti yoxdursa nə edim?", "Əşyanın növünü, işin təmir və ya istehsal olmasını, ölçü və fotoları paylaşın."], ["Təmir yoxsa yenisini sifariş etmək daha uyğundur?", "Mövcud vəziyyət, tələb olunan material və təmir həcmini qiymətləndirib hər iki variant üzrə müqayisə edilən təklif alın."]],
+    "queries": ["mebel xidməti", "mebel təmiri ustası", "xüsusi mebel sifarişi"], "related": ["mebel-ustasi", "divan-kreslo-ustasi", "vitrin-yigmaq"], "sources": []
+  }
+}

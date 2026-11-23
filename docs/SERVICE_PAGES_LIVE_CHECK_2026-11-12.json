@@ -1,0 +1,140 @@
+[
+  {
+    "path": "/xidmet/kombi-ustasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Kombi təmiri və servis — xidmət və sifariş bələdçisi | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/su-sizma/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Su sızma təyini — xidmət və sifariş bələdçisi | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/kanalizasiya-ustasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Kanalizasiya açılması — xidmət və sifariş bələdçisi | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/santexnik/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Santexnik xidməti — xidmət və sifariş bələdçisi | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/havalandirma-ustasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Havalandırma xidməti — xidmət və sifariş bələdçisi | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/kombi-yuyulmasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Kombi və radiator yuyulması Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/havalandirma-qurasdirilmasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Havalandırma quraşdırılması Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/havalandirma-temizlenmesi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Havalandırma təmizlənməsi Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/zont-muherrik-temizlenmesi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Zont və mühərrik təmizlənməsi Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/boyler-yuyulmasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Boyler sisteminin yuyulması Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/qazan-yuyulmasi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Qazan sisteminin yuyulması Bakıda | Prousta.az",
+    "provider_offer": true
+  },
+  {
+    "path": "/xidmet/kombi-ustasi/yasamal/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Kombi ustası — Yasamal üzrə elanlar | Prousta.az",
+    "provider_offer": false
+  },
+  {
+    "path": "/xidmet/su-sizma/pirallahi/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Su sızmasının aşkarlanması — Pirallahı üzrə elanlar | Prousta.az",
+    "provider_offer": false
+  },
+  {
+    "path": "/xidmet/kombi-ustasi/xirdalan/",
+    "status": 200,
+    "robots": "noindex, follow",
+    "title": "Kombi ustası — Xırdalan üzrə elanlar | Prousta.az",
+    "provider_offer": false
+  },
+  {
+    "path": "/problemler/kombi-isti-su-vermir/",
+    "status": 200,
+    "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    "title": "Kombi İsti Su Vermir — Səbəblər | Prousta.az",
+    "provider_offer": false
+  },
+  {
+    "path": "/health/",
+    "status": 200
+  },
+  {
+    "path": "/sitemap-xidmet_beledcileri.xml",
+    "status": 200,
+    "entries": 6
+  },
+  {
+    "path": "/sitemap-lokasiyalar.xml",
+    "status": 200,
+    "entries": 81
+  },
+  {
+    "path": "/sitemap.xml",
+    "status": 200,
+    "entries": 8
+  },
+  {
+    "path": "/llms.txt",
+    "status": 200
+  },
+  {
+    "asset": "/static/css/service-guides.90a3a4e79c2b.css",
+    "status": 200,
+    "size": 2102
+  },
+  {
+    "asset": "/static/js/service-request.b279ce422c82.js",
+    "status": 200,
+    "size": 2296
+  }
+]
