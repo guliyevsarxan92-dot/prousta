@@ -191,7 +191,6 @@
                     data-vip="{% if elan.is_vip_aktiv %}{{ elan.vip_status }}{% else %}normal{% endif %}"
                     data-vip-aktiv="{% if elan.is_vip_aktiv %}1{% else %}0{% endif %}"
                     data-vip-bitis="{{ elan.vip_bitis|date:'d.m.Y' }}"
-                    onclick="openReklamModal(this)"
                     title="Elanı reklam et və önə çıxar">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               <span style="pointer-events:none">Reklam et</span>
@@ -441,6 +440,15 @@
 
 <style>
 /* Card action buttons */
+#elanlarim .service-card,
+#bitmisler .service-card {
+  overflow: visible !important;
+}
+#elanlarim .service-info,
+#bitmisler .service-info {
+  padding: 6px 5px 5px;
+}
+
 .elan-card-actions {
   display: flex !important;
   align-items: center !important;
@@ -450,28 +458,75 @@
   position: relative !important;
 }
 
+.elan-card-actions .btn-card-reklam,
 .btn-card-reklam {
   flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 36px;
   height: 36px;
   padding: 0 14px;
   border-radius: 9px;
   font-size: 13px;
   font-weight: 700;
-  background: linear-gradient(135deg, #008f60, #00714c);
-  color: #fff;
-  border: none;
+  letter-spacing: 0.1px;
+  background-color: #10a36c;
+  background-image: none;
+  color: #ffffff;
+  border: 1px solid #0e9462;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 123, 82, 0.22);
-  transition: all .15s ease;
+  box-shadow: 0 2px 6px rgba(16, 163, 108, 0.22);
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  filter: none;
+  opacity: 1;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .14s ease;
 }
-.btn-card-reklam:hover, .btn-card-reklam:active {
-  background: linear-gradient(135deg, #007b52, #005c40);
+.elan-card-actions .btn-card-reklam:hover,
+.btn-card-reklam:hover {
+  background-color: #12b578;
+  background-image: none;
+  border-color: #10a36c;
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 123, 82, 0.3);
+  box-shadow: 0 5px 14px rgba(16, 181, 120, 0.30);
+}
+.elan-card-actions .btn-card-reklam:active,
+.btn-card-reklam:active {
+  background-color: #0d9260;
+  background-image: none;
+  border-color: #0b8356;
+  color: #ffffff;
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(16, 163, 108, 0.18);
+}
+.elan-card-actions .btn-card-reklam:focus-visible,
+.btn-card-reklam:focus-visible {
+  outline: 2px solid #12b578;
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .elan-card-actions {
+    gap: 6px !important;
+    margin-top: 8px !important;
+  }
+  .elan-card-actions .btn-card-reklam {
+    min-height: 34px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 12px;
+    border-radius: 8px;
+    gap: 5px;
+  }
+  .elan-card-actions .btn-card-dots {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
 }
 
 .card-dots-wrap {
@@ -716,29 +771,33 @@
   font-weight: 700;
   border: none;
   cursor: pointer;
-  color: #fff;
-  transition: all .15s ease;
+  color: #ffffff;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .16s ease, box-shadow .16s ease, transform .14s ease;
 }
 .btn-reklam-apply--green {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background-color: #10b981;
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
 }
 .btn-reklam-apply--green:hover {
-  background: #047857;
+  background-color: #0ea572;
+  transform: translateY(-1px);
 }
 .btn-reklam-apply--amber {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background-color: #f59e0b;
   box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
 }
 .btn-reklam-apply--amber:hover {
-  background: #b45309;
+  background-color: #e08e09;
+  transform: translateY(-1px);
 }
 .btn-reklam-apply--emerald {
-  background: linear-gradient(135deg, #008f60, #00714c);
-  box-shadow: 0 2px 6px rgba(0, 143, 96, 0.25);
+  background-color: #10a36c;
+  box-shadow: 0 2px 6px rgba(16, 163, 108, 0.25);
 }
 .btn-reklam-apply--emerald:hover {
-  background: #005c40;
+  background-color: #12b578;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 480px) {
@@ -1034,7 +1093,7 @@ function submitIreliCek(btn) {
       }, 1200);
     } else {
       if (data.error === 'kifayet_etmir') {
-        document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ ' + data.message;
+        document.getElementById('modalYetersizBalansText').textContent = '⚠️ ' + data.message;
         err.style.display = 'block';
       } else {
         alert(data.message || 'Xəta baş verdi');
@@ -1102,7 +1161,7 @@ function submitVip(nov, qiymet, btn) {
       }, 1200);
     } else {
       if (data.error === 'kifayet_etmir') {
-        document.getElementById('modalYetersizBalansText').innerHTML = '⚠️ ' + data.message;
+        document.getElementById('modalYetersizBalansText').textContent = '⚠️ ' + data.message;
         err.style.display = 'block';
       } else {
         alert(data.message || 'Xəta baş verdi');
