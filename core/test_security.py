@@ -99,7 +99,7 @@ class RedirectAndHeaderTests(TestCase):
 
     def test_security_headers_present(self):
         resp = Client().get('/giris/')
-        self.assertEqual(resp['X-Frame-Options'], 'SAMEORIGIN')
+        self.assertEqual(resp['X-Frame-Options'], 'DENY')
         self.assertIn('camera=()', resp['Permissions-Policy'])
         self.assertIn('no-store', resp['Cache-Control'])
 

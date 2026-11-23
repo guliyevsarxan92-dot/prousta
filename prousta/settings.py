@@ -183,7 +183,7 @@ SESSION_COOKIE_HTTPONLY = True          # JS sessiya cookie-sini oxuya bilməz (
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', str(14 * 24 * 3600)))  # 14 gün
-X_FRAME_OPTIONS = 'SAMEORIGIN'          # Başqa saytlar Prousta-nı iframe-ə sala bilməz (clickjacking)
+X_FRAME_OPTIONS = 'DENY'                # Sayt heç bir iframe daxilində açılmasın (clickjacking qarşısı)
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'  # Google login popup-u üçün
 PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()'
 
