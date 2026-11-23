@@ -4,6 +4,8 @@ Mərkəzləşdirilmiş SEO köməkçiləri.
 - seo_context: hər səhifə üçün düzgün canonical URL və noindex qərarı.
 - CanonicalHostMiddleware: www → apex 301 və texniki hostlarda (IP ünvanı və s.) X-Robots-Tag: noindex.
 """
+from types import SimpleNamespace
+
 from django.conf import settings
 from django.http import HttpResponsePermanentRedirect
 
@@ -57,7 +59,7 @@ def seo_context(request):
 def indexable_kategori_ids():
     """
     İndekslənməyə layiq kateqoriya ID-ləri (10 dəq keşlənir):
-    - SEO mətni (seo_metn) olan kateqoriyalar — boş olsa belə unikal məzmunu var;
+    - SEO mətni və ya redaksiya yoxlamasından keçmiş xidmət bələdçisi olan kateqoriyalar;
     - aktiv elanı olan kateqoriyalar və onların üst kateqoriyaları.
     View, sitemap və daxili link blokları eyni qaydanı istifadə edir ki, ziddiyyət olmasın.
     """
@@ -79,7 +81,14 @@ def indexable_kategori_ids():
         .values_list('ust_kategori_id', flat=True)
     )
     with_text = set(Kategori.objects.exclude(seo_metn__regex=r'^\s*$').values_list('pk', flat=True))
-    ids = frozenset((with_ads | parents | with_text) - {None})
+    # Əvvəlki seed SEO HTML-i təqdimatda çıxarıldığı üçün mətn indeksini
+    # xidmət bələdçisi olan real kateqoriyalarla tamamlayırıq.
+    from .service_content import get_content
+    with_guide = {
+        pk for pk, slug, ad in Kategori.objects.values_list('pk', 'slug', 'ad')
+        if get_content(SimpleNamespace(slug=slug, ad=ad))
+    }
+    ids = frozenset((with_ads | parents | with_text | with_guide) - {None})
     next_expiry = aktiv.filter(bitis_tarixi__isnull=False).order_by('bitis_tarixi').values_list('bitis_tarixi', flat=True).first()
     timeout = min(60, max(1, int((next_expiry - now).total_seconds()))) if next_expiry else 60
     cache.set('seo_indexable_kat_ids', ids, timeout)

@@ -58,6 +58,11 @@ def llms_response(request):
             '## Xidmət kateqoriyaları',
         ]
         lines += [f'- [{_markdown_label(row["ad"])}]({SITE_URL}/xidmet/{row["slug"]}/)' for row in categories]
+        from .service_pages import topics
+        valid_categories = set(Kategori.objects.values_list('slug', flat=True))
+        lines += ['', '## Xüsusi xidmət bələdçiləri']
+        lines += [f'- [{_markdown_label(page["name"])}]({SITE_URL}{page["url"]})'
+                  for page in topics() if page['category'] in valid_categories]
         lines += ['', '## Bələdçilər']
         lines += [f'- [{_markdown_label(row["bashliq"])}]({SITE_URL}/problemler/{row["slug"]}/)' for row in articles]
         lines += ['', '## Əlaqə və digər mənbələr', '- Email: info@prousta.az',

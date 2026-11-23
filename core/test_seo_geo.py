@@ -209,3 +209,18 @@ class SeoGeoTests(TestCase):
         self.assertNotContains(response, 'Nigar Məmmədova')
         self.assertNotContains(response, 'Doğrulanmış usta')
         self.assertFalse(any(node['@type'] in ('Review', 'AggregateRating') for node in graph(response)))
+
+    def test_editorial_service_guide_makes_seed_category_indexable_and_links_related_services(self):
+        from .seo import indexable_kategori_ids
+
+        parent = Kategori.objects.get(slug='meiset-texnikasi')
+        self.assertIn(parent.pk, indexable_kategori_ids())
+        response = self.client.get('/xidmet/kombi-ustasi/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(meta(response, 'robots').startswith('index,'))
+        self.assertContains(response, 'Ekrandakı xəta kodu')
+        self.assertContains(response, 'href="/xidmet/santexnik/"')
+
+        empty = Kategori.objects.create(ad='Boş sınaq kateqoriyası', slug='seo-geo-empty')
+        cache.clear()
+        self.assertNotIn(empty.pk, indexable_kategori_ids())

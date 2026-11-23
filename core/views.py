@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 import secrets
 import re
+from urllib.parse import urlsplit
 from datetime import timedelta
 from decimal import Decimal
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -56,6 +57,12 @@ def _is_bot(request) -> bool:
 
 def _get_client_ip(request):
     return request.META.get('REMOTE_ADDR')
+
+
+# Birbank ödəniş səhifəsinə yalnız rəsmi Kapital Bank domenlərinə yönləndirməyə icazə verilir.
+_BIRBANK_HOSTS = {'checkout.kapitalbank.az', 'precheckout.kapitalbank.az',
+                  'pg.kapitalbank.az', 'e-commerce.kapitalbank.az', 'txpg.kapitalbank.az',
+                  'tstpg.kapitalbank.az'}
 
 
 def _update_elan_status():
@@ -205,6 +212,12 @@ def xidmet_detail(request, slug, lokasiya=None):
     Həm əsas, həm alt kateqoriyalar üçün işləyir.
     """
     _update_elan_status()
+    from .service_pages import pages, topic_response
+    topic = pages().get(slug)
+    if topic and topic['category'] != slug:
+        if lokasiya:
+            raise Http404('Bu xidmət üçün ayrıca rayon səhifəsi yoxdur.')
+        return topic_response(request, topic)
     aktiv_kategori = get_object_or_404(Kategori, slug=slug)
 
     lokasiya_melumat = None
@@ -263,8 +276,12 @@ def xidmet_detail(request, slug, lokasiya=None):
         Q(kategori=aktiv_kategori) | Q(kategori__ust_kategori=aktiv_kategori)
     )[:6]
     qiymet_aralig = elanlar.order_by().aggregate(min_q=Min('qiymet'), max_q=Max('qiymet'))
+    from .service_pages import guide_for_category, page_context, provider_coverage_q, BAKU_AREAS
+    guide = guide_for_category(aktiv_kategori) if not lokasiya else None
+    service_context = page_context(guide, request.user) if guide else {}
 
     return render(request, 'xidmet_detail.html', {
+        **service_context,
         'elanlar': elanlar_page,
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
@@ -272,6 +289,7 @@ def xidmet_detail(request, slug, lokasiya=None):
         'lokasiya': lokasiya,
         'lokasiya_melumat': lokasiya_melumat,
         'local_listing_count': local_count,
+        'has_declared_coverage': bool(lokasiya in BAKU_AREAS and elanlar.filter(provider_coverage_q()).exists()),
         'local_listings': list(in_location(elanlar, lokasiya)[:4]) if lokasiya and local_count else [],
         'butun_lokasiyalar': [dict(LOKASIYALAR[key], count=value) for key, value in counts.items()],
         'populyar_lokasiyalar': [LOKASIYALAR[k] for k in POPULAR_LOKASIYALAR if k in LOKASIYALAR],
@@ -677,13 +695,13 @@ def profil_foto(request):
             profil.avatar = image_upload(avatar)
             profil.save()
             messages.success(request, 'Profil foto yeniləndi!')
-        except Exception as e:
+        except Exception:
             import logging, traceback
             logging.getLogger('django').error(
-                'profil_foto upload failed user=%s name=%s size=%s type=%s\n%s',
-                request.user.pk, avatar.name, avatar.size, ctype, traceback.format_exc()
+                'profil_foto upload failed user=%s size=%s type=%s\n%s',
+                request.user.pk, avatar.size, ctype, traceback.format_exc()
             )
-            messages.error(request, f'Şəkil yüklənmədi: {type(e).__name__}')
+            messages.error(request, 'Şəkil yüklənmədi. Başqa şəkil seçib yenidən cəhd edin.')
     return redirect('profil')
 
 def istifadeci_profil(request, pk):
@@ -850,12 +868,19 @@ def odenis(request):
             if res.get('success'):
                 odenis_obj.xarici_id = res.get('order_id')
                 odenis_obj.save(update_fields=['xarici_id'])
-                return redirect(res.get('redirect_url'))
+                redirect_url = res.get('redirect_url') or ''
+                if not (redirect_url.startswith('/') and not redirect_url.startswith('//')) and \
+                        urlsplit(redirect_url).hostname not in _BIRBANK_HOSTS:
+                    odenis_obj.status = 'legv_edildi'
+                    odenis_obj.save(update_fields=['status'])
+                    messages.error(request, 'Ödəniş səhifəsi təsdiqlənmədi.')
+                    return render(request, 'odenis.html', ctx)
+                return redirect(redirect_url)
             else:
                 odenis_obj.status = 'legv_edildi'
-                odenis_obj.qeyd = res.get('error', 'Gateway xətası')
+                odenis_obj.qeyd = res.get('error', 'Gateway xətası')[:500]
                 odenis_obj.save(update_fields=['status', 'qeyd'])
-                messages.error(request, f"Birbank ödəniş sisteminə qoşularkən xəta: {res.get('error')}")
+                messages.error(request, res.get('error') or 'Onlayn ödəniş hazırda əlçatan deyil.')
                 return render(request, 'odenis.html', ctx)
 
         elif metod == 'qebz':
@@ -881,37 +906,73 @@ def odenis(request):
     return render(request, 'odenis.html', ctx)
 
 
+def _birbank_payment_matches(odenis_obj, res):
+    """Bankın təsdiqlədiyi məbləğ və valyuta bizim qeydimizlə tam uyğun olmalıdır."""
+    if not res.get('verified'):
+        return False
+    if res.get('is_simulated'):
+        return birbank_gateway.simulator_allowed
+    try:
+        paid = Decimal(str(res.get('amount'))).quantize(Decimal('0.01'))
+    except Exception:
+        return False
+    currency = str(res.get('currency') or 'AZN').upper()
+    return paid == odenis_obj.mebleg and currency in ('AZN', '944')
+
+
+def _birbank_confirm(odenis_obj, res):
+    with transaction.atomic():
+        locked = Odenis.objects.select_for_update().get(pk=odenis_obj.pk)
+        if locked.status == 'gozlemede' and locked.metod == 'birbank':
+            locked.status = 'tesdiq_edildi'
+            locked.xarici_status = str(res.get('status', 'FullyPaid'))[:50]
+            locked.save()
+        return locked
+
+
 @login_required
 def birbank_ugurlu(request):
     odenis_id = request.GET.get('odenis_id')
-    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
+    if not str(odenis_id or '').isdigit():
+        raise Http404
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user, metod='birbank')
 
     res = birbank_gateway.check_order_status(odenis_obj.xarici_id)
-    if res.get('verified'):
-        if odenis_obj.status != 'tesdiq_edildi':
-            odenis_obj.status = 'tesdiq_edildi'
-            odenis_obj.xarici_status = res.get('status', 'FullyPaid')
-            odenis_obj.save()
+    if _birbank_payment_matches(odenis_obj, res):
+        odenis_obj = _birbank_confirm(odenis_obj, res)
         profil = request.user.profil
+        profil.refresh_from_db()
         return render(request, 'odenis_netice.html', {
-            'success': True,
+            'success': odenis_obj.status == 'tesdiq_edildi',
             'odenis': odenis_obj,
             'mebleg': odenis_obj.mebleg,
             'balans': profil.balans,
+            'xeta': 'Ödəniş statusu yenilənə bilmədi.',
         })
-    else:
-        return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}&reason={res.get('status', 'Unverified')}")
+    return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}")
 
 
 @login_required
 def birbank_ugursuz(request):
     odenis_id = request.GET.get('odenis_id')
-    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
-    reason = request.GET.get('reason') or request.GET.get('STATUS') or 'Ödəniş ləğv edildi və ya rədd edildi'
+    if not str(odenis_id or '').isdigit():
+        raise Http404
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user, metod='birbank')
+    reason = 'Ödəniş ləğv edildi və ya bank tərəfindən təsdiqlənmədi.'
     if odenis_obj.status == 'gozlemede':
-        odenis_obj.status = 'legv_edildi'
-        odenis_obj.xarici_status = str(reason)[:50]
-        odenis_obj.save(update_fields=['status', 'xarici_status'])
+        # Ləğv etməzdən əvvəl bankdan yoxlayırıq: real ödəniş edilibsə, balansı itirməsin.
+        is_simulated = str(odenis_obj.xarici_id or '').startswith('SIM-')
+        res = {} if is_simulated else birbank_gateway.check_order_status(odenis_obj.xarici_id)
+        if not is_simulated and _birbank_payment_matches(odenis_obj, res):
+            _birbank_confirm(odenis_obj, res)
+            return redirect(reverse('birbank_ugurlu') + f"?odenis_id={odenis_obj.pk}")
+        with transaction.atomic():
+            locked = Odenis.objects.select_for_update().get(pk=odenis_obj.pk)
+            if locked.status == 'gozlemede':
+                locked.status = 'legv_edildi'
+                locked.xarici_status = str(res.get('status') or 'Declined')[:50]
+                locked.save(update_fields=['status', 'xarici_status'])
+            odenis_obj = locked
     return render(request, 'odenis_netice.html', {
         'success': False,
         'odenis': odenis_obj,
@@ -922,20 +983,23 @@ def birbank_ugursuz(request):
 
 @login_required
 def birbank_simulator(request):
-    """Lokal / sınaq mühitində Birbank ödəniş səhifəsinin simulyasiyası."""
+    """Yalnız lokal DEBUG mühitində Birbank ödəniş səhifəsinin simulyasiyası."""
+    if not birbank_gateway.simulator_allowed:
+        raise Http404
     odenis_id = request.GET.get('odenis_id')
-    amount = request.GET.get('amount', '10.00')
-    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user)
+    if not str(odenis_id or '').isdigit():
+        raise Http404
+    odenis_obj = get_object_or_404(Odenis, pk=odenis_id, istifadeci=request.user, metod='birbank')
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'approve':
-            return redirect(reverse('birbank_ugurlu') + f"?odenis_id={odenis_obj.pk}&STATUS=FullyPaid")
+            return redirect(reverse('birbank_ugurlu') + f"?odenis_id={odenis_obj.pk}")
         else:
-            return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}&reason=İstifadəçi imtina etdi")
+            return redirect(reverse('birbank_ugursuz') + f"?odenis_id={odenis_obj.pk}")
 
     return render(request, 'birbank_simulator.html', {
         'odenis': odenis_obj,
-        'amount': amount,
+        'amount': odenis_obj.mebleg,
         'user': request.user,
     })
 
@@ -943,19 +1007,14 @@ def birbank_simulator(request):
 @csrf_exempt
 def birbank_callback(request):
     order_id = request.GET.get('ID') or request.POST.get('id')
-    status_val = request.GET.get('STATUS') or request.POST.get('status')
     if order_id:
-        odenis_obj = Odenis.objects.filter(xarici_id=order_id).first()
+        order_id = str(order_id)[:120]
+        odenis_obj = Odenis.objects.filter(xarici_id=order_id, metod='birbank').first()
         if odenis_obj and odenis_obj.status == 'gozlemede':
+            # Callback parametrlərinə etibar edilmir: status yalnız bankın API-si ilə yoxlanılır.
             res = birbank_gateway.check_order_status(order_id)
-            if res.get('verified'):
-                odenis_obj.status = 'tesdiq_edildi'
-                odenis_obj.xarici_status = res.get('status', 'FullyPaid')
-                odenis_obj.save()
-            elif status_val and str(status_val).lower() in ('declined', 'canceled', 'rejected'):
-                odenis_obj.status = 'legv_edildi'
-                odenis_obj.xarici_status = str(status_val)[:50]
-                odenis_obj.save(update_fields=['status', 'xarici_status'])
+            if _birbank_payment_matches(odenis_obj, res):
+                _birbank_confirm(odenis_obj, res)
     return HttpResponse('OK', content_type='text/plain')
 
 
@@ -1076,7 +1135,10 @@ def banner_klik(request, banner_id):
     müştərinin keçid linkinə yönləndirir.
     """
     banner = get_object_or_404(ReklamBanner, id=banner_id)
-    target_url = banner.link.strip() if banner.link else request.META.get('HTTP_REFERER', '') or '/'
+    # Açıq yönləndirmə (open redirect) qarşısı: yalnız admin tərəfindən təyin edilmiş http(s) link.
+    target_url = (banner.link or '').strip()
+    if urlsplit(target_url).scheme not in ('http', 'https'):
+        target_url = '/'
 
     if _is_bot(request):
         return HttpResponseRedirect(target_url)

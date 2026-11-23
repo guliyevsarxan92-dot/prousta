@@ -65,6 +65,41 @@ class LocationSearchTests(TestCase):
             if city == 'Yasamal':
                 self.assertEqual(response.json()['results'][0]['id'], self.local.pk)
 
+    def test_area_without_local_ads_silently_shows_service_inventory(self):
+        unrelated = Kategori.objects.create(ad='Mebel ustası', slug='search-furniture')
+        Elan.objects.filter(pk=self.other.pk).update(kategori=unrelated, sheher='Gəncə')
+        for category, expected in (
+            (self.category, {self.remote.pk, self.local.pk}),
+            (self.parent, {self.remote.pk, self.local.pk}),
+            (unrelated, {self.other.pk}),
+        ):
+            with self.subTest(category=category.slug):
+                response = self.client.get(f'/xidmet/{category.slug}/mehdiabad/')
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context['local_listing_count'], 0)
+                self.assertEqual({ad.pk for ad in response.context['elanlar']}, expected)
+                self.assertNotContains(response, '0 elan')
+                self.assertNotContains(response, '0 aktiv elan')
+                self.assertNotContains(response, 'göstərənlər')
+                self.assertNotContains(response, 'tapılmadı')
+                self.assertNotContains(response, 'Ərazi fərq etmədən bütün uyğun elanlar göstərilir')
+                self.assertContains(response, 'noindex, follow')
+
+    def test_area_without_local_ads_keeps_inventory_across_pages(self):
+        for i in range(20):
+            Elan.objects.create(istifadeci=self.user, kategori=self.category, bashliq=f'Kombi {i}',
+                                acaqlama='Təmir', sheher='Gəncə', status='aktiv')
+        path = f'/xidmet/{self.category.slug}/mehdiabad/'
+        first = self.client.get(path, {'seed': 'no-local-ads'})
+        second = self.client.get(path, {'seed': 'no-local-ads', 'page': 2})
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(first.context['elanlar'].paginator.count, 22)
+        first_ids = {ad.pk for ad in first.context['elanlar']}
+        second_ids = {ad.pk for ad in second.context['elanlar']}
+        self.assertFalse(first_ids & second_ids)
+        self.assertEqual(len(first_ids | second_ids), 22)
+
     def test_unknown_service_does_not_fall_back_to_unrelated_ads(self):
         response = self.client.get(f'/xidmet/{self.category.slug}/yasamal/', {'q': 'tapilmayanxidmet'})
         self.assertEqual(response.context['elanlar'].paginator.count, 0)

@@ -52,6 +52,8 @@ def safe_json(value):
 
 
 def service_faq(context):
+    if context.get('priority_service'):
+        return context['priority_service']['faq']
     category = context['aktiv_kategori']
     location = context.get('lokasiya_melumat')
     area = location['ad'] + ' ərazisində' if location else 'Bakıda'
@@ -105,6 +107,7 @@ def build_metadata(context):
     ad = context.get('elan')
     article = context.get('problem')
     location = context.get('lokasiya_melumat')
+    topic = context.get('priority_service') if context.get('topic_category') else None
     match = getattr(request, 'resolver_match', None)
     view = getattr(match, 'url_name', '')
     page_number = context.get('seo_page', 1)
@@ -113,7 +116,10 @@ def build_metadata(context):
     if request is not None:
         base = seo_context(request)
         canonical_path, page_number, noindex = base['seo_canonical'], base['seo_page'], base['seo_noindex']
-    if category:
+    if topic:
+        view = 'xidmet_detail'
+        canonical_path = topic['url'] + (f'?page={page_number}' if page_number > 1 else '')
+    elif category:
         view = 'xidmet_detail'
         canonical_path = f'/xidmet/{category.slug}/'
         if location:
@@ -144,7 +150,17 @@ def build_metadata(context):
     if view == 'haqqimizda':
         page_type = 'AboutPage'
     extra = []
-    if category:
+    if topic:
+        title, description = topic['title'], topic['description']
+        parent = context['topic_category']
+        crumbs += [('Xidmətlər', '/elanlar/'), (parent.ad, f'/xidmet/{parent.slug}/'),
+                   (topic['name'], topic['url'])]
+        page_type = 'CollectionPage'
+        extra.append({'@type': 'FAQPage', '@id': absolute_url(canonical_path) + '#faq',
+                      'mainEntity': [{'@type': 'Question', 'name': question,
+                                      'acceptedAnswer': {'@type': 'Answer', 'text': answer}}
+                                     for question, answer in topic['faq']]})
+    elif category:
         title = metadata_value(category, 'seo_title') or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
         description = metadata_value(category, 'seo_description') or (
             f'{category.ad} üzrə aktiv elanları, qiymətləri və iş nümunələrini müqayisə edin. '
@@ -156,8 +172,10 @@ def build_metadata(context):
         if location:
             count = context.get('local_listing_count', 0)
             title = f'{category.ad} — {location["ad"]} üzrə elanlar | {BRAND}'
+            inventory = (f'{location["ad"]} üzrə xidmət məlumatı olan {count} aktiv elan. '
+                         if count else '')
             description = (f'{location["tam_ad"]} üzrə {category.ad.lower()} axtarışı. '
-                           f'Ərazisini {location["ad"]} göstərən {count} aktiv elan; digər ərazilərin təklifləri də göstərilir. Gəlişi elan sahibi ilə razılaşdırın.')
+                           f'{inventory}Xidmət elanlarını və qiymətləri müqayisə edin. Gəlişi elan sahibi ilə razılaşdırın.')
             crumbs.append((location['ad'], f'/xidmet/{category.slug}/{location["slug"]}/'))
         page_type = 'CollectionPage'
         faq = service_faq(context)
@@ -237,6 +255,28 @@ def build_metadata(context):
                       'datePublished': article.yaradildi.isoformat(), 'dateModified': article.yenilendi.isoformat(),
                       'author': {'@id': ORGANIZATION_ID}, 'publisher': {'@id': ORGANIZATION_ID},
                       'mainEntityOfPage': {'@id': webpage['@id']}})
+    provider = context.get('service_provider')
+    guide = context.get('priority_service')
+    if provider and guide and not noindex:
+        offer_service = {'@type': 'Service', '@id': canonical + '#provider-service',
+                         'name': guide['name'], 'url': canonical,
+                         'description': guide['summary'],
+                         'broker': {'@id': ORGANIZATION_ID},
+                         'provider': {'@type': 'Person', 'name': provider['name'],
+                                      'url': absolute_url(provider['profile_url']),
+                                      'telephone': provider['phone']},
+                         'areaServed': {'@type': 'City', 'name': 'Bakı'}}
+        price = provider.get('price')
+        if price:
+            offer = {'@type': 'Offer', 'url': canonical, 'priceCurrency': 'AZN',
+                     'description': price['note']}
+            if price['starting']:
+                offer['priceSpecification'] = {'@type': 'PriceSpecification',
+                                               'minPrice': price['amount'], 'priceCurrency': 'AZN'}
+            else:
+                offer['price'] = price['amount']
+            offer_service['offers'] = offer
+        extra.append(offer_service)
     graph = {'@context': 'https://schema.org', '@graph': [
         _organization(), {'@type': 'WebSite', '@id': WEBSITE_ID, 'name': BRAND,
                           'url': SITE_URL + '/', 'inLanguage': 'az-AZ',

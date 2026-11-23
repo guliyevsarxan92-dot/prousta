@@ -83,6 +83,13 @@ LOKASIYALAR = {
         'erazi': 'Lökbatan, Sahil qəsəbəsi, Qobu, Sədərək ərazisi',
         'keywords': ['qaradag', 'qaradağ', 'lokbatan', 'lökbatan', 'sahil qesebesi'],
     },
+    'pirallahi': {
+        'slug': 'pirallahi',
+        'ad': 'Pirallahı',
+        'tam_ad': 'Pirallahı rayonu',
+        'erazi': 'Pirallahı rayonu',
+        'keywords': ['pirallahi', 'pirallahı'],
+    },
     'xirdalan': {
         'slug': 'xirdalan',
         'ad': 'Xırdalan',

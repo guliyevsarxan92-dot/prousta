@@ -69,6 +69,9 @@ def search_listings(queryset, query='', location=''):
         local = Q()
         for place in set(places):
             local |= Q(_search_city__contains=place)
+        from .service_pages import BAKU_AREAS, provider_coverage_q
+        if preferred in BAKU_AREAS or set(places) & BAKU_AREAS:
+            local |= provider_coverage_q()
         queryset = queryset.annotate(is_local=Case(
             When(local, then=Value(1)), default=Value(0), output_field=IntegerField(),
         ))

@@ -132,3 +132,15 @@ class StatikSitemap(PublicSitemap):
 
     def location(self, item):
         return reverse(item)
+
+
+class ServiceGuideSitemap(PublicSitemap):
+    changefreq = 'monthly'
+
+    def items(self):
+        from .service_pages import topics
+        categories = set(Kategori.objects.values_list('slug', flat=True))
+        return [page for page in topics() if page['category'] in categories]
+
+    def location(self, item):
+        return item['url']

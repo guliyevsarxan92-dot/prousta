@@ -1,6 +1,6 @@
 from django import template
 from core.seo_metadata import build_metadata, service_faq
-from core.service_content import get_content, additional_html
+from core.service_content import get_content, additional_html, source_links
 
 register = template.Library()
 
@@ -16,7 +16,8 @@ def seo_head(context):
 def service_guide(context):
     category = context['aktiv_kategori']
     return {'category': category, 'brief': get_content(category),
-            'additional_html': additional_html(category)}
+            **{key: context.get(key) for key in ('priority_service', 'service_provider', 'service_sources', 'service_related')},
+            'additional_html': additional_html(category), 'source_links': source_links(category)}
 
 
 @register.inclusion_tag('partials/service_questions.html', takes_context=True)

@@ -62,7 +62,7 @@
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <a href="{% url 'elan_duzelis' elan.pk %}" class="btn btn-outline btn-sm">{% include 'partials/ui_icon.html' with name='edit' %} Düzəliş et</a>
-            <button type="button" class="btn btn-sm" onclick="openIreliCekModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}')" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#fff;font-weight:700;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 4px rgba(5,150,105,0.2)">
+            <button type="button" class="btn btn-sm" onclick="openIreliCekModal({{ elan.pk }}, '{{ elan.bashliq|escapejs }}')" onmouseover="this.style.backgroundColor='#12b578'" onmouseout="this.style.backgroundColor='#10a36c'" style="display:inline-flex;align-items:center;gap:4px;background-color:#10a36c;background-image:none;color:#fff;font-weight:700;border:1px solid #0e9462;border-radius:8px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 6px rgba(16,163,108,0.22);-webkit-tap-highlight-color:transparent">
               🚀 İrəli çək (1 ₼)
             </button>
             {% if elan.is_vip_aktiv %}
@@ -124,6 +124,7 @@
 
         <!-- Əlaqə Düymələri -->
         <div class="stack" style="gap:8px">
+          <p style="font-size:12px;color:var(--muted);margin:0">Xidmətin icraçısı elan sahibidir. Qiyməti, vaxtı və işin şərtlərini onunla razılaşdırın.</p>
           {% if elan.phone_e164 %}
             <a href="tel:{{ elan.phone_e164 }}" class="btn btn-primary btn-block btn-lg" data-track-elan="{{ elan.pk }}" data-track-type="zeng">
               {% include 'partials/ui_icon.html' with name='phone' %}
