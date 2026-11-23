@@ -594,3 +594,14 @@ class MediaCleanupTask(models.Model):
     attempts = models.PositiveIntegerField(default=0)
     last_error = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class SilinmisElan(models.Model):
+    """Silinmiş elanların izi: köhnə /elan/<id>-... linkləri 301 ilə uyğun yeni səhifəyə yönləndirilsin."""
+    elan_id = models.PositiveIntegerField(primary_key=True)
+    istifadeci_id = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+    kategori = models.ForeignKey(Kategori, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    silindi = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Silinmiş elanlar'

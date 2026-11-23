@@ -258,7 +258,8 @@ class RemediationTests(TestCase):
     def test_pending_listing_is_private_and_owner_can_preview(self):
         self.ad.status = 'gozlemede'
         self.ad.save()
-        self.assertEqual(Client().get(self.ad.get_absolute_url()).status_code, 404)
+        # Ziyarətçi gözləmədə olan elanı görmür — müvəqqəti olaraq uyğun səhifəyə yönləndirilir.
+        self.assertEqual(Client().get(self.ad.get_absolute_url()).status_code, 302)
         self.assertEqual(APIClient().get(f'/api/v1/elanlar/{self.ad.pk}/').status_code, 404)
         self.assertEqual(self.web.get(self.ad.get_absolute_url()).status_code, 200)
 

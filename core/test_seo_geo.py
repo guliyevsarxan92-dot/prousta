@@ -145,6 +145,39 @@ class SeoGeoTests(TestCase):
         self.assertEqual(response['X-Robots-Tag'], 'noindex, follow')
         self.assertFalse(any(node['@type'] == 'Service' for node in graph(response)))
 
+    def test_expired_listing_redirects_to_owners_new_listing(self):
+        old = Elan.objects.create(istifadeci=self.owner, kategori=self.category,
+            bashliq='Köhnə kombi elanı', sheher='Bakı', status='muddeti_bitmis')
+        response = self.client.get(old.get_absolute_url())
+        self.assertEqual(response.status_code, 301)
+        self.assertIn(response['Location'], {self.local.get_absolute_url(), self.remote.get_absolute_url()})
+        legacy = self.client.get(f'/elan/{old.pk}/')
+        self.assertEqual(legacy.status_code, 301)
+
+    def test_expired_listing_without_replacement_goes_to_service_page(self):
+        other = User.objects.create_user('seo-geo-other')
+        old = Elan.objects.create(istifadeci=other, kategori=self.category,
+            bashliq='Köhnə elan', sheher='Bakı', status='deaktiv')
+        response = self.client.get(old.get_absolute_url())
+        self.assertRedirects(response, f'/xidmet/{self.category.slug}/', status_code=301,
+                             fetch_redirect_response=False)
+
+    def test_pending_listing_redirect_is_temporary_for_visitors(self):
+        Elan.objects.filter(pk=self.local.pk).update(status='gozlemede')
+        response = self.client.get(self.local.get_absolute_url())
+        self.assertEqual(response.status_code, 302)
+
+    def test_deleted_listing_redirects_and_unknown_is_gone(self):
+        other = User.objects.create_user('seo-geo-deleted')
+        old = Elan.objects.create(istifadeci=other, kategori=self.category,
+            bashliq='Silinəcək elan', sheher='Bakı', status='aktiv')
+        url = old.get_absolute_url()
+        old.delete()
+        response = self.client.get(url)
+        self.assertRedirects(response, f'/xidmet/{self.category.slug}/', status_code=301,
+                             fetch_redirect_response=False)
+        self.assertEqual(self.client.get('/elan/999999-yoxdur-baki/').status_code, 410)
+
     def test_private_and_error_responses_have_noindex_headers(self):
         self.assertEqual(self.client.get('/giris/')['X-Robots-Tag'], 'noindex, nofollow')
         self.assertEqual(self.client.get('/api/v1/elanlar/')['X-Robots-Tag'], 'noindex, nofollow')

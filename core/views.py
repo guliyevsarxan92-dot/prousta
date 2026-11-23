@@ -23,7 +23,7 @@ from decimal import Decimal
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import (
     Elan, Kategori, ElanShekil, Profil, Favorit, Mesaj, Odenis, BankMelumat,
-    Problem, VipPaket, ReklamBanner, BannerKlik, Bloklama
+    Problem, VipPaket, ReklamBanner, BannerKlik, Bloklama, SilinmisElan
 )
 from .seo import indexable_kategori_ids
 from .seo_locations import in_location, location_counts
@@ -31,7 +31,7 @@ from .search import search_listings
 from .watermark import filigran_yoxla
 from .rotation import apply_fair_rotation
 from .validation import image_upload, listing_values, money, phone, text
-from .listings import create_listing, update_listing, visible_listings, check_access, check_messaging, check_duplicate, reactivate_listing
+from .listings import create_listing, update_listing, visible_listings, check_access, check_messaging, check_duplicate, reactivate_listing, is_public, replacement_url
 from .payments import buy_vip, bump_listing
 from .birbank import birbank_gateway
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -304,7 +304,21 @@ def xidmet_detail(request, slug, lokasiya=None):
     })
 
 def elan_detail(request, pk, slug=None):
-    elan = get_object_or_404(Elan.objects.select_related('kategori', 'kategori__ust_kategori', 'istifadeci__profil').prefetch_related('shekillar'), pk=pk)
+    elan = Elan.objects.select_related('kategori', 'kategori__ust_kategori', 'istifadeci__profil').prefetch_related('shekillar').filter(pk=pk).first()
+    if elan is None:
+        # Silinmiş elan: köhnə linki uyğun yeni səhifəyə 301 ilə ötürürük,
+        # izi olmayan köhnə ID-lər üçün 410 Gone (Google onları tez çıxarır).
+        iz = SilinmisElan.objects.select_related('kategori__ust_kategori').filter(elan_id=pk).first()
+        if iz:
+            return redirect(replacement_url(iz.istifadeci_id, iz.kategori), permanent=True)
+        return render(request, '404.html', status=410)
+    user = request.user
+    is_privileged = user.is_authenticated and (user.pk == elan.istifadeci_id or user.has_perm('core.view_elan'))
+    if not is_privileged and not is_public(elan):
+        # Müddəti bitmiş / deaktiv elan: noindex 404 əvəzinə yeni elana / xidmət səhifəsinə yönləndir.
+        # Gözləmədə olan elan tezliklə aktivləşə bilər — ona görə müvəqqəti (302) yönləndirmə.
+        return redirect(replacement_url(elan.istifadeci_id, elan.kategori, exclude_pk=elan.pk),
+                        permanent=elan.status != 'gozlemede')
     check_access(elan, request.user)
     # Slug mövcud deyilsə (köhnə /elan/<id>/) və ya səhvdirsə → 301 canonical
     if slug != elan.slug:

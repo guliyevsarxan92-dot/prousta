@@ -27,6 +27,41 @@ def check_access(ad, user):
         raise Http404
 
 
+def is_public(ad):
+    return ad.status == 'aktiv' and not (ad.bitis_tarixi and ad.bitis_tarixi <= timezone.now())
+
+
+def replacement_url(istifadeci_id, kategori, exclude_pk=None):
+    """
+    Köhnə (müddəti bitmiş / deaktiv / silinmiş) elan üçün ən uyğun yeni ünvan:
+    1) eyni ustanın eyni kateqoriyada ən yeni aktiv elanı;
+    2) eyni ustanın üst kateqoriyadakı aktiv elanı;
+    3) indekslənən xidmət (kateqoriya) səhifəsi;
+    4) ümumi elanlar siyahısı.
+    """
+    from django.urls import reverse
+    from .seo import indexable_kategori_ids
+
+    aktiv = Elan.objects.filter(status='aktiv').filter(
+        Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=timezone.now()))
+    if exclude_pk:
+        aktiv = aktiv.exclude(pk=exclude_pk)
+    if kategori and istifadeci_id:
+        mine = aktiv.filter(istifadeci_id=istifadeci_id).order_by('-yenilendi', '-pk')
+        new = mine.filter(kategori=kategori).first()
+        if not new and kategori.ust_kategori_id:
+            new = mine.filter(Q(kategori_id=kategori.ust_kategori_id)
+                              | Q(kategori__ust_kategori_id=kategori.ust_kategori_id)).first()
+        if new:
+            return new.get_absolute_url()
+    if kategori:
+        ids = indexable_kategori_ids()
+        for kat in (kategori, kategori.ust_kategori):
+            if kat and kat.pk in ids:
+                return reverse('xidmet_detail', args=[kat.slug])
+    return reverse('elan_siyahi')
+
+
 def check_messaging(user, other_id):
     if other_id == user.pk or other_id in Bloklama.bloklanmis_idler(user):
         raise PermissionDenied('Bu istifadəçi ilə mesajlaşma mümkün deyil.')

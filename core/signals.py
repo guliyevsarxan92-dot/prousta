@@ -253,3 +253,12 @@ def cleanup_replaced_media_after_save(sender, instance, **kwargs):
         del instance._obsolete_media
         _delete_after_commit(*old)
 
+
+@receiver(post_delete, sender=Elan)
+def elan_izini_saxla(sender, instance, **kwargs):
+    """Silinən elanın kateqoriyasını yadda saxlayırıq ki, köhnə link 301 ilə yönləndirilsin."""
+    from .models import SilinmisElan
+    SilinmisElan.objects.update_or_create(
+        elan_id=instance.pk,
+        defaults={'istifadeci_id': instance.istifadeci_id, 'kategori_id': instance.kategori_id},
+    )
