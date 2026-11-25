@@ -74,13 +74,16 @@ class ElanListSerializer(serializers.ModelSerializer):
     esas_shekil = serializers.SerializerMethodField()
     kategori_ad = serializers.CharField(source='kategori.ad', read_only=True)
     kategori_slug = serializers.CharField(source='kategori.slug', read_only=True)
+    xidmet_erazileri = serializers.ReadOnlyField(source='erazi_sluglari')
+    xidmet_erazileri_adlari = serializers.ReadOnlyField(source='erazi_adlari')
     is_favorit = serializers.SerializerMethodField()
 
     class Meta:
         model = Elan
         fields = [
             'id', 'nomre', 'bashliq', 'qiymet', 'status',
-            'vip_status', 'sheher', 'telefon', 'baxish_sayi',
+            'vip_status', 'sheher', 'xidmet_erazileri', 'xidmet_erazileri_adlari',
+            'telefon', 'baxish_sayi',
             'zeng_sayi', 'wp_sayi',
             'yaradildi', 'esas_shekil', 'kategori_ad', 'kategori_slug',
             'is_favorit'
@@ -120,6 +123,8 @@ class ElanDetailSerializer(serializers.ModelSerializer):
     shekillar = ElanShekilSerializer(many=True, read_only=True)
     kategori_ad = serializers.CharField(source='kategori.ad', read_only=True)
     kategori_slug = serializers.CharField(source='kategori.slug', read_only=True)
+    xidmet_erazileri = serializers.ReadOnlyField(source='erazi_sluglari')
+    xidmet_erazileri_adlari = serializers.ReadOnlyField(source='erazi_adlari')
     istifadeci_info = serializers.SerializerMethodField()
     is_favorit = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
@@ -128,7 +133,8 @@ class ElanDetailSerializer(serializers.ModelSerializer):
         model = Elan
         fields = [
             'id', 'nomre', 'bashliq', 'acaqlama', 'qiymet',
-            'status', 'vip_status', 'vip_bitis', 'sheher', 'telefon',
+            'status', 'vip_status', 'vip_bitis', 'sheher',
+            'xidmet_erazileri', 'xidmet_erazileri_adlari', 'telefon',
             'baxish_sayi', 'zeng_sayi', 'wp_sayi', 'yaradildi', 'yenilendi',
             'kategori', 'kategori_ad', 'kategori_slug', 'shekillar',
             'istifadeci_info', 'is_favorit', 'is_owner'

@@ -26,7 +26,7 @@ from .models import (
     Problem, VipPaket, ReklamBanner, BannerKlik, Bloklama, SilinmisElan
 )
 from .seo import indexable_kategori_ids
-from .seo_locations import in_location, location_counts
+from .seo_locations import areas_expression, in_location, location_counts
 from .search import search_listings
 from .watermark import filigran_yoxla
 from .rotation import apply_fair_rotation
@@ -36,7 +36,7 @@ from .payments import buy_vip, bump_listing
 from .birbank import birbank_gateway
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.contrib.auth.password_validation import validate_password
-from .locations import LOKASIYALAR, POPULAR_LOKASIYALAR, get_lokasiya
+from .locations import BAKI_RAYONLARI, LOKASIYALAR, POPULAR_LOKASIYALAR, get_lokasiya, grouped_lokasiyalar
 
 from .content import description_error as _aciqlama_qadaga_yoxla
 
@@ -279,6 +279,12 @@ def xidmet_detail(request, slug, lokasiya=None):
     from .service_pages import guide_for_category, page_context, provider_coverage_q, BAKU_AREAS
     guide = guide_for_category(aktiv_kategori) if not lokasiya else None
     service_context = page_context(guide, request.user) if guide else {}
+    has_declared_coverage = False
+    if lokasiya:
+        has_declared_coverage = bool(
+            (lokasiya in BAKU_AREAS and elanlar.filter(provider_coverage_q()).exists())
+            or elanlar.alias(_cov_areas=areas_expression()).filter(_cov_areas__contains=f',{lokasiya},').exists()
+        )
 
     return render(request, 'xidmet_detail.html', {
         **service_context,
@@ -289,7 +295,7 @@ def xidmet_detail(request, slug, lokasiya=None):
         'lokasiya': lokasiya,
         'lokasiya_melumat': lokasiya_melumat,
         'local_listing_count': local_count,
-        'has_declared_coverage': bool(lokasiya in BAKU_AREAS and elanlar.filter(provider_coverage_q()).exists()),
+        'has_declared_coverage': has_declared_coverage,
         'local_listings': list(in_location(elanlar, lokasiya)[:4]) if lokasiya and local_count else [],
         'butun_lokasiyalar': [dict(LOKASIYALAR[key], count=value) for key, value in counts.items()],
         'populyar_lokasiyalar': [LOKASIYALAR[k] for k in POPULAR_LOKASIYALAR if k in LOKASIYALAR],
@@ -366,7 +372,14 @@ def elan_detail(request, pk, slug=None):
 @login_required
 def elan_yarat(request):
     categories = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
-    ctx = {'kateqoriyalar': categories, 'form_data': request.POST}
+    selected = [s for s in request.POST.getlist('xidmet_erazileri') if s in LOKASIYALAR] if request.method == 'POST' else []
+    ctx = {
+        'kateqoriyalar': categories,
+        'form_data': request.POST,
+        'lokasiya_qruplari': grouped_lokasiyalar(),
+        'baki_rayonlari': BAKI_RAYONLARI,
+        'secilmis_eraziler': selected,
+    }
     if request.method == 'POST':
         try:
             create_listing(request.user, request.POST, request.FILES.getlist('shekillar'))
@@ -381,7 +394,15 @@ def elan_yarat(request):
 @login_required
 def elan_duzelis(request, pk):
     ad = get_object_or_404(Elan, pk=pk, istifadeci=request.user)
-    ctx = {'elan': ad, 'kateqoriyalar': Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')}
+    selected = ([s for s in request.POST.getlist('xidmet_erazileri') if s in LOKASIYALAR]
+                if request.method == 'POST' else ad.erazi_sluglari)
+    ctx = {
+        'elan': ad,
+        'kateqoriyalar': Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar'),
+        'lokasiya_qruplari': grouped_lokasiyalar(),
+        'baki_rayonlari': BAKI_RAYONLARI,
+        'secilmis_eraziler': selected,
+    }
     if request.method == 'POST':
         try:
             update_listing(request.user, pk, request.POST, request.FILES.getlist('shekillar'))

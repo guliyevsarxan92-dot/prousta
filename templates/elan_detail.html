@@ -117,6 +117,19 @@
 
           <div class="meta-list" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
             <div>{% include 'partials/ui_icon.html' with name='pin' %} <span>{{ elan.sheher }}</span></div>
+            {% with eraziler=elan.erazi_melumatlari %}
+            {% if eraziler %}
+            <div style="align-items:flex-start">
+              {% include 'partials/ui_icon.html' with name='map-pin' %}
+              <span style="line-height:1.5">
+                <strong style="font-size:12px;color:var(--tx)">Xidmət əraziləri:</strong>
+                {% for lok in eraziler %}
+                  {% if elan.kategori %}<a href="{% url 'xidmet_lokasiya_detail' elan.kategori.slug lok.slug %}" style="color:var(--p);font-weight:600;text-decoration:underline">{{ lok.ad }}</a>{% else %}{{ lok.ad }}{% endif %}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </span>
+            </div>
+            {% endif %}
+            {% endwith %}
             <div>{% include 'partials/ui_icon.html' with name='tag' %} <span>{{ elan.kategori.ad }}</span></div>
             <div>{% include 'partials/ui_icon.html' with name='calendar' %} <span>{{ elan.yaradildi|date:"d.m.Y" }}</span></div>
           </div>

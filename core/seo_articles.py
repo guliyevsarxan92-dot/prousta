@@ -7,6 +7,29 @@ from .models import slug_az
 from .seo_metadata import plain
 
 
+def article_service_links(article):
+    """Məqalə ilə birbaşa əlaqəli əsas xidmət və alt-xidmət (bələdçi) linkləri."""
+    category = getattr(article, 'kategori', None)
+    if not category:
+        return []
+    from .search import normalize
+    from .service_pages import topics
+
+    links = [{'name': category.ad, 'url': f'/xidmet/{category.slug}/', 'is_primary': True}]
+    haystack = normalize(f'{article.bashliq or ""} {plain(article.metn)}')
+    matched, others = [], []
+    for topic in topics():
+        if topic['category'] != category.slug:
+            continue
+        entry = {'name': topic['name'], 'url': topic['url'], 'is_primary': False}
+        if any(term in haystack for term in topic.get('terms', ())):
+            matched.append(entry)
+        else:
+            others.append(entry)
+    links.extend((matched + others)[:3])
+    return links
+
+
 def article_context(article):
     headings = []
     used = set()
@@ -31,4 +54,6 @@ def article_context(article):
     paragraph = re.search(r'<p\b[^>]*>(.*?)</p\s*>', article.metn, flags=re.I | re.S)
     summary = plain(paragraph.group(1) if paragraph else article.metn, 280)
     return {'article_body': body, 'article_toc': headings,
-            'article_summary': summary, 'article_read_minutes': max(1, math.ceil(len(plain(article.metn).split()) / 200))}
+            'article_summary': summary,
+            'article_service_links': article_service_links(article),
+            'article_read_minutes': max(1, math.ceil(len(plain(article.metn).split()) / 200))}

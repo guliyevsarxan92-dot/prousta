@@ -2,7 +2,8 @@
 import re
 from functools import lru_cache
 
-from django.db.models import Count, F, Q
+from django.db.models import CharField, Count, F, Q, Value
+from django.db.models.functions import Coalesce, Concat
 from django.utils import timezone
 
 from .locations import LOKASIYALAR
@@ -19,11 +20,29 @@ def location_pattern(slug):
     return r'(^|[^a-z0-9])(' + '|'.join(re.escape(word) for word in sorted(aliases)) + r')([^a-z0-9]|$)'
 
 
+def selected_areas(raw_value):
+    if not raw_value:
+        return set()
+    return {slug.strip() for slug in str(raw_value).split(',') if slug.strip() in LOKASIYALAR}
+
+
+def areas_expression():
+    return Concat(
+        Value(','),
+        Coalesce(F('xidmet_erazileri'), Value(''), output_field=CharField()),
+        Value(','),
+        output_field=CharField(),
+    )
+
+
 def in_location(queryset, slug):
     from .service_pages import BAKU_AREAS, provider_coverage_q
     covered = provider_coverage_q() if slug in BAKU_AREAS else Q(pk__in=[])
-    return queryset.alias(_seo_city=_normalized_expression(F('sheher'))).filter(
-        Q(_seo_city__regex=location_pattern(slug)) | covered)
+    selected = Q(_seo_areas__contains=f',{slug},') if slug in LOKASIYALAR else Q(pk__in=[])
+    return queryset.alias(
+        _seo_city=_normalized_expression(F('sheher')),
+        _seo_areas=areas_expression(),
+    ).filter(Q(_seo_city__regex=location_pattern(slug)) | selected | covered)
 
 
 def matching_locations(city):
@@ -40,9 +59,11 @@ def active_public_listings():
 def location_counts(queryset):
     from .service_pages import declared_areas
     counts = {}
-    for row in queryset.order_by().values('sheher', 'kategori__slug', 'istifadeci__username',
-                                         'istifadeci__is_active').annotate(total=Count('pk')):
-        for slug in set(matching_locations(row['sheher'])) | declared_areas(row):
+    for row in queryset.order_by().values(
+            'sheher', 'xidmet_erazileri', 'kategori__slug',
+            'istifadeci__username', 'istifadeci__is_active').annotate(total=Count('pk')):
+        slugs = set(matching_locations(row['sheher'])) | selected_areas(row['xidmet_erazileri']) | declared_areas(row)
+        for slug in slugs:
             counts[slug] = counts.get(slug, 0) + row['total']
     return counts
 
@@ -53,12 +74,13 @@ def indexable_location_pairs():
     from .service_pages import declared_areas
     categories = {row['pk']: row for row in Kategori.objects.values('pk', 'slug', 'ust_kategori_id')}
     pairs = set()
-    for row in active_public_listings().order_by().values('kategori_id', 'sheher', 'kategori__slug',
+    for row in active_public_listings().order_by().values(
+            'kategori_id', 'sheher', 'xidmet_erazileri', 'kategori__slug',
             'istifadeci__username', 'istifadeci__is_active').annotate(total=Count('pk')):
         category = categories.get(row['kategori_id'])
         if not category:
             continue
-        slugs = set(matching_locations(row['sheher'])) | declared_areas(row)
+        slugs = set(matching_locations(row['sheher'])) | selected_areas(row['xidmet_erazileri']) | declared_areas(row)
         for item in (category, categories.get(category['ust_kategori_id'])):
             if item:
                 pairs.update((item['slug'], slug) for slug in slugs)

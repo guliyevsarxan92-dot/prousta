@@ -132,9 +132,26 @@ POPULAR_LOKASIYALAR = [
     'nizami', 'xirdalan', 'sumqayit', 'masazir', 'sabuncu'
 ]
 
+BAKI_RAYONLARI = [
+    'yasamal', 'nerimanov', 'nesimi', 'xetai', 'bineqedi', 'nizami',
+    'sebail', 'sabuncu', 'suraxani', 'xezer', 'qaradag', 'pirallahi',
+]
+
+ETRAF_ERAZILER = [
+    'xirdalan', 'masazir', 'sumqayit', 'saray', 'mehdiabad',
+]
+
 
 def get_lokasiya(slug: str):
     """Verilmiş slug üzrə lokasiya lüğətini qaytarır."""
     if not slug:
         return None
     return LOKASIYALAR.get(slug.lower().strip())
+
+
+def grouped_lokasiyalar():
+    """Elan forması üçün qruplaşdırılmış rayon və qəsəbə siyahısı."""
+    return [
+        ('Bakı rayonları', [LOKASIYALAR[s] for s in BAKI_RAYONLARI if s in LOKASIYALAR]),
+        ('Abşeron və ətraf ərazilər', [LOKASIYALAR[s] for s in ETRAF_ERAZILER if s in LOKASIYALAR]),
+    ]

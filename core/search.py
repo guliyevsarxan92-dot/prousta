@@ -2,7 +2,7 @@
 import re
 
 from django.db.models import Case, CharField, F, IntegerField, Q, Value, When
-from django.db.models.functions import Coalesce, Lower, Replace
+from django.db.models.functions import Coalesce, Concat, Lower, Replace
 from django.utils import timezone
 
 from .locations import LOKASIYALAR
@@ -65,12 +65,30 @@ def search_listings(queryset, query='', location=''):
         item = LOKASIYALAR.get(preferred)
         places = [normalize(word) for word in [item['ad'], *item['keywords']]] if item else [preferred]
     if places:
-        queryset = queryset.alias(_search_city=_normalized_expression(F('sheher')))
+        matched_slugs = set()
+        if preferred in LOKASIYALAR:
+            matched_slugs.add(preferred)
+        place_set = set(places)
+        for slug, info in LOKASIYALAR.items():
+            loc_words = {normalize(word) for word in [slug, info['ad'], *info['keywords']]}
+            if place_set & loc_words:
+                matched_slugs.add(slug)
+        queryset = queryset.alias(
+            _search_city=_normalized_expression(F('sheher')),
+            _search_areas=Concat(
+                Value(','),
+                Coalesce(F('xidmet_erazileri'), Value(''), output_field=CharField()),
+                Value(','),
+                output_field=CharField(),
+            ),
+        )
         local = Q()
-        for place in set(places):
+        for place in place_set:
             local |= Q(_search_city__contains=place)
+        for slug in matched_slugs:
+            local |= Q(_search_areas__contains=f',{slug},')
         from .service_pages import BAKU_AREAS, provider_coverage_q
-        if preferred in BAKU_AREAS or set(places) & BAKU_AREAS:
+        if preferred in BAKU_AREAS or matched_slugs & BAKU_AREAS:
             local |= provider_coverage_q()
         queryset = queryset.annotate(is_local=Case(
             When(local, then=Value(1)), default=Value(0), output_field=IntegerField(),

@@ -99,6 +99,70 @@ def image_upload(upload, *, max_bytes=5 * 1024 * 1024):
     return SimpleUploadedFile(uuid.uuid4().hex + '.jpg', output.getvalue(), content_type='image/jpeg')
 
 
+def service_areas(value):
+    """Seçilmiş xidmət ərazilərini (rayon/qəsəbə slug-larını) yoxlayır və kanonik ardıcıllıqla birləşdirir."""
+    import json
+    from .locations import LOKASIYALAR
+
+    if value is None or value == '':
+        return ''
+    items = []
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            return ''
+        if stripped.startswith('['):
+            try:
+                parsed = json.loads(stripped)
+                if not isinstance(parsed, list):
+                    raise ValueError
+                items = parsed
+            except ValueError:
+                raise ValidationError('Xidmət əraziləri siyahısı düzgün deyil.')
+        else:
+            items = stripped.split(',')
+    elif isinstance(value, (list, tuple, set)):
+        for entry in value:
+            if entry is None or entry == '':
+                continue
+            if isinstance(entry, str) and entry.strip().startswith('['):
+                try:
+                    parsed = json.loads(entry.strip())
+                    if not isinstance(parsed, list):
+                        raise ValueError
+                    items.extend(parsed)
+                except ValueError:
+                    raise ValidationError('Xidmət əraziləri siyahısı düzgün deyil.')
+            elif isinstance(entry, str) and ',' in entry:
+                items.extend(entry.split(','))
+            else:
+                items.append(entry)
+    else:
+        raise ValidationError('Xidmət əraziləri siyahısı düzgün deyil.')
+
+    chosen = set()
+    for raw in items:
+        if not isinstance(raw, str):
+            raise ValidationError('Seçilmiş xidmət ərazisi düzgün deyil.')
+        slug = raw.strip().lower()
+        if not slug:
+            continue
+        if slug not in LOKASIYALAR:
+            raise ValidationError('Seçilmiş xidmət ərazisi düzgün deyil.')
+        chosen.add(slug)
+    return ','.join(slug for slug in LOKASIYALAR if slug in chosen)
+
+
+def extract_service_areas(data, fallback=''):
+    if hasattr(data, 'getlist'):
+        if 'xidmet_erazileri' in data:
+            return service_areas(data.getlist('xidmet_erazileri'))
+        return service_areas(fallback)
+    if isinstance(data, dict) and 'xidmet_erazileri' in data:
+        return service_areas(data.get('xidmet_erazileri'))
+    return service_areas(fallback)
+
+
 def listing_values(data):
     # Import lazily to keep presentation and input validation independent.
     from .content import description_error
@@ -110,4 +174,5 @@ def listing_values(data):
     return {'bashliq': title, 'acaqlama': description,
             'qiymet': money(data.get('qiymet'), optional=True),
             'telefon': phone(data.get('telefon')),
-            'sheher': text(data.get('sheher', 'Bakı'), 'Şəhər', 100)}
+            'sheher': text(data.get('sheher', 'Bakı'), 'Şəhər', 100),
+            'xidmet_erazileri': extract_service_areas(data)}

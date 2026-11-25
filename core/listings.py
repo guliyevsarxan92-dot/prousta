@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .models import Bloklama, Elan, ElanShekil, Kategori, Profil, Odenis
-from .validation import image_upload, listing_values
+from .validation import extract_service_areas, image_upload, listing_values
 from .watermark import filigran_yoxla
 
 
@@ -166,6 +166,7 @@ def update_listing(user, ad_id, data, files, delete_ids=()):
         ad = Elan.objects.select_for_update().get(pk=ad_id, istifadeci=user)
         merged = {key: data.get(key, getattr(ad, key)) for key in (
             'bashliq', 'acaqlama', 'qiymet', 'telefon', 'sheher')}
+        merged['xidmet_erazileri'] = extract_service_areas(data, fallback=ad.xidmet_erazileri)
         values = listing_values(merged)
         cat = category(data.get('kategori') or data.get('kategori_id') or ad.kategori_id)
         if ad.status in ('aktiv', 'gozlemede'):

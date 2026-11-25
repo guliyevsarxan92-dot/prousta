@@ -1,0 +1,65 @@
+<div class="field" id="serviceAreasField">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+    <label style="margin:0">Xidmət göstərdiyiniz rayon və qəsəbələr <small style="font-weight:500;color:var(--muted)">(çoxlu seçim)</small></label>
+    <button type="button" id="toggleAllBakuBtn" style="font-size:12px;font-weight:700;color:#007b52;background:#eaf6f1;border:1px solid #b9d3c8;border-radius:8px;padding:4px 10px;cursor:pointer">
+      Bütün Bakı rayonlarını seç
+    </button>
+  </div>
+  <input type="hidden" name="xidmet_erazileri" value="">
+  <div class="field-hint" style="margin-bottom:10px">
+    Gedə bildiyiniz əraziləri işarələyin ki, müştərilər rayon və qəsəbə axtarışlarında elanınızı daha tez tapsın.
+  </div>
+  {% for qrup_adi, eraziler in lokasiya_qruplari %}
+  <div style="margin-bottom:12px">
+    <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">{{ qrup_adi }}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      {% for lok in eraziler %}
+      <label class="area-chip-label" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;user-select:none;transition:.15s">
+        <input type="checkbox" name="xidmet_erazileri" value="{{ lok.slug }}"
+               {% if lok.slug in baki_rayonlari %}data-baku-area="1"{% endif %}
+               {% if lok.slug in secilmis_eraziler %}checked{% endif %}
+               style="width:15px;height:15px;accent-color:#007b52;margin:0;cursor:pointer">
+        <span>{{ lok.ad }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<script>
+(function(){
+  var root = document.getElementById('serviceAreasField');
+  if (!root) return;
+  function syncStyles(){
+    root.querySelectorAll('.area-chip-label').forEach(function(lbl){
+      var cb = lbl.querySelector('input[type="checkbox"]');
+      if (cb && cb.checked) {
+        lbl.style.borderColor = '#007b52';
+        lbl.style.background = '#eaf6f1';
+        lbl.style.color = '#005c40';
+      } else {
+        lbl.style.borderColor = '';
+        lbl.style.background = '#fff';
+        lbl.style.color = '';
+      }
+    });
+    var baku = Array.from(root.querySelectorAll('input[data-baku-area="1"]'));
+    var btn = document.getElementById('toggleAllBakuBtn');
+    if (btn && baku.length) {
+      var allChecked = baku.every(function(cb){ return cb.checked; });
+      btn.textContent = allChecked ? 'Bakı seçimini təmizlə' : 'Bütün Bakı rayonlarını seç';
+    }
+  }
+  root.addEventListener('change', syncStyles);
+  var btn = document.getElementById('toggleAllBakuBtn');
+  if (btn) {
+    btn.addEventListener('click', function(){
+      var baku = Array.from(root.querySelectorAll('input[data-baku-area="1"]'));
+      var allChecked = baku.every(function(cb){ return cb.checked; });
+      baku.forEach(function(cb){ cb.checked = !allChecked; });
+      syncStyles();
+    });
+  }
+  syncStyles();
+})();
+</script>

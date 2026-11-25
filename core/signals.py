@@ -227,9 +227,14 @@ def indexnow_elan_notify(sender, instance, **kwargs):
     """Aktiv elan yaradıldıqda və ya yeniləndikdə IndexNow vasitəsilə axtarış sistemlərinə bildir."""
     if instance.status == 'aktiv' and (not instance.bitis_tarixi or instance.bitis_tarixi > timezone.now()):
         try:
-            url = instance.get_absolute_url()
+            urls = [instance.get_absolute_url()]
+            if instance.kategori_id and instance.kategori:
+                kat_slug = instance.kategori.slug
+                urls.append(f'/xidmet/{kat_slug}/')
+                for area_slug in instance.erazi_sluglari:
+                    urls.append(f'/xidmet/{kat_slug}/{area_slug}/')
             from .indexnow import submit_urls_now
-            transaction.on_commit(lambda: submit_urls_now([url]))
+            transaction.on_commit(lambda: submit_urls_now(urls))
         except Exception:
             pass
 

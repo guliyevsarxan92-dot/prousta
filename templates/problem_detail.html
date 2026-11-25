@@ -107,7 +107,7 @@
       <a href="{% url 'problemler_siyahi' %}">Bloq</a>
       {% if problem.kategori %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      <a href="{% url 'problemler_siyahi' %}?kategori={{ problem.kategori.slug }}">{{ problem.kategori.ad }}</a>
+      <a href="{% url 'xidmet_detail' problem.kategori.slug %}">{{ problem.kategori.ad }}</a>
       {% endif %}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       <span class="current" title="{{ problem.bashliq }}">{{ problem.bashliq }}</span>
@@ -117,7 +117,7 @@
       <header>
         <div class="pd-top-badges">
           {% if problem.kategori %}
-          <a href="{% url 'problemler_siyahi' %}?kategori={{ problem.kategori.slug }}" class="pd-article-kat">
+          <a href="{% url 'xidmet_detail' problem.kategori.slug %}" class="pd-article-kat">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             {{ problem.kategori.ad }}
           </a>
@@ -146,7 +146,19 @@
         </div>
       </header>
 
-      {% if article_summary %}<aside class="panel" aria-label="Qısa cavab" style="margin-bottom:20px"><strong>Qısa məlumat</strong><p>{{ article_summary }}</p></aside>{% endif %}
+      {% if article_summary or article_service_links %}
+      <aside class="panel" aria-label="Qısa cavab" style="margin-bottom:20px">
+        {% if article_summary %}<strong>Qısa məlumat</strong><p{% if article_service_links %} style="margin-bottom:10px"{% endif %}>{{ article_summary }}</p>{% endif %}
+        {% if article_service_links %}
+        <div style="font-size:13px;line-height:1.7;padding-top:{% if article_summary %}10px;border-top:1px solid #e2e8f0{% else %}0{% endif %}">
+          <strong style="color:#0f172a">Uyğun xidmətlər:</strong>
+          {% for srv in article_service_links %}
+            <a href="{{ srv.url }}" style="color:#007b52;font-weight:{% if srv.is_primary %}700{% else %}600{% endif %};text-decoration:underline">{{ srv.name }}</a>{% if not forloop.last %} · {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </aside>
+      {% endif %}
       {% if article_toc %}
       <nav class="panel" aria-label="Məqalənin mündəricatı" style="margin-bottom:24px">
         <h2 style="font-size:18px;margin-bottom:10px">Bu məqalədə</h2>
@@ -165,8 +177,13 @@
       <p>{% if problem.kategori %}<strong>{{ problem.kategori.ad }}</strong> üzrə{% else %}Uyğun xidmət üzrə{% endif %} elanları müqayisə edin. Gəliş vaxtını, qiyməti və zəmanət şərtlərini elan sahibi ilə razılaşdırın.</p>
       <div class="pd-cta-actions">
         <a href="{% if problem.kategori %}{% url 'xidmet_detail' problem.kategori.slug %}{% else %}{% url 'elan_siyahi' %}{% endif %}" class="pd-cta-btn-call">
-          Xidmət elanlarına bax →
+          {% if problem.kategori %}{{ problem.kategori.ad }} elanlarına bax →{% else %}Xidmət elanlarına bax →{% endif %}
         </a>
+        {% for srv in article_service_links %}
+          {% if not srv.is_primary %}
+          <a href="{{ srv.url }}" class="pd-cta-btn-more">{{ srv.name }} →</a>
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
 

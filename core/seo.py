@@ -58,15 +58,18 @@ def seo_context(request):
 
 def indexable_kategori_ids():
     """
-    İndekslənməyə layiq kateqoriya ID-ləri (10 dəq keşlənir):
-    - SEO mətni və ya redaksiya yoxlamasından keçmiş xidmət bələdçisi olan kateqoriyalar;
-    - aktiv elanı olan kateqoriyalar və onların üst kateqoriyaları.
-    View, sitemap və daxili link blokları eyni qaydanı istifadə edir ki, ziddiyyət olmasın.
+    İndekslənməyə layiq kateqoriya ID-ləri:
+    - aktiv, vaxtı bitməmiş elanı olan kateqoriyalar;
+    - dərin redaksiya bələdçisi olan prioritet xidmət səhifələri (core.service_pages);
+    - yuxarıdakı kateqoriyaların üst (ana) kateqoriyaları.
+    Aktiv elanı olmayan şablon kateqoriyalar müvəqqəti olaraq noindex alır və
+    ilk aktiv elan əlavə olunduqda avtomatik indeksə açılır.
     """
     from django.core.cache import cache
     from django.db.models import Q
     from django.utils import timezone
     from .models import Kategori, Elan
+    from .service_pages import guide_for_category
 
     ids = cache.get('seo_indexable_kat_ids')
     if ids is not None:
@@ -76,19 +79,17 @@ def indexable_kategori_ids():
         Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=now)
     )
     with_ads = set(aktiv.values_list('kategori_id', flat=True).distinct())
-    parents = set(
-        Kategori.objects.filter(pk__in=with_ads, ust_kategori__isnull=False)
-        .values_list('ust_kategori_id', flat=True)
-    )
-    with_text = set(Kategori.objects.exclude(seo_metn__regex=r'^\s*$').values_list('pk', flat=True))
-    # Əvvəlki seed SEO HTML-i təqdimatda çıxarıldığı üçün mətn indeksini
-    # xidmət bələdçisi olan real kateqoriyalarla tamamlayırıq.
-    from .service_content import get_content
-    with_guide = {
-        pk for pk, slug, ad in Kategori.objects.values_list('pk', 'slug', 'ad')
-        if get_content(SimpleNamespace(slug=slug, ad=ad))
+    all_cats = list(Kategori.objects.values('pk', 'slug', 'ad', 'ust_kategori_id'))
+    with_priority_guide = {
+        row['pk'] for row in all_cats
+        if guide_for_category(SimpleNamespace(slug=row['slug'], ad=row['ad']))
     }
-    ids = frozenset((with_ads | parents | with_text | with_guide) - {None})
+    direct = with_ads | with_priority_guide
+    parents = {
+        row['ust_kategori_id'] for row in all_cats
+        if row['pk'] in direct and row['ust_kategori_id'] is not None
+    }
+    ids = frozenset((direct | parents) - {None})
     next_expiry = aktiv.filter(bitis_tarixi__isnull=False).order_by('bitis_tarixi').values_list('bitis_tarixi', flat=True).first()
     timeout = min(60, max(1, int((next_expiry - now).total_seconds()))) if next_expiry else 60
     cache.set('seo_indexable_kat_ids', ids, timeout)

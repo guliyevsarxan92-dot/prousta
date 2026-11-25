@@ -280,6 +280,7 @@ class ElanAdmin(ModelAdmin):
         'istifadeci__email',
         'telefon',
         'sheher',
+        'xidmet_erazileri',
     ]
     readonly_fields = [
         'nomre',
@@ -339,6 +340,7 @@ class ElanAdmin(ModelAdmin):
                 'bashliq',
                 ('kategori', 'istifadeci'),
                 ('qiymet', 'sheher', 'telefon'),
+                'xidmet_erazileri',
             )
         }),
         ('Açıqlama Mətni', {

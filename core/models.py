@@ -79,6 +79,13 @@ class Elan(models.Model):
     vip_yenilendi = models.DateTimeField(null=True, blank=True, db_index=True)
     bitis_tarixi = models.DateTimeField(null=True, blank=True)
     sheher = models.CharField(max_length=100, default='Bakı')
+    xidmet_erazileri = models.CharField(
+        'Xidmət əraziləri',
+        max_length=500,
+        blank=True,
+        default='',
+        help_text='Vergüllə ayrılmış rayon və qəsəbə slug-ları (məs: yasamal,nerimanov,xirdalan)',
+    )
     telefon = models.CharField(max_length=20, blank=True)
     baxish_sayi = models.PositiveIntegerField('Baxış Sayı', default=0)
     zeng_sayi = models.PositiveIntegerField('Zəng Klikləri', default=0)
@@ -130,6 +137,29 @@ class Elan(models.Model):
             return phone(self.telefon, optional=True)
         except ValidationError:
             return ''
+
+    @property
+    def erazi_sluglari(self) -> list:
+        if not self.xidmet_erazileri:
+            return []
+        from .locations import LOKASIYALAR
+        seen = set()
+        result = []
+        for raw in self.xidmet_erazileri.split(','):
+            slug = raw.strip().lower()
+            if slug in LOKASIYALAR and slug not in seen:
+                seen.add(slug)
+                result.append(slug)
+        return result
+
+    @property
+    def erazi_melumatlari(self) -> list:
+        from .locations import LOKASIYALAR
+        return [LOKASIYALAR[s] for s in self.erazi_sluglari]
+
+    @property
+    def erazi_adlari(self) -> list:
+        return [item['ad'] for item in self.erazi_melumatlari]
 
     @property
     def slug(self) -> str:

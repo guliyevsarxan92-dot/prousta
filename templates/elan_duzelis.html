@@ -78,15 +78,18 @@
             <option value="">Seçin...</option>
             <optgroup label="Bakı">
               <option {% if elan.sheher == 'Bakı' %}selected{% endif %}>Bakı</option>
+              <option {% if elan.sheher == 'Bakı — Yasamal' %}selected{% endif %}>Bakı — Yasamal</option>
               <option {% if elan.sheher == 'Bakı — Binəqədi' %}selected{% endif %}>Bakı — Binəqədi</option>
               <option {% if elan.sheher == 'Bakı — Xəzər' %}selected{% endif %}>Bakı — Xəzər</option>
               <option {% if elan.sheher == 'Bakı — Xətai' %}selected{% endif %}>Bakı — Xətai</option>
               <option {% if elan.sheher == 'Bakı — Nərimanov' %}selected{% endif %}>Bakı — Nərimanov</option>
               <option {% if elan.sheher == 'Bakı — Nəsimi' %}selected{% endif %}>Bakı — Nəsimi</option>
               <option {% if elan.sheher == 'Bakı — Nizami' %}selected{% endif %}>Bakı — Nizami</option>
-              <option {% if elan.sheher == 'Bakı — Sabail' %}selected{% endif %}>Bakı — Sabail</option>
+              <option {% if elan.sheher == 'Bakı — Səbail' or elan.sheher == 'Bakı — Sabail' %}selected{% endif %}>Bakı — Səbail</option>
               <option {% if elan.sheher == 'Bakı — Sabunçu' %}selected{% endif %}>Bakı — Sabunçu</option>
               <option {% if elan.sheher == 'Bakı — Suraxanı' %}selected{% endif %}>Bakı — Suraxanı</option>
+              <option {% if elan.sheher == 'Bakı — Qaradağ' %}selected{% endif %}>Bakı — Qaradağ</option>
+              <option {% if elan.sheher == 'Bakı — Pirallahı' %}selected{% endif %}>Bakı — Pirallahı</option>
               <option {% if elan.sheher == 'Bakı — Abşeron' %}selected{% endif %}>Bakı — Abşeron</option>
             </optgroup>
             <optgroup label="Digər şəhər və rayonlar">
@@ -118,6 +121,8 @@
           </select>
         </div>
       </div>
+
+      {% include 'partials/service_areas_field.html' %}
 
       <div class="field">
         <label for="id_acaqlama">Açıqlama <span class="req">*</span></label>

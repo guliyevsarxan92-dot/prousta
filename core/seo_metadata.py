@@ -195,7 +195,10 @@ def build_metadata(context):
     elif article:
         title = article.seo_title or f'{article.bashliq} — səbəblər və həll yolları | {BRAND}'
         description = article.seo_description or context.get('article_summary') or plain(article.metn, 160)
-        crumbs += [('Təmir bələdçiləri', '/problemler/'), (article.bashliq, article.get_absolute_url())]
+        crumbs += [('Təmir bələdçiləri', '/problemler/')]
+        if article.kategori:
+            crumbs.append((article.kategori.ad, f'/xidmet/{article.kategori.slug}/'))
+        crumbs.append((article.bashliq, article.get_absolute_url()))
     elif view != 'index':
         crumbs.append((title.split('|')[0].strip(), canonical_path.split('?')[0]))
 
@@ -227,10 +230,16 @@ def build_metadata(context):
             for index, (label, path) in enumerate(crumbs, start=1)]})
     if ad and not noindex:
         service_id = canonical + '#service'
+        areas = ad.erazi_melumatlari
+        if areas:
+            area_served = [{'@type': 'Place', 'name': ad.sheher},
+                           *[{'@type': 'AdministrativeArea', 'name': loc['tam_ad']} for loc in areas]]
+        else:
+            area_served = {'@type': 'Place', 'name': ad.sheher}
         service = {'@type': 'Service', '@id': service_id, 'url': canonical,
                    'name': plain(ad.bashliq), 'description': plain(ad.acaqlama, 500),
                    'image': image, 'broker': {'@id': ORGANIZATION_ID},
-                   'areaServed': {'@type': 'Place', 'name': ad.sheher}}
+                   'areaServed': area_served}
         profile = getattr(ad.istifadeci, 'profil', None)
         provider_name = ' '.join(filter(None, [getattr(profile, 'ad', ''), getattr(profile, 'soyad', '')]))
         if provider_name:

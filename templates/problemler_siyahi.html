@@ -134,7 +134,7 @@
       <article class="prob-card">
         <div class="prob-card-top">
           {% if p.kategori %}
-          <span class="prob-card-kat">{{ p.kategori.ad }}</span>
+          <a href="{% url 'xidmet_detail' p.kategori.slug %}" class="prob-card-kat">{{ p.kategori.ad }}</a>
           {% else %}
           <span class="prob-card-kat">Məişət Texnikası</span>
           {% endif %}
