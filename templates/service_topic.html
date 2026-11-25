@@ -4,14 +4,14 @@
 {% block content %}
 <div class="pg">
   <nav class="crumbs" aria-label="Breadcrumb"><a href="{% url 'index' %}">Ana səhifə</a><span>›</span><a href="{% url 'xidmet_detail' topic_category.slug %}">{{ topic_category.ad }}</a><span>›</span><span aria-current="page">{{ priority_service.name }}</span></nav>
-  <header class="pg-hero"><span class="eyebrow">Xidmət və qiymət bələdçisi</span><h1>{{ priority_service.name }} <span>Bakıda</span></h1></header>
-  {% include 'partials/service_intro.html' %}
-  {% include 'partials/service_deep_guide.html' %}
-  <section class="pg-section" aria-labelledby="topic-listings-title"><div class="sec-head"><h2 id="topic-listings-title">Bu işi mətnində qeyd edən elanlar</h2></div><p>Elan mətnindəki məlumatı və konkret işə uyğunluğu icraçı ilə təsdiqləyin.</p>
+  <header class="pg-hero"><h1>{{ priority_service.name }} <span>Bakıda</span></h1></header>
+  <section class="pg-section" aria-labelledby="topic-listings-title"><div class="sec-head"><h2 id="topic-listings-title">{{ priority_service.name }} elanları</h2></div>
     <div class="service-grid">{% for elan in elanlar %}{% include 'partials/home_service_card.html' with eager_image=forloop.first %}{% empty %}<div class="panel"><p>Hazırda bu işin adını qeyd edən aktiv elan yoxdur. Əlaqəli xidmət bölməsində icraçıların təkliflərinə baxa bilərsiniz.</p></div>{% endfor %}</div>
     {% include 'partials/pager.html' with page=elanlar page_range=page_range elan_seed=elan_seed %}
     <p><a href="{% url 'xidmet_detail' topic_category.slug %}">{{ topic_category.ad }} üzrə bütün elanlar →</a></p>
   </section>
+  {% include 'partials/service_intro.html' %}
+  {% include 'partials/service_deep_guide.html' %}
   {% service_questions %}
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% if priority_service %}
+{% include 'partials/service_intro.html' %}
 {% include 'partials/service_deep_guide.html' %}
 {% if additional_html %}<section class="panel prose"><h2>Əlavə xidmət məlumatı</h2>{{ additional_html|safe }}</section>{% endif %}
 {% else %}

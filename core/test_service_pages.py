@@ -49,6 +49,11 @@ class FocusedServicePagesTests(TestCase):
                 faq = next(n for n in graph(response) if n['@type'] == 'FAQPage')
                 self.assertEqual([n['name'] for n in faq['mainEntity']], [q for q, a in page['faq']])
                 self.assertNotContains(response, 'Prousta Təcili Xidmət')
+                html = response.content.decode()
+                grid_pos = html.index('class="service-grid"')
+                self.assertLess(grid_pos, html.index('Xidmət seçimi bələdçisi'))
+                self.assertLess(grid_pos, html.index('class="service-deep-guide"'))
+                self.assertNotIn('Xidmət və qiymət bələdçisi', html[:grid_pos])
 
     def test_exact_and_starting_prices_are_attributed_to_real_provider(self):
         for slug in ('su-sizma', 'kanalizasiya-ustasi', 'kombi-yuyulmasi'):
