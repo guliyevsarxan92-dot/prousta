@@ -1,34 +1,43 @@
 <div class="service-deep-guide">
   <section id="service-scope" class="panel prose pg-section" aria-labelledby="service-scope-title">
-    <span class="service-kicker">Düzgün işi seçin</span>
-    <h2 id="service-scope-title">{{ priority_service.name }}: təklifdə nələr olmalıdır?</h2>
+    <span class="service-kicker">{% if is_ru %}Выберите нужный вид работ{% else %}Düzgün işi seçin{% endif %}</span>
+    <h2 id="service-scope-title">{{ priority_service.name }}: {% if is_ru %}что входит в услугу?{% else %}təklifdə nələr olmalıdır?{% endif %}</h2>
     <div class="service-scope-grid">{% for title, text in priority_service.scope %}<article><h3>{{ title }}</h3><p>{{ text }}</p></article>{% endfor %}</div>
   </section>
   <div class="service-check-grid pg-section">
-    <section id="service-pricing" class="panel prose"><h2>Qiymət təklifini necə müqayisə edək?</h2><p>Eyni iş həcmi üzrə təklif alın. Aşağıdakıları ayrıca təsdiqləyin:</p><ul>{% for item in priority_service.pricing %}<li>{{ item }}</li>{% endfor %}</ul><p>Elan qiyməti ilə yekun razılaşdırılmış məbləği ayırın. Əlavə işi başlamazdan əvvəl təsdiqləyin.</p></section>
-    <section class="panel prose"><h2>İşi qəbul edərkən yoxlayın</h2><ol>{% for item in priority_service.checks %}<li>{{ item }}</li>{% endfor %}</ol><p>Görülmüş işin qeydini və icraçının verdiyi zəmanət şərtlərini saxlayın.</p></section>
+    <section id="service-pricing" class="panel prose">
+      <h2>{% if is_ru %}Как сравнить предложения по цене?{% else %}Qiymət təklifini necə müqayisə edək?{% endif %}</h2>
+      <p>{% if is_ru %}Запрашивайте расчёт на одинаковый объём работ и уточняйте отдельно:{% else %}Eyni iş həcmi üzrə təklif alın. Aşağıdakıları ayrıca təsdiqləyin:{% endif %}</p>
+      <ul>{% for item in priority_service.pricing %}<li>{{ item }}</li>{% endfor %}</ul>
+      <p>{% if is_ru %}Отличайте базовую цену в объявлении от итоговой суммы. Дополнительные работы согласуйте до их начала.{% else %}Elan qiyməti ilə yekun razılaşdırılmış məbləği ayırın. Əlavə işi başlamazdan əvvəl təsdiqləyin.{% endif %}</p>
+    </section>
+    <section class="panel prose">
+      <h2>{% if is_ru %}Проверьте при приёмке работы{% else %}İşi qəbul edərkən yoxlayın{% endif %}</h2>
+      <ol>{% for item in priority_service.checks %}<li>{{ item }}</li>{% endfor %}</ol>
+      <p>{% if is_ru %}Сохраните запись о выполненных работах и согласованных условиях гарантии исполнителя.{% else %}Görülmüş işin qeydini və icraçının verdiyi zəmanət şərtlərini saxlayın.{% endif %}</p>
+    </section>
   </div>
   <section id="service-request" class="panel prose pg-section" aria-labelledby="request-title">
-    <span class="service-kicker">Ustaya daha aydın müraciət edin</span>
-    <h2 id="request-title">Sifariş məlumatını hazırlayın</h2>
+    <span class="service-kicker">{% if is_ru %}Сформируйте понятную заявку мастеру{% else %}Ustaya daha aydın müraciət edin{% endif %}</span>
+    <h2 id="request-title">{% if is_ru %}Подготовьте данные для заказа{% else %}Sifariş məlumatını hazırlayın{% endif %}</h2>
     <ul>{% for item in priority_service.prepare %}<li>{{ item }}</li>{% endfor %}</ul>
     <form class="service-request" data-service-request data-service="{{ priority_service.name }}"{% if service_provider %} data-phone="{{ service_provider.phone }}"{% if service_provider.price %} data-price="{{ service_provider.price.label }}"{% endif %}{% endif %}>
       <div class="service-request-fields">
-        <label>Ünvan / rayon<input name="area" type="text" maxlength="140" autocomplete="address-level2" placeholder="Məsələn, Bakı, Yasamal" required></label>
-        <label>Avadanlıq və ya xətt<input name="equipment" type="text" maxlength="180" placeholder="Model, avadanlıq və ya xəttin növü" required></label>
-        {% if priority_service.slug == 'kombi-yuyulmasi' %}<label>Radiator sayı<input name="radiators" type="number" min="0" max="200" step="1" placeholder="Məsələn, 6" required></label>{% endif %}
-        <label class="service-field-wide">İşin təsviri<textarea name="problem" rows="3" maxlength="600" placeholder="Nə müşahidə edirsiniz, hansı iş görülməlidir?" required></textarea></label>
+        <label>{% if is_ru %}Адрес / район{% else %}Ünvan / rayon{% endif %}<input name="area" type="text" maxlength="140" autocomplete="address-level2" placeholder="{% if is_ru %}Например: Баку, Ясамал{% else %}Məsələn, Bakı, Yasamal{% endif %}" required></label>
+        <label>{% if is_ru %}Оборудование или линия{% else %}Avadanlıq və ya xətt{% endif %}<input name="equipment" type="text" maxlength="180" placeholder="{% if is_ru %}Марка, модель или тип линии{% else %}Model, avadanlıq və ya xəttin növü{% endif %}" required></label>
+        {% if priority_service.slug == 'kombi-yuyulmasi' %}<label>{% if is_ru %}Количество радиаторов{% else %}Radiator sayı{% endif %}<input name="radiators" type="number" min="0" max="200" step="1" placeholder="{% if is_ru %}Например, 6{% else %}Məsələn, 6{% endif %}" required></label>{% endif %}
+        <label class="service-field-wide">{% if is_ru %}Описание задачи{% else %}İşin təsviri{% endif %}<textarea name="problem" rows="3" maxlength="600" placeholder="{% if is_ru %}Что наблюдается и какую работу нужно выполнить?{% else %}Nə müşahidə edirsiniz, hansı iş görülməlidir?{% endif %}" required></textarea></label>
       </div>
-      <button type="submit" class="btn btn-primary" disabled data-request-build>Müraciət mətnini hazırla</button>
-      <noscript><p>Məlumatları yuxarıdakı siyahıya əsasən hazırlayıb elandakı əlaqə vasitəsilə icraçıya göndərin.</p></noscript>
+      <button type="submit" class="btn btn-primary" disabled data-request-build>{% if is_ru %}Сформировать текст заявки{% else %}Müraciət mətnini hazırla{% endif %}</button>
+      <noscript><p>{% if is_ru %}Подготовьте данные по списку выше и отправьте исполнителю по контактам в объявлении.{% else %}Məlumatları yuxarıdakı siyahıya əsasən hazırlayıb elandakı əlaqə vasitəsilə icraçıya göndərin.{% endif %}</p></noscript>
       <div class="service-request-result" hidden data-request-result>
-        <label>Hazırlanmış mətn<textarea rows="8" readonly data-request-text></textarea></label>
-        <div class="service-offer-actions"><button type="button" class="btn btn-outline" data-request-copy>Mətni kopyala</button>{% if service_provider %}<a class="btn btn-primary" target="_blank" rel="noopener" data-request-whatsapp>İcraçıya WhatsApp-da göndər</a>{% endif %}</div>
+        <label>{% if is_ru %}Готовый текст{% else %}Hazırlanmış mətn{% endif %}<textarea rows="8" readonly data-request-text></textarea></label>
+        <div class="service-offer-actions"><button type="button" class="btn btn-outline" data-request-copy>{% if is_ru %}Скопировать текст{% else %}Mətni kopyala{% endif %}</button>{% if service_provider %}<a class="btn btn-primary" target="_blank" rel="noopener" data-request-whatsapp>{% if is_ru %}Отправить мастеру в WhatsApp{% else %}İcraçıya WhatsApp-da göndər{% endif %}</a>{% endif %}</div>
         <p role="status" aria-live="polite" data-request-status></p>
       </div>
     </form>
-    <small>Mətn brauzerinizdə hazırlanır. WhatsApp-a keçməyi seçdikdə mesajı özünüz göndərirsiniz.</small>
+    <small>{% if is_ru %}Текст формируется в вашем браузере. При переходе в WhatsApp вы отправляете сообщение самостоятельно.{% else %}Mətn brauzerinizdə hazırlanır. WhatsApp-a keçməyi seçdikdə mesajı özünüz göndərirsiniz.{% endif %}</small>
   </section>
-  {% if service_related %}<nav class="panel pg-section" aria-label="Əlaqəli xidmət bələdçiləri"><h2 class="panel-title">Uyğun xidmətə keçin</h2><div class="chips">{% for page in service_related %}<a class="chip" href="{{ page.url }}">{{ page.name }}</a>{% endfor %}</div></nav>{% endif %}
-  {% if service_sources %}<section class="panel prose pg-section"><h2>Texniki məlumatın mənbələri</h2><ul>{% for source in service_sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener">{{ source.label }}</a></li>{% endfor %}</ul><small>Bunlar ümumi texniki mənbələrdir. Konkret modelin təlimatını və xidmətə uyğun üsulu icraçı ilə yoxlayın.</small></section>{% endif %}
+  {% if service_related %}<nav class="panel pg-section" aria-label="{% if is_ru %}Связанные руководства по услугам{% else %}Əlaqəli xidmət bələdçiləri{% endif %}"><h2 class="panel-title">{% if is_ru %}Перейти к связанной услуге{% else %}Uyğun xidmətə keçin{% endif %}</h2><div class="chips">{% for page in service_related %}<a class="chip" href="{{ page.url }}">{{ page.name }}</a>{% endfor %}</div></nav>{% endif %}
+  {% if service_sources %}<section class="panel prose pg-section"><h2>{% if is_ru %}Источники технической информации{% else %}Texniki məlumatın mənbələri{% endif %}</h2><ul>{% for source in service_sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener">{{ source.label }}</a></li>{% endfor %}</ul><small>{% if is_ru %}Это общие технические материалы производителей. Инструкцию к конкретной модели и метод работ уточняйте с мастером.{% else %}Bunlar ümumi texniki mənbələrdir. Konkret modelin təlimatını və xidmətə uyğun üsulu icraçı ilə yoxlayın.{% endif %}</small></section>{% endif %}
 </div>

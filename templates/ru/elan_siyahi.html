@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load seo_tags %}
+
+{% block extra_head %}
+{% if elanlar.has_previous %}<link rel="prev" href="/ru/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
+{% if elanlar.has_next %}<link rel="next" href="/ru/elanlar/?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
+{% endblock %}
+{% block content %}
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{% url 'ru_index' %}">Главная</a>{% include 'partials/ui_icon.html' with name='chevron' %}<span aria-current="page">{% if axtaris %}Поиск{% else %}Все объявления и услуги{% endif %}</span></nav>
+
+  <section class="pg-hero">
+    {% if axtaris %}
+      <h1>Результаты по запросу «<span>{{ axtaris }}</span>»</h1>
+      <p>Объявления мастеров и услуг по вашему запросу. Премиум-объявления отображаются первыми.</p>
+    {% else %}
+      <h1>Все <span>мастера и услуги</span></h1>
+      <p>От электрики и сантехники до ремонта комби и бытовой техники в Баку.</p>
+    {% endif %}
+    <form class="search-bar" method="get" role="search">
+      <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Поиск услуги (напр.: мастер комби, сантехник)" aria-label="Поиск объявлений"></label>
+      <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Найти</button>
+    </form>
+  </section>
+
+  {% if kateqoriyalar and not axtaris %}
+  <section class="pg-section">
+    <div class="sec-head"><h2>Категории услуг</h2></div>
+    <div class="cat-grid">
+      {% for kat in kateqoriyalar %}
+      <details class="cat-card">
+        <summary>{% include 'partials/kat_icon.html' %}<span class="cat-info"><span class="cat-name">{{ kat|ru_cat }}</span><span class="cat-count">{{ kat.alt_kateqoriyalar.all|length }} подкатегорий</span></span>{% include 'partials/ui_icon.html' with name='down' class='cat-arrow' %}</summary>
+        <div class="cat-sub">
+          {% for alt in kat.alt_kateqoriyalar.all %}<a href="{% url 'ru_xidmet_detail' alt.slug %}">{{ alt|ru_cat }}</a>{% endfor %}
+          <a href="{% url 'ru_xidmet_detail' kat.slug %}" class="cat-all">Смотреть все →</a>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="pg-section">
+    <div class="sec-head"><h2>{% if axtaris %}Найденные объявления{% else %}Активные объявления{% endif %}</h2></div>
+    <div class="service-grid">
+      {% for elan in elanlar %}
+        {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
+        {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
+          {% include 'partials/in_grid_ad_banner.html' %}
+        {% endif %}
+      {% empty %}
+        <div class="empty-state">
+          <span class="empty-ico">{% include 'partials/ui_icon.html' with name='search' %}</span>
+          <h3>Объявления не найдены</h3>
+          <p>Попробуйте другое ключевое слово или выберите услугу из списка категорий.</p>
+          <a href="{% url 'ru_elan_siyahi' %}" class="btn btn-primary">Все объявления</a>
+        </div>
+      {% endfor %}
+    </div>
+    {% include 'partials/pager.html' with page=elanlar q=axtaris page_range=page_range elan_seed=elan_seed %}
+  </section>
+</div>
+{% endblock %}

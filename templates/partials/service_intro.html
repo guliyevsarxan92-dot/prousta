@@ -1,17 +1,21 @@
-<section class="panel service-intro pg-section" aria-label="Xidmət və sifariş məlumatı">
+<section class="panel service-intro pg-section" aria-label="{% if is_ru %}Информация об услуге и заказе{% else %}Xidmət və sifariş məlumatı{% endif %}">
   <div>
-    <span class="service-kicker">Xidmət seçimi bələdçisi</span>
+    <span class="service-kicker">{% if is_ru %}Руководство по выбору услуги{% else %}Xidmət seçimi bələdçisi{% endif %}</span>
     <p>{{ priority_service.summary }}</p>
-    <div class="service-jumps"><a href="#service-scope">İşin həcmi</a><a href="#service-pricing">Qiymətə təsir edənlər</a><a href="#service-request">Sifarişə hazırlaş</a></div>
+    <div class="service-jumps">
+      <a href="#service-scope">{% if is_ru %}Объём работ{% else %}İşin həcmi{% endif %}</a>
+      <a href="#service-pricing">{% if is_ru %}Что влияет на цену{% else %}Qiymətə təsir edənlər{% endif %}</a>
+      <a href="#service-request">{% if is_ru %}Подготовка заявки{% else %}Sifarişə hazırlaş{% endif %}</a>
+    </div>
   </div>
   {% if service_provider %}
-  <aside class="service-offer" aria-label="Elan sahibinin xidmət təklifi">
-    <span class="service-kicker">Elan sahibinin təklifi</span>
+  <aside class="service-offer" aria-label="{% if is_ru %}Предложение исполнителя{% else %}Elan sahibinin xidmət təklifi{% endif %}">
+    <span class="service-kicker">{% if is_ru %}Предложение автора объявления{% else %}Elan sahibinin təklifi{% endif %}</span>
     <a class="service-owner" href="{{ service_provider.profile_url }}">{{ service_provider.name }}</a>
-    {% if service_provider.price %}<strong class="service-amount">{{ service_provider.price.label }}</strong><p>{{ service_provider.price.note }}</p>{% else %}<p>Qiymət iş həcminə görə icraçı ilə razılaşdırılır.</p>{% endif %}
-    <p><strong>Zəmanətli xidmət təklifi.</strong> Müddəti, əhatə olunan işi və təkrar müraciət şərtini sifarişdən əvvəl icraçı ilə dəqiqləşdirin.</p>
-    <div class="service-offer-actions"><a class="btn btn-primary" href="{{ service_provider.whatsapp }}" target="_blank" rel="noopener">Sifarişi WhatsApp-da dəqiqləşdir</a><a class="btn btn-outline" href="tel:{{ service_provider.phone }}">İcraçıya zəng et</a></div>
-    <small>Xidmətin icraçısı elan sahibidir. Bu əlaqə xidmət sifarişi üçündür.</small>
+    {% if service_provider.price %}<strong class="service-amount">{{ service_provider.price.label }}</strong><p>{{ service_provider.price.note }}</p>{% else %}<p>{% if is_ru %}Стоимость согласуется с исполнителем по объёму работ.{% else %}Qiymət iş həcminə görə icraçı ilə razılaşdırılır.{% endif %}</p>{% endif %}
+    <p><strong>{% if is_ru %}Предложение с гарантией.{% else %}Zəmanətli xidmət təklifi.{% endif %}</strong> {% if is_ru %}Срок гарантии, перечень работ и условия повторного обращения уточните у исполнителя перед заказом.{% else %}Müddəti, əhatə olunan işi və təkrar müraciət şərtini sifarişdən əvvəl icraçı ilə dəqiqləşdirin.{% endif %}</p>
+    <div class="service-offer-actions"><a class="btn btn-primary" href="{{ service_provider.whatsapp }}" target="_blank" rel="noopener">{% if is_ru %}Уточнить заказ в WhatsApp{% else %}Sifarişi WhatsApp-da dəqiqləşdir{% endif %}</a><a class="btn btn-outline" href="tel:{{ service_provider.phone }}">{% if is_ru %}Позвонить исполнителю{% else %}İcraçıya zəng et{% endif %}</a></div>
+    <small>{% if is_ru %}Исполнителем услуги является автор объявления. Контакт предназначен для заказа услуги.{% else %}Xidmətin icraçısı elan sahibidir. Bu əlaqə xidmət sifarişi üçündür.{% endif %}</small>
   </aside>
   {% endif %}
 </section>

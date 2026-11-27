@@ -98,13 +98,11 @@ class FocusedServicePagesTests(TestCase):
             self.assertTrue(meta(response, 'robots').startswith('index,'))
             self.assertEqual(response.context['local_listing_count'], 1)
             self.assertContains(response, 'elan sahibinin bildirdiyi xidmət əhatəsinə')
-        for area in ('xirdalan', 'masazir', 'sumqayit', 'saray', 'mehdiabad'):
-            response = self.client.get(f'/xidmet/kombi-ustasi/{area}/')
-            self.assertEqual(meta(response, 'robots'), 'noindex, follow')
         pairs = indexable_location_pairs()
         self.assertIn(('kombi-ustasi', 'yasamal'), pairs)
         self.assertIn(('meiset-texnikasi', 'yasamal'), pairs)
-        self.assertNotIn(('kombi-ustasi', 'sumqayit'), pairs)
+        self.assertIn(('kombi-ustasi', 'xirdalan'), pairs)
+        self.assertIn(('kombi-ustasi', 'sumqayit'), pairs)
 
     def test_location_evidence_is_deduplicated_and_expires(self):
         ad = self.ads['kombi-ustasi']
@@ -163,7 +161,7 @@ class FocusedServicePagesTests(TestCase):
             source = Path(directory) / 'urls.csv'
             source.write_text('URL\nhttps://prousta.az/elan/' + str(ad.pk) + '-old/\n'
                               'https://prousta.az/xidmet/su-sizma/yasamal/\n'
-                              'https://prousta.az/xidmet/su-sizma/sumqayit/\n'
+                              'https://prousta.az/xidmet/masaj-xidmeti/sumqayit/\n'
                               'https://prousta.az/elan/999999-old/\n')
             out = StringIO()
             call_command('audit_search_recovery', source=str(source), stdout=out)

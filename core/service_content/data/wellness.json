@@ -60,7 +60,7 @@
     "queries": ["makiyaj ustası", "toy makiyajı", "makiyaj xidməti"], "related": ["sac-ustasi", "dirnaq-ustasi", "lazer-epilyasiyasi"], "sources": []
   },
   "dirnaq-ustasi": {
-    "name": "Dırnaq ustası", "heading": "Dırnaq xidməti — prosedur, material və gigiyena",
+    "name": "Dırnaq ustası", "heading": "Dırnaq ustası — manikür, material və gigiyena",
     "description": "Dırnaq xidməti sifarişində prosedur növünü, mövcud örtüyü və istədiyiniz dizaynı bildirin. Alətlərin gigiyenası və əlavə çıxarılma haqqını soruşun.",
     "intro": "Manikür, örtük və mövcud materialın çıxarılması fərqli xidmət addımlarıdır. Dırnaq və dəri həssaslığını ustaya bildirin, narahatlıq olarsa xidmətin dayandırılması barədə danışın.",
     "scope": ["Mövcud vəziyyət və istək barədə danışıq", "Razılaşdırılmış dırnaq xidməti", "Örtük və qulluq qaydasının izahı"],

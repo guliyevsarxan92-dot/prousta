@@ -120,8 +120,9 @@ def strict_page(paginator, number):
         raise Http404('Səhifə tapılmadı.')
 
 
-def index(request):
+def index(request, lang='az'):
     _update_elan_status()
+    is_ru = (lang == 'ru')
     seed = get_or_create_listing_seed(request, session_key='home_elan_seed')
 
     # Bütün aktiv elanlar: Super VIP və VIP ən öndə, sonra normal elanlar (ədalətli rotasiya ilə)
@@ -139,7 +140,7 @@ def index(request):
     # AJAX: sonsuz sürüşdürmə (infinite scroll) və ya "Daha çox göstər" üçün
     if request.GET.get('ajax') == '1' or request.headers.get('x-requested-with') == 'XMLHttpRequest':
         from django.template.loader import render_to_string
-        cards_html = render_to_string('partials/elan_cards_list.html', {'elanlar': elanlar, 'user': getattr(request, 'user', None)}, request=request)
+        cards_html = render_to_string('partials/elan_cards_list.html', {'elanlar': elanlar, 'user': getattr(request, 'user', None), 'is_ru': is_ru}, request=request)
         return JsonResponse({
             'html': cards_html,
             'has_next': elanlar.has_next(),
@@ -157,29 +158,34 @@ def index(request):
     )
 
     from .homepage import presentation_context
-    return render(request, 'index.html', {
+    from .ru_content import HOME_CATEGORIES_RU
+    pres = presentation_context(list(elanlar)[:6])
+    if is_ru:
+        pres['home_categories'] = HOME_CATEGORIES_RU
+    template_name = 'ru/index.html' if is_ru else 'index.html'
+    return render(request, template_name, {
+        'is_ru': is_ru,
         'elanlar': elanlar,
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
         'next_page_number': elanlar.next_page_number() if elanlar.has_next() else '',
         'elan_seed': seed,
-        **presentation_context(list(elanlar)[:6]),
+        **pres,
     })
 
 
-def elan_siyahi(request):
+def elan_siyahi(request, lang='az'):
     """
-    /elanlar/ — əsas xidmət seçimi səhifəsi.
-    - Heç bir parametrsiz: əsas səhifədəki kimi açılan kateqoriya kartları göstərilir
-    - ?q=<axtaris>: axtarış nəticələri düz siyahı şəklində
-    - ?kategori=<slug> (köhnə URL-lər): /xidmet/<slug>/ ünvanına 301 yönləndirmə
+    /elanlar/ və /ru/elanlar/ — əsas xidmət seçimi səhifəsi.
     """
     _update_elan_status()
+    is_ru = (lang == 'ru')
 
     # Köhnə URL-ləri yeni xidmət səhifəsinə 301 redirect et (SEO backward compat)
     kategori_slug = request.GET.get('kategori', '').strip()
     if kategori_slug:
-        return redirect('xidmet_detail', slug=kategori_slug, permanent=True)
+        target_name = 'ru_xidmet_detail' if is_ru else 'xidmet_detail'
+        return redirect(target_name, slug=kategori_slug, permanent=True)
 
     seed = get_or_create_listing_seed(request, session_key='siyahi_elan_seed')
     kateqoriyalar = Kategori.objects.filter(ust_kategori=None).prefetch_related('alt_kateqoriyalar')
@@ -196,8 +202,10 @@ def elan_siyahi(request):
     paginator = Paginator(elanlar, 20)
     elanlar_page = strict_page(paginator, request.GET.get('page', 1))
     page_range = list(paginator.get_elided_page_range(elanlar_page.number, on_each_side=2, on_ends=1))
+    template_name = 'ru/elan_siyahi.html' if is_ru else 'elan_siyahi.html'
 
-    return render(request, 'elan_siyahi.html', {
+    return render(request, template_name, {
+        'is_ru': is_ru,
         'elanlar': elanlar_page,
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
@@ -206,23 +214,24 @@ def elan_siyahi(request):
     })
 
 
-def xidmet_detail(request, slug, lokasiya=None):
+def xidmet_detail(request, slug, lokasiya=None, lang='az'):
     """
-    /xidmet/<slug>/ və /xidmet/<slug>/<lokasiya>/ — xidmət və lokal SEO səhifəsi.
-    Həm əsas, həm alt kateqoriyalar üçün işləyir.
+    /xidmet/<slug>/, /xidmet/<slug>/<lokasiya>/ və onların /ru/ qarşılıqları.
     """
     _update_elan_status()
+    is_ru = (lang == 'ru')
     from .service_pages import pages, topic_response
+    from .ru_content import location_ru
     topic = pages().get(slug)
     if topic and topic['category'] != slug:
         if lokasiya:
             raise Http404('Bu xidmət üçün ayrıca rayon səhifəsi yoxdur.')
-        return topic_response(request, topic)
+        return topic_response(request, topic, is_ru=is_ru)
     aktiv_kategori = get_object_or_404(Kategori, slug=slug)
 
     lokasiya_melumat = None
     if lokasiya:
-        lokasiya_melumat = get_lokasiya(lokasiya)
+        lokasiya_melumat = location_ru(lokasiya) if is_ru else get_lokasiya(lokasiya)
         if not lokasiya_melumat:
             raise Http404("Lokasiya tapılmadı")
 
@@ -278,16 +287,26 @@ def xidmet_detail(request, slug, lokasiya=None):
     qiymet_aralig = elanlar.order_by().aggregate(min_q=Min('qiymet'), max_q=Max('qiymet'))
     from .service_pages import guide_for_category, page_context, provider_coverage_q, BAKU_AREAS
     guide = guide_for_category(aktiv_kategori) if not lokasiya else None
-    service_context = page_context(guide, request.user) if guide else {}
+    service_context = page_context(guide, request.user, is_ru=is_ru) if guide else {}
     has_declared_coverage = False
     if lokasiya:
         has_declared_coverage = bool(
             (lokasiya in BAKU_AREAS and elanlar.filter(provider_coverage_q()).exists())
             or elanlar.alias(_cov_areas=areas_expression()).filter(_cov_areas__contains=f',{lokasiya},').exists()
         )
+    all_locations = [
+        dict(location_ru(key) if is_ru else LOKASIYALAR[key], count=value)
+        for key, value in counts.items()
+    ]
+    popular_locations = [
+        (location_ru(k) if is_ru else LOKASIYALAR[k])
+        for k in POPULAR_LOKASIYALAR if k in LOKASIYALAR
+    ]
+    template_name = 'ru/xidmet_detail.html' if is_ru else 'xidmet_detail.html'
 
-    return render(request, 'xidmet_detail.html', {
+    return render(request, template_name, {
         **service_context,
+        'is_ru': is_ru,
         'elanlar': elanlar_page,
         'page_range': page_range,
         'kateqoriyalar': kateqoriyalar,
@@ -297,8 +316,8 @@ def xidmet_detail(request, slug, lokasiya=None):
         'local_listing_count': local_count,
         'has_declared_coverage': has_declared_coverage,
         'local_listings': list(in_location(elanlar, lokasiya)[:4]) if lokasiya and local_count else [],
-        'butun_lokasiyalar': [dict(LOKASIYALAR[key], count=value) for key, value in counts.items()],
-        'populyar_lokasiyalar': [LOKASIYALAR[k] for k in POPULAR_LOKASIYALAR if k in LOKASIYALAR],
+        'butun_lokasiyalar': all_locations,
+        'populyar_lokasiyalar': popular_locations,
         'axtaris': axtaris,
         'elan_var': elanlar_page.paginator.count > 0,
         'kat_indexable': aktiv_kategori.pk in indexable_ids and (not lokasiya or local_count > 0),
@@ -1075,8 +1094,9 @@ def gizlilik(request):
 def istifade_sertleri(request):
     return render(request, 'istifade_sertleri.html')
 
-def haqqimizda(request):
-    return render(request, 'haqqimizda.html')
+def haqqimizda(request, lang='az'):
+    is_ru = (lang == 'ru')
+    return render(request, 'ru/haqqimizda.html' if is_ru else 'haqqimizda.html', {'is_ru': is_ru})
 
 def mobil_app(request):
     return render(request, 'mobil_app.html')
@@ -1129,7 +1149,8 @@ def problem_detail(request, slug):
             .select_related('kategori', 'istifadeci__profil')
             .prefetch_related('shekillar')
         )
-        elanlar = list(apply_fair_rotation(elanlar_qs, secrets.token_hex(4))[:6])
+        article_seed = f'article_{problem.slug}' if _is_bot(request) else secrets.token_hex(4)
+        elanlar = list(apply_fair_rotation(elanlar_qs, article_seed)[:6])
     else:
         elanlar = []
     oxsar = Problem.objects.filter(

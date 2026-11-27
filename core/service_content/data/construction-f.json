@@ -20,7 +20,7 @@
     "queries": ["A-frame ev tikintisi", "A frame ev layihəsi", "A-frame ev qiyməti"], "related": ["anbar-tikintisi", "ev-temiri", "interyer-dizayn"], "sources": []
   },
   "manqal-ustasi": {
-    "name": "Manqal ustası", "heading": "Manqal tikintisi — ölçü, material və baca planı",
+    "name": "Manqal ustası", "heading": "Manqal ustası — manqal tikintisi, ölçü və baca",
     "description": "Həyət manqalı üçün yer, istifadə məqsədi, material və tüstü çıxışını birlikdə planlaşdırın. Hazır konstruksiya ilə fərdi tikintinin komplektini müqayisə edin.",
     "intro": "Manqal qurğusunun yeri, küləyin istiqaməti və yaxın səthlər istifadəyə təsir edir. Baca və yanğına davamlılıq həllərini müvafiq mütəxəssislə layihələndirin.",
     "scope": ["Yer və ölçü planı", "Əsas, üzlük və ocaq konstruksiyası", "Baca və əlavə iş səthlərinin razılaşdırılması"],

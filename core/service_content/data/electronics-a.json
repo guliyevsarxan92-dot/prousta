@@ -10,8 +10,8 @@
     "queries": ["elektronika təmiri", "elektron cihaz servisi", "elektronika ustası"], "related": ["meiset-texnikasi", "it-biznes"], "sources": ["apple-service"]
   },
   "telefon-ustasi": {
-    "name": "Telefon ustası", "heading": "Telefon təmiri — ekran, batareya və şarj nasazlıqları",
-    "description": "Telefon ekranı, batareyası və şarj problemi üçün servis seçin. Modelə uyğun hissə, şəxsi məlumatlar və təmirdən sonrakı yoxlamaları dəqiqləşdirin.",
+    "name": "Telefon ustası", "heading": "Telefon ustası — ekran, batareya və şarj təmiri",
+    "description": "Telefon ustası Bakıda: ekran, batareya və şarj problemi üçün servis seçin. Modelə uyğun hissə, məlumatlar və təmirdən sonrakı yoxlamanı dəqiqləşdirin.",
     "intro": "Ekran zədəsi, batareya zəifləməsi və şarj olmama müxtəlif müdaxilələrdir. Telefonun modelini və problemin yaranma şəraitini bildirin; dəyişdiriləcək hissənin növünü əvvəlcədən öyrənin.",
     "scope": ["Ekran və toxunma hissəsinin baxışı", "Batareya və şarj diaqnostikası", "Modelə uyğun lövhə və proqram işi"],
     "pricing": ["Ekran və hissənin keyfiyyət sinfi", "Lövhə təmirinin ayrıca həcmi", "Məlumatın saxlanması tələbi"],
@@ -20,8 +20,8 @@
     "queries": ["telefon ustası", "telefon ekran dəyişimi", "telefon batareya dəyişimi"], "related": ["planset-temiri", "komputer-ustasi"], "sources": ["apple-service"]
   },
   "komputer-ustasi": {
-    "name": "Kompüter ustası", "heading": "Kompüter təmiri — diaqnostika və yeniləmə",
-    "description": "Noutbuk və masaüstü kompüter üçün təmir, təmizləmə və təkmilləşdirmə təkliflərini müqayisə edin. Fayllar, lisenziya və hissə uyğunluğunu dəqiqləşdirin.",
+    "name": "Kompüter ustası", "heading": "Kompüter ustası — noutbuk təmiri və diaqnostika",
+    "description": "Kompüter ustası Bakıda: noutbuk və masaüstü kompüter üçün təmir, təmizləmə və təkmilləşdirmə təkliflərini müqayisə edin. Fayllar və hissəni dəqiqləşdirin.",
     "intro": "Yavaş işləmə, açılmama və qızma əlamətlərini ayrı təsvir edin. Servis təklifi proqram işi, hissə dəyişimi və məlumat bərpasını ayırmalıdır; faylların silinməsinə ayrıca razılıq verin.",
     "scope": ["Noutbuk və masaüstü diaqnostikası", "Soyutma və enerji sisteminin baxışı", "Uyğun yaddaş və disk təkmilləşdirməsi"],
     "pricing": ["Lövhə təmiri və modul dəyişimi", "Disk köçürülməsi və məlumat bərpası", "Proqram lisenziyası və quraşdırma işi"],
@@ -30,8 +30,8 @@
     "queries": ["kompüter ustası", "noutbuk təmiri", "noutbuk təmizlənməsi"], "related": ["telefon-ustasi", "printer-ustasi", "veb-sayt"], "sources": ["apple-service"]
   },
   "televizor-ustasi": {
-    "name": "Televizor ustası", "heading": "Televizor təmiri — görüntü, səs və enerji problemləri",
-    "description": "Televizorda görüntü yoxdur, səs gəlmir və ya cihaz açılmır? Model, panel vəziyyəti və diaqnostika şərtlərinə uyğun servis elanlarını müqayisə edin.",
+    "name": "Televizor ustası", "heading": "Televizor ustası — təmir, görüntü və səs servisi",
+    "description": "Televizor ustası Bakıda: görüntü yoxdur, səs gəlmir və ya cihaz açılmır? Model, panel vəziyyəti və diaqnostika şərtlərinə uyğun elanları müqayisə edin.",
     "intro": "Ekranın fiziki zədəsi ilə görüntünün sönməsi eyni nasazlıq deyil. Səsin gəlib-gəlmədiyini, indikatorun davranışını və hansı girişdə problem olduğunu qeyd edin.",
     "scope": ["Görüntü və işıqlandırma diaqnostikası", "Enerji və səs sisteminin baxışı", "Smart funksiyalar üzrə proqram yoxlaması"],
     "pricing": ["Panel ilə digər hissələrin fərqi", "Ekran ölçüsü və model uyğunluğu", "Daşınma və divardan sökülmə"],
@@ -40,7 +40,7 @@
     "queries": ["televizor ustası", "televizor görüntü yoxdur", "televizor təmiri"], "related": ["krosna-antena-ustasi", "diger-elektronika"], "sources": []
   },
   "foto-video-aparatlar": {
-    "name": "Foto və video aparatlar", "heading": "Fotoaparat təmiri — kamera və obyektiv",
+    "name": "Foto və video aparatlar", "heading": "Foto və video aparatlar — kamera və obyektiv təmiri",
     "description": "Fotoaparat, obyektiv və videokamera təmiri üçün servis seçin. Model, görüntü qüsuru, təhvil komplekti və yoxlama qaydasını dəqiqləşdirin.",
     "intro": "Kamera korpusu, obyektiv və aksesuarın nasazlığını bir-birindən ayırın. Fokus problemi, görüntüdə ləkə və mexaniki zədə üçün icraçının uyğun avadanlıqla işlədiyini yoxlayın.",
     "scope": ["Korpus və obyektiv diaqnostikası", "Fokus və görüntü qüsurlarının baxışı", "Modelə uyğun təmizləmə və təmir"],

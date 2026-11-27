@@ -3,14 +3,15 @@
 <meta name="robots" content="{{ seo.robots }}">
 <meta name="author" content="Prousta.az">
 <link rel="canonical" href="{{ seo.canonical }}">
-<link rel="alternate" hreflang="az" href="{{ seo.canonical }}">
-<link rel="alternate" hreflang="x-default" href="{{ seo.canonical }}">
+<link rel="alternate" hreflang="az" href="{{ seo.alternate_az|default:seo.canonical }}">
+{% if seo.alternate_ru %}<link rel="alternate" hreflang="ru" href="{{ seo.alternate_ru }}">{% endif %}
+<link rel="alternate" hreflang="x-default" href="{{ seo.x_default|default:seo.canonical }}">
 <link rel="help" type="text/plain" href="https://prousta.az/llms.txt" title="Sayt haqqında məlumat və mənbələr">
 {% if GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}">{% endif %}
 {% if YANDEX_VERIFICATION %}<meta name="yandex-verification" content="{{ YANDEX_VERIFICATION }}">{% endif %}
 <meta property="og:type" content="{{ seo.og_type }}">
 <meta property="og:site_name" content="Prousta.az">
-<meta property="og:locale" content="az_AZ">
+<meta property="og:locale" content="{{ seo.og_locale|default:'az_AZ' }}">
 <meta property="og:title" content="{{ seo.title }}">
 <meta property="og:description" content="{{ seo.description }}">
 <meta property="og:url" content="{{ seo.canonical }}">

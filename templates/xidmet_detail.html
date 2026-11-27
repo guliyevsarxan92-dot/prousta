@@ -22,7 +22,7 @@
   </nav>
 
   <section class="pg-hero">
-    <h1>{% if priority_service %}{{ priority_service.name }}{% else %}{{ aktiv_kategori.ad }}{% endif %} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
+    <h1>{{ aktiv_kategori.ad }} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.ad }}{% else %}Bakıda{% endif %}</span></h1>
     <form class="search-bar" method="get" role="search">
       <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Bu kateqoriyada axtar" aria-label="Bu kateqoriyada axtar"></label>
       <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Axtar</button>

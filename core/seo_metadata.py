@@ -8,8 +8,9 @@ from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.utils.html import strip_tags
 
-from .seo import PUBLIC_VIEWS, SITE_URL, seo_context
+from .seo import PUBLIC_VIEWS, SITE_URL, language_paths, seo_context
 from .service_content import get_content, metadata_value
+from .ru_content import category_name_ru, location_ru, priority_page_ru, service_faq_ru
 
 BRAND = 'Prousta.az'
 ORGANIZATION_ID = SITE_URL + '/#organization'
@@ -28,6 +29,15 @@ STATIC_PAGES = {
     'gizlilik': ('Məxfilik siyasəti | Prousta.az', 'Prousta.az platformasında şəxsi məlumatların emalı və məxfiliyə dair qaydalar.'),
     'istifade_sertleri': ('İstifadə şərtləri | Prousta.az', 'Prousta.az platformasından istifadə, elan yerləşdirmə və xidmətlə bağlı şərtlər.'),
     'mobil_app': ('Prousta.az mobil tətbiqi', 'Prousta.az mobil tətbiqi ilə xidmət elanlarını axtarın və elan sahibləri ilə birbaşa əlaqə saxlayın.'),
+}
+
+STATIC_PAGES_RU = {
+    'ru_index': ('Найти мастера в Баку — объявления об услугах и цены | Prousta.az',
+                 'Сравните объявления мастеров и цены на услуги в Баку. Электрик, сантехник, мастер по комби, кондиционерам и ремонту — прямой звонок или WhatsApp без посредников.'),
+    'ru_elan_siyahi': ('Все мастера и услуги в Баку — объявления и цены | Prousta.az',
+                       'Каталог активных объявлений мастеров в Баку и Азербайджане. Сравните цены, районы выезда и свяжитесь с исполнителем напрямую.'),
+    'ru_haqqimizda': ('О платформе Prousta.az — поиск мастеров и услуг в Баку',
+                      'Узнайте, как работает платформа объявлений Prousta.az, как сравнивать предложения мастеров и договариваться напрямую без посредников.'),
 }
 
 
@@ -52,6 +62,15 @@ def safe_json(value):
 
 
 def service_faq(context):
+    if context.get('is_ru'):
+        category = context.get('aktiv_kategori') or context.get('topic_category')
+        loc_info = context.get('lokasiya_melumat')
+        return service_faq_ru(
+            category,
+            location_info=loc_info,
+            min_price=context.get('min_qiymet'),
+            priority_page=context.get('priority_service'),
+        )
     if context.get('priority_service'):
         return context['priority_service']['faq']
     category = context['aktiv_kategori']
@@ -83,7 +102,7 @@ def _organization():
             'url': SITE_URL + '/', 'logo': {'@type': 'ImageObject',
             'url': SITE_URL + '/static/img/icon_512.png'}, 'email': 'info@prousta.az',
             'contactPoint': {'@type': 'ContactPoint', 'telephone': '+994515888884',
-                             'contactType': 'customer support', 'availableLanguage': ['az']},
+                             'contactType': 'customer support', 'availableLanguage': ['az', 'ru']},
             'sameAs': ['https://www.facebook.com/61568796886691',
                        'https://www.instagram.com/prousta.az',
                        'https://www.youtube.com/@prousta.servis.merkezi']}
@@ -95,8 +114,18 @@ def _item_list(page, model='listing'):
     items = []
     start = page.start_index()
     for position, item in enumerate(page, start=start):
-        items.append({'@type': 'ListItem', 'position': position,
-                      'url': absolute_url(item.get_absolute_url()), 'name': plain(item.bashliq)})
+        entry = {'@type': 'ListItem', 'position': position,
+                 'url': absolute_url(item.get_absolute_url()), 'name': plain(item.bashliq)}
+        desc_parts = []
+        if getattr(item, 'sheher', ''):
+            desc_parts.append(plain(item.sheher))
+        if getattr(item, 'qiymet', None):
+            desc_parts.append(f'{floatformat(item.qiymet, "-2")} AZN')
+        if getattr(item, 'acaqlama', ''):
+            desc_parts.append(plain(item.acaqlama, 110))
+        if desc_parts:
+            entry['description'] = ' · '.join(desc_parts)
+        items.append(entry)
     return {'@type': 'ItemList', 'numberOfItems': page.paginator.count,
             'itemListElement': items}
 
@@ -113,15 +142,21 @@ def build_metadata(context):
     page_number = context.get('seo_page', 1)
     canonical_path = context.get('seo_canonical') or '/'
     noindex = bool(context.get('seo_noindex'))
+    is_ru = bool(context.get('is_ru'))
     if request is not None:
         base = seo_context(request)
         canonical_path, page_number, noindex = base['seo_canonical'], base['seo_page'], base['seo_noindex']
+        is_ru = is_ru or base['is_ru']
+    prefix = '/ru' if is_ru else ''
     if topic:
-        view = 'xidmet_detail'
-        canonical_path = topic['url'] + (f'?page={page_number}' if page_number > 1 else '')
+        view = 'ru_xidmet_detail' if is_ru else 'xidmet_detail'
+        topic_url = topic['url']
+        if is_ru and not topic_url.startswith('/ru/'):
+            topic_url = '/ru' + topic_url
+        canonical_path = topic_url + (f'?page={page_number}' if page_number > 1 else '')
     elif category:
-        view = 'xidmet_detail'
-        canonical_path = f'/xidmet/{category.slug}/'
+        view = 'ru_xidmet_detail' if is_ru else 'xidmet_detail'
+        canonical_path = f'{prefix}/xidmet/{category.slug}/'
         if location:
             canonical_path += location['slug'] + '/'
         if page_number > 1:
@@ -141,19 +176,24 @@ def build_metadata(context):
                       'profil_duzelis': 'Profili redaktə et', 'mesajlar': 'Mesajlar',
                       'sifre_unutdum': 'Şifrənin bərpası', 'elan_yarat': 'Elan yerləşdir',
                       'odenis': 'Ödəniş', 'istifadeci_profil': 'Elan sahibinin profili'}
-    title, description = STATIC_PAGES.get(view, (
-        (private_titles[view] + ' | ' + BRAND) if view in private_titles else BRAND,
-        'Usta və xidmət elanları platforması.'))
+    if is_ru:
+        title, description = STATIC_PAGES_RU.get(view, (BRAND, 'Платформа объявлений мастеров и услуг в Баку.'))
+    else:
+        title, description = STATIC_PAGES.get(view, (
+            (private_titles[view] + ' | ' + BRAND) if view in private_titles else BRAND,
+            'Usta və xidmət elanları platforması.'))
     image, image_default = DEFAULT_IMAGE, True
-    crumbs = [('Ana səhifə', '/')]
+    crumbs = [('Главная', '/ru/')] if is_ru else [('Ana səhifə', '/')]
     page_type = 'WebPage'
-    if view == 'haqqimizda':
+    if view in ('haqqimizda', 'ru_haqqimizda'):
         page_type = 'AboutPage'
     extra = []
     if topic:
         title, description = topic['title'], topic['description']
         parent = context['topic_category']
-        crumbs += [('Xidmətlər', '/elanlar/'), (parent.ad, f'/xidmet/{parent.slug}/'),
+        parent_label = category_name_ru(parent) if is_ru else parent.ad
+        services_crumb = ('Услуги', '/ru/elanlar/') if is_ru else ('Xidmətlər', '/elanlar/')
+        crumbs += [services_crumb, (parent_label, f'{prefix}/xidmet/{parent.slug}/'),
                    (topic['name'], topic['url'])]
         page_type = 'CollectionPage'
         extra.append({'@type': 'FAQPage', '@id': absolute_url(canonical_path) + '#faq',
@@ -161,22 +201,49 @@ def build_metadata(context):
                                       'acceptedAnswer': {'@type': 'Answer', 'text': answer}}
                                      for question, answer in topic['faq']]})
     elif category:
-        title = metadata_value(category, 'seo_title') or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
-        description = metadata_value(category, 'seo_description') or (
-            f'{category.ad} üzrə aktiv elanları, qiymətləri və iş nümunələrini müqayisə edin. '
-            'Elan sahibi ilə xidmətin ərazisini, vaxtını və yekun qiymətini razılaşdırın.')
-        crumbs += [('Xidmətlər', '/elanlar/')]
-        if category.ust_kategori:
-            crumbs.append((category.ust_kategori.ad, f'/xidmet/{category.ust_kategori.slug}/'))
-        crumbs.append((category.ad, f'/xidmet/{category.slug}/'))
-        if location:
-            count = context.get('local_listing_count', 0)
-            title = f'{category.ad} — {location["ad"]} üzrə elanlar | {BRAND}'
-            inventory = (f'{location["ad"]} üzrə xidmət məlumatı olan {count} aktiv elan. '
-                         if count else '')
-            description = (f'{location["tam_ad"]} üzrə {category.ad.lower()} axtarışı. '
-                           f'{inventory}Xidmət elanlarını və qiymətləri müqayisə edin. Gəlişi elan sahibi ilə razılaşdırın.')
-            crumbs.append((location['ad'], f'/xidmet/{category.slug}/{location["slug"]}/'))
+        if is_ru:
+            cat_ru = category_name_ru(category)
+            prio = context.get('priority_service')
+            if prio and not location:
+                title, description = prio['title'], prio['description']
+            else:
+                title = f'{cat_ru} в Баку — мастера, объявления и цены | {BRAND}'
+                description = (
+                    f'{cat_ru} в Баку: сравните активные объявления мастеров, цены и примеры работ. '
+                    'Свяжитесь с мастером напрямую по телефону или в WhatsApp без посредников.'
+                )
+            crumbs += [('Услуги', '/ru/elanlar/')]
+            if category.ust_kategori:
+                crumbs.append((category_name_ru(category.ust_kategori), f'/ru/xidmet/{category.ust_kategori.slug}/'))
+            crumbs.append((cat_ru, f'/ru/xidmet/{category.slug}/'))
+            if location:
+                count = context.get('local_listing_count', 0)
+                loc_ad = location['ad']
+                locative = location.get('locative', f'в {loc_ad}')
+                title = f'{cat_ru} {locative} (Баку) — объявления и цены | {BRAND}'
+                inventory = f'Активных объявлений с выездом {locative}: {count}. ' if count else ''
+                description = (
+                    f'{cat_ru} ({location["tam_ad"]}): {inventory}'
+                    'Сравните предложения мастеров и цены, согласуйте выезд напрямую с исполнителем.'
+                )
+                crumbs.append((loc_ad, f'/ru/xidmet/{category.slug}/{location["slug"]}/'))
+        else:
+            title = metadata_value(category, 'seo_title') or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
+            description = metadata_value(category, 'seo_description') or (
+                f'{category.ad} üzrə aktiv elanları, qiymətləri və iş nümunələrini müqayisə edin. '
+                'Elan sahibi ilə xidmətin ərazisini, vaxtını və yekun qiymətini razılaşdırın.')
+            crumbs += [('Xidmətlər', '/elanlar/')]
+            if category.ust_kategori:
+                crumbs.append((category.ust_kategori.ad, f'/xidmet/{category.ust_kategori.slug}/'))
+            crumbs.append((category.ad, f'/xidmet/{category.slug}/'))
+            if location:
+                count = context.get('local_listing_count', 0)
+                title = f'{category.ad} — {location["ad"]} üzrə elanlar | {BRAND}'
+                inventory = (f'{location["ad"]} üzrə xidmət məlumatı olan {count} aktiv elan. '
+                             if count else '')
+                description = (f'{location["tam_ad"]} üzrə {category.ad.lower()} axtarışı. '
+                               f'{inventory}Xidmət elanlarını və qiymətləri müqayisə edin. Gəlişi elan sahibi ilə razılaşdırın.')
+                crumbs.append((location['ad'], f'/xidmet/{category.slug}/{location["slug"]}/'))
         page_type = 'CollectionPage'
         faq = service_faq(context)
         extra.append({'@type': 'FAQPage', '@id': absolute_url(canonical_path) + '#faq',
@@ -184,8 +251,28 @@ def build_metadata(context):
                                       'acceptedAnswer': {'@type': 'Answer', 'text': answer}}
                                      for question, answer in faq]})
     elif ad:
-        title = f'{ad.bashliq} — {ad.sheher} | {BRAND}'
-        description = f'{ad.bashliq} — {ad.sheher}. ' + plain(ad.acaqlama, 130)
+        area_names = ad.erazi_adlari
+        primary_area = area_names[0] if area_names else ''
+        location_label = ad.sheher or 'Bakı'
+        if primary_area and primary_area.lower() not in location_label.lower():
+            location_label = f'{location_label}, {primary_area}'
+        price_str = f'{floatformat(ad.qiymet, "-2")} AZN' if ad.qiymet else ''
+        profile = getattr(ad.istifadeci, 'profil', None)
+        provider_name = ' '.join(filter(None, [getattr(profile, 'ad', ''), getattr(profile, 'soyad', '')]))
+        title_parts = [ad.bashliq, location_label]
+        if price_str:
+            title_parts.append(price_str)
+        elif provider_name and provider_name.lower() not in ad.bashliq.lower():
+            title_parts.append(provider_name)
+        elif ad.nomre:
+            title_parts.append(f'#{ad.nomre}')
+        title = ' — '.join(title_parts) + f' | {BRAND}'
+        desc_prefix = f'{ad.bashliq} ({location_label})'
+        if price_str:
+            desc_prefix += f', qiymət: {price_str}'
+        if provider_name:
+            desc_prefix += f', icraçı: {provider_name}'
+        description = f'{desc_prefix}. ' + plain(ad.acaqlama, 130)
         crumbs += [('Elanlar', '/elanlar/')]
         if ad.kategori:
             crumbs.append((ad.kategori.ad, f'/xidmet/{ad.kategori.slug}/'))
@@ -199,20 +286,24 @@ def build_metadata(context):
         if article.kategori:
             crumbs.append((article.kategori.ad, f'/xidmet/{article.kategori.slug}/'))
         crumbs.append((article.bashliq, article.get_absolute_url()))
-    elif view != 'index':
+    elif view not in ('index', 'ru_index'):
         crumbs.append((title.split('|')[0].strip(), canonical_path.split('?')[0]))
 
-    if view in ('index', 'elan_siyahi', 'problemler_siyahi'):
+    if view in ('index', 'elan_siyahi', 'problemler_siyahi', 'ru_index', 'ru_elan_siyahi'):
         page_type = 'CollectionPage'
-    if view == 'elan_siyahi' and context.get('axtaris'):
-        title = f'{plain(context["axtaris"], 70)} — axtarış nəticələri | {BRAND}'
-    if page_number > 1 and view in ('index', 'elan_siyahi', 'problemler_siyahi', 'xidmet_detail'):
-        title += f' — Səhifə {page_number}'
-        description = plain(description, 135) + f' Səhifə {page_number}.'
+    if view in ('elan_siyahi', 'ru_elan_siyahi') and context.get('axtaris'):
+        suffix = 'результаты поиска' if is_ru else 'axtarış nəticələri'
+        title = f'{plain(context["axtaris"], 70)} — {suffix} | {BRAND}'
+    if page_number > 1 and view in ('index', 'elan_siyahi', 'problemler_siyahi', 'xidmet_detail',
+                                    'ru_index', 'ru_elan_siyahi', 'ru_xidmet_detail'):
+        page_word = 'Страница' if is_ru else 'Səhifə'
+        title += f' — {page_word} {page_number}'
+        description = plain(description, 135) + f' {page_word} {page_number}.'
     canonical = absolute_url(canonical_path)
     title, description = plain(title), plain(description, 180)
+    lang_tag = 'ru-RU' if is_ru else 'az-AZ'
     webpage = {'@type': page_type, '@id': canonical + '#webpage', 'url': canonical,
-               'name': title, 'description': description, 'inLanguage': 'az-AZ',
+               'name': title, 'description': description, 'inLanguage': lang_tag,
                'isPartOf': {'@id': WEBSITE_ID}, 'publisher': {'@id': ORGANIZATION_ID}}
     page = context.get('problemler') if view == 'problemler_siyahi' else context.get('elanlar')
     if page_type == 'CollectionPage':
@@ -288,13 +379,20 @@ def build_metadata(context):
         extra.append(offer_service)
     graph = {'@context': 'https://schema.org', '@graph': [
         _organization(), {'@type': 'WebSite', '@id': WEBSITE_ID, 'name': BRAND,
-                          'url': SITE_URL + '/', 'inLanguage': 'az-AZ',
+                          'url': SITE_URL + '/', 'inLanguage': lang_tag,
                           'publisher': {'@id': ORGANIZATION_ID}}, webpage, *extra]}
     robots = ('noindex, follow' if public else 'noindex, nofollow') if noindex else (
         'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
     if request is not None:
         request._seo_robots = robots
+    base_path, _, query_part = canonical_path.partition('?')
+    _, az_base, ru_base, has_ru = language_paths(base_path)
+    qs = f'?{query_part}' if query_part else ''
+    alternate_az = absolute_url(az_base + qs)
+    alternate_ru = absolute_url(ru_base + qs) if has_ru else ''
     return {'title': title, 'description': description, 'canonical': canonical,
+            'alternate_az': alternate_az, 'alternate_ru': alternate_ru, 'x_default': alternate_az,
+            'og_locale': 'ru_RU' if is_ru else 'az_AZ',
             'robots': robots, 'image': image, 'default_image': image_default,
             'og_type': 'article' if article else 'website', 'schema': safe_json(graph) if public else '',
             'published': article.yaradildi if article else None, 'modified': article.yenilendi if article else None}

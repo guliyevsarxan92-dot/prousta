@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'ru_index' %}">Главная</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">О платформе</span>
+  </nav>
+
+  <section class="pg-hero">
+    <span class="eyebrow">О платформе</span>
+    <h1>Платформа объявлений мастеров и услуг — <span>Prousta.az</span></h1>
+    <p>Находите мастеров в Баку и регионах Азербайджана, сравнивайте предложения и связывайтесь с исполнителем напрямую по телефону или через WhatsApp.</p>
+  </section>
+
+  <div class="panel prose" style="padding:32px;margin-bottom:24px">
+    <h2>Как работает Prousta.az?</h2>
+    <p><strong>Prousta.az</strong> — это онлайн-каталог объявлений мастеров и бытовых/технических услуг. Платформа помогает заказчикам быстро сравнить предложения по ремонту комби, установке кондиционеров, поиску скрытой утечки воды, прочистке канализации, сантехнике, электрике, вентиляции и другим направлениям.</p>
+    <ul>
+      <li><strong>Прямой контакт без посредников:</strong> вы звоните или пишете в WhatsApp непосредственно автору объявления.</li>
+      <li><strong>Прозрачное согласование:</strong> объём работ, стоимость выезда, запчасти и гарантийные условия обсуждаются напрямую с выбранным исполнителем до начала работ.</li>
+      <li><strong>Удобный поиск по районам:</strong> выбирайте мастеров, указавших выезд в ваш район Баку, Хырдалан, Масазыр или Сумгаит.</li>
+    </ul>
+
+    <h2>Важная информация для заказчиков</h2>
+    <p>Исполнителем услуги является автор объявления. Статус VIP/Premium означает платное приоритетное размещение объявления и не является сертификацией квалификации. Перед заказом обязательно уточните у мастера перечень входящих работ, итоговую цену и срок гарантии.</p>
+
+    <h2>Популярные разделы на русском языке</h2>
+    <p style="line-height:2">
+      <a href="/ru/xidmet/kombi-ustasi/" style="color:var(--p);font-weight:700">Мастер по комби</a> ·
+      <a href="/ru/xidmet/kombi-yuyulmasi/" style="color:var(--p);font-weight:700">Промывка комби и радиаторов</a> ·
+      <a href="/ru/xidmet/su-sizma/" style="color:var(--p);font-weight:700">Поиск утечки воды</a> ·
+      <a href="/ru/xidmet/kanalizasiya-ustasi/" style="color:var(--p);font-weight:700">Прочистка канализации</a> ·
+      <a href="/ru/xidmet/santexnik/" style="color:var(--p);font-weight:700">Сантехник</a> ·
+      <a href="/ru/xidmet/elektrik/" style="color:var(--p);font-weight:700">Электрик</a> ·
+      <a href="/ru/xidmet/havalandirma-ustasi/" style="color:var(--p);font-weight:700">Мастер по вентиляции</a> ·
+      <a href="/ru/xidmet/kondisioner-ustasi/" style="color:var(--p);font-weight:700">Ремонт кондиционеров</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static seo_tags %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/service-guides.css' %}"><script defer src="{% static 'js/service-request.js' %}"></script>{% endblock %}
+{% block content %}
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{% url 'ru_index' %}">Главная</a><span>›</span><a href="{% url 'ru_xidmet_detail' topic_category.slug %}">{{ topic_category|ru_cat }}</a><span>›</span><span aria-current="page">{{ priority_service.name }}</span></nav>
+  <header class="pg-hero"><h1>{{ priority_service.name }} <span>в Баку</span></h1></header>
+  <section class="pg-section" aria-labelledby="topic-listings-title"><div class="sec-head"><h2 id="topic-listings-title">{{ priority_service.name }} — объявления</h2></div>
+    <div class="service-grid">{% for elan in elanlar %}{% include 'partials/home_service_card.html' with eager_image=forloop.first %}{% empty %}<div class="panel"><p>Сейчас нет отдельных активных объявлений с этим точным названием. Вы можете ознакомиться с предложениями исполнителей в блоке ниже или в основном разделе категории.</p></div>{% endfor %}</div>
+    {% include 'partials/pager.html' with page=elanlar page_range=page_range elan_seed=elan_seed %}
+    <p><a href="{% url 'ru_xidmet_detail' topic_category.slug %}">Все объявления раздела «{{ topic_category|ru_cat }}» →</a></p>
+  </section>
+  {% include 'partials/service_intro.html' %}
+  {% include 'partials/service_deep_guide.html' %}
+  {% service_questions %}
+</div>
+{% endblock %}

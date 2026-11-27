@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load seo_tags static %}
+
+{% block extra_head %}
+{% if priority_service %}<link rel="stylesheet" href="{% static 'css/service-guides.css' %}"><script defer src="{% static 'js/service-request.js' %}"></script>{% endif %}
+{% if elanlar.has_previous %}<link rel="prev" href="{% if lokasiya %}/ru/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/ru/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.previous_page_number }}">{% endif %}
+{% if elanlar.has_next %}<link rel="next" href="{% if lokasiya %}/ru/xidmet/{{ aktiv_kategori.slug }}/{{ lokasiya }}/{% else %}/ru/xidmet/{{ aktiv_kategori.slug }}/{% endif %}?{% if axtaris %}q={{ axtaris|urlencode }}&{% endif %}page={{ elanlar.next_page_number }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="pg">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{% url 'ru_index' %}">Главная</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'ru_elan_siyahi' %}">Услуги</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    {% if aktiv_kategori.ust_kategori %}<a href="{% url 'ru_xidmet_detail' aktiv_kategori.ust_kategori.slug %}">{{ aktiv_kategori.ust_kategori|ru_cat }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}{% endif %}
+    {% if lokasiya_melumat %}
+      <a href="{% url 'ru_xidmet_detail' aktiv_kategori.slug %}">{{ aktiv_kategori|ru_cat }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+      <span aria-current="page">{{ lokasiya_melumat.ad }}</span>
+    {% else %}
+      <span aria-current="page">{{ aktiv_kategori|ru_cat }}</span>
+    {% endif %}
+  </nav>
+
+  <section class="pg-hero">
+    <h1>{{ aktiv_kategori|ru_cat }} <span>{% if lokasiya_melumat %}{{ lokasiya_melumat.locative }}{% else %}в Баку{% endif %}</span></h1>
+    <form class="search-bar" method="get" role="search">
+      <label>{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" value="{{ axtaris }}" placeholder="Поиск в этой категории" aria-label="Поиск в этой категории"></label>
+      <button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Найти</button>
+    </form>
+  </section>
+
+  <section class="pg-section">
+    <div class="sec-head"><h2>{% if axtaris %}Результаты по запросу «{{ axtaris }}»{% else %}{{ aktiv_kategori|ru_cat }} — объявления{% endif %}</h2></div>
+    <div class="service-grid">
+      {% for elan in elanlar %}
+        {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
+        {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
+          {% include 'partials/in_grid_ad_banner.html' %}
+        {% endif %}
+      {% empty %}
+        <div class="empty-state">
+          <span class="empty-ico">{% include 'partials/ui_icon.html' with name='search' %}</span>
+          {% if axtaris %}
+          <h3>По вашему запросу объявлений не найдено</h3>
+          <p>Попробуйте другое ключевое слово или посмотрите все объявления этой категории.</p>
+          <a href="{{ request.path }}" class="btn btn-primary">Все объявления категории</a>
+          {% else %}
+          <h3>В этой категории пока нет активных объявлений</h3>
+          <p>Когда мастера разместят объявления по направлению «{{ aktiv_kategori|ru_cat }}», они появятся здесь.</p>
+          <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Бесплатно подать объявление {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% include 'partials/pager.html' with page=elanlar q=axtaris page_range=page_range elan_seed=elan_seed %}
+  </section>
+
+  <section class="panel pg-section" aria-label="Краткая информация об услуге">
+    <h2 style="font-size:18px;margin-bottom:10px">{{ aktiv_kategori|ru_cat }} — краткая информация</h2>
+    <p>{% if lokasiya_melumat %}Поиск услуги «{{ aktiv_kategori|ru_cat }}» ({{ lokasiya_melumat.tam_ad }}): сравните подходящие объявления и цены мастеров. Условия выезда в зоны ({{ lokasiya_melumat.erazi }}) согласуйте напрямую с исполнителем.{% else %}Активные объявления и мастера по направлению «{{ aktiv_kategori|ru_cat }}» в Баку. Сравните цены и свяжитесь с исполнителем напрямую по телефону или через WhatsApp.{% endif %}</p>
+    <dl>
+      {% if lokasiya_melumat and local_listing_count %}<dt><strong>{% if has_declared_coverage %}Охват обслуживания ({{ lokasiya_melumat.ad }}){% else %}Указали {{ lokasiya_melumat.ad }} в объявлении{% endif %}</strong></dt><dd>{{ local_listing_count }} объявл.{% if has_declared_coverage %} Количество основано на данных о местоположении и заявленной зоне выезда автора объявления.{% endif %}</dd>{% endif %}
+      <dt><strong>Цены в объявлениях</strong></dt>
+      <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Стоимость согласуется с автором объявления.{% endif %} Итоговая сумма зависит от объёма работ, запчастей и условий выезда.</dd>
+      <dt><strong>Согласование заказа</strong></dt><dd>Адрес, время визита, точный перечень работ и условия гарантии уточняйте напрямую у автора объявления.</dd>
+    </dl>
+    {% if local_listings %}<p style="margin-top:12px"><strong>Объявления с обслуживанием района {{ lokasiya_melumat.ad }}:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+  </section>
+
+  {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}
+  <div class="chips pg-section">
+    {% for alt in alts %}<a class="chip" href="{% if lokasiya %}{% url 'ru_xidmet_lokasiya_detail' alt.slug lokasiya %}{% else %}{% url 'ru_xidmet_detail' alt.slug %}{% endif %}">{{ alt|ru_cat }}</a>{% endfor %}
+  </div>
+  {% endif %}{% endwith %}
+
+  <!-- Районы и посёлки (Локальное SEO) -->
+  <div class="pg-section" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--tx)">
+      {% include 'partials/ui_icon.html' with name='map-pin' %} <span>Мастера по районам и посёлкам:</span>
+    </div>
+    <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
+      <a class="chip" href="{% url 'ru_xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Все районы</a>
+      {% for lok in butun_lokasiyalar %}
+      <a class="chip" href="{% url 'ru_xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori|ru_cat }} {{ lok.ad }}">{{ lok.ad }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if oxsar_kateqoriyalar %}
+  <section class="pg-section" style="margin-top:20px">
+    <div class="sec-head"><h3>Другие связанные услуги</h3></div>
+    <div class="chips">
+      {% for k in oxsar_kateqoriyalar %}
+      <a class="chip" href="{% url 'ru_xidmet_detail' k.slug %}" title="{{ k|ru_cat }} в Баку">{{ k|ru_cat }}</a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if problemler %}
+  <section class="pg-section" style="margin-top:28px">
+    <div class="sec-head"><h3>Частые неисправности и инструкции по теме «{{ aktiv_kategori|ru_cat }}»</h3></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+      {% for pr in problemler %}
+      <a href="{{ pr.get_absolute_url }}" class="panel" style="padding:16px 18px;display:block;border-radius:12px;border:1px solid var(--border);transition:.2s;background:#fff">
+        <strong style="color:var(--tx);font-size:14px;display:block;margin-bottom:6px">{{ pr.bashliq }}</strong>
+        <span style="color:var(--p);font-size:12px;font-weight:600">Читать причины и решение →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% service_questions %}
+
+  <section class="join-banner pg-section" style="margin-top:30px">
+    <div class="join-copy"><h2>Оказываете услуги по направлению «{{ aktiv_kategori|ru_cat }}»?</h2><p>Представьте свои услуги тысячам потенциальных клиентов в Баку. Регистрация бесплатна!</p></div>
+    <a href="{% url 'elan_yarat' %}" class="join-button" style="margin-right:0">Бесплатно подать объявление {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+  </section>
+
+  {% service_guide %}
+
+</div>
+{% endblock %}

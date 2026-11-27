@@ -1,22 +1,23 @@
+{% load seo_tags %}
 {% if priority_service %}
 {% include 'partials/service_intro.html' %}
 {% include 'partials/service_deep_guide.html' %}
-{% if additional_html %}<section class="panel prose"><h2>Əlavə xidmət məlumatı</h2>{{ additional_html|safe }}</section>{% endif %}
+{% if additional_html %}<section class="panel prose"><h2>{% if is_ru %}Дополнительная информация{% else %}Əlavə xidmət məlumatı{% endif %}</h2>{{ additional_html|safe }}</section>{% endif %}
 {% else %}
 <section class="panel prose service-guide" aria-labelledby="service-guide-title" style="padding:24px;margin-top:24px">
-  <h2 id="service-guide-title">{{ category.ad }} üzrə seçim bələdçisi</h2>
+  <h2 id="service-guide-title">{% if is_ru %}{{ category|ru_cat }} — руководство по выбору мастера{% else %}{{ category.ad }} üzrə seçim bələdçisi{% endif %}</h2>
   {% if brief %}
   <p>{{ brief.intro }}</p>
-  <h3>Sifarişdə hansı işlər dəqiqləşdirilməlidir?</h3>
+  <h3>{% if is_ru %}Что уточнить при заказе услуги?{% else %}Sifarişdə hansı işlər dəqiqləşdirilməlidir?{% endif %}</h3>
   <ul>{% for item in brief.scope %}<li>{{ item }}</li>{% endfor %}</ul>
-  <h3>Qiymət təklifini necə müqayisə etmək olar?</h3>
-  <p>Təklifləri eyni iş həcmi üzrə müqayisə edin. Bu xidmət üçün aşağıdakı amilləri ayrıca soruşun:</p>
+  <h3>{% if is_ru %}Как сравнивать предложения по цене?{% else %}Qiymət təklifini necə müqayisə etmək olar?{% endif %}</h3>
+  <p>{% if is_ru %}Сравнивайте предложения при одинаковом объёме работ. Обязательно уточните следующие факторы:{% else %}Təklifləri eyni iş həcmi üzrə müqayisə edin. Bu xidmət üçün aşağıdakı amilləri ayrıca soruşun:{% endif %}</p>
   <ul>{% for item in brief.pricing %}<li>{{ item }}</li>{% endfor %}</ul>
-  <h3>Müraciətdən əvvəl hazırlayın</h3>
+  <h3>{% if is_ru %}Подготовьте перед обращением к мастеру{% else %}Müraciətdən əvvəl hazırlayın{% endif %}</h3>
   <ul>{% for item in brief.prepare %}<li>{{ item }}</li>{% endfor %}</ul>
-  {% if source_links %}<h3>Əlavə məlumat</h3><ul>{% for source in source_links %}<li><a href="{{ source.url }}" rel="nofollow noopener" target="_blank">{{ source.label }}</a></li>{% endfor %}</ul>{% endif %}
+  {% if source_links %}<h3>{% if is_ru %}Полезные источники{% else %}Əlavə məlumat{% endif %}</h3><ul>{% for source in source_links %}<li><a href="{{ source.url }}" rel="nofollow noopener" target="_blank">{{ source.label }}</a></li>{% endfor %}</ul>{% endif %}
   {% else %}
-  <p>Görüləcək işi, tələb olunan nəticəni və xidmət ünvanını elan sahibinə bildirin. İşin həcmini, materialları, ödənişi və qəbul qaydasını əvvəlcədən razılaşdırın.</p>
+  <p>{% if is_ru %}Сообщите мастеру объём работ, адрес и желаемый результат. Заранее согласуйте стоимость, материалы и условия приёмки.{% else %}Görüləcək işi, tələb olunan nəticəni və xidmət ünvanını elan sahibinə bildirin. İşin həcmini, materialları, ödənişi və qəbul qaydasını əvvəlcədən razılaşdırın.{% endif %}</p>
   {% endif %}
   {% if additional_html %}<div class="service-guide-additional"><h3>Əlavə xidmət məlumatı</h3>{{ additional_html|safe }}</div>{% endif %}
 </section>

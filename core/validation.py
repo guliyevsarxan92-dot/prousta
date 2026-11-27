@@ -141,12 +141,14 @@ def service_areas(value):
         raise ValidationError('Xidmət əraziləri siyahısı düzgün deyil.')
 
     chosen = set()
+    name_to_slug = {info['ad'].lower(): s for s, info in LOKASIYALAR.items()}
     for raw in items:
         if not isinstance(raw, str):
             raise ValidationError('Seçilmiş xidmət ərazisi düzgün deyil.')
         slug = raw.strip().lower()
         if not slug:
             continue
+        slug = name_to_slug.get(slug, slug)
         if slug not in LOKASIYALAR:
             raise ValidationError('Seçilmiş xidmət ərazisi düzgün deyil.')
         chosen.add(slug)

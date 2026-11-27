@@ -143,10 +143,12 @@ class Elan(models.Model):
         if not self.xidmet_erazileri:
             return []
         from .locations import LOKASIYALAR
+        name_to_slug = {info['ad'].lower(): s for s, info in LOKASIYALAR.items()}
         seen = set()
         result = []
         for raw in self.xidmet_erazileri.split(','):
             slug = raw.strip().lower()
+            slug = name_to_slug.get(slug, slug)
             if slug in LOKASIYALAR and slug not in seen:
                 seen.add(slug)
                 result.append(slug)

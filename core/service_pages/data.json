@@ -1,10 +1,10 @@
 {
   "kombi-ustasi": {
-    "name": "Kombi təmiri və servis",
+    "name": "Kombi ustası və kombi təmiri",
     "category": "kombi-ustasi",
-    "title": "Kombi təmiri və servis Bakıda | Prousta.az",
-    "description": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
-    "summary": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
+    "title": "Kombi ustası Bakıda — kombi təmiri və servis | Prousta.az",
+    "description": "Kombi ustası Bakıda: kombi təmiri, diaqnostika və servis üçün nasazlığı, modeli və xəta kodunu bildirin. İşçilik və hissəni ayrı razılaşdırın.",
+    "summary": "Kombi ustası Bakıda: kombi təmiri, diaqnostika və servis üçün nasazlığı, modeli və xəta kodunu bildirin. İşçilik və hissəni ayrı razılaşdırın.",
     "scope": [
       [
         "Diaqnostika",
@@ -122,11 +122,11 @@
     ]
   },
   "su-sizma": {
-    "name": "Su sızma təyini",
+    "name": "Su sızmasının aşkarlanması və təyini",
     "category": "su-sizma",
-    "title": "Su sızma təyini Bakıda | Prousta.az",
-    "description": "Gizli su sızmasının təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyinetmə ilə boru təmirinin iş həcmini ayırın.",
-    "summary": "Gizli su sızmasının təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyinetmə ilə boru təmirinin iş həcmini ayırın.",
+    "title": "Su sızmasının aşkarlanması və təyini Bakıda | Prousta.az",
+    "description": "Su sızmasının aşkarlanması və gizli su sızma təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyin ilə təmiri ayırın.",
+    "summary": "Su sızmasının aşkarlanması və gizli su sızma təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyin ilə təmiri ayırın.",
     "scope": [
       [
         "Termal baxış",
@@ -181,11 +181,11 @@
     "terms": []
   },
   "kanalizasiya-ustasi": {
-    "name": "Kanalizasiya açılması",
+    "name": "Kanalizasiya ustası və açılması",
     "category": "kanalizasiya-ustasi",
-    "title": "Kanalizasiya açılması Bakıda | Prousta.az",
-    "description": "Kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın. Təklifdə əlavə işləri ayrıca göstərin.",
-    "summary": "Kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın. Təklifdə əlavə işləri ayrıca göstərin.",
+    "title": "Kanalizasiya ustası və açılması Bakıda | Prousta.az",
+    "description": "Kanalizasiya ustası və kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın.",
+    "summary": "Kanalizasiya ustası və kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın.",
     "scope": [
       [
         "Tıxanmanın sərhədi",
@@ -239,11 +239,11 @@
     "terms": []
   },
   "santexnik": {
-    "name": "Santexnik xidməti",
+    "name": "Santexnik ustası və xidməti",
     "category": "santexnik",
-    "title": "Santexnik xidməti Bakıda | Prousta.az",
-    "description": "Kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını ayrıca razılaşdırın.",
-    "summary": "Kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını ayrıca razılaşdırın.",
+    "title": "Santexnik ustası və xidməti Bakıda | Prousta.az",
+    "description": "Santexnik ustası: kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını razılaşdırın.",
+    "summary": "Santexnik ustası: kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını razılaşdırın.",
     "scope": [
       [
         "Kiçik təmir",
@@ -296,11 +296,11 @@
     "terms": []
   },
   "havalandirma-ustasi": {
-    "name": "Havalandırma xidməti",
+    "name": "Havalandırma ustası və xidməti",
     "category": "havalandirma-ustasi",
-    "title": "Havalandırma xidməti Bakıda | Prousta.az",
-    "description": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
-    "summary": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
+    "title": "Havalandırma ustası və xidməti Bakıda | Prousta.az",
+    "description": "Havalandırma ustası: havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlamasını dəqiqləşdirin.",
+    "summary": "Havalandırma ustası: havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlamasını dəqiqləşdirin.",
     "scope": [
       [
         "Yeni sistem",

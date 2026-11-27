@@ -10,7 +10,7 @@
     "queries": ["mebel ustası", "fərdi mebel hazırlanması", "mebel sifarişi"], "related": ["mebel-ustasi", "metbex-mebelleri", "interyer-dizayn"], "sources": ["ikea-kitchen"]
   },
   "metbex-mebelleri": {
-    "name": "Mətbəx mebellərinin quraşdırılması", "heading": "Mətbəx mebeli — ölçü, texnika və kommunikasiya planı",
+    "name": "Mətbəx mebellərinin quraşdırılması", "heading": "Mətbəx mebellərinin quraşdırılması — ölçü və montaj",
     "description": "Mətbəx mebeli sifarişində divar ölçülərini, texnika yerlərini və su-elektrik çıxışlarını eyni plan üzərində dəqiqləşdirin.",
     "intro": "Mətbəx layihəsində soyuducu, soba, yuyucu və iş səthinin yeri mebel ölçüsünə təsir edir. Sifarişdən əvvəl məkanı ölçdürün və texnika modellərinin ölçülərini dizaynla tutuşdurun.",
     "scope": ["Divar, künc və kommunikasiya ölçüləri", "Dolab, fasad və iş səthinin hazırlanması", "Quraşdırma və razılaşdırılmış sazlama"],
@@ -30,7 +30,7 @@
     "queries": ["vitrin yığılması", "mağaza vitrini hazırlanması", "vitrin mebeli"], "related": ["mebel-ustasi", "ofis-mebelleri", "metbex-mebelleri"], "sources": []
   },
   "divan-kreslo-ustasi": {
-    "name": "Divan və kreslo ustası", "heading": "Divan və kreslo təmiri — üzlük, karkas və dolğu",
+    "name": "Divan və kreslo ustası", "heading": "Divan və kreslo ustası — təmir, üzlük və karkas",
     "description": "Divan və kreslo təmirində üzlüyün dəyişməsi, karkas bərpası və dolğu yenilənməsini ayrı dəqiqləşdirin. Parça nümunəsini və iş həcmini əvvəl görün.",
     "intro": "Yalnız üzlük dəyişməsi ilə karkas və oturacaq bərpası fərqli işlərdir. Mebelin modelini, zədələnən hissələri və daşınma imkanını ustaya göstərin.",
     "scope": ["Mebelin və zədənin qiymətləndirilməsi", "Razılaşdırılmış karkas, dolğu və üzlük işi", "Yekun yığım və təhvil"],
@@ -40,7 +40,7 @@
     "queries": ["divan təmiri", "kreslo üzlüyü dəyişmə", "yumşaq mebel ustası"], "related": ["mebel-ustasi", "ofis-mebelleri", "diger-mebel"], "sources": []
   },
   "ofis-mebelleri": {
-    "name": "Ofis mebelləri", "heading": "Ofis mebeli — iş yeri, ölçü və komplektasiya",
+    "name": "Ofis mebelləri", "heading": "Ofis mebelləri — iş yeri, ölçü və komplektasiya",
     "description": "Ofis mebeli sifarişində işçi sayı, masa ölçüsü, saxlama və ümumi məkan planını göstərin. Çatdırılma və yığımı məhsul qiymətindən ayırın.",
     "intro": "Fərdi masa, qəbul zonası və ümumi iş yerləri müxtəlif mebel həlləri tələb edir. Məkan planını və gündəlik istifadə ehtiyacını paylaşaraq komplekt təklifi alın.",
     "scope": ["İş sahəsinin və sayın planlanması", "Masa, oturacaq və saxlama mebelinin seçimi", "Çatdırılma və yerində yığım"],
@@ -60,7 +60,7 @@
     "queries": ["mebel ustası", "mebel yığılması", "mebel təmiri"], "related": ["metbex-mebelleri", "divan-kreslo-ustasi", "ofis-mebelleri"], "sources": ["competitor-mebel"]
   },
   "diger-mebel": {
-    "name": "Digər mebel xidmətləri", "heading": "Digər mebel işləri — ölçü və sifariş həcmi",
+    "name": "Digər mebel xidmətləri", "heading": "Digər mebel xidmətləri — ölçü və sifariş həcmi",
     "description": "Standart mebel bölmələrinə düşməyən iş üçün əşyanın növünü, ölçüləri, vəziyyətini və istənilən nəticəni təsvir edin.",
     "intro": "Bu kateqoriya ayrıca göstərilməyən mebel hazırlanması, uyğunlaşdırma və təmir müraciətləri üçündür. Tapşırığın fotosu və ölçüsü uyğun icraçı seçməyi asanlaşdırır.",
     "scope": ["Əşyanın və iş yerinin qiymətləndirilməsi", "Material və iş üsulunun razılaşdırılması", "Təmir, istehsal və ya quraşdırmanın təhvili"],

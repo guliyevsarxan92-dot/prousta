@@ -20,7 +20,7 @@
     "queries": ["avtomobil ustası", "maşın ustası", "avtomobil nasazlığının təmiri"], "related": ["avtomobil-temiri", "teker-temiri-ustasi", "avtomobil-oturacaq"], "sources": []
   },
   "teker-temiri-ustasi": {
-    "name": "Təkər təmiri ustası", "heading": "Təkər təmiri və seçimi — ölçü, zədə və uyğunluq",
+    "name": "Təkər təmiri ustası", "heading": "Təkər təmiri ustası — təkər təmiri, ölçü və balans",
     "description": "Təkər təmirində zədənin yerini və təkərin ölçü işarələrini bildirin. Təmirin uyğunluğu və alternativ dəyişmə variantını ustadan qiymətləndirməsini istəyin.",
     "intro": "Təkərin yan divarındakı ölçü, yük və sürət işarələri uyğun seçimə kömək edir. Təzyiq və istifadəyə dair göstəricilər üçün avtomobil istehsalçısının məlumatını əsas götürün.",
     "scope": ["Ölçü və zədə barədə ilkin məlumat", "Usta tərəfindən təkərin yoxlanması", "Uyğun olduqda təmir və balanslama təklifi"],
@@ -30,7 +30,7 @@
     "queries": ["təkər təmiri ustası", "şin təmiri", "avtomobil təkəri seçimi"], "related": ["avtomobil-ustasi", "avtomobil-temiri", "diger-avtomobil"], "sources": ["michelin-tyre"]
   },
   "avtomobil-malyar-ustasi": {
-    "name": "Avtomobil malyar ustası", "heading": "Avtomobil rənglənməsi — panel, rəng və hazırlıq",
+    "name": "Avtomobil malyar ustası", "heading": "Avtomobil malyar ustası — kuzov boyası və rəngləmə",
     "description": "Avtomobil rənglənməsində zədələnən paneli, rəng uyğunluğunu və hazırlıq işlərini təklifdə ayırın. Əvvəlki boya və kuzov zədələrini bildirin.",
     "intro": "Yerli panel rənglənməsi ilə bir neçə detalın bərpası iş həcminə görə fərqlənir. Fotoşəkillə yanaşı avtomobilə baxış və rəng kodunun yoxlanmasını planlaşdırın.",
     "scope": ["Kuzovun və boya qatının qiymətləndirilməsi", "Səthin hazırlığı və razılaşdırılmış rəngləmə", "Rəng uyğunluğu və təhvil yoxlaması"],
@@ -60,7 +60,7 @@
     "queries": ["avtomobil təmizliyi", "salonun kimyəvi təmizlənməsi", "avtomobil salonu yuma"], "related": ["avtomobil-oturacaq", "avtomobil-ustasi", "diger-avtomobil"], "sources": []
   },
   "avtomobil-acar-ustasi": {
-    "name": "Avtomobil açar ustası", "heading": "Avtomobil açarı — ehtiyat, proqramlaşdırma və uyğunluq",
+    "name": "Avtomobil açar ustası", "heading": "Avtomobil açar ustası — açar və pult proqramlama",
     "description": "Avtomobil açarı üçün marka, model və il məlumatını verin. Uyğunluq yoxlaması, proqramlaşdırma və ehtiyat açar şərtlərini soruşun.",
     "intro": "Mexaniki açar, pult və elektron açar həlləri avtomobil modelinə görə dəyişə bilər. Təhlükəsizlik üçün açarın avtomobilə uyğunlaşdırılmasını səlahiyyətli və yoxlanıla bilən xidmətlə razılaşdırın.",
     "scope": ["Avtomobil və açar sisteminin müəyyənləşdirilməsi", "Razılaşdırılmış açar hazırlanması və ya bərpası", "Uyğunlaşdırma və işləkliyin yoxlanması"],

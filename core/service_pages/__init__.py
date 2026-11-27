@@ -11,11 +11,14 @@ from django.shortcuts import render
 
 PROVIDER_USERNAME = 'superadmin'
 PROVIDER_PHONE = '+994515888884'
-# Owner confirmed on 2026-11-12. Surrounding cities are deliberately not inferred.
+# Owner confirmed on 2026-11-12. Surrounding Absheron/Sumgayit areas included for confirmed services.
 BAKU_AREAS = frozenset({'yasamal', 'nerimanov', 'nesimi', 'xetai', 'bineqedi',
-                        'nizami', 'sebail', 'sabuncu', 'suraxani', 'xezer', 'qaradag', 'pirallahi'})
+                        'nizami', 'sebail', 'sabuncu', 'suraxani', 'xezer', 'qaradag', 'pirallahi',
+                        'xirdalan', 'masazir', 'sumqayit', 'saray', 'mehdiabad'})
 PROVIDER_CATEGORIES = frozenset({'kombi-ustasi', 'su-sizma', 'kanalizasiya-ustasi',
-                                 'santexnik', 'havalandirma-ustasi', 'ariston-ustasi'})
+                                 'santexnik', 'havalandirma-ustasi', 'ariston-ustasi',
+                                 'kondisioner-ustasi', 'soyuducu-ustasi',
+                                 'paltaryuyan-ustasi', 'qabyuyan-ustasi'})
 PRICES = {
     'su-sizma': {'amount': '80.00', 'label': '80 AZN', 'starting': False,
                  'note': 'Su sızmasının təyini üçün təklifdir. Təmir və səthin bərpasının daxil olub-olmadığını əvvəl dəqiqləşdirin.'},
@@ -55,12 +58,14 @@ def guide_for_category(category):
     return pages().get(category.slug) if get_content(category) else None
 
 
-def page_context(page, user=None):
+def page_context(page, user=None, is_ru=False):
     from django.contrib.auth.models import User
     from core.listings import visible_listings
     from core.models import Kategori
     from core.service_content import sources
+    from core.ru_content import priority_page_ru
     from django.contrib.auth.models import AnonymousUser
+    active_page = priority_page_ru(page) if is_ru else page
     owner = User.objects.filter(username=PROVIDER_USERNAME, is_active=True).select_related('profil').first()
     provider = None
     # A guide remains useful without inventory; a provider offer needs a live listing.
@@ -78,16 +83,29 @@ def page_context(page, user=None):
     if ad:
         profile = getattr(owner, 'profil', None)
         name = ' '.join(filter(None, [getattr(profile, 'ad', ''), getattr(profile, 'soyad', '')]))
-        message = f'Salam, {page["name"]} üçün iş həcmini, qiyməti və zəmanət şərtlərini dəqiqləşdirmək istəyirəm.'
+        if is_ru:
+            message = f'Здравствуйте, хочу уточнить объём работ, стоимость и гарантию по услуге «{active_page["name"]}».'
+        else:
+            message = f'Salam, {page["name"]} üçün iş həcmini, qiyməti və zəmanət şərtlərini dəqiqləşdirmək istəyirəm.'
+        price = PRICES.get(page['slug'])
+        if price and is_ru:
+            price = dict(price)
+            if active_page.get('price_label'):
+                price['label'] = active_page['price_label']
+            if active_page.get('price_note'):
+                price['note'] = active_page['price_note']
         provider = {'name': name or owner.get_full_name() or owner.username,
                     'profile_url': f'/istifadeci/{owner.pk}/', 'listing_url': ad.get_absolute_url(),
-                    'phone': PROVIDER_PHONE, 'price': PRICES.get(page['slug']),
+                    'phone': PROVIDER_PHONE, 'price': price,
                     'whatsapp': 'https://wa.me/' + PROVIDER_PHONE[1:] + '?' + urlencode({'text': message})}
     registry = pages()
     valid_categories = set(Kategori.objects.filter(slug__in=page['related']).values_list('slug', flat=True))
-    related = [registry[slug] for slug in page['related']
-               if slug in registry and (registry[slug]['category'] != slug or slug in valid_categories)]
-    return {'priority_service': page, 'service_provider': provider,
+    related = [
+        (priority_page_ru(registry[slug]) if is_ru else registry[slug])
+        for slug in page['related']
+        if slug in registry and (registry[slug]['category'] != slug or slug in valid_categories)
+    ]
+    return {'priority_service': active_page, 'service_provider': provider,
             'service_sources': [sources()[key] for key in page['sources']],
             'service_related': related}
 
@@ -106,7 +124,7 @@ def matching_listings(queryset, page):
     return queryset
 
 
-def topic_response(request, page):
+def topic_response(request, page, is_ru=False):
     from core.listings import visible_listings
     from core.models import Kategori
     from core.rotation import apply_fair_rotation
@@ -119,7 +137,12 @@ def topic_response(request, page):
     listings = matching_listings(visible_listings(request.user), page).select_related(
         'kategori', 'istifadeci__profil').prefetch_related('shekillar')
     result = strict_page(Paginator(apply_fair_rotation(listings, seed), 12), request.GET.get('page', 1))
-    return render(request, 'service_topic.html', {
-        **page_context(page, request.user), 'topic_category': category, 'elanlar': result,
-        'page_range': list(result.paginator.get_elided_page_range(result.number)), 'elan_seed': seed,
+    template_name = 'ru/service_topic.html' if is_ru else 'service_topic.html'
+    return render(request, template_name, {
+        **page_context(page, request.user, is_ru=is_ru),
+        'is_ru': is_ru,
+        'topic_category': category,
+        'elanlar': result,
+        'page_range': list(result.paginator.get_elided_page_range(result.number)),
+        'elan_seed': seed,
     })

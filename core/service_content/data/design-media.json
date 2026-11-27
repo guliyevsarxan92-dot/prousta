@@ -20,7 +20,7 @@
     "queries": ["çap xidməti", "vizit kartı çapı", "buklet çapı"], "related": ["reklam-xidmetleri", "vinil-bannerler", "dizayn-xidmeti"], "sources": ["adobe-print"]
   },
   "reklam-xidmetleri": {
-    "name": "Reklam xidmətləri", "heading": "Reklam xidməti — kanal, auditoriya və nəticə ölçümü",
+    "name": "Reklam xidmətləri", "heading": "Reklam xidmətləri — kanal, auditoriya və nəticə",
     "description": "Reklam sifarişində məqsədi, auditoriyanı, yerləşdirmə kanalını və hesabat formasını müəyyən edin. Reklam büdcəsi ilə xidmət haqqını ayırın.",
     "intro": "Reklamın formatı biznes məqsədindən asılıdır. İcraçıdan iş planını, istifadə olunan platformaları, büdcənin idarə edilməsini və nəticənin hansı göstəricilərlə təqdim olunacağını soruşun.",
     "scope": ["Məqsəd və auditoriya planı", "Razılaşdırılmış kreativ və yerləşdirmə", "Nəticələrin hesabatı və növbəti addımlar"],
@@ -50,7 +50,7 @@
     "queries": ["dizayn xidməti", "qrafik dizayn", "loqo dizaynı"], "related": ["interyer-dizayn", "reklam-dizayn", "smm-xidmeti"], "sources": []
   },
   "vinil-bannerler": {
-    "name": "Vinil bannerlər", "heading": "Vinil banner sifarişi — ölçü, material və montaj",
+    "name": "Vinil bannerlər", "heading": "Vinil bannerlər — ölçü, material, çap və montaj",
     "description": "Banner sifarişində ölçü, yerləşəcəyi mühit, material, çap və bərkitmə üsulunu dəqiqləşdirin. Dizayn, istehsal və montajı ayrı göstərən təklif alın.",
     "intro": "Bannerin açıq və ya qapalı məkanda istifadəsi material və bərkitmə seçiminə təsir edir. Faylın ölçüsünü və görünmə məsafəsini istehsalçı ilə təsdiqləyin.",
     "scope": ["Ölçü və materialın seçilməsi", "Maketin yoxlanması və çap", "Razılaşdırılmış kənar işləmə və montaj"],
@@ -60,7 +60,7 @@
     "queries": ["vinil banner sifarişi", "banner çapı", "reklam banneri hazırlanması"], "related": ["cap-isleri", "reklam-xidmetleri", "dizayn-xidmeti"], "sources": ["adobe-print"]
   },
   "video-xidmetleri": {
-    "name": "Video xidmətləri", "heading": "Video çəkilişi və montajı — ssenari, çəkiliş, təhvil",
+    "name": "Video xidmətləri", "heading": "Video xidmətləri — video çəkilişi, ssenari və montaj",
     "description": "Video sifarişində məqsədi, müddəti, çəkiliş günlərini, montajı və yekun formatları dəqiqləşdirin. Avadanlıq və əlavə istehsal xərclərini ayırın.",
     "intro": "Reklam rolikinin, tədbir çəkilişinin və sosial media videosunun istehsal planı fərqlidir. Çəkiliş yeri, iştirakçılar və istifadə kanalı barədə ilkin məlumat verin.",
     "scope": ["Brief və çəkiliş planı", "Razılaşdırılmış çəkiliş və montaj", "Kanal ölçülərinə uyğun yekun fayllar"],
@@ -70,7 +70,7 @@
     "queries": ["video çəkilişi xidməti", "reklam videosu çəkilişi", "video montajı"], "related": ["foto-xidmetleri", "reklam-xidmetleri", "smm-xidmeti"], "sources": []
   },
   "foto-xidmetleri": {
-    "name": "Foto xidmətləri", "heading": "Foto çəkilişi — format, məkan və təhvil planı",
+    "name": "Foto xidmətləri", "heading": "Foto xidmətləri — foto çəkilişi, məkan və təhvil",
     "description": "Foto çəkilişi üçün məqsədi, çəkiliş müddətini, məkanı, redaktə həcmini və istifadə hüquqlarını əvvəlcədən razılaşdırın.",
     "intro": "Tədbir, məhsul və portret çəkilişlərinin hazırlığı fərqlənir. Lazım olan kadr sayını, fonu və yekun şəkillərin hansı platformada istifadə ediləcəyini bildirin.",
     "scope": ["Çəkiliş formatı və planı", "Foto çəkilişi və ilkin seçim", "Razılaşdırılmış redaktə və faylların təhvili"],

@@ -1,6 +1,6 @@
 {
   "laminat-parket-ustasi": {
-    "name": "Laminat parket ustası", "heading": "Laminat və parket ustası — döşəmə hazırlığı və quraşdırma",
+    "name": "Laminat parket ustası", "heading": "Laminat parket ustası — döşəmə hazırlığı və montaj",
     "description": "Laminat və parket döşənməsi üçün səth hazırlığı, altlıq, material və plintus işlərini müqayisə edin. Ölçü və döşəmə vəziyyətini bildirin.",
     "intro": "Yeni örtüyün görünüşünə döşəmənin hazırlığı da təsir edir. Laminat döşənməsi, taxta parketin bərpası və alt səthin düzəldilməsini ayrı işlər kimi qiymətləndirin.",
     "scope": ["Alt səthin vəziyyətinə baxış", "Laminat və parket quraşdırılması", "Plintus, keçid və kənar tamamlanması"],
@@ -10,7 +10,7 @@
     "queries": ["laminat ustası", "parket döşənməsi", "laminat döşəmə qiyməti"], "related": ["ev-temiri", "malyar-ustasi", "mebel-ustasi"], "sources": []
   },
   "dartma-tavan-ustasi": {
-    "name": "Dartma tavan ustası", "heading": "Dartma tavan — material, işıq nöqtələri və montaj",
+    "name": "Dartma tavan ustası", "heading": "Dartma tavan ustası — material, işıq və montaj",
     "description": "Dartma tavan sifarişində material, otaq ölçüsü, işıq nöqtələri və kənar tamamlanmasını müqayisə edin. Montaj və elektrik işlərini dəqiqləşdirin.",
     "intro": "Tavanın sahəsi ilə yanaşı künclər, işıq nöqtələri və kommunikasiya çıxışları iş həcminə təsir edir. İşıqlandırma ilə örtük montajının kimin məsuliyyətində olacağını müəyyənləşdirin.",
     "scope": ["Ölçü və örtük seçimi", "Profil və tavan montajı", "İşıq və çıxış nöqtələrinin hazırlanması"],

@@ -144,3 +144,27 @@ class ServiceGuideSitemap(PublicSitemap):
 
     def location(self, item):
         return item['url']
+
+
+class RuSitemap(PublicSitemap):
+    """Русская версия (/ru/): главная, категории с объявлениями, спецгиды и локальные страницы."""
+    changefreq = 'daily'
+    priority = 0.85
+
+    def items(self):
+        from .seo_locations import indexable_location_pairs
+        from .service_pages import topics
+        urls = ['/ru/', '/ru/elanlar/', '/ru/haqqimizda/']
+        valid_ids = indexable_kategori_ids()
+        for slug in Kategori.objects.filter(pk__in=valid_ids).order_by('pk').values_list('slug', flat=True):
+            urls.append(f'/ru/xidmet/{slug}/')
+        all_cat_slugs = set(Kategori.objects.values_list('slug', flat=True))
+        for page in topics():
+            if page['category'] in all_cat_slugs:
+                urls.append('/ru' + page['url'])
+        for cat_slug, loc_slug in indexable_location_pairs():
+            urls.append(f'/ru/xidmet/{cat_slug}/{loc_slug}/')
+        return urls
+
+    def location(self, item):
+        return item

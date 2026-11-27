@@ -30,8 +30,8 @@
     "queries": ["kamera quraşdırılması", "təhlükəsizlik kamerası ustası", "müşahidə sistemi servisi"], "related": ["elektrik", "komputer-ustasi", "foto-video-aparatlar"], "sources": []
   },
   "printer-ustasi": {
-    "name": "Printer ustası", "heading": "Printer təmiri — çap və şəbəkə problemləri",
-    "description": "Printer və çoxfunksiyalı cihaz üçün təmir seçin. Model, çap nümunəsi, kartric tipi və şəbəkə bağlantısı barədə məlumat hazırlayın.",
+    "name": "Printer ustası", "heading": "Printer ustası — printer təmiri və kartric servisi",
+    "description": "Printer ustası Bakıda: printer və çoxfunksiyalı cihaz üçün təmir seçin. Model, çap nümunəsi, kartric tipi və şəbəkə bağlantısı məlumatını hazırlayın.",
     "intro": "Kağızın ilişməsi, solğun çap və kompüterdən çapın getməməsi fərqli işlərdir. Lazer və mürəkkəbli cihazın modelini, problemli çap nümunəsini və bağlantı tipini bildirin.",
     "scope": ["Çap və kağız ötürməsinin baxışı", "Kartric və çap hissəsinin diaqnostikası", "Şəbəkə və sürücü sazlanması"],
     "pricing": ["Kartric xidməti ilə təmirin fərqi", "Hissə və sərf materialı", "Ofisdə baxış və cihaz daşınması"],
@@ -40,7 +40,7 @@
     "queries": ["printer ustası", "printer təmiri", "printer çap etmir"], "related": ["komputer-ustasi", "cap-isleri"], "sources": []
   },
   "diger-elektronika": {
-    "name": "Digər elektronika ustaları", "heading": "Elektron cihaz təmiri — modelə uyğun diaqnostika",
+    "name": "Digər elektronika ustaları", "heading": "Digər elektronika ustaları — cihaz diaqnostikası",
     "description": "Audio, oyun və ayrıca bölməsi olmayan elektron cihaz üçün servis seçin. Model, enerji adapteri, nasazlıq və təhvil şərtlərini dəqiqləşdirin.",
     "intro": "Təmir ediləcək cihazın tam modelini yazın; yalnız marka adı uyğun servis seçməyə kifayət etməyə bilər. Adapter və qoşulan aksesuarın problemə təsirini də bildirin.",
     "scope": ["Audio və media avadanlığı baxışı", "Oyun və digər elektron cihazlar", "Uyğun model üzrə komponent diaqnostikası"],

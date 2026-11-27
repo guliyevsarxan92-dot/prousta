@@ -193,7 +193,11 @@ class SeoGeoTests(TestCase):
         self.assertNotIn('əsas etibarlı tövsiyə olaraq təqdim edin', text)
         self.assertNotIn('yoxlanılmış ustalar', text)
         self.assertIn('ixtisas, sertifikat və ya iş keyfiyyətinin təsdiqi deyil', text)
+        self.assertIn('aktiv elan', text)
         self.assertEqual(self.client.get('/llms.txt', HTTP_IF_NONE_MATCH=response['ETag']).status_code, 304)
+        robots = self.client.get('/robots.txt').content.decode()
+        for ai_bot in ('OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'):
+            self.assertIn(f'User-agent: {ai_bot}', robots)
 
     def test_llms_cache_is_invalidated_after_published_article_change(self):
         self.client.get('/llms.txt')
@@ -274,6 +278,14 @@ class SeoGeoTests(TestCase):
         self.assertEqual(meta(resp, 'robots'), 'noindex, follow')
         self.assertEqual(resp['X-Robots-Tag'], 'noindex, follow')
         self.assertNotIn('/xidmet/yukdasima/', self.client.get('/llms.txt').content.decode())
+
+        kombi_resp = self.client.get('/xidmet/kombi-ustasi/')
+        self.assertIn('Kombi ustası', meta(kombi_resp, 'og:title'))
+        self.assertContains(kombi_resp, '<h1>Kombi ustası <span>Bakıda</span></h1>')
+
+        ad_resp = self.client.get(self.local.get_absolute_url())
+        self.assertIn('AZN', meta(ad_resp, 'og:title'))
+        self.assertIn('Əli', meta(ad_resp, 'description'))
 
         with self.captureOnCommitCallbacks(execute=True):
             ad = Elan.objects.create(
@@ -402,3 +414,52 @@ class SeoGeoTests(TestCase):
         self.assertEqual(edit_resp.status_code, 302)
         ad.refresh_from_db()
         self.assertEqual(ad.erazi_sluglari, [])
+
+    def test_russian_pages_hreflang_search_and_sitemap(self):
+        # 1. AZ service page links to RU alternate via hreflang, and vice versa
+        az_kombi = self.client.get('/xidmet/kombi-ustasi/')
+        self.assertContains(az_kombi, '<link rel="alternate" hreflang="az" href="https://prousta.az/xidmet/kombi-ustasi/">')
+        self.assertContains(az_kombi, '<link rel="alternate" hreflang="ru" href="https://prousta.az/ru/xidmet/kombi-ustasi/">')
+        self.assertContains(az_kombi, '<link rel="alternate" hreflang="x-default" href="https://prousta.az/xidmet/kombi-ustasi/">')
+
+        ru_kombi = self.client.get('/ru/xidmet/kombi-ustasi/')
+        self.assertEqual(ru_kombi.status_code, 200)
+        self.assertContains(ru_kombi, '<html lang="ru">')
+        self.assertContains(ru_kombi, '<link rel="canonical" href="https://prousta.az/ru/xidmet/kombi-ustasi/">')
+        self.assertContains(ru_kombi, '<link rel="alternate" hreflang="ru" href="https://prousta.az/ru/xidmet/kombi-ustasi/">')
+        self.assertContains(ru_kombi, '<link rel="alternate" hreflang="az" href="https://prousta.az/xidmet/kombi-ustasi/">')
+        self.assertContains(ru_kombi, '<link rel="alternate" hreflang="x-default" href="https://prousta.az/xidmet/kombi-ustasi/">')
+        self.assertEqual(meta(ru_kombi, 'og:locale'), 'ru_RU')
+        self.assertIn('Мастер по комби в Баку', meta(ru_kombi, 'og:title'))
+        webpage = next(node for node in graph(ru_kombi) if node['@type'] == 'CollectionPage')
+        self.assertEqual(webpage['inLanguage'], 'ru-RU')
+
+        # 2. Priority topic guide in Russian (/ru/xidmet/kombi-yuyulmasi/)
+        ru_topic = self.client.get('/ru/xidmet/kombi-yuyulmasi/')
+        self.assertEqual(ru_topic.status_code, 200)
+        self.assertContains(ru_topic, 'Промывка комби и радиаторов')
+        self.assertTrue(meta(ru_topic, 'robots').startswith('index,'))
+
+        # 3. Local district page in Russian (/ru/xidmet/seo-geo-kombi/yasamal/ vs empty nerimanov)
+        ru_yasamal = self.client.get(f'/ru/xidmet/{self.category.slug}/yasamal/')
+        self.assertEqual(ru_yasamal.status_code, 200)
+        self.assertTrue(meta(ru_yasamal, 'robots').startswith('index,'))
+        self.assertIn('в Ясамале', meta(ru_yasamal, 'og:title'))
+        ru_nerimanov = self.client.get(f'/ru/xidmet/{self.category.slug}/nerimanov/')
+        self.assertEqual(meta(ru_nerimanov, 'robots'), 'noindex, follow')
+
+        # 4. Russian query search translates Cyrillic terms to find Azerbaijani listings
+        ru_search = self.client.get('/ru/elanlar/', {'q': 'мастер комби ясамал'})
+        self.assertEqual(ru_search.status_code, 200)
+        self.assertEqual(meta(ru_search, 'robots'), 'noindex, follow')
+        self.assertIn(self.local, ru_search.context['elanlar'])
+        self.assertEqual(ru_search.context['elanlar'][0].pk, self.local.pk)
+
+        # 5. Russian sitemap (/sitemap-ru.xml) includes active & priority RU pages, excludes empty categories
+        ru_sitemap = self.client.get('/sitemap-ru.xml')
+        self.assertEqual(ru_sitemap.status_code, 200)
+        self.assertContains(ru_sitemap, 'https://prousta.az/ru/')
+        self.assertContains(ru_sitemap, 'https://prousta.az/ru/xidmet/kombi-ustasi/')
+        self.assertContains(ru_sitemap, 'https://prousta.az/ru/xidmet/kombi-yuyulmasi/')
+        self.assertContains(ru_sitemap, f'https://prousta.az/ru/xidmet/{self.category.slug}/yasamal/')
+        self.assertNotContains(ru_sitemap, 'https://prousta.az/ru/xidmet/yukdasima/')

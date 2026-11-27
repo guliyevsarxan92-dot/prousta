@@ -23,7 +23,13 @@ def location_pattern(slug):
 def selected_areas(raw_value):
     if not raw_value:
         return set()
-    return {slug.strip() for slug in str(raw_value).split(',') if slug.strip() in LOKASIYALAR}
+    name_to_slug = {info['ad'].lower(): s for s, info in LOKASIYALAR.items()}
+    result = set()
+    for part in str(raw_value).split(','):
+        slug = name_to_slug.get(part.strip().lower(), part.strip().lower())
+        if slug in LOKASIYALAR:
+            result.add(slug)
+    return result
 
 
 def areas_expression():

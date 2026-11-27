@@ -14,11 +14,13 @@ CANONICAL_HOST = 'prousta.az'
 
 # Bu GET parametrləri olan səhifələr dublikat/axtarış səhifəsidir → noindex, follow
 _NOINDEX_PARAMS = {'q', 'ajax', 'kategori', 'k', 'next', 'sort', 'sheher', 'city', 'min_price', 'max_price'}
-_PAGINATED_PATHS = ('/elanlar/', '/problemler/', '/xidmet/')
+_PAGINATED_PATHS = ('/elanlar/', '/problemler/', '/xidmet/', '/ru/elanlar/', '/ru/xidmet/')
+_BILINGUAL_PREFIXES = ('/elanlar/', '/xidmet/', '/haqqimizda/')
 PUBLIC_VIEWS = {
     'index', 'elan_siyahi', 'xidmet_detail', 'xidmet_lokasiya_detail', 'elan_detail',
     'problemler_siyahi', 'problem_detail', 'haqqimizda', 'gizlilik',
     'istifade_sertleri', 'mobil_app',
+    'ru_index', 'ru_elan_siyahi', 'ru_xidmet_detail', 'ru_xidmet_lokasiya_detail', 'ru_haqqimizda',
 }
 
 
@@ -29,14 +31,28 @@ def _page_number(request):
         return 1
 
 
+def language_paths(path):
+    is_ru = path == '/ru' or path.startswith('/ru/')
+    if is_ru:
+        az_path = path[3:] or '/'
+        if not az_path.startswith('/'):
+            az_path = '/' + az_path
+        ru_path = '/ru/' if path in ('/ru', '/ru/') else path
+        return True, az_path, ru_path, True
+    has_ru = path == '/' or path.startswith(_BILINGUAL_PREFIXES)
+    ru_path = ('/ru/' if path == '/' else f'/ru{path}') if has_ru else '/ru/'
+    return False, path, ru_path, has_ru
+
+
 def seo_context(request):
     path = request.path
     page = _page_number(request)
     params = {key for key, value in request.GET.items() if value.strip()}
+    is_ru, az_path, ru_path, has_ru = language_paths(path)
 
     noindex = bool(params & _NOINDEX_PARAMS)
     # Ana səhifənin ?page=N variantları /elanlar/ ilə dublikatdır
-    if path == '/' and page > 1:
+    if path in ('/', '/ru/') and page > 1:
         noindex = True
 
     canonical = path
@@ -52,6 +68,11 @@ def seo_context(request):
         'seo_canonical': canonical,
         'seo_noindex': noindex,
         'seo_page': page,
+        'is_ru': is_ru,
+        'lang_code': 'ru' if is_ru else 'az',
+        'lang_switch_az': az_path,
+        'lang_switch_ru': ru_path,
+        'has_ru_alternate': has_ru,
         'GOOGLE_SITE_VERIFICATION': getattr(settings, 'GOOGLE_SITE_VERIFICATION', ''),
     }
 

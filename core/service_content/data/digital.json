@@ -60,7 +60,7 @@
     "queries": ["mühasibatlıq xidməti", "mühasib xidməti", "biznes üçün mühasibat"], "related": ["huquqi-xidmetler", "tercume-xidmeti", "veb-sayt"], "sources": []
   },
   "huquqi-xidmetler": {
-    "name": "Hüquqi xidmətlər", "heading": "Hüquqi xidmət — məsələ, sənəd və xidmət sərhədi",
+    "name": "Hüquqi xidmətlər", "heading": "Hüquqi xidmətlər — məsələ, sənəd və xidmət sərhədi",
     "description": "Hüquqi xidmətə müraciətdə məsələnin növünü, tarixləri və sənədləri təqdim edin. Məsləhətin əhatəsini, məxfilik və ödəniş şərtlərini hüquqşünasla razılaşdırın.",
     "intro": "Hüquqi nəticə faktlardan və tətbiq olunan qaydalardan asılıdır; bu səhifə hüquqi məsləhət deyil. Sənədləri paylaşmazdan əvvəl xidmət göstərənin təcrübəsini və məxfilik qaydasını yoxlayın.",
     "scope": ["Məsələ və sənədlərin ilkin müzakirəsi", "Razılaşdırılmış araşdırma və məsləhət", "Sənəd hazırlanması və təhvil sərhədi"],

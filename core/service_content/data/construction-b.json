@@ -10,8 +10,8 @@
     "queries": ["jaluz sifarişi", "rulon pərdə", "jaluz qiyməti"], "related": ["plastik-qapi-pencere", "interyer-dizayn"], "sources": []
   },
   "kanalizasiya-ustasi": {
-    "name": "Kanalizasiya ustası", "heading": "Kanalizasiya açılması — xidmət və sifariş bələdçisi",
-    "description": "Kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın. Təklifdə əlavə işləri ayrıca göstərin.",
+    "name": "Kanalizasiya ustası", "heading": "Kanalizasiya ustası — kanalizasiya açılması və xətt",
+    "description": "Kanalizasiya ustası Bakıda: kanalizasiya açılması üçün tıxanmanın yerini, xəttə girişi və açıldıqdan sonrakı axın yoxlamasını razılaşdırın.",
     "intro": "Bir sifonda yaranan tıxanma ilə ümumi xəttdəki problem fərqli avadanlıq tələb edə bilər. Hansı nöqtələrdə suyun getmədiyini və problemin təkrarlanıb-təkrarlanmadığını bildirin.",
     "scope": ["Tıxanmanın yeri üzrə baxış", "Uyğun avadanlıqla xəttin təmizlənməsi", "Təkrarlanan problemin araşdırılması"],
     "pricing": ["Giriş nöqtəsi və xəttə əlçatanlıq", "Avadanlıq və işin davamı", "Açılma, bərpa və təmizlik"],
@@ -20,8 +20,8 @@
     "queries": ["kanalizasiya ustası", "kanalizasiya açılması", "kanalizasiya tıxanması"], "related": ["santexnik", "su-sizma", "zibil-dasima"], "sources": []
   },
   "su-sizma": {
-    "name": "Su sızmasının aşkarlanması", "heading": "Su sızma təyini — xidmət və sifariş bələdçisi",
-    "description": "Gizli su sızmasının təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyinetmə ilə boru təmirinin iş həcmini ayırın.",
+    "name": "Su sızmasının aşkarlanması", "heading": "Su sızmasının aşkarlanması — su sızma təyini",
+    "description": "Su sızmasının aşkarlanması və gizli su sızma təyini üçün xətti, müşahidə edilən nəmlik və diaqnostika üsulunu dəqiqləşdirin. Təyin ilə təmiri ayırın.",
     "intro": "Divardakı rütubət izi sızma mənbəyinin özünü göstərməyə bilər. Aşkarlama sifarişində mənbənin müəyyənləşdirilməsi, nəticənin izahı və sonrakı təmirin ayrı işlər olduğunu dəqiqləşdirin.",
     "scope": ["Rütubət və su xətti üzrə baxış", "Uyğun cihazla mənbənin araşdırılması", "Nəticə və müdaxilə yeri barədə məlumat"],
     "pricing": ["Yoxlanacaq sahə və xəttin növü", "Cihaz və əlavə ölçmə ehtiyacı", "Açılma, boru təmiri və səth bərpası"],
@@ -30,8 +30,8 @@
     "queries": ["su sızmasının aşkarlanması", "gizli su sızması", "divarda rütubət sızma"], "related": ["santexnik", "kanalizasiya-ustasi", "kafel-metlax-ustasi"], "sources": []
   },
   "santexnik": {
-    "name": "Santexnik", "heading": "Santexnik xidməti — xidmət və sifariş bələdçisi",
-    "description": "Kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını ayrıca razılaşdırın.",
+    "name": "Santexnik", "heading": "Santexnik ustası — santexnika təmiri və quraşdırma",
+    "description": "Santexnik ustası Bakıda: kran, unitaz, sifon və su xətti üzrə santexnik işlərini müqayisə edin. İşçilik, material və yekun sızma yoxlamasını razılaşdırın.",
     "intro": "Kiçik bağlantı təmiri ilə boru xəttinin yenilənməsi ayrı iş həcmləridir. Problemli nöqtəni, avadanlığın modelini və suyun haradan gəldiyini foto ilə göstərərək təklif alın.",
     "scope": ["Kran və qarışdırıcı dəyişimi", "Unitaz, çanaq və sifon montajı", "Su xətti və bağlantı təmiri"],
     "pricing": ["Avadanlıq və bağlantı uyğunluğu", "Divar daxilində işə giriş", "Material, sökülmə və sızma sınağı"],

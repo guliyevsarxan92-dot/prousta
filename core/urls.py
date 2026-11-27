@@ -9,6 +9,11 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('ru/', views.index, {'lang': 'ru'}, name='ru_index'),
+    path('ru/elanlar/', views.elan_siyahi, {'lang': 'ru'}, name='ru_elan_siyahi'),
+    path('ru/xidmet/<slug:slug>/', views.xidmet_detail, {'lang': 'ru'}, name='ru_xidmet_detail'),
+    path('ru/xidmet/<slug:slug>/<slug:lokasiya>/', views.xidmet_detail, {'lang': 'ru'}, name='ru_xidmet_lokasiya_detail'),
+    path('ru/haqqimizda/', views.haqqimizda, {'lang': 'ru'}, name='ru_haqqimizda'),
     path('health/', readiness, name='health'),
     re_path(r'^(?P<key>[a-zA-Z0-9]{16,64})\.txt$', indexnow_key_view, name='indexnow_key'),
     path('mobile/google-login/', mobile_auth.mobile_google_login, name='mobile_google_login'),

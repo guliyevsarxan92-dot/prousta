@@ -21,8 +21,9 @@ def _normalized_expression(expression):
 
 
 def search_listings(queryset, query='', location=''):
-    query = query[:200]
-    location = location[:100]
+    from .ru_content import translate_ru_query
+    query = translate_ru_query(query[:200])[:200]
+    location = translate_ru_query(location[:100])[:100]
     queryset = queryset.filter(Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=timezone.now()))
     aliases = {normalize(city) for city in (
         'Bakı', 'Abşeron', 'Gəncə', 'Mingəçevir', 'Lənkəran', 'Şəki', 'Quba',

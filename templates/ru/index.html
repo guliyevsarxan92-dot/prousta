@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav_index %}aktiv{% endblock %}
+{% block extra_head %}
+<link rel="preload" as="image" href="{% static 'img/home/hero.webp' %}" type="image/webp">
+{% endblock %}
+{% block content %}
+<section class="market-hero" aria-labelledby="hero-title">
+ <div class="hero-photo" role="img" aria-label="Мастера по кондиционерам, комби и сантехнике за работой"></div>
+ <div class="home-container hero-inner">
+  <div class="hero-copy"><h1 id="hero-title">Найти надёжного мастера <span>просто</span></h1><p class="hero-intro">Электрик, сантехник, мастер по комби, кондиционерам, ремонту и 100+ услуг на одной платформе в Баку.</p>
+   <form class="hero-search" action="{% url 'ru_elan_siyahi' %}" method="get" role="search"><label class="search-input">{% include 'partials/ui_icon.html' with name='search' %}<input type="search" name="q" aria-label="Поиск мастера или услуги" placeholder="Поиск мастера или услуги (напр.: мастер комби)" required></label><span class="search-city">{% include 'partials/ui_icon.html' with name='pin' %} Баку</span><button type="submit">{% include 'partials/ui_icon.html' with name='search' %} Найти</button></form>
+   <div class="quick-services"><a href="/ru/xidmet/elektrik/">Электрик</a><a href="/ru/xidmet/santexnik/">Сантехник</a><a href="/ru/xidmet/kombi-ustasi/">Мастер по комби</a><a href="/ru/xidmet/kondisioner-ustasi/">Кондиционеры</a><a href="/ru/xidmet/su-sizma/">Поиск утечки воды</a><a href="/ru/xidmet/kanalizasiya-ustasi/">Прочистка канализации</a></div>
+   <div class="hero-benefits"><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='check' %}</span><span><strong>Опытные мастера</strong><small>Выбор для вашего дома</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='chat' %}</span><span><strong>Прямая связь</strong><small>Звонок или WhatsApp</small></span></div><div><span class="benefit-icon">{% include 'partials/ui_icon.html' with name='star' %}</span><span><strong>Удобный выбор</strong><small>Сравнивайте предложения</small></span></div></div>
+  </div>
+  <div class="hero-handwriting">Ваш дом<br>в надёжных руках!<span>⤶</span></div><div class="hero-note"><svg width="39" height="39" viewBox="0 0 40 40" fill="currentColor" aria-hidden="true"><path d="M4 34V16L20 3l16 13v18h-8V21l-8-7-8 7v13H4Z"/></svg><strong>Мастера и<br>объявления об услугах<br>ждут вас!</strong></div>
+ </div>
+</section>
+<div class="home-container home-content">
+ <section class="home-section category-section" id="kateqoriyalar"><div class="home-section-heading"><h2>Популярные категории</h2><a href="{% url 'ru_elan_siyahi' %}">Все категории {% include 'partials/ui_icon.html' with name='arrow' %}</a></div><div class="category-grid">{% for name, slug, icon in home_categories %}<a href="{% url 'ru_xidmet_detail' slug %}" class="category-tile"><span class="category-emoji category-{{ slug }}" aria-hidden="true">{{ icon }}</span><span>{{ name }}</span></a>{% endfor %}</div></section>
+ <section class="home-section" id="elanlar">
+  <div class="home-section-heading">
+   <div style="display:flex;align-items:center;gap:10px">
+    <h2>Объявления мастеров</h2>
+   </div>
+   <a href="{% url 'ru_elan_siyahi' %}">Все категории {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+  </div>
+   <div class="service-grid" id="elanlar-grid">
+    {% for elan in elanlar %}
+     {% include 'partials/home_service_card.html' with eager_image=forloop.first %}
+     {% if forloop.counter == 4 or forloop.last and forloop.counter < 4 %}
+       {% include 'partials/in_grid_ad_banner.html' %}
+     {% endif %}
+    {% empty %}
+      <div class="empty-state"><h3>Сейчас нет активных объявлений</h3><p>Перейдите в категории услуг или разместите собственное объявление.</p><a class="btn btn-primary" href="{% url 'elan_yarat' %}">Подать объявление</a></div>
+    {% endfor %}
+  </div>
+
+  <div class="infinite-scroll-status" id="infiniteScrollStatus" data-next-page="{% if elanlar.has_next %}{{ elanlar.next_page_number }}{% endif %}" data-total-pages="{{ elanlar.paginator.num_pages }}" data-ajax-url="{% url 'ru_index' %}" data-seed="{{ elan_seed }}">
+   {% if elanlar.has_next %}
+    <button type="button" class="btn load-more-btn" id="loadMoreBtn">
+      {% include 'partials/ui_icon.html' with name='arrow' %}
+      Показать больше объявлений
+    </button>
+    <div class="scroll-spinner" id="scrollSpinner" style="display:none">
+      <span class="spinner-ring"></span>
+      <span>Загрузка объявлений...</span>
+    </div>
+   {% endif %}
+  </div>
+
+  <div id="elanlar-pager">
+   {% include 'partials/pager.html' with page=elanlar fragment='elanlar' page_range=page_range elan_seed=elan_seed %}
+  </div>
+ </section>
+ <section class="home-section how-section" id="nece-isleyir"><div class="home-section-heading"><h2>Как это работает?</h2></div><div class="steps-grid"><a class="step-card" href="{% url 'ru_elan_siyahi' %}"><span class="step-number">1</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='search' %}</span><span><strong>Найдите услугу</strong><small>Выберите категорию или район</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'ru_elan_siyahi' %}"><span class="step-number">2</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='list' %}</span><span><strong>Сравните условия</strong><small>Ознакомьтесь с объявлениями,<br>ценами и фото работ</small></span>{% include 'partials/ui_icon.html' with name='chevron' class='step-arrow' %}</a><a class="step-card" href="{% url 'ru_elan_siyahi' %}"><span class="step-number">3</span><span class="step-icon">{% include 'partials/ui_icon.html' with name='phone' %}</span><span><strong>Свяжитесь напрямую</strong><small>Позвоните мастеру или<br>напишите в WhatsApp</small></span></a></div></section>
+ <div class="home-stats" aria-label="Преимущества платформы"><div>{% include 'partials/ui_icon.html' with name='users' %}<span><strong>Единая база</strong><small>более 100 видов услуг</small></span></div><div>{% include 'partials/ui_icon.html' with name='user' %}<span><strong>Напрямую</strong><small>связь с мастером</small></span></div><div>{% include 'partials/ui_icon.html' with name='eye' %}<span><strong>Удобный поиск</strong><small>по районам Баку</small></span></div><div>{% include 'partials/ui_icon.html' with name='star' %}<span><strong>Бесплатно</strong><small>поиск без комиссии</small></span></div></div>
+ <section class="join-banner"><div class="join-copy"><h2>Вы мастер? Присоединяйтесь!</h2><p>Представьте свои услуги тысячам клиентов в Баку и по всему Азербайджану.<br>Регистрация на Prousta.az бесплатна!</p></div><a href="{% url 'elan_yarat' %}" class="join-button">Бесплатно подать объявление {% include 'partials/ui_icon.html' with name='arrow' %}</a><div class="join-person" aria-hidden="true"></div><span class="join-handwriting">Больше<br>заказов!<span>⤶</span></span></section>
+ <section class="home-section" id="faq-bolmesi" style="margin-top:36px">
+   <div class="home-section-heading"><h2>Часто задаваемые вопросы (FAQ)</h2></div>
+   <div style="display:flex;flex-direction:column;gap:10px">
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Как найти мастера на Prousta.az?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Выберите нужную категорию услуг или введите запрос в поиск (например: мастер комби, сантехник, электрик, прочистка канализации). Сравните цены в объявлениях и свяжитесь с мастером напрямую по телефону или через WhatsApp.
+       </p>
+     </details>
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Нужно ли платить комиссию за поиск мастера?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Нет! Для заказчиков платформа Prousta.az полностью бесплатна. Вы общаетесь и рассчитываетесь непосредственно с исполнителем без посредников.
+       </p>
+     </details>
+     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border);cursor:pointer">
+       <summary style="font-weight:700;font-size:15px;color:var(--tx)">Какие услуги представлены на сайте?</summary>
+       <p style="margin-top:10px;font-size:14px;color:var(--muted);line-height:1.7">
+         Ремонт и промывка комби, установка и сервис кондиционеров, поиск скрытой утечки воды тепловизором, прочистка канализации, услуги сантехника, электрика, чистка вентиляции и зонтов, ремонт бытовой техники и квартир.
+       </p>
+     </details>
+   </div>
+ </section>
+ <section class="panel prose" style="padding:28px 32px;margin-top:28px;border-radius:14px;border:1px solid var(--border);background:#fff">
+   <h2>Услуги мастеров в Баку и Азербайджане — Prousta.az</h2>
+   <p>Ищете опытного специалиста для ремонта, установки или обслуживания техники дома или в офисе? <strong>Prousta.az</strong> объединяет объявления частных мастеров и сервисных специалистов в Баку, Хырдалане, Сумгаите и других городах Азербайджана.</p>
+   <h3>Востребованные направления:</h3>
+   <p style="line-height:2">
+     <a href="/ru/xidmet/kombi-ustasi/" style="color:var(--p);font-weight:600">Мастер по комби</a> ·
+     <a href="/ru/xidmet/kombi-yuyulmasi/" style="color:var(--p);font-weight:600">Промывка комби и радиаторов</a> ·
+     <a href="/ru/xidmet/su-sizma/" style="color:var(--p);font-weight:600">Поиск утечки воды</a> ·
+     <a href="/ru/xidmet/kanalizasiya-ustasi/" style="color:var(--p);font-weight:600">Прочистка канализации</a> ·
+     <a href="/ru/xidmet/santexnik/" style="color:var(--p);font-weight:600">Сантехник в Баку</a> ·
+     <a href="/ru/xidmet/elektrik/" style="color:var(--p);font-weight:600">Электрик</a> ·
+     <a href="/ru/xidmet/kondisioner-ustasi/" style="color:var(--p);font-weight:600">Ремонт кондиционеров</a> ·
+     <a href="/ru/xidmet/havalandirma-ustasi/" style="color:var(--p);font-weight:600">Вентиляция и чистка вытяжек</a>
+   </p>
+ </section>
+</div>
+<script src="{% static 'js/home.js' %}" defer></script>
+{% endblock %}

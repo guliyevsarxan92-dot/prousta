@@ -1,6 +1,6 @@
 {
   "diger-ustalar": {
-    "name": "Digər ustalar", "heading": "Digər usta xidmətləri — işin növünü və yerini göstərin",
+    "name": "Digər ustalar", "heading": "Digər ustalar — işin növünü və yerini göstərin",
     "description": "Standart usta kateqoriyalarına uyğun gəlməyən iş üçün tapşırığı, məkanı və gözlənilən nəticəni təsvir edin. Təklifdə material və iş sərhədini dəqiqləşdirin.",
     "intro": "Bu ümumi bölmə ayrıca göstərilməyən usta xidmətləri üçündür. İş elektrik, qaz, konstruksiya və ya digər təhlükəsizlik tələbi daşıyırsa, müvafiq təcrübəsi olan icraçı seçin.",
     "scope": ["Tapşırıq və iş sahəsinin dəqiqləşdirilməsi", "Razılaşdırılmış usta işi və material", "Yekun baxış və görülən işin izahı"],

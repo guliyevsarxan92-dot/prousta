@@ -1,5 +1,5 @@
 <section class="pg-section" style="margin-top:28px">
-  <div class="sec-head"><h3>Tez-tez verilən suallar (FAQ)</h3></div>
+  <div class="sec-head"><h3>{% if is_ru %}Часто задаваемые вопросы (FAQ){% else %}Tez-tez verilən suallar (FAQ){% endif %}</h3></div>
   <div style="display:flex;flex-direction:column;gap:10px">
     {% for question, answer in questions %}
     <details class="panel" style="padding:16px 20px;border-radius:12px;background:#fff;border:1px solid var(--border)">

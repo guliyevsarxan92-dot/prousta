@@ -20,8 +20,8 @@
     "queries": ["kondisioner ustası", "kondisioner təmizlənməsi", "kondisioner quraşdırılması"], "related": ["havalandirma-ustasi", "elektrik"], "sources": ["bosch-model"]
   },
   "kombi-ustasi": {
-    "name": "Kombi ustası", "heading": "Kombi təmiri və servis — xidmət və sifariş bələdçisi",
-    "description": "Kombi təmiri və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və ehtiyat hissəsini ayrı razılaşdırın.",
+    "name": "Kombi ustası", "heading": "Kombi ustası — kombi təmiri, yuyulması və servis",
+    "description": "Kombi ustası Bakıda: kombi təmiri, yuyulması və servis üçün nasazlığı, modeli və xəta kodunu bildirin. Diaqnostika, işçilik və hissəni ayrı razılaşdırın.",
     "intro": "İsitmə və isti su rejimində müşahidə etdiyiniz fərqi ustaya izah edin. Ekrandakı xəta kodu, cihaz modeli və problemin başlama vaxtı ilkin baxışın planlaşdırılmasına kömək edir; bunlar təkbaşına diaqnoz deyil.",
     "scope": ["Xəta kodlarının və işləmə rejiminin yoxlanması", "İsti su və isitmə probleminin diaqnostikası", "Planlı servis və hissə dəyişimi təklifi"],
     "pricing": ["Baxış və çağırışın ayrıca haqqı", "Modelə uyğun ehtiyat hissəsi", "Kombi ilə radiator xəttinin ayrı işləri"],
@@ -30,8 +30,8 @@
     "queries": ["kombi ustası", "kombi təmiri", "kombi texniki xidmət"], "related": ["santexnik", "ariston-ustasi", "qaz-ustasi"], "sources": ["bosch-model"]
   },
   "soyuducu-ustasi": {
-    "name": "Soyuducu ustası", "heading": "Soyuducu təmiri — soyutma, səs və su axması problemləri",
-    "description": "Soyuducunun soyutmaması, dondurucu və su axması problemləri üçün servis seçin. Model, bölmələrin vəziyyəti və hissə şərtlərini dəqiqləşdirin.",
+    "name": "Soyuducu ustası", "heading": "Soyuducu ustası — təmir, soyutma və qaz dolumu",
+    "description": "Soyuducu ustası Bakıda: soyuducunun soyutmaması, dondurucu və su axması problemləri üçün servis seçin. Model və hissə şərtlərini dəqiqləşdirin.",
     "intro": "Soyuducu bölməsi ilə dondurucunun vəziyyətini ayrıca təsvir edin. Daim işləmə, buzlanma və səs barədə müşahidələr ustanın işi planlamasına kömək edir; təmir üsulu cihaz yoxlandıqdan sonra seçilməlidir.",
     "scope": ["Soyuducu və dondurucu bölmələrin yoxlanması", "Qapı kipliyi və drenaj probleminin təhlili", "Soyutma sisteminin təmir təklifi"],
     "pricing": ["Nasazlığın yeri və hissə uyğunluğu", "Yerində təmir və emalatxana ehtiyacı", "Daşınma və sonrakı sınaq"],
@@ -40,8 +40,8 @@
     "queries": ["soyuducu ustası", "soyuducu soyutmur", "soyuducu təmiri qiyməti"], "related": ["meiset-texnikasi", "elektrik"], "sources": ["bosch-model"]
   },
   "paltaryuyan-ustasi": {
-    "name": "Paltaryuyan ustası", "heading": "Paltaryuyan təmiri — su və sıxma nasazlıqları",
-    "description": "Paltaryuyan su almır, suyu atmır və ya sıxmır? Model və proqram əlamətinə uyğun servis elanlarını, diaqnostika və hissə qiymətini müqayisə edin.",
+    "name": "Paltaryuyan ustası", "heading": "Paltaryuyan ustası — təmir, su və sıxma nasazlığı",
+    "description": "Paltaryuyan ustası Bakıda: paltaryuyan su almır, suyu atmır və ya sıxmır? Model və proqram əlamətinə uyğun servis və təmir qiymətini müqayisə edin.",
     "intro": "Problemin proqramın hansı mərhələsində yarandığını qeyd edin. Model, ekrandakı kod və suyun cihazda qalıb-qalmaması ilkin müraciəti dəqiqləşdirir; baraban və elektronika işi eyni təmir sayılmır.",
     "scope": ["Su alma və boşaltma probleminin yoxlanması", "Sıxma və baraban səsinin diaqnostikası", "Elektron idarəetmə və hissə təmir təklifi"],
     "pricing": ["Diaqnostika və sökülmə həcmi", "Hissənin ayrıca və ya komplekt dəyişməsi", "Cihazın yerləşməsi və çıxarılması"],
@@ -50,8 +50,8 @@
     "queries": ["paltaryuyan ustası", "paltaryuyan sıxmır", "paltaryuyan suyu atmır"], "related": ["santexnik", "qabyuyan-ustasi"], "sources": ["bosch-model"]
   },
   "qabyuyan-ustasi": {
-    "name": "Qabyuyan ustası", "heading": "Qabyuyan təmiri — yuma, qurutma və drenaj nasazlıqları",
-    "description": "Qabyuyan su boşaltmır, yaxşı yumur və ya xəta göstərir? Modelə uyğun təmir, quraşdırma və diaqnostika təkliflərini müqayisə edin.",
+    "name": "Qabyuyan ustası", "heading": "Qabyuyan ustası — təmir, yuma və drenaj servisi",
+    "description": "Qabyuyan ustası Bakıda: qabyuyan su boşaltmır, yaxşı yumur və ya xəta göstərir? Modelə uyğun təmir, quraşdırma və diaqnostika təkliflərini müqayisə edin.",
     "intro": "Qabların təmiz çıxmaması, yaş qalması və suyun boşalmaması barədə əlamətləri ayrı qeyd edin. Ankastre cihaz üçün mebel içindən çıxarılma və sonradan yerinə quraşdırılma işini də razılaşdırın.",
     "scope": ["Yuma və qurutma probleminin yoxlanması", "Su dövranı və boşaltmanın diaqnostikası", "Ankastre cihazın servisə çıxarılması"],
     "pricing": ["Ankastre sökülmə və yenidən montaj", "Nasos, qızdırıcı və idarəetmə hissələri", "Sızma sınağı və bağlantı işi"],
@@ -60,8 +60,8 @@
     "queries": ["qabyuyan ustası", "qabyuyan təmiri", "qabyuyan su boşaltmır"], "related": ["paltaryuyan-ustasi", "metbex-mebelleri"], "sources": ["bosch-model"]
   },
   "ariston-ustasi": {
-    "name": "Ariston ustası", "heading": "Ariston su qızdırıcısı təmiri — modelə uyğun servis",
-    "description": "Ariston su qızdırıcısının təmiri üçün cihazın tipini və modelini dəqiqləşdirin. Baxış, hissə, quraşdırma və sızma yoxlaması şərtlərini müqayisə edin.",
+    "name": "Ariston ustası", "heading": "Ariston ustası — su qızdırıcısı və boyler təmiri",
+    "description": "Ariston ustası Bakıda: su qızdırıcısının və boylerin təmiri üçün cihazın tipini və modelini dəqiqləşdirin. Baxış, hissə və quraşdırma şərtlərini müqayisə edin.",
     "intro": "Ariston adı müxtəlif cihazlarda işlənir. Müraciətdə yığıcı elektrik su qızdırıcısı, kombi və ya başqa avadanlıq olduğunu açıq yazın; uyğun ixtisas və hissələr cihazın tipindən asılıdır.",
     "scope": ["Yığıcı su qızdırıcısının baxışı", "Qızdırma və idarəetmə probleminin yoxlanması", "Sızma və montaj şərtlərinin qiymətləndirilməsi"],
     "pricing": ["Cihazın tipi və həcmi", "Çən, qızdırıcı və idarəetmə işi", "Sökülmə və yenidən asılma"],
@@ -70,8 +70,8 @@
     "queries": ["Ariston ustası", "su qızdırıcısı təmiri", "Ariston su qızdırmır"], "related": ["kombi-ustasi", "santexnik", "pitiminutka-ustasi"], "sources": ["bosch-model"]
   },
   "havalandirma-ustasi": {
-    "name": "Havalandırma ustası", "heading": "Havalandırma xidməti — xidmət və sifariş bələdçisi",
-    "description": "Havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan, avadanlıq və təhvil yoxlaması üzrə sifarişi dəqiqləşdirin.",
+    "name": "Havalandırma ustası", "heading": "Havalandırma ustası — montaj, təmizlik və servis",
+    "description": "Havalandırma ustası Bakıda: havalandırma montajı, kanal təmizliyi və zont/mühərrik xidmətlərini ayrı seçin. Məkan və təhvil yoxlamasını dəqiqləşdirin.",
     "intro": "Mətbəx aspiratoru bağlantısı ilə obyektin tam havalandırma layihəsi fərqli sifarişlərdir. Məkanın istifadəsini, mövcud kanalları və səs tələbinizi bildirərək uyğun iş həcmi üçün təklif alın.",
     "scope": ["Hava kanalı və aspirasiya montajı", "Ventilyator və çıxış xəttinin xidməti", "Mövcud sistemin hava axını üzrə baxışı"],
     "pricing": ["Kanalın ölçüsü və marşrutu", "Avadanlıq və səs tələbləri", "Layihə ilə montajın ayrıca həcmi"],
@@ -80,8 +80,8 @@
     "queries": ["havalandırma ustası", "havalandırma sistemi quraşdırılması", "aspirasiya montajı"], "related": ["kondisioner-ustasi", "elektrik"], "sources": []
   },
   "pitiminutka-ustasi": {
-    "name": "Pitiminutka ustası", "heading": "Pitiminutka təmiri — axın tipli su qızdırıcısı servisi",
-    "description": "Pitiminutka və axın tipli su qızdırıcısı üçün modelə uyğun usta seçin. Alışma, isti su və servisə baxış şərtlərini əvvəlcədən soruşun.",
+    "name": "Pitiminutka ustası", "heading": "Pitiminutka ustası — su qızdırıcısı təmiri və servis",
+    "description": "Pitiminutka ustası Bakıda: axın tipli su qızdırıcısı təmiri üçün modelə uyğun usta seçin. Alışma, isti su və servisə baxış şərtlərini əvvəl soruşun.",
     "intro": "Axın tipli su qızdırıcısında suyun gəlməsi, alışma və temperaturla bağlı müşahidələrinizi ayrı qeyd edin. Qaz hissəsinə müdaxiləni bu avadanlıq üzrə ixtisaslaşmış xidmətlə razılaşdırın.",
     "scope": ["Alışma və işləmə probleminin diaqnostikası", "İsti su rejimi üzrə baxış", "Modelə uyğun hissə və servis təklifi"],
     "pricing": ["Cihazın modeli və alışma sistemi", "İstilik dəyişdiricisi və digər hissələr", "Bağlantı və montaj vəziyyəti"],
@@ -90,8 +90,8 @@
     "queries": ["pitiminutka ustası", "pitiminutka təmiri", "axın tipli su qızdırıcısı"], "related": ["ariston-ustasi", "qaz-ustasi", "santexnik"], "sources": []
   },
   "qaz-ustasi": {
-    "name": "Qaz ustası", "heading": "Qaz avadanlığı ustası — cihaz və iş növünə uyğun xidmət",
-    "description": "Qaz cihazı üzrə xidmət axtararkən avadanlığı və işi dəqiq göstərin. İxtisas, müdaxilə həcmi və xidmət şərtlərini icraçı ilə yoxlayın.",
+    "name": "Qaz ustası", "heading": "Qaz ustası — qaz avadanlığı təmiri və baxışı",
+    "description": "Qaz ustası Bakıda: qaz cihazı üzrə xidmət axtararkən avadanlığı və işi dəqiq göstərin. İxtisas, müdaxilə həcmi və xidmət şərtlərini icraçı ilə yoxlayın.",
     "intro": "Qaz plitəsi, isitmə cihazı və qaz təchizatı xətti üzrə işləri bir sifariş kimi qəbul etməyin. Hansı avadanlığa xidmət lazım olduğunu bildirin və uyğun ixtisası olan icraçı seçin.",
     "scope": ["Cihazın iş rejimi üzrə baxış", "Modelə uyğun qaz avadanlığı servisi", "Müdaxilənin və qəbul yoxlamasının razılaşdırılması"],
     "pricing": ["Cihaz xidməti ilə xətt işinin fərqi", "Dəyişdiriləcək hissələr", "Baxış və tələb olunan yoxlamalar"],
@@ -100,8 +100,8 @@
     "queries": ["qaz ustası", "qaz cihazı təmiri", "qaz avadanlığı servisi"], "related": ["kombi-ustasi", "soba-ustasi", "iran-peci-ustasi"], "sources": ["azerigas-emergency"]
   },
   "iran-peci-ustasi": {
-    "name": "İran peçi ustası", "heading": "İran peçi təmiri — isitmə cihazına baxış və servis",
-    "description": "İran peçi üçün alışma və işləmə problemi üzrə servis seçin. Model, quraşdırma vəziyyəti və yoxlama şərtlərini əvvəlcədən dəqiqləşdirin.",
+    "name": "İran peçi ustası", "heading": "İran peçi ustası — təmir, alışma və servis baxışı",
+    "description": "İran peçi ustası Bakıda: alışma və işləmə problemi üzrə təmir servisi seçin. Model, quraşdırma vəziyyəti və yoxlama şərtlərini əvvəl dəqiqləşdirin.",
     "intro": "İsitmə cihazının alışmaması və işləyərkən dayanması barədə əlamətləri təsvir edin. Modelə uyğun xidmət və quraşdırma vəziyyətinin baxışı barədə soruşun; daxili sazlama üçün özbaşına müdaxilə etməyin.",
     "scope": ["Alışma probleminin diaqnostikası", "İşləmə və dayanma əlamətlərinin baxışı", "Modelə uyğun hissə üzrə servis"],
     "pricing": ["Cihazın modeli və yaşı", "Sazlama ilə hissə təmirinin fərqi", "Quraşdırma yerinin yoxlanması"],
@@ -110,8 +110,8 @@
     "queries": ["İran peçi ustası", "İran peçi təmiri", "qaz peçi servisi"], "related": ["qaz-ustasi", "havalandirma-ustasi"], "sources": ["azerigas-emergency"]
   },
   "soba-ustasi": {
-    "name": "Soba ustası", "heading": "Soba və bişirmə paneli təmiri — qaz və elektrik modelləri",
-    "description": "Soba qızdırmır, alışmır və ya temperaturu saxlamır? Cihazın qaz və ya elektrik modelinə uyğun servis və hissə təkliflərini müqayisə edin.",
+    "name": "Soba ustası", "heading": "Soba ustası — qaz və elektrik sobası təmiri",
+    "description": "Soba ustası Bakıda: soba qızdırmır, alışmır və ya temperaturu saxlamır? Qaz və ya elektrik modelinə uyğun servis və hissə təkliflərini müqayisə edin.",
     "intro": "Soba kamerası ilə bişirmə panelində yaranan problemləri fərqləndirin. Cihazın qaz və ya elektriklə işləməsi, ankastre olması və model etiketi hansı xidmətin uyğun olduğunu müəyyənləşdirir.",
     "scope": ["Qızdırma və temperatur probleminin baxışı", "Panel və soba idarəetməsinin diaqnostikası", "Ankastre cihazın sökülmə və montaj işi"],
     "pricing": ["Qaz və elektrik hissələrinin fərqi", "Ankastre sökülmə imkanı", "Ehtiyat hissəsi və sınaq işi"],
@@ -130,8 +130,8 @@
     "queries": ["su filtri ustası", "su filtri kartric dəyişimi", "su filtri quraşdırılması"], "related": ["santexnik", "su-sizma"], "sources": []
   },
   "tozsoran-ustasi": {
-    "name": "Tozsoran ustası", "heading": "Tozsoran təmiri — dartım, motor və enerji problemləri",
-    "description": "Adi və robot tozsoran üçün modelə uyğun təmir seçin. Dartım azalması, şarj və iş zamanı dayanma əlamətlərini servisə bildirin.",
+    "name": "Tozsoran ustası", "heading": "Tozsoran ustası — təmir, motor və dartım bərpası",
+    "description": "Tozsoran ustası Bakıda: adi və robot tozsoran üçün modelə uyğun təmir seçin. Dartım azalması, şarj və dayanma əlamətlərini servisə bildirin.",
     "intro": "Şəbəkə ilə işləyən, akkumulyatorlu və robot tozsoranların servis ehtiyacı fərqlənir. Problem cihazın özündə, şarj bazasında və ya aksesuarında görünürsə bunu müraciətdə ayrıca yazın.",
     "scope": ["Dartım və motor işinin yoxlanması", "Akkumulyator və şarj sisteminin diaqnostikası", "Robot tozsoranın modelə uyğun servisi"],
     "pricing": ["Cihaz və aksesuarın növü", "Motor və ya akkumulyator uyğunluğu", "Diaqnostika və hissə əldə edilməsi"],
@@ -140,8 +140,8 @@
     "queries": ["tozsoran təmiri", "robot tozsoran servisi", "tozsoran ustası"], "related": ["diger-elektronika", "meiset-texnikasi"], "sources": []
   },
   "tikis-masini-ustasi": {
-    "name": "Tikiş maşını ustası", "heading": "Tikiş maşını təmiri — tikiş və mexanizm",
-    "description": "Məişət və sənaye tikiş maşını üçün uyğun usta seçin. Tikiş atlama, sap qırma və mexanizm əlamətlərini model məlumatı ilə birlikdə bildirin.",
+    "name": "Tikiş maşını ustası", "heading": "Tikiş maşını ustası — təmir və mexanizm sazlaması",
+    "description": "Tikiş maşını ustası Bakıda: məişət və sənaye tikiş maşını üçün uyğun usta seçin. Tikiş atlama, sap qırma və mexanizm əlamətlərini bildirin.",
     "intro": "Tikişin atlanması, sapın qırılması və materialın irəliləməməsi barədə əlamətləri qeyd edin. Məişət maşını, overlok və sənaye avadanlığına xidmət göstərilməsi imkanını ayrıca dəqiqləşdirin.",
     "scope": ["Tikiş və material ötürməsinin yoxlanması", "Mexanizm sazlanması üzrə baxış", "Motor və idarəetmə probleminin diaqnostikası"],
     "pricing": ["Məişət və sənaye modelinin fərqi", "Sazlama və hissə dəyişimi", "Emalatxana və yerində xidmət"],
@@ -150,7 +150,7 @@
     "queries": ["tikiş maşını ustası", "overlok təmiri", "tikiş maşını sazlanması"], "related": ["diger-meiset-texnikasi", "elektronika"], "sources": []
   },
   "diger-meiset-texnikasi": {
-    "name": "Digər məişət texnikası ustaları", "heading": "Digər məişət cihazlarının təmiri — avadanlığa uyğun usta",
+    "name": "Digər məişət texnikası ustaları", "heading": "Digər məişət texnikası ustaları — cihaz təmiri",
     "description": "Ütü, blender və ayrıca bölməsi olmayan məişət cihazı üçün servis seçin. Model, nasazlıq və hissə tapılması imkanını əvvəlcədən soruşun.",
     "intro": "Ayrıca bölməsi olmayan cihazın tam adını və nə üçün istifadə edildiyini yazın. Təmir qəbulunun, ehtiyat hissəsi əldə edilməsinin və diaqnostika haqqının həmin model üçün təsdiqini alın.",
     "scope": ["Kiçik mətbəx cihazlarının baxışı", "Buxar və qulluq avadanlığının servisi", "Modeli müəyyənləşdirilən digər cihazlar"],
