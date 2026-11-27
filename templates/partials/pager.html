@@ -1,9 +1,9 @@
 {% comment %}Usage: {% include 'partials/pager.html' with page=elanlar q=axtaris fragment='elanlar' page_range=page_range %}{% endcomment %}
 {% if page.paginator.num_pages > 1 %}
-<nav class="pager" aria-label="Səhifələr">
+<nav class="pager" aria-label="{% if is_ru %}Страницы{% else %}Səhifələr{% endif %}">
   {% if page.has_previous %}
     <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}{% if elan_seed and elan_seed != 'crawler' %}seed={{ elan_seed }}&{% endif %}page={{ page.previous_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="prev" class="pager-nav pager-prev">
-      {% include 'partials/ui_icon.html' with name='chevron' class='flip' %} Əvvəlki
+      {% include 'partials/ui_icon.html' with name='chevron' class='flip' %} {% if is_ru %}Назад{% else %}Əvvəlki{% endif %}
     </a>
   {% endif %}
 
@@ -21,7 +21,7 @@
 
   {% if page.has_next %}
     <a href="?{% if q %}q={{ q|urlencode }}&{% endif %}{% if elan_seed and elan_seed != 'crawler' %}seed={{ elan_seed }}&{% endif %}page={{ page.next_page_number }}{% if fragment %}#{{ fragment }}{% endif %}" rel="next" class="pager-nav pager-next">
-      Sonrakı {% include 'partials/ui_icon.html' with name='chevron' %}
+      {% if is_ru %}Далее{% else %}Sonrakı{% endif %} {% include 'partials/ui_icon.html' with name='chevron' %}
     </a>
   {% endif %}
 </nav>

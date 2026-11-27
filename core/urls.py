@@ -13,6 +13,8 @@ urlpatterns = [
     path('ru/elanlar/', views.elan_siyahi, {'lang': 'ru'}, name='ru_elan_siyahi'),
     path('ru/xidmet/<slug:slug>/', views.xidmet_detail, {'lang': 'ru'}, name='ru_xidmet_detail'),
     path('ru/xidmet/<slug:slug>/<slug:lokasiya>/', views.xidmet_detail, {'lang': 'ru'}, name='ru_xidmet_lokasiya_detail'),
+    re_path(r'^ru/elan/(?P<pk>\d+)-(?P<slug>[a-z0-9-]+)/$', views.elan_detail, {'lang': 'ru'}, name='ru_elan_detail'),
+    path('ru/elan/<int:pk>/', views.elan_detail, {'lang': 'ru'}),
     path('ru/haqqimizda/', views.haqqimizda, {'lang': 'ru'}, name='ru_haqqimizda'),
     path('health/', readiness, name='health'),
     re_path(r'^(?P<key>[a-zA-Z0-9]{16,64})\.txt$', indexnow_key_view, name='indexnow_key'),

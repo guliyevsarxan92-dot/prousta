@@ -41,7 +41,8 @@
             if (spinner) spinner.style.display = 'none';
           } else {
             nextPage = null;
-            statusBox.innerHTML = '<span class="all-loaded-note">Bütün elanlar göstərildi</span>';
+            var isRu = document.documentElement.lang === 'ru';
+            statusBox.innerHTML = '<span class="all-loaded-note">' + (isRu ? 'Показаны все объявления' : 'Bütün elanlar göstərildi') + '</span>';
             if (pager) pager.style.display = 'none';
           }
           isLoading = false;

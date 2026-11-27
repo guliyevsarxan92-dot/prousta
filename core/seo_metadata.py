@@ -10,7 +10,10 @@ from django.utils.html import strip_tags
 
 from .seo import PUBLIC_VIEWS, SITE_URL, language_paths, seo_context
 from .service_content import get_content, metadata_value
-from .ru_content import category_name_ru, location_ru, priority_page_ru, service_faq_ru
+from .ru_content import (
+    category_name_ru, city_ru, listing_areas_ru, listing_description_ru,
+    listing_title_ru, location_ru, priority_page_ru, service_faq_ru,
+)
 
 BRAND = 'Prousta.az'
 ORGANIZATION_ID = SITE_URL + '/#organization'
@@ -163,8 +166,8 @@ def build_metadata(context):
             canonical_path += f'?page={page_number}'
         noindex |= not context.get('kat_indexable', False)
     elif ad:
-        view = 'elan_detail'
-        canonical_path = ad.get_absolute_url()
+        view = 'ru_elan_detail' if is_ru else 'elan_detail'
+        canonical_path = f'{prefix}{ad.get_absolute_url()}'
         noindex |= ad.status != 'aktiv' or bool(ad.bitis_tarixi and ad.bitis_tarixi <= timezone.now())
     elif article:
         view = 'problem_detail'
@@ -251,32 +254,54 @@ def build_metadata(context):
                                       'acceptedAnswer': {'@type': 'Answer', 'text': answer}}
                                      for question, answer in faq]})
     elif ad:
-        area_names = ad.erazi_adlari
-        primary_area = area_names[0] if area_names else ''
-        location_label = ad.sheher or 'Bakı'
-        if primary_area and primary_area.lower() not in location_label.lower():
-            location_label = f'{location_label}, {primary_area}'
         price_str = f'{floatformat(ad.qiymet, "-2")} AZN' if ad.qiymet else ''
         profile = getattr(ad.istifadeci, 'profil', None)
         provider_name = ' '.join(filter(None, [getattr(profile, 'ad', ''), getattr(profile, 'soyad', '')]))
-        title_parts = [ad.bashliq, location_label]
-        if price_str:
-            title_parts.append(price_str)
-        elif provider_name and provider_name.lower() not in ad.bashliq.lower():
-            title_parts.append(provider_name)
-        elif ad.nomre:
-            title_parts.append(f'#{ad.nomre}')
-        title = ' — '.join(title_parts) + f' | {BRAND}'
-        desc_prefix = f'{ad.bashliq} ({location_label})'
-        if price_str:
-            desc_prefix += f', qiymət: {price_str}'
-        if provider_name:
-            desc_prefix += f', icraçı: {provider_name}'
-        description = f'{desc_prefix}. ' + plain(ad.acaqlama, 130)
-        crumbs += [('Elanlar', '/elanlar/')]
-        if ad.kategori:
-            crumbs.append((ad.kategori.ad, f'/xidmet/{ad.kategori.slug}/'))
-        crumbs.append((ad.bashliq, ad.get_absolute_url()))
+        if is_ru:
+            ru_ad_title = listing_title_ru(ad)
+            ru_ad_city = city_ru(ad.sheher or 'Баку')
+            title_parts = [ru_ad_title]
+            if ru_ad_city.lower() not in ru_ad_title.lower():
+                title_parts.append(ru_ad_city)
+            if price_str:
+                title_parts.append(price_str)
+            elif provider_name:
+                title_parts.append(provider_name)
+            title = ' — '.join(title_parts) + f' | {BRAND}'
+            desc_prefix = f'{ru_ad_title} ({ru_ad_city})'
+            if price_str:
+                desc_prefix += f', цена: {price_str}'
+            if provider_name:
+                desc_prefix += f', мастер: {provider_name}'
+            description = f'{desc_prefix}. ' + plain(listing_description_ru(ad), 130)
+            crumbs += [('Объявления', '/ru/elanlar/')]
+            if ad.kategori:
+                crumbs.append((category_name_ru(ad.kategori), f'/ru/xidmet/{ad.kategori.slug}/'))
+            crumbs.append((ru_ad_title, f'/ru{ad.get_absolute_url()}'))
+        else:
+            area_names = ad.erazi_adlari
+            primary_area = area_names[0] if area_names else ''
+            location_label = ad.sheher or 'Bakı'
+            if primary_area and primary_area.lower() not in location_label.lower():
+                location_label = f'{location_label}, {primary_area}'
+            title_parts = [ad.bashliq, location_label]
+            if price_str:
+                title_parts.append(price_str)
+            elif provider_name and provider_name.lower() not in ad.bashliq.lower():
+                title_parts.append(provider_name)
+            elif ad.nomre:
+                title_parts.append(f'#{ad.nomre}')
+            title = ' — '.join(title_parts) + f' | {BRAND}'
+            desc_prefix = f'{ad.bashliq} ({location_label})'
+            if price_str:
+                desc_prefix += f', qiymət: {price_str}'
+            if provider_name:
+                desc_prefix += f', icraçı: {provider_name}'
+            description = f'{desc_prefix}. ' + plain(ad.acaqlama, 130)
+            crumbs += [('Elanlar', '/elanlar/')]
+            if ad.kategori:
+                crumbs.append((ad.kategori.ad, f'/xidmet/{ad.kategori.slug}/'))
+            crumbs.append((ad.bashliq, ad.get_absolute_url()))
         if ad.primary_photo:
             image, image_default = absolute_url(ad.primary_photo.shekil.url), False
     elif article:
@@ -321,14 +346,17 @@ def build_metadata(context):
             for index, (label, path) in enumerate(crumbs, start=1)]})
     if ad and not noindex:
         service_id = canonical + '#service'
-        areas = ad.erazi_melumatlari
+        areas = listing_areas_ru(ad) if is_ru else ad.erazi_melumatlari
+        city_name = city_ru(ad.sheher) if is_ru else ad.sheher
         if areas:
-            area_served = [{'@type': 'Place', 'name': ad.sheher},
+            area_served = [{'@type': 'Place', 'name': city_name},
                            *[{'@type': 'AdministrativeArea', 'name': loc['tam_ad']} for loc in areas]]
         else:
-            area_served = {'@type': 'Place', 'name': ad.sheher}
+            area_served = {'@type': 'Place', 'name': city_name}
+        srv_name = plain(listing_title_ru(ad) if is_ru else ad.bashliq)
+        srv_desc = plain(listing_description_ru(ad) if is_ru else ad.acaqlama, 500)
         service = {'@type': 'Service', '@id': service_id, 'url': canonical,
-                   'name': plain(ad.bashliq), 'description': plain(ad.acaqlama, 500),
+                   'name': srv_name, 'description': srv_desc,
                    'image': image, 'broker': {'@id': ORGANIZATION_ID},
                    'areaServed': area_served}
         profile = getattr(ad.istifadeci, 'profil', None)
@@ -339,7 +367,7 @@ def build_metadata(context):
             if ad.phone_e164:
                 service['provider']['telephone'] = ad.phone_e164
         if ad.kategori:
-            service['serviceType'] = ad.kategori.ad
+            service['serviceType'] = category_name_ru(ad.kategori) if is_ru else ad.kategori.ad
         if ad.qiymet:
             service['offers'] = {'@type': 'Offer', 'price': format(ad.qiymet, '.2f'),
                                  'priceCurrency': 'AZN', 'url': canonical}

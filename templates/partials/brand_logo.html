@@ -1,5 +1,5 @@
 {% load static %}
-<a href="{% url 'index' %}" class="brand{% if variant == 'light' %} brand--light{% endif %}" aria-label="Prousta.az — Ana səhifə">
+<a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}" class="brand{% if variant == 'light' %} brand--light{% endif %}" aria-label="Prousta.az — {% if is_ru %}Главная{% else %}Ana səhifə{% endif %}">
   {% if variant == 'light' %}
     <img src="{% static 'img/logo_text_light.png' %}" alt="Prousta.az" class="brand-logo-img" width="160" height="32" loading="eager">
   {% else %}

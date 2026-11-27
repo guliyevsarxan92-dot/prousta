@@ -15,12 +15,12 @@ CANONICAL_HOST = 'prousta.az'
 # Bu GET parametrləri olan səhifələr dublikat/axtarış səhifəsidir → noindex, follow
 _NOINDEX_PARAMS = {'q', 'ajax', 'kategori', 'k', 'next', 'sort', 'sheher', 'city', 'min_price', 'max_price'}
 _PAGINATED_PATHS = ('/elanlar/', '/problemler/', '/xidmet/', '/ru/elanlar/', '/ru/xidmet/')
-_BILINGUAL_PREFIXES = ('/elanlar/', '/xidmet/', '/haqqimizda/')
+_BILINGUAL_PREFIXES = ('/elanlar/', '/xidmet/', '/elan/', '/haqqimizda/')
 PUBLIC_VIEWS = {
     'index', 'elan_siyahi', 'xidmet_detail', 'xidmet_lokasiya_detail', 'elan_detail',
     'problemler_siyahi', 'problem_detail', 'haqqimizda', 'gizlilik',
     'istifade_sertleri', 'mobil_app',
-    'ru_index', 'ru_elan_siyahi', 'ru_xidmet_detail', 'ru_xidmet_lokasiya_detail', 'ru_haqqimizda',
+    'ru_index', 'ru_elan_siyahi', 'ru_xidmet_detail', 'ru_xidmet_lokasiya_detail', 'ru_elan_detail', 'ru_haqqimizda',
 }
 
 

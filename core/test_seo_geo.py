@@ -455,11 +455,22 @@ class SeoGeoTests(TestCase):
         self.assertIn(self.local, ru_search.context['elanlar'])
         self.assertEqual(ru_search.context['elanlar'][0].pk, self.local.pk)
 
-        # 5. Russian sitemap (/sitemap-ru.xml) includes active & priority RU pages, excludes empty categories
+        # 5. Russian listing detail (/ru/elan/<id>-<slug>/) renders translated title, city, description, and hreflang
+        ru_ad_url = '/ru' + self.local.get_absolute_url()
+        ru_ad = self.client.get(ru_ad_url)
+        self.assertEqual(ru_ad.status_code, 200)
+        self.assertContains(ru_ad, '<html lang="ru">')
+        self.assertContains(ru_ad, 'Ремонт комби (Ясамал)')
+        self.assertContains(ru_ad, 'Баку, Ясамал')
+        self.assertContains(ru_ad, f'<link rel="canonical" href="https://prousta.az{ru_ad_url}">')
+        self.assertContains(ru_ad, f'<link rel="alternate" hreflang="az" href="https://prousta.az{self.local.get_absolute_url()}">')
+
+        # 6. Russian sitemap (/sitemap-ru.xml) includes active & priority RU pages, listings, and excludes empty categories
         ru_sitemap = self.client.get('/sitemap-ru.xml')
         self.assertEqual(ru_sitemap.status_code, 200)
         self.assertContains(ru_sitemap, 'https://prousta.az/ru/')
         self.assertContains(ru_sitemap, 'https://prousta.az/ru/xidmet/kombi-ustasi/')
         self.assertContains(ru_sitemap, 'https://prousta.az/ru/xidmet/kombi-yuyulmasi/')
         self.assertContains(ru_sitemap, f'https://prousta.az/ru/xidmet/{self.category.slug}/yasamal/')
+        self.assertContains(ru_sitemap, f'https://prousta.az{ru_ad_url}')
         self.assertNotContains(ru_sitemap, 'https://prousta.az/ru/xidmet/yukdasima/')

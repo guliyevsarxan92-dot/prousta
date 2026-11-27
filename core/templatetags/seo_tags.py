@@ -1,7 +1,10 @@
 from django import template
 from core.seo_metadata import build_metadata, service_faq
 from core.service_content import get_content, additional_html, source_links
-from core.ru_content import category_name_ru, service_brief_ru
+from core.ru_content import (
+    category_name_ru, city_ru, listing_areas_ru, listing_description_ru,
+    listing_title_ru, service_brief_ru,
+)
 
 register = template.Library()
 
@@ -9,6 +12,32 @@ register = template.Library()
 @register.filter
 def ru_cat(category):
     return category_name_ru(category)
+
+
+@register.filter
+def ru_title(ad):
+    return listing_title_ru(ad)
+
+
+@register.filter
+def ru_desc(ad):
+    return listing_description_ru(ad)
+
+
+@register.filter
+def ru_city(ad_or_city):
+    city = getattr(ad_or_city, 'sheher', ad_or_city)
+    return city_ru(city)
+
+
+@register.filter
+def ru_areas(ad):
+    return listing_areas_ru(ad)
+
+
+@register.filter
+def ru_url(ad):
+    return '/ru' + ad.get_absolute_url()
 
 
 @register.inclusion_tag('partials/seo_head.html', takes_context=True)

@@ -64,7 +64,7 @@
       <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Стоимость согласуется с автором объявления.{% endif %} Итоговая сумма зависит от объёма работ, запчастей и условий выезда.</dd>
       <dt><strong>Согласование заказа</strong></dt><dd>Адрес, время визита, точный перечень работ и условия гарантии уточняйте напрямую у автора объявления.</dd>
     </dl>
-    {% if local_listings %}<p style="margin-top:12px"><strong>Объявления с обслуживанием района {{ lokasiya_melumat.ad }}:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+    {% if local_listings %}<p style="margin-top:12px"><strong>Объявления с обслуживанием района {{ lokasiya_melumat.ad }}:</strong> {% for local in local_listings %}<a href="{{ local|ru_url }}">{{ local|ru_title }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
   </section>
 
   {% with alts=aktiv_kategori.alt_kateqoriyalar.all %}{% if alts %}

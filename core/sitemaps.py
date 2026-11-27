@@ -164,6 +164,12 @@ class RuSitemap(PublicSitemap):
                 urls.append('/ru' + page['url'])
         for cat_slug, loc_slug in indexable_location_pairs():
             urls.append(f'/ru/xidmet/{cat_slug}/{loc_slug}/')
+        now = timezone.now()
+        active_ads = Elan.objects.filter(status='aktiv').filter(
+            Q(bitis_tarixi__isnull=True) | Q(bitis_tarixi__gt=now)
+        ).order_by('-yenilendi', '-pk')
+        for ad in active_ads:
+            urls.append('/ru' + ad.get_absolute_url())
         return urls
 
     def location(self, item):

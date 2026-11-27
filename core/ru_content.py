@@ -840,3 +840,238 @@ def service_faq_ru(category, location_info=None, min_price=None, priority_page=N
             'Условия и срок гарантии зависят от вида услуги и конкретного исполнителя. Обязательно уточните гарантийные обязательства перед началом работ.',
         ),
     ]
+
+
+CITY_TERMS_RU = [
+    ('Bakı — Yasamal', 'Баку — Ясамал'),
+    ('Bakı — Nərimanov', 'Баку — Нариманов'),
+    ('Bakı — Nəsimi', 'Баку — Насими'),
+    ('Bakı — Xətai', 'Баку — Хатаи'),
+    ('Bakı — Binəqədi', 'Баку — Бинагади'),
+    ('Bakı — Nizami', 'Баку — Низами'),
+    ('Bakı — Səbail', 'Баку — Сабаил'),
+    ('Bakı — Sabunçu', 'Баку — Сабунчи'),
+    ('Bakı — Suraxanı', 'Баку — Сураханы'),
+    ('Bakı — Xəzər', 'Баку — Хазар'),
+    ('Bakı — Qaradağ', 'Баку — Гарадаг'),
+    ('Bakı — Pirallahı', 'Баку — Пираллахи'),
+    ('Bakı — Abşeron', 'Баку — Абшерон'),
+    ('Bakı — Xırdalan', 'Баку — Хырдалан'),
+    ('Bakı — Masazır', 'Баку — Масазыр'),
+    ('Bakı — Sumqayıt', 'Баку — Сумгаит'),
+    ('Bakı — Saray', 'Баку — Сарай'),
+    ('Bakı — Mehdiabad', 'Баку — Мехдиабад'),
+    ('Bakı', 'Баку'),
+    ('Yasamal', 'Ясамал'),
+    ('Nərimanov', 'Нариманов'),
+    ('Nəsimi', 'Насими'),
+    ('Xətai', 'Хатаи'),
+    ('Binəqədi', 'Бинагади'),
+    ('Nizami', 'Низами'),
+    ('Səbail', 'Сабаил'),
+    ('Sabunçu', 'Сабунчи'),
+    ('Suraxanı', 'Сураханы'),
+    ('Xəzər', 'Хазар'),
+    ('Qaradağ', 'Гарадаг'),
+    ('Pirallahı', 'Пираллахи'),
+    ('Abşeron', 'Абшерон'),
+    ('Xırdalan', 'Хырдалан'),
+    ('Masazır', 'Масазыр'),
+    ('Sumqayıt', 'Сумгаит'),
+    ('Saray', 'Сарай'),
+    ('Mehdiabad', 'Мехдиабад'),
+    ('Gəncə', 'Гянджа'),
+    ('Mingəçevir', 'Мингячевир'),
+    ('Lənkəran', 'Ленкорань'),
+    ('Şəki', 'Шеки'),
+    ('Quba', 'Губа'),
+    ('Şamaxı', 'Шамахы'),
+    ('Qəbələ', 'Габала'),
+]
+
+EXACT_TITLE_RU = {
+    'kombi ustası': 'Мастер по комби — ремонт и сервис',
+    'kombi ustasi': 'Мастер по комби — ремонт и сервис',
+    'kombi servis': 'Сервис и ремонт комби',
+    'kombi quraşdırılması və təmiri': 'Установка и ремонт комби',
+    'kombi təmiri': 'Ремонт комби',
+    'kondisioner ustası': 'Мастер по кондиционерам — ремонт и установка',
+    'kondisioner ustasi': 'Мастер по кондиционерам — ремонт и установка',
+    'havalandırma ustası': 'Мастер по вентиляции — монтаж и чистка',
+    'havalandırma və kondisioner': 'Системы вентиляции и кондиционирования',
+    'havalandırma və kondisioner ustası': 'Мастер по вентиляции и кондиционерам',
+    'havalandırma kandisioner ustasi': 'Мастер по вентиляции и кондиционерам',
+    'havalandırma quraşdırılması': 'Монтаж систем вентиляции',
+    'havalandırma': 'Услуги вентиляции',
+    'su sızma ustası': 'Поиск скрытой утечки воды аппаратом',
+    'su sızma': 'Поиск скрытой утечки воды',
+    'kanalizasiya ustası': 'Прочистка канализации аппаратом',
+    'kanalizasiya borularının aparatla acilmasi': 'Аппаратная прочистка канализационных труб',
+    'santexnik': 'Услуги сантехника в Баку',
+    'santexnika təmir xidmətləri': 'Ремонт и установка сантехники',
+    'santexnik ustası | evə çağırış | santexnika təmiri və quraşdırılması': 'Сантехник на дом — ремонт и монтаж сантехники',
+    'paltaryuyan ustası': 'Мастер по ремонту стиральных машин',
+    'lökbatan paltaryuyan təmiri': 'Ремонт стиральных машин (Локбатан)',
+    'qabyuyan ustası': 'Мастер по ремонту посудомоечных машин',
+    'soyuducu ustası': 'Мастер по ремонту холодильников',
+    'aristonların quraşdırılması və təmiri': 'Установка и ремонт бойлеров Ariston',
+    'boyler ustası': 'Мастер по ремонту и чистке бойлеров',
+    'pitiminutka usta': 'Мастер по ремонту газовых колонок (пятиминуток)',
+    'iran sobalarının quraşdırılması və təmiri': 'Установка и ремонт иранских печей',
+    'iran qaz soba temir qurasdirilma': 'Ремонт и установка иранских газовых печей',
+    'elektrik xidməti və kamera quraşdırılması': 'Услуги электрика и установка камер видеонаблюдения',
+    'malyar': 'Малярные работы и ремонт',
+    'malyar usta': 'Услуги мастера-маляра',
+    'malyar xidmətləri': 'Малярные работы под ключ',
+    'mebel ustası': 'Мастер по сборке и ремонту мебели',
+    'hamam ucun moydadir': 'Мойдодыры и мебель для ванной на заказ',
+    'duş kabini təmiri üzrə mütəxəssis': 'Мастер по ремонту и установке душевых кабин',
+    'epson printer təmiri': 'Ремонт и обслуживание принтеров Epson',
+    'mənzil, digər məkanlar üçün dəqiq texniki çertyojlar': 'Точные технические чертежи для квартир и помещений',
+}
+
+DESC_TEMPLATES_RU = {
+    'kombi-ustasi': (
+        'Профессиональный ремонт, диагностика и обслуживание комби и систем отопления в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Диагностика неисправностей комби на дому и устранение кодов ошибок\n'
+        '• Промывка теплообменников (эсенжоров), радиаторов и контуров тёплого пола специальным аппаратом\n'
+        '• Ремонт электронных плат управления, циркуляционных насосов, трёхходовых клапанов и газовой автоматики\n'
+        '• Устранение падения давления, подкачка расширительного бака и ликвидация протечек\n'
+        '• Обслуживание всех марок: Immergas, Baxi, Bosch, DemirDöküm, Ariston, E.C.A, Viessmann, Ferroli, Vaillant и др.'
+    ),
+    'kondisioner-ustasi': (
+        'Ремонт, установка, чистка и заправка кондиционеров в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Заправка фреоном (R410A, R32, R22) и устранение утечек хладагента\n'
+        '• Мойка и антибактериальная чистка внутреннего и наружного блоков аппаратом высокого давления\n'
+        '• Ремонт электронных плат, замена компрессора, пускового конденсатора и вентилятора\n'
+        '• Прочистка дренажной системы и монтаж/демонтаж сплит-систем всех марок.'
+    ),
+    'havalandirma-ustasi': (
+        'Монтаж, ремонт и профессиональная чистка систем вентиляции и вытяжек в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Проектирование и установка воздуховодов, вытяжных зонтов и вентиляционных моторов (улиток) для ресторанов, кафе, офисов и домов\n'
+        '• Чистка вентиляционных каналов, жироуловителей и крыльчатки электродвигателей от жира и нагара\n'
+        '• Ремонт и замена вентиляторов, устранение шума и вибрации, восстановление тяги.'
+    ),
+    'su-sizma': (
+        'Аппаратный поиск и определение места скрытой утечки воды без разрушения кафеля и стен в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Обследование труб горячей и холодной воды, отопления и тёплого пола профессиональным тепловизором и акустическим геофоном\n'
+        '• Проверка контуров давлением (опрессовка) для точной локализации повреждения\n'
+        '• Точечное вскрытие и надёжный ремонт повреждённого участка трубы.'
+    ),
+    'kanalizasiya-ustasi': (
+        'Аппаратная прочистка и промывка канализационных труб и устранение засоров 24/7 в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Прочистка труб кухни, ванной, унитазов, трапов и стояков профессиональным электромеханическим тросом без демонтажа\n'
+        '• Гидродинамическая промывка наружных линий, жироуловителей и канализационных колодцев водой под высоким давлением\n'
+        '• Видеодиагностика труб эндоскопической камерой.'
+    ),
+    'paltaryuyan-ustasi': (
+        'Профессиональный ремонт стиральных машин на дому в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Замена сливного насоса (помпы), нагревательного элемента (ТЭНа), подшипников барабана и амортизаторов\n'
+        '• Ремонт электронной платы управления, замка дверцы (УБЛ), манжеты люка и впускного клапана\n'
+        '• Обслуживание всех марок: Samsung, LG, Bosch, Beko, Indesit, Ariston, Siemens, Electrolux и др.'
+    ),
+    'qabyuyan-ustasi': (
+        'Ремонт и подключение посудомоечных машин на дому в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Устранение проблем с нагревом воды, сливом, протечками (AquaStop) и плохим качеством мойки посуды\n'
+        '• Ремонт циркуляционного и сливного насоса, электронной платы, ТЭНа, датчиков и механизма дверцы.'
+    ),
+    'soyuducu-ustasi': (
+        'Ремонт бытовых, инверторных (No Frost) и витринных холодильников на дому в Баку ({areas}).\n\n'
+        'Выполняемые работы:\n'
+        '• Заправка фреоном (R600a, R134a), пайка контура и замена компрессора (мотора)\n'
+        '• Ремонт системы оттайки No Frost (ТЭН, датчик, таймер, вентилятор), термостата и электронной платы управления.'
+    ),
+    'santexnik': (
+        'Услуги опытного сантехника в Баку ({areas}): ремонт и монтаж сантехники.\n\n'
+        'Выполняемые работы:\n'
+        '• Установка и замена смесителей, сифонов, унитазов, бачков, раковин и душевых кабин\n'
+        '• Разводка и пайка водопроводных и отопительных труб, коллекторов, фильтров и насосов.'
+    ),
+}
+
+
+def city_ru(city_str: str) -> str:
+    if not city_str:
+        return 'Баку'
+    result = str(city_str)
+    for az, ru in CITY_TERMS_RU:
+        if az in result:
+            result = result.replace(az, ru)
+    return result
+
+
+def listing_areas_ru(ad) -> list:
+    result = []
+    for slug in getattr(ad, 'erazi_sluglari', ()):
+        loc = location_ru(slug)
+        if loc:
+            result.append(loc)
+    return result
+
+
+def listing_title_ru(ad) -> str:
+    raw = (getattr(ad, 'bashliq', '') or '').strip()
+    low = raw.lower()
+    cat = getattr(ad, 'kategori', None)
+    cat_slug = getattr(cat, 'slug', '')
+    areas = listing_areas_ru(ad)
+    area_suffix = ''
+    if areas:
+        first_area = areas[0]['ad']
+        area_suffix = f' ({first_area})'
+    elif getattr(ad, 'sheher', ''):
+        from .seo_locations import matching_locations
+        matched = matching_locations(ad.sheher)
+        if matched:
+            loc = location_ru(matched[0])
+            if loc:
+                area_suffix = f' ({loc["ad"]})'
+        elif '—' in ad.sheher:
+            district = city_ru(ad.sheher.split('—', 1)[1].strip())
+            area_suffix = f' ({district})'
+
+    if low in EXACT_TITLE_RU:
+        base = EXACT_TITLE_RU[low]
+        if area_suffix and '(' not in base:
+            return base + area_suffix
+        return base
+
+    if cat_slug in CATEGORIES_RU:
+        cat_ru = CATEGORIES_RU[cat_slug]
+        return f'{cat_ru}{area_suffix}'
+    return city_ru(raw)
+
+
+def listing_description_ru(ad) -> str:
+    cat = getattr(ad, 'kategori', None)
+    cat_slug = getattr(cat, 'slug', '')
+    areas = [loc['ad'] for loc in listing_areas_ru(ad)]
+    areas_str = ', '.join(areas[:6]) if areas else city_ru(getattr(ad, 'sheher', 'Баку'))
+    raw = (getattr(ad, 'acaqlama', '') or '').strip()
+
+    # Check if raw description is one of the long templated AZ descriptions or very short
+    is_template = any(marker in raw for marker in (
+        'Görülən işlər:', 'Təklif etdiyimiz xidmətlər:', 'Bakıətrafı qəsəbələrdə fəaliyyət göstərən',
+        'İstifadə etdiyimiz müasir avadanlıqlar', 'İstifadə olunan texnologiyalar', 'Butun texniki nasazliqlari',
+        'Kombi temiri',
+    ))
+    if cat_slug in DESC_TEMPLATES_RU and (is_template or len(raw) < 40):
+        base_desc = DESC_TEMPLATES_RU[cat_slug].format(areas=areas_str)
+        if raw and len(raw) < 40 and '13 il' in raw:
+            base_desc = 'Опыт работы мастера — 13 лет.\n\n' + base_desc
+        return base_desc
+
+    cat_ru = category_name_ru(cat) or 'Услуги мастера'
+    return (
+        f'Услуга по направлению «{cat_ru}» ({areas_str}). '
+        'Свяжитесь с исполнителем напрямую по телефону или в WhatsApp для уточнения объёма работ и стоимости.\n\n'
+        f'Описание от автора объявления:\n{raw}'
+    )
+

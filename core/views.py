@@ -328,26 +328,30 @@ def xidmet_detail(request, slug, lokasiya=None, lang='az'):
         'elan_seed': seed,
     })
 
-def elan_detail(request, pk, slug=None):
+def elan_detail(request, pk, slug=None, lang='az'):
+    is_ru = (lang == 'ru')
     elan = Elan.objects.select_related('kategori', 'kategori__ust_kategori', 'istifadeci__profil').prefetch_related('shekillar').filter(pk=pk).first()
     if elan is None:
         # Silinmiş elan: köhnə linki uyğun yeni səhifəyə 301 ilə ötürürük,
         # izi olmayan köhnə ID-lər üçün 410 Gone (Google onları tez çıxarır).
         iz = SilinmisElan.objects.select_related('kategori__ust_kategori').filter(elan_id=pk).first()
         if iz:
-            return redirect(replacement_url(iz.istifadeci_id, iz.kategori), permanent=True)
-        return render(request, '404.html', status=410)
+            target = replacement_url(iz.istifadeci_id, iz.kategori)
+            return redirect(('/ru' + target) if is_ru else target, permanent=True)
+        return render(request, '404.html', {'is_ru': is_ru}, status=410)
     user = request.user
     is_privileged = user.is_authenticated and (user.pk == elan.istifadeci_id or user.has_perm('core.view_elan'))
     if not is_privileged and not is_public(elan):
         # Müddəti bitmiş / deaktiv elan: noindex 404 əvəzinə yeni elana / xidmət səhifəsinə yönləndir.
         # Gözləmədə olan elan tezliklə aktivləşə bilər — ona görə müvəqqəti (302) yönləndirmə.
-        return redirect(replacement_url(elan.istifadeci_id, elan.kategori, exclude_pk=elan.pk),
+        target = replacement_url(elan.istifadeci_id, elan.kategori, exclude_pk=elan.pk)
+        return redirect(('/ru' + target) if is_ru else target,
                         permanent=elan.status != 'gozlemede')
     check_access(elan, request.user)
     # Slug mövcud deyilsə (köhnə /elan/<id>/) və ya səhvdirsə → 301 canonical
+    canonical_url = ('/ru' + elan.get_absolute_url()) if is_ru else elan.get_absolute_url()
     if slug != elan.slug:
-        return redirect(elan.get_absolute_url(), permanent=True)
+        return redirect(canonical_url, permanent=True)
     is_owner = request.user.is_authenticated and request.user == elan.istifadeci
     if not is_owner and not _is_bot(request):
         ip = _get_client_ip(request)
@@ -381,7 +385,9 @@ def elan_detail(request, pk, slug=None):
             )
             oxsar_elanlar.extend(elave)
 
-    return render(request, 'elan_detail.html', {
+    template_name = 'ru/elan_detail.html' if is_ru else 'elan_detail.html'
+    return render(request, template_name, {
+        'is_ru': is_ru,
         'elan': elan,
         'favorit': favorit,
         'oxsar_elanlar': oxsar_elanlar,
