@@ -104,15 +104,53 @@ def service_faq(context):
     return questions
 
 
+GOOGLE_MAPS_CID_URL = 'https://www.google.com/maps?cid=3860573795902979327'
+GOOGLE_BUSINESS_PLACE_URL = 'https://www.google.com/maps/place//data=!4m3!3m2!1s0xac1ad4a9b3a0ffe5:0x35938328d49b7fcf!12e1'
+
+
 def _organization():
-    return {'@type': 'Organization', '@id': ORGANIZATION_ID, 'name': BRAND,
-            'url': SITE_URL + '/', 'logo': {'@type': 'ImageObject',
-            'url': SITE_URL + '/static/img/icon_512.png'}, 'email': 'info@prousta.az',
-            'contactPoint': {'@type': 'ContactPoint', 'telephone': '+994515888884',
-                             'contactType': 'customer support', 'availableLanguage': ['az', 'ru']},
-            'sameAs': ['https://www.facebook.com/61568796886691',
-                       'https://www.instagram.com/prousta.az',
-                       'https://www.youtube.com/@prousta.servis.merkezi']}
+    return {
+        '@type': ['Organization', 'LocalBusiness'],
+        '@id': ORGANIZATION_ID,
+        'name': BRAND,
+        'alternateName': 'PROusta',
+        'url': SITE_URL + '/',
+        'image': SITE_URL + '/static/img/icon_512.png',
+        'logo': {
+            '@type': 'ImageObject',
+            'url': SITE_URL + '/static/img/icon_512.png',
+        },
+        'email': 'info@prousta.az',
+        'telephone': '+994515888884',
+        'priceRange': '$$',
+        'hasMap': GOOGLE_MAPS_CID_URL,
+        'address': {
+            '@type': 'PostalAddress',
+            'addressLocality': 'Bakı',
+            'addressRegion': 'Bakı',
+            'addressCountry': 'AZ',
+        },
+        'areaServed': [
+            {'@type': 'City', 'name': 'Bakı'},
+            {'@type': 'City', 'name': 'Sumqayıt'},
+            {'@type': 'AdministrativeArea', 'name': 'Abşeron'},
+            {'@type': 'Country', 'name': 'Azərbaycan'},
+        ],
+        'contactPoint': {
+            '@type': 'ContactPoint',
+            'telephone': '+994515888884',
+            'contactType': 'customer support',
+            'areaServed': 'AZ',
+            'availableLanguage': ['az', 'ru'],
+        },
+        'sameAs': [
+            GOOGLE_MAPS_CID_URL,
+            GOOGLE_BUSINESS_PLACE_URL,
+            'https://www.facebook.com/61568796886691',
+            'https://www.instagram.com/prousta.az',
+            'https://www.youtube.com/@prousta.servis.merkezi',
+        ],
+    }
 
 
 def _item_list(page, model='listing'):
