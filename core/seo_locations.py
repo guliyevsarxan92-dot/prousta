@@ -10,13 +10,23 @@ from .locations import LOKASIYALAR
 from .search import _normalized_expression, normalize
 
 
+_DISTINCT_SHORT_ALIASES = {
+    'zig', 'nzs', 'upd', 'qobu', 'qala', 'zire', 'puta', 'elet',
+    'xutor', 'bayil', 'sahil', 'razin', 'corat', 'saray', 'digah',
+    'kirov', 'ulduz', 'yasma', '8 km',
+}
+
+
 @lru_cache(maxsize=32)
 def location_pattern(slug):
     location = LOKASIYALAR[slug]
     # Short/generic aliases such as "bine" and "mkr" can refer to other districts.
     aliases = {normalize(location['ad']), normalize(slug)}
-    aliases.update(normalize(word) for word in location['keywords']
-                   if len(normalize(word)) >= 6 and normalize(word) not in {'abseron'})
+    aliases.update(
+        normalize(word) for word in location['keywords']
+        if (len(normalize(word)) >= 6 or normalize(word) in _DISTINCT_SHORT_ALIASES)
+        and normalize(word) not in {'abseron'}
+    )
     return r'(^|[^a-z0-9])(' + '|'.join(re.escape(word) for word in sorted(aliases)) + r')([^a-z0-9]|$)'
 
 

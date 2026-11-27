@@ -95,8 +95,10 @@ def llms_response(request):
             lines += ['', '## Rayon və şəhərlər üzrə lokal xidmət səhifələri']
             for cat_slug, loc_slug in loc_pairs[:60]:
                 cat_label = cat_names.get(cat_slug, cat_slug)
-                loc_label = LOKASIYALAR.get(loc_slug, {}).get('ad', loc_slug)
-                lines.append(f'- [{_markdown_label(f"{cat_label} — {loc_label}")}]({SITE_URL}/xidmet/{cat_slug}/{loc_slug}/)')
+                loc_info = LOKASIYALAR.get(loc_slug, {})
+                loc_label = loc_info.get('ad', loc_slug)
+                erazi_note = f' ({loc_info["erazi"]})' if loc_info.get('erazi') else ''
+                lines.append(f'- [{_markdown_label(f"{cat_label} — {loc_label}")}]({SITE_URL}/xidmet/{cat_slug}/{loc_slug}/){erazi_note}')
         lines += ['', '## Bələdçilər']
         lines += [f'- [{_markdown_label(row["bashliq"])}]({SITE_URL}/problemler/{row["slug"]}/)' for row in articles]
         from .ru_content import category_name_ru, priority_page_ru

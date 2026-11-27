@@ -146,14 +146,22 @@
         </div>
       </header>
 
-      {% if article_summary or article_service_links %}
+      {% if article_summary or article_service_links or article_location_links %}
       <aside class="panel" aria-label="Qısa cavab" style="margin-bottom:20px">
-        {% if article_summary %}<strong>Qısa məlumat</strong><p{% if article_service_links %} style="margin-bottom:10px"{% endif %}>{{ article_summary }}</p>{% endif %}
+        {% if article_summary %}<strong>Qısa məlumat</strong><p{% if article_service_links or article_location_links %} style="margin-bottom:10px"{% endif %}>{{ article_summary }}</p>{% endif %}
         {% if article_service_links %}
         <div style="font-size:13px;line-height:1.7;padding-top:{% if article_summary %}10px;border-top:1px solid #e2e8f0{% else %}0{% endif %}">
           <strong style="color:#0f172a">Uyğun xidmətlər:</strong>
           {% for srv in article_service_links %}
             <a href="{{ srv.url }}" style="color:#007b52;font-weight:{% if srv.is_primary %}700{% else %}600{% endif %};text-decoration:underline">{{ srv.name }}</a>{% if not forloop.last %} · {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if article_location_links %}
+        <div style="font-size:13px;line-height:1.7;padding-top:8px;margin-top:8px;border-top:1px dashed #e2e8f0">
+          <strong style="color:#0f172a">Ərazilər üzrə ustalar:</strong>
+          {% for loc in article_location_links %}
+            <a href="{{ loc.url }}" title="{{ loc.name }}" style="color:#007b52;font-weight:600;text-decoration:none">{{ loc.short_name }}</a>{% if not forloop.last %} · {% endif %}
           {% endfor %}
         </div>
         {% endif %}
@@ -185,6 +193,14 @@
           {% endif %}
         {% endfor %}
       </div>
+      {% if article_location_links %}
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.2);font-size:13px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center">
+        <span style="opacity:.9;font-weight:600">Rayon və şəhər seçin:</span>
+        {% for loc in article_location_links %}
+        <a href="{{ loc.url }}" style="color:#fff;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:14px;text-decoration:none;font-weight:600;font-size:12px">{{ loc.name }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
 
     {% if elanlar %}

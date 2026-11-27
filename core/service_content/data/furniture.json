@@ -50,8 +50,8 @@
     "queries": ["ofis mebeli", "ofis mebeli sifarişi", "ofis masası hazırlanması"], "related": ["mebel-ustasi", "vitrin-yigmaq", "metbex-mebelleri"], "sources": []
   },
   "mebel-ustasi": {
-    "name": "Mebel ustası", "heading": "Mebel ustası — istehsal, təmir və quraşdırma",
-    "description": "Mebel ustasına müraciətdə işin yeni istehsal, montaj və ya təmir olduğunu bildirin. Ölçü, material, aksesuar və təhvil şərtlərini yazılı təsdiqləyin.",
+    "name": "Mebel ustası", "heading": "Mebel ustası Bakıda — mebel yığılması, təmiri və sifarişi",
+    "description": "Mebel ustası Bakıda: mebellərin sökülüb-yığılması, təmiri və fərdi sifarişi üzrə elanları müqayisə edin. Ölçü, material və qiyməti usta ilə razılaşdırın.",
     "intro": "Mebel işinin növü təklifə və müddətə təsir edir. Foto, ölçü və gözlənilən nəticə paylaşın; material və montajın qiymətə daxil olub-olmadığını dəqiqləşdirin.",
     "scope": ["Tapşırıq və ölçülərin dəqiqləşdirilməsi", "Razılaşdırılmış istehsal, təmir və ya yığım", "Montaj və yekun yoxlama"],
     "pricing": ["İşin növü və ölçüsü", "Material, fasad və mexanizm", "Çatdırılma və yerində quraşdırma"],

@@ -10,8 +10,8 @@
     "queries": ["təmir tikinti xidmətləri", "ev təmiri smeta", "təmir ustaları"], "related": ["ev-temiri", "interyer-dizayn", "insaat-materiallari"], "sources": []
   },
   "elektrik": {
-    "name": "Elektrik", "heading": "Elektrik ustası — xətt, işıqlandırma və nasazlıq baxışı",
-    "description": "Elektrik xətti, priz, işıqlandırma və lövhə işləri üçün uyğun usta seçin. İşin həcmi, material və qəbul yoxlamalarını əvvəlcədən razılaşdırın.",
+    "name": "Elektrik", "heading": "Elektrik ustası — təmir, xətt çəkilişi və şit montajı",
+    "description": "Elektrik ustası Bakıda: elektrik xətti, priz, işıqlandırma, avtomat və şit işləri üçün usta seçin. İşin həcmi, material və yoxlamanı əvvəl razılaşdırın.",
     "intro": "Bir prizin dəyişməsi ilə mənzilin elektrik xəttinin yenilənməsi fərqli plan tələb edir. Mövcud sistemin vəziyyətini və qoşulacaq avadanlığı ixtisaslı icraçı ilə qiymətləndirin.",
     "scope": ["Priz və işıqlandırma montajı", "Xətt və elektrik lövhəsi üzrə işlər", "Nasazlığın ölçmə ilə yoxlanması"],
     "pricing": ["Nöqtələrin sayı və kabel marşrutu", "Səthin açılması və bərpası", "Material və qəbul ölçmələri"],
@@ -30,8 +30,8 @@
     "queries": ["cam balkon", "balkon şüşələnməsi", "cam balkon qiyməti"], "related": ["surgu-sistemleri", "plastik-qapi-pencere", "hebesebe-sistemi"], "sources": ["schueco-sliding"]
   },
   "plastik-qapi-pencere": {
-    "name": "Plastik qapı pəncərə", "heading": "Plastik qapı-pəncərə — hazırlanma, sazlama və montaj",
-    "description": "PVC qapı-pəncərə hazırlanması və təmiri üçün profil, şüşə paketi, mexanizm və montaj işlərini eyni şərtlərlə müqayisə edin.",
+    "name": "Plastik qapı pəncərə", "heading": "Plastik qapı-pəncərə ustası — təmir, sazlama və montaj",
+    "description": "Plastik qapı-pəncərə ustası Bakıda: PVC pəncərə təmiri, rezin və mexanizm sazlanması, şüşə paketi və yeni sifariş təkliflərini müqayisə edin.",
     "intro": "Yeni pəncərə sifarişi ilə mövcud qanadın sazlanması ayrı işlərdir. Hava və su keçirmə, bağlanma problemi və ölçü barədə məlumat uyğun xidmət təklifi almağa kömək edir.",
     "scope": ["Profil və şüşə paketi seçimi", "Qanad və bağlanma mexanizmi sazlaması", "Yeni çərçivənin montajı"],
     "pricing": ["Profil və şüşə paketinin tərkibi", "Açılan qanad və aksesuar sayı", "Sökülmə və kənarların bərpası"],

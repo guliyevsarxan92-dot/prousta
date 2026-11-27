@@ -107,6 +107,13 @@ class SeoGeoTests(TestCase):
         self.assertNotIn('xezer', matching_locations('Binəqədi'))
         self.assertIn('bineqedi', matching_locations('Bakı, Binəqədi'))
         self.assertIn('nerimanov', matching_locations('Bakı, Gənclik'))
+        self.assertIn('suraxani', matching_locations('Bakı, Hövsan qəsəbəsi'))
+        self.assertIn('sabuncu', matching_locations('Bakıxanov (Razin)'))
+        self.assertIn('qaradag', matching_locations('Lökbatan qəsəbəsi'))
+        self.assertIn('xezer', matching_locations('Mərdəkan, Şüvəlan'))
+        self.assertIn('xetai', matching_locations('Əhmədli, Həzi Aslanov, NZS'))
+        self.assertIn('bineqedi', matching_locations('Biləcəri, Sulutəpə, Xocəsən'))
+        self.assertIn('nizami', matching_locations('Qara Qarayev, Neftçilər, 8 km'))
         self.assertEqual(matching_locations('Bakı'), [])
 
     def test_expired_local_inventory_is_not_in_sitemap(self):
@@ -314,18 +321,41 @@ class SeoGeoTests(TestCase):
             kategori=kombi_cat,
             metn='<p>Radiator xəttində çöküntü olduqda dövriyyə zəifləyə bilər.</p><h2>Yoxlama</h2><p>Detallar.</p>',
         )
+        Elan.objects.create(
+            istifadeci=self.owner, kategori=kombi_cat,
+            bashliq='Yasamal kombi servisi', acaqlama='Kombi təmiri və yuyulması.',
+            sheher='Bakı, Yasamal', xidmet_erazileri='yasamal,xirdalan',
+            telefon='0501234567', status='aktiv',
+        )
         detail = self.client.get(kombi_article.get_absolute_url())
         self.assertEqual(detail.status_code, 200)
         html = detail.content.decode()
         self.assertNotIn('/problemler/?kategori=kombi-ustasi', html)
         self.assertContains(detail, 'href="/xidmet/kombi-ustasi/"')
         self.assertContains(detail, 'href="/xidmet/kombi-yuyulmasi/"')
+        self.assertContains(detail, 'href="/xidmet/kombi-ustasi/yasamal/"')
+        self.assertContains(detail, 'href="/xidmet/kombi-ustasi/xirdalan/"')
+        self.assertIn('/media/elanlar/kombi_1.jpg', meta(detail, 'og:image'))
         breadcrumb = next(node for node in graph(detail) if node['@type'] == 'BreadcrumbList')
         crumb_urls = [item['item'] for item in breadcrumb['itemListElement']]
         self.assertIn('https://prousta.az/xidmet/kombi-ustasi/', crumb_urls)
 
         blog_list = self.client.get('/problemler/')
         self.assertContains(blog_list, 'href="/xidmet/kombi-ustasi/" class="prob-card-kat"')
+
+        # Listing detail and priority service topic pages link back to problem guides
+        ad = Elan.objects.filter(kategori=kombi_cat, status='aktiv').first()
+        ad_detail = self.client.get(ad.get_absolute_url())
+        self.assertContains(ad_detail, 'href="/problemler/kombi-yanmir/"')
+        topic_detail = self.client.get('/xidmet/kombi-yuyulmasi/')
+        self.assertContains(topic_detail, 'href="/problemler/kombi-yanmir/"')
+
+        # Homepage exposes WebSite SearchAction and FAQPage JSON-LD
+        home_resp = self.client.get('/')
+        home_nodes = graph(home_resp)
+        website = next(n for n in home_nodes if n['@type'] == 'WebSite')
+        self.assertEqual(website['potentialAction']['@type'], 'SearchAction')
+        self.assertTrue(any(n['@type'] == 'FAQPage' for n in home_nodes))
 
     def test_multi_area_selection_powers_local_seo_search_web_and_api(self):
         import io

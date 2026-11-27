@@ -367,6 +367,7 @@ def elan_detail(request, pk, slug=None, lang='az'):
         favorit = Favorit.objects.filter(istifadeci=request.user, elan=elan).exists()
 
     oxsar_elanlar = []
+    elaqeli_problemler = []
     if elan.kategori:
         oxsar_qs = (
             Elan.objects.filter(status='aktiv', kategori=elan.kategori)
@@ -384,6 +385,9 @@ def elan_detail(request, pk, slug=None, lang='az'):
                 .prefetch_related('shekillar')[:6 - len(oxsar_elanlar)]
             )
             oxsar_elanlar.extend(elave)
+        elaqeli_problemler = list(
+            Problem.objects.filter(aktiv=True, kategori=elan.kategori).order_by('pk')[:4]
+        )
 
     template_name = 'ru/elan_detail.html' if is_ru else 'elan_detail.html'
     return render(request, template_name, {
@@ -391,6 +395,7 @@ def elan_detail(request, pk, slug=None, lang='az'):
         'elan': elan,
         'favorit': favorit,
         'oxsar_elanlar': oxsar_elanlar,
+        'elaqeli_problemler': elaqeli_problemler,
         'is_inactive': elan.status != 'aktiv',
     })
 
@@ -1168,7 +1173,7 @@ def problem_detail(request, slug):
         'problem': problem,
         'elanlar': elanlar,
         'oxsar': oxsar,
-        **article_context(problem),
+        **article_context(problem, elanlar),
     })
 
 

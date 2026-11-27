@@ -157,6 +157,23 @@
     </div>
   </section>
   {% endif %}
+
+  {% if elaqeli_problemler %}
+  <section class="pg-section" style="margin-top:28px">
+    <div class="sec-head">
+      <h2>Полезные руководства ({{ elan.kategori|ru_cat }})</h2>
+      <a href="{% url 'problemler_siyahi' %}">Все инструкции {% include 'partials/ui_icon.html' with name='arrow' %}</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+      {% for pr in elaqeli_problemler %}
+      <a href="{{ pr.get_absolute_url }}" class="panel" style="padding:16px 18px;display:block;border-radius:12px;border:1px solid var(--border);transition:.2s;background:#fff;text-decoration:none">
+        <strong style="color:var(--tx);font-size:14px;display:block;margin-bottom:6px">{{ pr.bashliq }}</strong>
+        <span style="color:var(--p);font-size:12px;font-weight:600">Читать причины и решение →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 </div>
 
 <script>

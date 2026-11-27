@@ -10,8 +10,8 @@
     "queries": ["avtomobil təmiri", "avtomobil ustası", "avtomobil diaqnostikası"], "related": ["avtomobil-ustasi", "teker-temiri-ustasi", "avtomobil-malyar-ustasi"], "sources": []
   },
   "avtomobil-ustasi": {
-    "name": "Avtomobil ustası", "heading": "Avtomobil ustası — xidmət növü və avtomobil məlumatı",
-    "description": "Usta seçərkən avtomobilin marka-modelini, nasazlıq əlamətlərini və tələb olunan işi bildirin. Diaqnostika və təmir razılaşmasını yazılı dəqiqləşdirin.",
+    "name": "Avtomobil ustası", "heading": "Avtomobil ustası Bakıda — diaqnostika, mühərrik və təmir",
+    "description": "Avtomobil ustası Bakıda: mühərrik, sürətlər qutusu, asqı və avtoelektrik təmiri elanlarını müqayisə edin. Marka, model və simptomları ustaya bildirin.",
     "intro": "Mühərrik, elektrik, asqı və digər təmir sahələri fərqli təcrübə tələb edir. Müraciətdə konkret simptomları qeyd edin və təmir qərarından əvvəl görüləcək yoxlamanı soruşun.",
     "scope": ["Simptom və avtomobil məlumatının dəqiqləşdirilməsi", "Razılaşdırılmış diaqnostika və usta işi", "Nəticə və əlavə ehtiyacların izahı"],
     "pricing": ["İş növü və diaqnostika", "Hissə və material tələbi", "İş yeri və təmir müddəti"],

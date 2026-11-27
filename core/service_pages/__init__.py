@@ -18,7 +18,10 @@ BAKU_AREAS = frozenset({'yasamal', 'nerimanov', 'nesimi', 'xetai', 'bineqedi',
 PROVIDER_CATEGORIES = frozenset({'kombi-ustasi', 'su-sizma', 'kanalizasiya-ustasi',
                                  'santexnik', 'havalandirma-ustasi', 'ariston-ustasi',
                                  'kondisioner-ustasi', 'soyuducu-ustasi',
-                                 'paltaryuyan-ustasi', 'qabyuyan-ustasi'})
+                                 'paltaryuyan-ustasi', 'qabyuyan-ustasi',
+                                 'pitiminutka-ustasi', 'qaz-ustasi',
+                                 'iran-peci-ustasi', 'elektrik',
+                                 'plastik-qapi-pencere', 'su-filteri-ustasi'})
 PRICES = {
     'su-sizma': {'amount': '80.00', 'label': '80 AZN', 'starting': False,
                  'note': 'Su sızmasının təyini üçün təklifdir. Təmir və səthin bərpasının daxil olub-olmadığını əvvəl dəqiqləşdirin.'},
@@ -126,7 +129,7 @@ def matching_listings(queryset, page):
 
 def topic_response(request, page, is_ru=False):
     from core.listings import visible_listings
-    from core.models import Kategori
+    from core.models import Kategori, Problem
     from core.rotation import apply_fair_rotation
     from core.views import get_or_create_listing_seed, strict_page
     from django.core.paginator import Paginator
@@ -137,12 +140,14 @@ def topic_response(request, page, is_ru=False):
     listings = matching_listings(visible_listings(request.user), page).select_related(
         'kategori', 'istifadeci__profil').prefetch_related('shekillar')
     result = strict_page(Paginator(apply_fair_rotation(listings, seed), 12), request.GET.get('page', 1))
+    problemler = list(Problem.objects.filter(aktiv=True, kategori=category).order_by('pk')[:4])
     template_name = 'ru/service_topic.html' if is_ru else 'service_topic.html'
     return render(request, template_name, {
         **page_context(page, request.user, is_ru=is_ru),
         'is_ru': is_ru,
         'topic_category': category,
         'elanlar': result,
+        'problemler': problemler,
         'page_range': list(result.paginator.get_elided_page_range(result.number)),
         'elan_seed': seed,
     })

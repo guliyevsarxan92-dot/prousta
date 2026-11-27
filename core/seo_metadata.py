@@ -79,6 +79,10 @@ def service_faq(context):
     category = context['aktiv_kategori']
     location = context.get('lokasiya_melumat')
     area = location['ad'] + ' ərazisində' if location else 'Bakıda'
+    sub_areas_note = (
+        f' ({location["erazi"]})' if location and location.get('erazi')
+        else ' (bütün rayon, qəsəbə, mikrorayon və metro əraziləri üzrə)'
+    )
     minimum = context.get('min_qiymet')
     price = (f'Prousta.az-da {category.ad.lower()} üzrə elanlarda qiymətlər təxminən '
              f'{floatformat(minimum, "-2")} AZN-dən başlayır.' if minimum
@@ -86,7 +90,7 @@ def service_faq(context):
     location_note = (' Burada digər ərazilərin elanları da göstərilir; elan qiyməti konkret ünvana xidmətin yekun qiymətini təsdiqləmir.' if location else '')
     questions = [
         (f'{area} {category.ad.lower()} üzrə xidmətin qiyməti nə qədərdir?',
-         price + ' Bir neçə mütəxəssisin elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.' + location_note),
+         price + f' {area}{sub_areas_note} fəaliyyət göstərən bir neçə mütəxəssisin elanına baxaraq qiymətləri müqayisə edə və ən sərfəli variantı seçə bilərsiniz.' + location_note),
         (f'{category.ad} üzrə xidmət necə sifariş edilir?',
          'Prousta.az-da heç bir vasitəçi yoxdur. Elan kartındakı «Zəng et» və ya «WhatsApp» düymələrinə toxunaraq birbaşa mütəxəssislə əlaqə saxlaya və sifarişinizi qeydiyyatdan keçirə bilərsiniz.'),
         ('Xidmətə və görülən işə zəmanət verilirmi?',
@@ -229,29 +233,37 @@ def build_metadata(context):
                 count = context.get('local_listing_count', 0)
                 loc_ad = location['ad']
                 locative = location.get('locative', f'в {loc_ad}')
-                title = f'{cat_ru} {locative} (Баку) — объявления и цены | {BRAND}'
+                min_q = context.get('min_qiymet')
+                price_hint_ru = f' (от {floatformat(min_q, "-2")} AZN)' if min_q else ''
+                title = f'{cat_ru} {locative} (Баку) — мастера, объявления и цены | {BRAND}'
                 inventory = f'Активных объявлений с выездом {locative}: {count}. ' if count else ''
                 description = (
-                    f'{cat_ru} ({location["tam_ad"]}): {inventory}'
-                    'Сравните предложения мастеров и цены, согласуйте выезд напрямую с исполнителем.'
+                    f'{cat_ru} {locative} ({location["tam_ad"]}){price_hint_ru}: {inventory}'
+                    'Сравните предложения мастеров и цены, свяжитесь напрямую по телефону или в WhatsApp.'
                 )
                 crumbs.append((loc_ad, f'/ru/xidmet/{category.slug}/{location["slug"]}/'))
         else:
+            min_q = context.get('min_qiymet')
             title = metadata_value(category, 'seo_title') or f'{category.ad} — ustalar və xidmət qiymətləri | {BRAND}'
-            description = metadata_value(category, 'seo_description') or (
+            base_desc = metadata_value(category, 'seo_description') or (
                 f'{category.ad} üzrə aktiv elanları, qiymətləri və iş nümunələrini müqayisə edin. '
                 'Elan sahibi ilə xidmətin ərazisini, vaxtını və yekun qiymətini razılaşdırın.')
+            if min_q and 'AZN' not in base_desc:
+                description = f'{base_desc} Elanlarda qiymətlər {floatformat(min_q, "-2")} AZN-dən başlayır.'
+            else:
+                description = base_desc
             crumbs += [('Xidmətlər', '/elanlar/')]
             if category.ust_kategori:
                 crumbs.append((category.ust_kategori.ad, f'/xidmet/{category.ust_kategori.slug}/'))
             crumbs.append((category.ad, f'/xidmet/{category.slug}/'))
             if location:
                 count = context.get('local_listing_count', 0)
-                title = f'{category.ad} — {location["ad"]} üzrə elanlar | {BRAND}'
+                price_hint = f'Elanlarda qiymətlər {floatformat(min_q, "-2")} AZN-dən başlayır. ' if min_q else ''
+                title = f'{category.ad} {location["ad"]} — təmir, servis və qiymətlər | {BRAND}'
                 inventory = (f'{location["ad"]} üzrə xidmət məlumatı olan {count} aktiv elan. '
                              if count else '')
-                description = (f'{location["tam_ad"]} üzrə {category.ad.lower()} axtarışı. '
-                               f'{inventory}Xidmət elanlarını və qiymətləri müqayisə edin. Gəlişi elan sahibi ilə razılaşdırın.')
+                description = (f'{location["tam_ad"]} ({location["erazi"]}) üzrə {category.ad.lower()}: '
+                               f'{inventory}{price_hint}Xidmət elanlarını müqayisə edin, usta ilə birbaşa zəng və ya WhatsApp ilə razılaşın.')
                 crumbs.append((location['ad'], f'/xidmet/{category.slug}/{location["slug"]}/'))
         page_type = 'CollectionPage'
         faq = service_faq(context)
@@ -317,6 +329,9 @@ def build_metadata(context):
         if article.kategori:
             crumbs.append((article.kategori.ad, f'/xidmet/{article.kategori.slug}/'))
         crumbs.append((article.bashliq, article.get_absolute_url()))
+        article_img = context.get('article_image')
+        if article_img:
+            image, image_default = absolute_url(article_img), False
     elif view not in ('index', 'ru_index'):
         crumbs.append((title.split('|')[0].strip(), canonical_path.split('?')[0]))
 
@@ -342,8 +357,12 @@ def build_metadata(context):
         if items is not None:
             webpage['mainEntity'] = items
     if location:
-        webpage['about'] = {'@type': 'AdministrativeArea', 'name': location['tam_ad'],
-                            'containedInPlace': {'@type': 'Country', 'name': 'Azərbaycan'}}
+        area_node = {'@type': 'AdministrativeArea', 'name': location['tam_ad'],
+                     'containedInPlace': {'@type': 'Country', 'name': 'Azərbaycan'}}
+        sub_places = location.get('qesebeler') or [p.strip() for p in location.get('erazi', '').split(',') if p.strip()]
+        if sub_places:
+            area_node['containsPlace'] = [{'@type': 'Place', 'name': place} for place in sub_places[:16]]
+        webpage['about'] = area_node
     if len(crumbs) > 1:
         breadcrumb_id = canonical + '#breadcrumb'
         webpage['breadcrumb'] = {'@id': breadcrumb_id}
@@ -411,10 +430,43 @@ def build_metadata(context):
                 offer['price'] = price['amount']
             offer_service['offers'] = offer
         extra.append(offer_service)
+    if view in ('index', 'ru_index') and not noindex and page_number == 1:
+        home_faq = [
+            ('Как найти мастера на Prousta.az?',
+             'Выберите нужную категорию услуг или введите запрос в поиск (например: мастер комби, сантехник, электрик, прочистка канализации). Сравните цены в объявлениях и свяжитесь с мастером напрямую по телефону или через WhatsApp.'),
+            ('Нужно ли платить комиссию за поиск мастера?',
+             'Нет! Для заказчиков платформа Prousta.az полностью бесплатна. Вы общаетесь и рассчитываетесь непосредственно с исполнителем без посредников.'),
+            ('Какие услуги представлены на сайте?',
+             'Ремонт и промывка комби, установка и сервис кондиционеров, поиск скрытой утечки воды тепловизором, прочистка канализации, услуги сантехника, электрика, чистка вентиляции и зонтов, ремонт бытовой техники и квартир.'),
+        ] if is_ru else [
+            ('Prousta.az-da usta necə tapılır?',
+             'Saytda axtardığınız xidmət kateqoriyasını seçin və ya axtarış bölməsinə ehtiyacınız olan xidməti yazın (məs: kombi ustası, santexnik, elektrik). Elanlarda qiymətlərə və usta məlumatlarına baxaraq birbaşa zəng və ya WhatsApp ilə əlaqə saxlayın.'),
+            ('Usta ilə əlaqə saxlamaq üçün ödəniş tələb olunurmu?',
+             'Xeyr! Prousta.az müştərilər üçün tamamilə pulsuzdur. Platformada heç bir vasitəçi komissiyası yoxdur, usta ilə birbaşa əlaqə saxlayırsınız.'),
+            ('Prousta.az-da hansı xidmətlər mövcuddur?',
+             'Kombi və kondisioner servisi, santexnika, elektrik, mebel yığılması və təmiri, məişət texnikası təmiri (soyuducu, paltaryuyan), ev təmiri və tikinti daxil olmaqla 100-dən çox kateqoriyada usta elanları mövcuddur.'),
+            ('Usta kimi necə elan yerləşdirmək olar?',
+             'Saytda pulsuz qeydiyyatdan keçərək «Elan yerləşdir» düyməsinə klikləyin. Göstərdiyiniz xidməti, qiyməti, əlaqə nömrənizi və gördüyünüz işlərin şəkillərini əlavə edərək minlərlə potensial müştəriyə çatın.'),
+        ]
+        extra.append({'@type': 'FAQPage', '@id': canonical + '#faq',
+                      'mainEntity': [{'@type': 'Question', 'name': q,
+                                      'acceptedAnswer': {'@type': 'Answer', 'text': a}}
+                                     for q, a in home_faq]})
+    website_node = {
+        '@type': 'WebSite', '@id': WEBSITE_ID, 'name': BRAND,
+        'url': SITE_URL + '/', 'inLanguage': lang_tag,
+        'publisher': {'@id': ORGANIZATION_ID},
+        'potentialAction': {
+            '@type': 'SearchAction',
+            'target': {
+                '@type': 'EntryPoint',
+                'urlTemplate': SITE_URL + ('/ru/elanlar/?q={search_term_string}' if is_ru else '/elanlar/?q={search_term_string}'),
+            },
+            'query-input': 'required name=search_term_string',
+        },
+    }
     graph = {'@context': 'https://schema.org', '@graph': [
-        _organization(), {'@type': 'WebSite', '@id': WEBSITE_ID, 'name': BRAND,
-                          'url': SITE_URL + '/', 'inLanguage': lang_tag,
-                          'publisher': {'@id': ORGANIZATION_ID}}, webpage, *extra]}
+        _organization(), website_node, webpage, *extra]}
     robots = ('noindex, follow' if public else 'noindex, nofollow') if noindex else (
         'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
     if request is not None:

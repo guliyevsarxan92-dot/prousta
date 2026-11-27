@@ -20,8 +20,8 @@
     "queries": ["fizioterapiya xidməti", "fizioterapevt qəbulu", "fizioterapiya konsultasiyası"], "related": ["masaj-xidmeti", "diger-saglamliq", "temizlik-xidmeti"], "sources": ["nhs-physio"]
   },
   "masaj-xidmeti": {
-    "name": "Masaj xidməti", "heading": "Masaj xidməti — məqsəd, növ və sağlamlıq məlumatı",
-    "description": "Masaj sifarişində xidmətin məqsədini, müddətini və seans yerini dəqiqləşdirin. Sağlamlıq vəziyyəti və məhdudiyyətlər barədə mütəxəssislə əvvəl danışın.",
+    "name": "Masaj xidməti", "heading": "Masaj xidməti Bakıda — müalicəvi və klassik masaj",
+    "description": "Masaj xidməti Bakıda: müalicəvi, klassik və bərpaedici masaj elanlarını müqayisə edin. Seans müddətini, ünvanı və qiyməti mütəxəssislə dəqiqləşdirin.",
     "intro": "Masaj növləri və xidmət göstərənlərin hazırlığı fərqlənir. Tibbi şikayət və ya zədə olduqda masajı müalicə kimi qəbul etmədən əvvəl uyğun səhiyyə mütəxəssisindən məsləhət alın.",
     "scope": ["Xidmət növü və məqsədin müzakirəsi", "Seans və istifadə olunacaq vasitələrin razılaşdırılması", "Seansdan sonrakı ümumi məlumat"],
     "pricing": ["Seans müddəti və formatı", "Mütəxəssis və xidmət yeri", "Əlavə üsul və məhsullar"],
@@ -40,8 +40,8 @@
     "queries": ["saç ustası", "saç kəsimi", "saç boyama xidməti"], "related": ["makiyaj-ustasi", "dirnaq-ustasi", "lazer-epilyasiyasi"], "sources": []
   },
   "lazer-epilyasiyasi": {
-    "name": "Lazer epilyasiyası", "heading": "Lazer epilyasiyası — konsultasiya, cihaz və hazırlıq",
-    "description": "Lazer epilyasiyası seçərkən mütəxəssis təcrübəsini, cihaz və dəri tipinə uyğunluğu, risk müzakirəsini və qiymətə daxil olan zonaları soruşun.",
+    "name": "Lazer epilyasiyası", "heading": "Lazer epilyasiyası Bakıda — Aleksandrit və Diod lazer",
+    "description": "Lazer epilyasiyası Bakıda: Aleksandrit və Diod lazer cihazları, zona qiymətləri və mütəxəssis elanlarını müqayisə edin. Dəri tipinə uyğun seans seçin.",
     "intro": "Prosedurdan əvvəl konsultasiyada dəri və tüklə bağlı məlumat, dərman istifadəsi və mümkün risklər müzakirə edilməlidir. Seans sayı və nəticə fərdi qiymətləndirilir; zəmanətli nəticə iddialarına ehtiyatla yanaşın.",
     "scope": ["Mütəxəssislə ilkin konsultasiya", "Dəri tipi və xidmət zonasının qiymətləndirilməsi", "Razılaşdırılmış seans və sonrakı qulluq məlumatı"],
     "pricing": ["Xidmət zonalarının sayı və ölçüsü", "Seans müddəti və istifadə olunan cihaz", "Konsultasiya və paket şərtləri"],

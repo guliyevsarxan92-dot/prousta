@@ -63,6 +63,7 @@
       <dt><strong>Elanlarda göstərilən qiymətlər</strong></dt>
       <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Qiymət elan sahibi ilə razılaşdırılır.{% endif %} Yekun məbləğ işin həcmi, material və gəliş şərtlərindən asılıdır.</dd>
       <dt><strong>Xidmətin razılaşdırılması</strong></dt><dd>Ünvanı, vaxtı, işin həcmini və zəmanət şərtlərini elan sahibi ilə birbaşa dəqiqləşdirin.</dd>
+      {% if lokasiya_melumat and lokasiya_melumat.erazi %}<dt><strong>{{ lokasiya_melumat.ad }} üzrə əhatə olunan qəsəbə, mikrorayon və metrolar</strong></dt><dd>{{ lokasiya_melumat.erazi }}.</dd>{% endif %}
     </dl>
     {% if local_listings %}<p style="margin-top:12px"><strong>{{ lokasiya_melumat.ad }} üzrə xidmət məlumatı olan elanlar:</strong> {% for local in local_listings %}<a href="{{ local.get_absolute_url }}">{{ local.bashliq }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
   </section>
@@ -81,9 +82,27 @@
     <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
       <a class="chip" href="{% url 'xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Bütün ərazilər</a>
       {% for lok in butun_lokasiyalar %}
-      <a class="chip" href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori.ad }} {{ lok.ad }}">{{ lok.ad }}</a>
+      <a class="chip" href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori.ad }} {{ lok.ad }} ({{ lok.erazi }})">{{ lok.ad }}</a>
       {% endfor %}
     </div>
+    {% if lokasiya_melumat and lokasiya_melumat.qesebeler %}
+    <div style="margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.7">
+      <strong style="color:var(--tx)">{{ lokasiya_melumat.tam_ad }} üzrə ərazilər:</strong>
+      {% for qes in lokasiya_melumat.qesebeler %}{{ aktiv_kategori.ad }} {{ qes }}{% if not forloop.last %} · {% endif %}{% endfor %}
+    </div>
+    {% elif butun_lokasiyalar %}
+    <details style="margin-top:10px;font-size:12.5px;color:var(--muted)">
+      <summary style="cursor:pointer;font-weight:600;color:var(--p)">Bakının bütün rayon, qəsəbə, mikrorayon və metroları üzrə əhatə siyahısı</summary>
+      <div style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;line-height:1.5">
+        {% for lok in butun_lokasiyalar %}
+        <div style="padding:8px 10px;background:#fff;border:1px solid var(--border);border-radius:8px">
+          <a href="{% url 'xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="font-weight:700;color:var(--p);text-decoration:none">{{ aktiv_kategori.ad }} {{ lok.ad }}:</a>
+          <span>{{ lok.erazi }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </details>
+    {% endif %}
   </div>
 
   <!-- Əlaqəli Xidmətlər (SEO Daxili Linklər) -->

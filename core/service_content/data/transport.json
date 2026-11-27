@@ -10,8 +10,8 @@
     "queries": ["nəqliyyat xidməti", "texnika icarəsi", "yük daşıma və texnika"], "related": ["yukdasima", "texnika-icaresi", "evakuator-xidmeti"], "sources": []
   },
   "evakuator-xidmeti": {
-    "name": "Evakuator xidməti", "heading": "Evakuator xidməti — çağırış, ünvan və daşınma",
-    "description": "Evakuator sifarişində dəqiq yeri, avtomobil tipini, təkər və giriş vəziyyətini bildirin. Daşıma məsafəsi və əlavə yükləmə şərtlərini razılaşdırın.",
+    "name": "Evakuator xidməti", "heading": "Evakuator xidməti Bakıda — 24/7 təcili maşın daşınması",
+    "description": "Evakuator xidməti Bakıda və rayonlarda: avtomobilin yerini, tipini və təyinat ünvanını bildirin. Daşıma məsafəsi və yükləmə qiymətini razılaşdırın.",
     "intro": "Avtomobilin hərəkət edib-etməməsi və yol şəraiti uyğun evakuator seçiminə təsir edir. Dəqiq ünvan və təhlükəsiz əlaqə nöqtəsi paylaşın.",
     "scope": ["Avtomobil və mövqenin dəqiqləşdirilməsi", "Uyğun evakuatorun göndərilməsi", "Razılaşdırılmış ünvana yükləmə və daşıma"],
     "pricing": ["Gediş məsafəsi və vaxt", "Avtomobilin tipi və vəziyyəti", "Yükləmə mürəkkəbliyi və gözləmə"],

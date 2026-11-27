@@ -63,6 +63,7 @@
       <dt><strong>Цены в объявлениях</strong></dt>
       <dd>{% if min_qiymet != None %}{{ min_qiymet|floatformat:'-2' }}{% if max_qiymet != min_qiymet %}–{{ max_qiymet|floatformat:'-2' }}{% endif %} AZN{% else %}Стоимость согласуется с автором объявления.{% endif %} Итоговая сумма зависит от объёма работ, запчастей и условий выезда.</dd>
       <dt><strong>Согласование заказа</strong></dt><dd>Адрес, время визита, точный перечень работ и условия гарантии уточняйте напрямую у автора объявления.</dd>
+      {% if lokasiya_melumat and lokasiya_melumat.erazi %}<dt><strong>Посёлки, микрорайоны и метро ({{ lokasiya_melumat.ad }})</strong></dt><dd>{{ lokasiya_melumat.erazi }}.</dd>{% endif %}
     </dl>
     {% if local_listings %}<p style="margin-top:12px"><strong>Объявления с обслуживанием района {{ lokasiya_melumat.ad }}:</strong> {% for local in local_listings %}<a href="{{ local|ru_url }}">{{ local|ru_title }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
   </section>
@@ -81,9 +82,22 @@
     <div class="chips" style="gap:6px;overflow-x:auto;padding-bottom:4px;flex-wrap:wrap">
       <a class="chip" href="{% url 'ru_xidmet_detail' aktiv_kategori.slug %}" style="{% if not lokasiya %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}">Все районы</a>
       {% for lok in butun_lokasiyalar %}
-      <a class="chip" href="{% url 'ru_xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori|ru_cat }} {{ lok.ad }}">{{ lok.ad }}</a>
+      <a class="chip" href="{% url 'ru_xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="{% if lokasiya == lok.slug %}background:var(--p);color:#fff;border-color:var(--p);font-weight:700{% endif %}" title="{{ aktiv_kategori|ru_cat }} {{ lok.ad }} ({{ lok.erazi }})">{{ lok.ad }}</a>
       {% endfor %}
     </div>
+    {% if not lokasiya_melumat and butun_lokasiyalar %}
+    <details style="margin-top:10px;font-size:12.5px;color:var(--muted)">
+      <summary style="cursor:pointer;font-weight:600;color:var(--p)">Все районы, посёлки, микрорайоны и станции метро Баку и Абшерона</summary>
+      <div style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;line-height:1.5">
+        {% for lok in butun_lokasiyalar %}
+        <div style="padding:8px 10px;background:#fff;border:1px solid var(--border);border-radius:8px">
+          <a href="{% url 'ru_xidmet_lokasiya_detail' aktiv_kategori.slug lok.slug %}" style="font-weight:700;color:var(--p);text-decoration:none">{{ aktiv_kategori|ru_cat }} ({{ lok.ad }}):</a>
+          <span>{{ lok.erazi }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </details>
+    {% endif %}
   </div>
 
   {% if oxsar_kateqoriyalar %}
