@@ -73,4 +73,6 @@ urlpatterns = [
     path('problemler/<slug:slug>/', views.problem_detail, name='problem_detail'),
     path('banner/<int:banner_id>/klik/', views.banner_klik, name='banner_klik'),
     path('banner/<int:banner_id>/baxis/', views.banner_baxis, name='banner_baxis'),
+    path('partnyor/<int:banner_id>/kecid/', views.banner_klik, name='partnyor_klik'),
+    path('partnyor/<int:banner_id>/izle/', views.banner_baxis, name='partnyor_baxis'),
 ]

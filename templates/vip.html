@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}VIP Elan — Prousta.az{% endblock %}
+{% block title %}{% if is_ru %}VIP объявление{% else %}VIP Elan{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block style %}
@@ -13,15 +13,15 @@
 {% block content %}
 <div class="pg pg--narrow">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">VIP Xidməti</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}VIP продвижение{% else %}VIP Xidməti{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='crown' %} Premium xidmət</span>
-    <h1>Elanınızı <span>VIP edin</span></h1>
-    <p>Elanınızı axtarışlarda və ana səhifədə ön sıralara çıxararaq 5 dəfəyə qədər daha çox zəng və sifariş qazanın.</p>
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='crown' %} {% if is_ru %}Премиум продвижение{% else %}Premium xidmət{% endif %}</span>
+    <h1>{% if is_ru %}Сделайте объявление <span>VIP</span>{% else %}Elanınızı <span>VIP edin</span>{% endif %}</h1>
+    <p>{% if is_ru %}Поднимите объявление на первые места в поиске и на главной странице, чтобы получать до 5 раз больше звонков и заказов.{% else %}Elanınızı axtarışlarda və ana səhifədə ön sıralara çıxararaq 5 dəfəyə qədər daha çox zəng və sifariş qazanın.{% endif %}</p>
   </div>
 
   <div class="panel panel--soft" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
@@ -30,13 +30,13 @@
         {% include 'partials/ui_icon.html' with name='wallet' %}
       </div>
       <div>
-        <small>Mövcud balansınız</small>
+        <small>{% if is_ru %}Текущий баланс{% else %}Mövcud balansınız{% endif %}</small>
         <div style="font-size:22px;font-weight:800;color:#00734b">{{ profil.balans }} ₼</div>
       </div>
     </div>
     <a href="{% url 'odenis' %}" class="btn btn-primary btn-sm">
       {% include 'partials/ui_icon.html' with name='plus' %}
-      Balansı artır
+      {% if is_ru %}Пополнить баланс{% else %}Balansı artır{% endif %}
     </a>
   </div>
 
@@ -48,7 +48,7 @@
         <input type="radio" name="nov" value="{{ paket.nov }}" {% if forloop.first %}checked{% endif %} onchange="updateChoice()">
         {% if paket.nov == 'super_vip' %}
           <span class="badge" style="background:linear-gradient(135deg,#008f60,#00714c);color:#fff">
-            {% include 'partials/ui_icon.html' with name='crown' %} Ən Yaxşı Seçim
+            {% include 'partials/ui_icon.html' with name='crown' %} {% if is_ru %}Лучший выбор{% else %}Ən Yaxşı Seçim{% endif %}
           </span>
           <div style="width:40px;height:40px;border-radius:10px;background:#eaf7f1;color:#007b52;display:flex;align-items:center;justify-content:center;margin-bottom:4px">
             {% include 'partials/ui_icon.html' with name='crown' %}
@@ -62,14 +62,14 @@
           </div>
         {% endif %}
         <h3>{{ paket.ad }}</h3>
-        <div class="plan-price">{{ paket.qiymet|floatformat:'-2' }} ₼ <small>/ {{ paket.muddet_gun }} gün</small></div>
+        <div class="plan-price">{{ paket.qiymet|floatformat:'-2' }} ₼ <small>/ {{ paket.muddet_gun }} {% if is_ru %}дн.{% else %}gün{% endif %}</small></div>
         <ul>
           {% for item in paket.ustunlukler_list %}
             <li>{% include 'partials/ui_icon.html' with name='check' %} {{ item }}</li>
           {% empty %}
-            <li>{% include 'partials/ui_icon.html' with name='check' %} Bütün elanlar siyahısında və axtarışlarda öndə</li>
-            <li>{% include 'partials/ui_icon.html' with name='check' %} Xüsusi fərqlənmə nişanı</li>
-            <li>{% include 'partials/ui_icon.html' with name='check' %} {{ paket.muddet_gun }} gün aktivlik</li>
+            <li>{% include 'partials/ui_icon.html' with name='check' %} {% if is_ru %}Впереди в списке объявлений и поиске{% else %}Bütün elanlar siyahısında və axtarışlarda öndə{% endif %}</li>
+            <li>{% include 'partials/ui_icon.html' with name='check' %} {% if is_ru %}Специальный значок выделения{% else %}Xüsusi fərqlənmə nişanı{% endif %}</li>
+            <li>{% include 'partials/ui_icon.html' with name='check' %} {{ paket.muddet_gun }} {% if is_ru %}дней активности{% else %}gün aktivlik{% endif %}</li>
           {% endfor %}
         </ul>
       </label>
@@ -80,17 +80,17 @@
     <div class="panel" style="background:#fef3c7;border:1.5px solid #fde68a;color:#92400e;border-radius:12px;padding:16px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
       <span style="font-size:24px">⭐</span>
       <div>
-        <strong style="display:block;font-size:14px;color:#92400e">Bu elan hazırda {{ elan.get_vip_status_display }} statusundadır</strong>
-        <span style="font-size:12.5px;color:#b45309">Bitiş tarixi: <b>{{ elan.vip_bitis|date:"d.m.Y" }}</b>. Müddəti bitmədən yenidən VIP edilə bilməz.</span>
+        <strong style="display:block;font-size:14px;color:#92400e">{% if is_ru %}Это объявление уже в статусе {{ elan.get_vip_status_display }}{% else %}Bu elan hazırda {{ elan.get_vip_status_display }} statusundadır{% endif %}</strong>
+        <span style="font-size:12.5px;color:#b45309">{% if is_ru %}Действует до: <b>{{ elan.vip_bitis|date:"d.m.Y" }}</b>.{% else %}Bitiş tarixi: <b>{{ elan.vip_bitis|date:"d.m.Y" }}</b>. Müddəti bitmədən yenidən VIP edilə bilməz.{% endif %}</span>
       </div>
     </div>
     <button class="btn btn-block btn-lg" type="button" disabled style="background:#e2e8f0;color:#64748b;cursor:not-allowed">
-      Artıq VIP-dir ({{ elan.vip_bitis|date:"d.m.Y" }}-dək)
+      VIP ({{ elan.vip_bitis|date:"d.m.Y" }})
     </button>
     {% else %}
     <button class="btn btn-primary btn-block btn-lg" type="submit">
       {% include 'partials/ui_icon.html' with name='bolt' %}
-      VIP Et — Balansdan ödə
+      {% if is_ru %}Подключить VIP — оплатить с баланса{% else %}VIP Et — Balansdan ödə{% endif %}
     </button>
     {% endif %}
   </form>

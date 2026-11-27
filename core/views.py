@@ -546,7 +546,7 @@ def qeydiyyat(request):
         cache.set(f'register_limit:{ip}', True, 3600)
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, 'Xoş gəldiniz!')
-        return redirect('index')
+        return redirect('/ru/' if request.COOKIES.get('prousta_lang') == 'ru' else 'index')
     return render(request, 'qeydiyyat.html')
 
 def giris(request):
@@ -562,7 +562,7 @@ def giris(request):
         if user:
             cache.delete(f'login_attempt:{ip}')
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('index')
+            return redirect('/ru/' if request.COOKIES.get('prousta_lang') == 'ru' else 'index')
         cache.set(f'login_attempt:{ip}', attempts + 1, 300)
         messages.error(request, 'İstifadəçi adı və ya şifrə yanlışdır!')
     return render(request, 'giris.html')
@@ -570,7 +570,7 @@ def giris(request):
 @require_POST
 def cixis(request):
     logout(request)
-    return redirect('index')
+    return redirect('/ru/' if request.COOKIES.get('prousta_lang') == 'ru' else 'index')
 
 def sifre_unutdum(request):
     if request.method == 'POST':

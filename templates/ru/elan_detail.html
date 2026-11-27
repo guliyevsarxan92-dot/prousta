@@ -162,7 +162,15 @@
 <script>
 function selectThumb(btn, src) {
   var main = document.getElementById('anaImg');
-  if (main) main.src = src;
+  if (main && main.getAttribute('src') !== src) {
+    main.classList.add('is-switching');
+    setTimeout(function() {
+      main.onload = function() { main.classList.remove('is-switching'); };
+      main.onerror = function() { main.classList.remove('is-switching'); };
+      main.src = src;
+      if (main.complete) main.classList.remove('is-switching');
+    }, 110);
+  }
   document.querySelectorAll('.gallery-thumbs button').forEach(function(b){ b.classList.remove('is-active'); });
   btn.classList.add('is-active');
 }

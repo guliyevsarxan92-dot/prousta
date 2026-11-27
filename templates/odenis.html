@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
-{% block title %}Balans Artır — Prousta.az{% endblock %}
+{% block title %}{% if is_ru %}Пополнение баланса{% else %}Balans Artır{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--narrow">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Balans Artır</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Пополнение баланса{% else %}Balans Artır{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <h1>Hesaba <span>balans yüklə</span></h1>
-    <p>Balansınızı artıraraq elanlarınızı VIP edin və daha çox müştəri qazanın.</p>
+    <h1>{% if is_ru %}Пополнить <span>баланс</span>{% else %}Hesaba <span>balans yüklə</span>{% endif %}</h1>
+    <p>{% if is_ru %}Пополните баланс для подключения VIP-статуса и привлечения большего числа клиентов.{% else %}Balansınızı artıraraq elanlarınızı VIP edin və daha çox müştəri qazanın.{% endif %}</p>
   </div>
 
   <!-- Ödəniş Metodu Seçimi (Tablar) -->
@@ -20,11 +20,11 @@
     <button type="button" id="tabQebzBtn" onclick="switchMetod('qebz')"
       style="padding:16px 14px;border-radius:14px;border:2px solid #007b52;background:#fff;cursor:pointer;text-align:left;transition:.2s;box-shadow:0 4px 14px rgba(0,123,82,0.12)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <span style="font-size:14px;font-weight:800;color:#007b52">Bank köçürməsi</span>
-        <span style="background:#eaf7f1;color:#007b52;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px">AKTİV</span>
+        <span style="font-size:14px;font-weight:800;color:#007b52">{% if is_ru %}Банковский перевод{% else %}Bank köçürməsi{% endif %}</span>
+        <span style="background:#eaf7f1;color:#007b52;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px">{% if is_ru %}АКТИВНО{% else %}AKTİV{% endif %}</span>
       </div>
-      <div style="font-size:12.5px;font-weight:700;color:#0f172a">Kartdan karta köçürmə</div>
-      <small style="color:#64748b;font-size:11px">Qəbz yükləmə ilə dərhal təsdiq</small>
+      <div style="font-size:12.5px;font-weight:700;color:#0f172a">{% if is_ru %}Перевод с карты на карту{% else %}Kartdan karta köçürmə{% endif %}</div>
+      <small style="color:#64748b;font-size:11px">{% if is_ru %}Подтверждение по чеку{% else %}Qəbz yükləmə ilə dərhal təsdiq{% endif %}</small>
     </button>
 
     <button type="button" id="tabBirbankBtn" onclick="switchMetod('birbank')"
@@ -34,69 +34,65 @@
           <span style="background:#e11d48;color:#fff;width:20px;height:20px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900">1</span>
           birbank
         </span>
-        <span style="background:#fef3c7;color:#b45309;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px">TEZLİKLƏ</span>
+        <span style="background:#fef3c7;color:#b45309;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:10px">{% if is_ru %}СКОРО{% else %}TEZLİKLƏ{% endif %}</span>
       </div>
-      <div style="font-size:12.5px;font-weight:700;color:#0f172a">Bank kartı / Birbank</div>
-      <small style="color:#64748b;font-size:11px">Onlayn kart ödənişi</small>
+      <div style="font-size:12.5px;font-weight:700;color:#0f172a">{% if is_ru %}Банковская карта / Birbank{% else %}Bank kartı / Birbank{% endif %}</div>
+      <small style="color:#64748b;font-size:11px">{% if is_ru %}Онлайн-оплата картой{% else %}Onlayn kart ödənişi{% endif %}</small>
     </button>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- BÖLMƏ 1: BANK KÖÇÜRMƏSİ (QƏBZ İLƏ) — AKTİV BÖLMƏ -->
-  <!-- ============================================================ -->
+  <!-- BÖLMƏ 1: BANK KÖÇÜRMƏSİ (QƏBZ İLƏ) -->
   <div id="sectionQebz" style="display:block">
-    <!-- Addımlar -->
     <div class="steps-grid" style="margin-bottom:20px">
       <div class="step-card" style="min-height:auto">
         <span class="step-number">1</span>
         <div>
-          <strong>Köçürmə et</strong>
-          <small>Bank kartına istədiyiniz məbləği göndərin</small>
+          <strong>{% if is_ru %}Сделайте перевод{% else %}Köçürmə et{% endif %}</strong>
+          <small>{% if is_ru %}Отправьте нужную сумму на карту{% else %}Bank kartına istədiyiniz məbləği göndərin{% endif %}</small>
         </div>
       </div>
       <div class="step-card" style="min-height:auto">
         <span class="step-number">2</span>
         <div>
-          <strong>Qəbzi yüklə</strong>
-          <small>Ödəniş çeki şəklini formdan göndərin</small>
+          <strong>{% if is_ru %}Загрузите чек{% else %}Qəbzi yüklə{% endif %}</strong>
+          <small>{% if is_ru %}Прикрепите скриншот квитанции{% else %}Ödəniş çeki şəklini formdan göndərin{% endif %}</small>
         </div>
       </div>
       <div class="step-card" style="min-height:auto">
         <span class="step-number">3</span>
         <div>
-          <strong>Balans artır</strong>
-          <small>Təsdiqdən dərhal sonra balansınıza oturur</small>
+          <strong>{% if is_ru %}Баланс пополнен{% else %}Balans artır{% endif %}</strong>
+          <small>{% if is_ru %}Зачисляется сразу после проверки{% else %}Təsdiqdən dərhal sonra balansınıza oturur{% endif %}</small>
         </div>
       </div>
     </div>
 
-    <!-- Bank Kartı Rekvizitləri -->
     {% if bank %}
     <div class="panel" style="background:radial-gradient(ellipse at 55% 100%,#047753,#06463d 55%,#0d2828);color:#fff;border:0;margin-bottom:20px">
       <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:750;margin-bottom:14px;color:#6cffb4">
         {% include 'partials/ui_icon.html' with name='wallet' %}
-        Bank Rekvizitləri
+        {% if is_ru %}Банковские реквизиты{% else %}Bank Rekvizitləri{% endif %}
       </div>
       <div class="stack" style="gap:10px">
         <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-          <span style="font-size:12px;color:#c4ddd5">Bank</span>
+          <span style="font-size:12px;color:#c4ddd5">{% if is_ru %}Банк{% else %}Bank{% endif %}</span>
           <strong>{{ bank.bank_adi }}</strong>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-          <span style="font-size:12px;color:#c4ddd5">Kart nömrəsi</span>
+          <span style="font-size:12px;color:#c4ddd5">{% if is_ru %}Номер карты{% else %}Kart nömrəsi{% endif %}</span>
           <div style="display:flex;align-items:center;gap:8px">
             <strong id="kartNo" style="letter-spacing:1px">{{ bank.kart_nomresi }}</strong>
             <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;padding:4px 10px;font-size:11px" onclick="copyText('kartNo', this)">
-              Kopyala
+              {% if is_ru %}Копировать{% else %}Kopyala{% endif %}
             </button>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.15)">
-          <span style="font-size:12px;color:#c4ddd5">Kart sahibi</span>
+          <span style="font-size:12px;color:#c4ddd5">{% if is_ru %}Владелец карты{% else %}Kart sahibi{% endif %}</span>
           <strong>{{ bank.kart_sahibi }}</strong>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:12px;color:#c4ddd5">Ödəniş qeydi</span>
+          <span style="font-size:12px;color:#c4ddd5">{% if is_ru %}Назначение{% else %}Ödəniş qeydi{% endif %}</span>
           <strong>Prousta balans — {{ user.username }}</strong>
         </div>
       </div>
@@ -105,7 +101,7 @@
     <div class="notice notice--warn" style="margin-bottom:20px">
       {% include 'partials/ui_icon.html' with name='info' %}
       <div>
-        Bank məlumatları hələ sistemə əlavə edilməyib. Zəhmət olmasa birbaşa <a href="https://wa.me/994515888884" target="_blank" style="font-weight:700;text-decoration:underline">WhatsApp dəstək xətti</a> ilə əlaqə saxlayın.
+        {% if is_ru %}Банковские реквизиты пока не добавлены. Пожалуйста, свяжитесь с <a href="https://wa.me/994515888884" target="_blank" style="font-weight:700;text-decoration:underline">поддержкой в WhatsApp</a>.{% else %}Bank məlumatları hələ sistemə əlavə edilməyib. Zəhmət olmasa birbaşa <a href="https://wa.me/994515888884" target="_blank" style="font-weight:700;text-decoration:underline">WhatsApp dəstək xətti</a> ilə əlaqə saxlayın.{% endif %}
       </div>
     </div>
     {% endif %}
@@ -114,7 +110,7 @@
     <div class="panel">
       <h2 class="panel-title">
         {% include 'partials/ui_icon.html' with name='check' %}
-        Qəbzi təqdim edin
+        {% if is_ru %}Отправьте квитанцию{% else %}Qəbzi təqdim edin{% endif %}
       </h2>
 
       <form method="post" enctype="multipart/form-data">
@@ -122,62 +118,66 @@
         <input type="hidden" name="metod" value="qebz">
 
         <div class="field">
-          <label>Köçürdüyünüz məbləğ (₼) <span class="req">*</span></label>
+          <label>{% if is_ru %}Сумма перевода (₼){% else %}Köçürdüyünüz məbləğ (₼){% endif %} <span class="req">*</span></label>
           <div class="chips" style="margin-bottom:8px">
             <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(5, this)">5 ₼</button>
             <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(10, this)">10 ₼</button>
             <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(20, this)">20 ₼</button>
             <button type="button" class="chip mebleg-btn-qebz" onclick="setQebzMebleg(50, this)">50 ₼</button>
           </div>
-          <input id="qebzMeblegInput" name="mebleg" type="number" step="any" placeholder="Məsələn: 10" required>
+          <input id="qebzMeblegInput" name="mebleg" type="number" step="any" placeholder="{% if is_ru %}Например: 10{% else %}Məsələn: 10{% endif %}" required>
         </div>
 
         <div class="field">
-          <label>Köçürmə qəbzinin şəkli (skrinşot) <span class="req">*</span></label>
+          <label>{% if is_ru %}Фото или скриншот чека{% else %}Köçürmə qəbzinin şəkli (skrinşot){% endif %} <span class="req">*</span></label>
           <div class="upload-box" style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:.2s" onclick="document.getElementById('qebzInput').click()">
             <div style="width:44px;height:44px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px">
               {% include 'partials/ui_icon.html' with name='camera' %}
             </div>
-            <p id="qebzText" style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">Qəbzin şəklini seçmək üçün klikləyin</p>
-            <small style="color:var(--muted)">JPG, PNG formatında</small>
+            <p id="qebzText" style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">{% if is_ru %}Нажмите, чтобы выбрать изображение чека{% else %}Qəbzin şəklini seçmək üçün klikləyin{% endif %}</p>
+            <small style="color:var(--muted)">JPG, PNG</small>
           </div>
           <input type="file" id="qebzInput" name="qebz" accept="image/*" style="display:none" onchange="showQebzName(this)" required>
         </div>
 
         <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">
           {% include 'partials/ui_icon.html' with name='send' %}
-          Təsdiq üçün sorğu göndər
+          {% if is_ru %}Отправить на проверку{% else %}Təsdiq üçün sorğu göndər{% endif %}
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- BÖLMƏ 2: BİRBANK ONLAYN ÖDƏNİŞ (TEZLİKLƏ) -->
-  <!-- ============================================================ -->
+  <!-- BÖLMƏ 2: BİRBANK ONLAYN ÖDƏNİŞ -->
   <div id="sectionBirbank" class="panel" style="display:none;border:1px solid #fed7aa;box-shadow:0 6px 20px rgba(0,0,0,0.04)">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <h2 class="panel-title" style="margin:0;color:#be123c;display:flex;align-items:center;gap:8px">
         <span style="background:#e11d48;color:#fff;width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900">1</span>
-        Birbank ilə onlayn ödəniş
+        {% if is_ru %}Онлайн-оплата через Birbank{% else %}Birbank ilə onlayn ödəniş{% endif %}
       </h2>
       <span style="background:#fef3c7;color:#b45309;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:12px;border:1px solid #fde68a">
-        TEZLİKLƏ
+        {% if is_ru %}СКОРО{% else %}TEZLİKLƏ{% endif %}
       </span>
     </div>
 
     <div class="notice notice--warn" style="margin-bottom:20px;padding:16px">
       {% include 'partials/ui_icon.html' with name='info' %}
       <div style="font-size:13px;line-height:1.5">
+        {% if is_ru %}
+        <strong>Скоро будет доступно:</strong> Онлайн-оплата картой через Kapital Bank (Birbank) находится на этапе подключения.
+        <br><br>
+        Пока вы можете пополнить баланс в разделе <strong>«Банковский перевод»</strong> по реквизитам карты.
+        {% else %}
         <strong>Tezliklə istifadəyə veriləcək:</strong> Kapital Bank (Birbank) ilə birbaşa kartla onlayn ödəniş sistemi texniki hazırlıq mərhələsindədir və yaxın günlərdə tam aktiv olacaq.
         <br><br>
         Hələlik balansınızı artırmaq üçün <strong>«Bank köçürməsi»</strong> bölməsindən rekvizitlərə köçürmə edib qəbzi göndərə bilərsiniz.
+        {% endif %}
       </div>
     </div>
 
     <div style="text-align:center;padding:10px 0">
       <button type="button" onclick="switchMetod('qebz')" class="btn btn-primary" style="padding:12px 24px;font-weight:700">
-        ← Bank köçürməsi ilə ödəniş et
+        {% if is_ru %}← Оплатить банковским переводом{% else %}← Bank köçürməsi ilə ödəniş et{% endif %}
       </button>
     </div>
   </div>
@@ -215,7 +215,7 @@ function setQebzMebleg(val, btn) {
 
 function showQebzName(input) {
   if (input.files && input.files[0]) {
-    document.getElementById('qebzText').textContent = 'Seçildi: ' + input.files[0].name;
+    document.getElementById('qebzText').textContent = input.files[0].name;
   }
 }
 
@@ -235,7 +235,7 @@ function copyText(id, btn) {
 
 function showCopied(btn) {
   var original = btn.textContent;
-  btn.textContent = 'Kopyalandı ✓';
+  btn.textContent = '✓';
   btn.style.background = 'rgba(255,255,255,.4)';
   setTimeout(function(){ btn.textContent = original; btn.style.background = ''; }, 2000);
 }

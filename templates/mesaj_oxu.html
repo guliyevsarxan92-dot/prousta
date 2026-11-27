@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
-{% block title %}Mesaj — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Сообщение{% else %}Mesaj{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--narrow">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'mesajlar' %}">Mesajlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Yazışma</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'mesajlar' %}">{% if is_ru %}Сообщения{% else %}Mesajlar{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Переписка{% else %}Yazışma{% endif %}</span>
   </nav>
 
   <div class="panel">
-    <!-- Mesaj Başlığı və Göndərən -->
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap">
       <div class="person">
         <div class="avatar">
@@ -29,34 +29,31 @@
         </div>
       </div>
       <a href="{% url 'mesajlar' %}" class="btn btn-outline btn-sm">
-        ← Bütün mesajlar
+        ← {% if is_ru %}Все сообщения{% else %}Bütün mesajlar{% endif %}
       </a>
     </div>
 
-    <!-- Əlaqəli Elan -->
     {% if mesaj.elan %}
     <div class="notice" style="margin-bottom:18px">
       {% include 'partials/ui_icon.html' with name='tag' %}
       <div style="flex:1">
-        <strong>Əlaqəli elan:</strong>
-        <a href="{{ mesaj.elan.get_absolute_url }}" style="color:#007b52;font-weight:700;text-decoration:underline">
-          {{ mesaj.elan.bashliq }}
+        <strong>{% if is_ru %}Связанное объявление:{% else %}Əlaqəli elan:{% endif %}</strong>
+        <a href="{% if is_ru %}{{ mesaj.elan|ru_url }}{% else %}{{ mesaj.elan.get_absolute_url }}{% endif %}" style="color:#007b52;font-weight:700;text-decoration:underline">
+          {% if is_ru %}{{ mesaj.elan|ru_title }}{% else %}{{ mesaj.elan.bashliq }}{% endif %}
         </a>
       </div>
     </div>
     {% endif %}
 
-    <!-- Mesaj Mətni -->
     <div style="font-size:15px;line-height:1.75;color:var(--tx);padding:8px 4px 20px">
       {{ mesaj.metn|linebreaksbr }}
     </div>
 
-    <!-- Cavab Vermə Düyməsi -->
     {% if request.user != mesaj.gonderici and mesaj.elan %}
     <div style="padding-top:16px;border-top:1px solid var(--border)">
       <a href="{% url 'mesaj_cavab' mesaj.pk %}" class="btn btn-primary">
         {% include 'partials/ui_icon.html' with name='send' %}
-        Cavab yaz
+        {% if is_ru %}Ответить{% else %}Cavab yaz{% endif %}
       </a>
     </div>
     {% endif %}

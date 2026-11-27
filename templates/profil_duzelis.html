@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}Profil Düzəliş — Prousta.az{% endblock %}
+{% block title %}{% if is_ru %}Настройки профиля{% else %}Profil Düzəliş{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--form">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Tənzimləmələr</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Настройки{% else %}Tənzimləmələr{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='settings' %} Hesab idarəsi</span>
-    <h1>Profil <span>məlumatları</span></h1>
-    <p>Şəxsi əlaqə məlumatlarınızı və təhlükəsizlik şifrənizi buradan yeniləyin.</p>
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='settings' %} {% if is_ru %}Управление аккаунтом{% else %}Hesab idarəsi{% endif %}</span>
+    <h1>{% if is_ru %}Данные <span>профиля</span>{% else %}Profil <span>məlumatları</span>{% endif %}</h1>
+    <p>{% if is_ru %}Обновите свои контактные данные и пароль безопасности.{% else %}Şəxsi əlaqə məlumatlarınızı və təhlükəsizlik şifrənizi buradan yeniləyin.{% endif %}</p>
   </div>
 
   <form method="post">
@@ -22,58 +22,58 @@
     <div class="panel" style="margin-bottom:18px">
       <h2 class="panel-title">
         {% include 'partials/ui_icon.html' with name='user' %}
-        Şəxsi məlumatlar
+        {% if is_ru %}Личные данные{% else %}Şəxsi məlumatlar{% endif %}
       </h2>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_ad">Ad</label>
-          <input id="id_ad" name="ad" value="{{ user.profil.ad }}" placeholder="Adınız">
+          <label for="id_ad">{% if is_ru %}Имя{% else %}Ad{% endif %}</label>
+          <input id="id_ad" name="ad" value="{{ user.profil.ad }}" placeholder="{% if is_ru %}Ваше имя{% else %}Adınız{% endif %}">
         </div>
         <div class="field">
-          <label for="id_soyad">Soyad</label>
-          <input id="id_soyad" name="soyad" value="{{ user.profil.soyad }}" placeholder="Soyadınız">
+          <label for="id_soyad">{% if is_ru %}Фамилия{% else %}Soyad{% endif %}</label>
+          <input id="id_soyad" name="soyad" value="{{ user.profil.soyad }}" placeholder="{% if is_ru %}Ваша фамилия{% else %}Soyadınız{% endif %}">
         </div>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_email">Email ünvanı</label>
+          <label for="id_email">Email</label>
           <input id="id_email" name="email" type="email" value="{{ user.email }}" placeholder="email@gmail.com">
         </div>
         <div class="field">
-          <label for="id_telefon">Mobil telefon</label>
+          <label for="id_telefon">{% if is_ru %}Мобильный телефон{% else %}Mobil telefon{% endif %}</label>
           <input id="id_telefon" name="telefon" value="{{ user.profil.telefon }}" placeholder="+994 XX XXX XX XX">
         </div>
       </div>
 
       <div class="field">
-        <label for="id_sheher">Şəhər / Bölgə</label>
-        <input id="id_sheher" name="sheher" value="{{ user.profil.sheher }}" placeholder="Bakı">
+        <label for="id_sheher">{% if is_ru %}Город / Регион{% else %}Şəhər / Bölgə{% endif %}</label>
+        <input id="id_sheher" name="sheher" value="{{ user.profil.sheher }}" placeholder="{% if is_ru %}Баку{% else %}Bakı{% endif %}">
       </div>
     </div>
 
     <div class="panel" style="margin-bottom:18px">
       <h2 class="panel-title">
         {% include 'partials/ui_icon.html' with name='lock' %}
-        Şifrənin dəyişdirilməsi
+        {% if is_ru %}Изменение пароля{% else %}Şifrənin dəyişdirilməsi{% endif %}
       </h2>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Şifrənizi dəyişmək istəmirsinizsə, bu sahələri boş buraxın.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">{% if is_ru %}Оставьте эти поля пустыми, если не хотите менять пароль.{% else %}Şifrənizi dəyişmək istəmirsinizsə, bu sahələri boş buraxın.{% endif %}</p>
 
       <div class="field">
-        <label for="id_kohne_sifre">Hazırkı şifrə</label>
-        <input id="id_kohne_sifre" name="kohne_sifre" type="password" placeholder="Hazırkı şifrəniz">
+        <label for="id_kohne_sifre">{% if is_ru %}Текущий пароль{% else %}Hazırkı şifrə{% endif %}</label>
+        <input id="id_kohne_sifre" name="kohne_sifre" type="password" placeholder="{% if is_ru %}Текущий пароль{% else %}Hazırkı şifrəniz{% endif %}">
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_yeni_sifre">Yeni şifrə</label>
-          <input id="id_yeni_sifre" name="yeni_sifre" type="password" placeholder="Minimum 8 simvol" minlength="8" maxlength="128">
-          <div class="field-hint">8–14 simvol, ən az 1 böyük hərf və 1 rəqəm</div>
+          <label for="id_yeni_sifre">{% if is_ru %}Новый пароль{% else %}Yeni şifrə{% endif %}</label>
+          <input id="id_yeni_sifre" name="yeni_sifre" type="password" placeholder="{% if is_ru %}Минимум 8 символов{% else %}Minimum 8 simvol{% endif %}" minlength="8" maxlength="128">
+          <div class="field-hint">{% if is_ru %}Минимум 8 символов{% else %}Minimum 8 simvol{% endif %}</div>
         </div>
         <div class="field">
-          <label for="id_yeni_sifre2">Yeni şifrənin təkrarı</label>
-          <input id="id_yeni_sifre2" name="yeni_sifre2" type="password" placeholder="Yeni şifrəni təsdiqləyin">
+          <label for="id_yeni_sifre2">{% if is_ru %}Повторите новый пароль{% else %}Yeni şifrənin təkrarı{% endif %}</label>
+          <input id="id_yeni_sifre2" name="yeni_sifre2" type="password" placeholder="{% if is_ru %}Подтвердите новый пароль{% else %}Yeni şifrəni təsdiqləyin{% endif %}">
         </div>
       </div>
     </div>
@@ -81,9 +81,9 @@
     <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center">
       <button class="btn btn-primary btn-lg" type="submit" style="min-width:180px">
         {% include 'partials/ui_icon.html' with name='check' %}
-        Yadda Saxla
+        {% if is_ru %}Сохранить{% else %}Yadda Saxla{% endif %}
       </button>
-      <a href="{% url 'profil' %}" class="btn btn-outline">Ləğv et</a>
+      <a href="{% url 'profil' %}" class="btn btn-outline">{% if is_ru %}Отмена{% else %}Ləğv et{% endif %}</a>
     </div>
   </form>
 
@@ -92,15 +92,15 @@
     <div>
       <h3 style="margin:0 0 4px;font-size:15px;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:8px">
         {% include 'partials/ui_icon.html' with name='trash' %}
-        Hesabın birdəfəlik silinməsi
+        {% if is_ru %}Удаление аккаунта навсегда{% else %}Hesabın birdəfəlik silinməsi{% endif %}
       </h3>
       <p style="margin:0;font-size:13px;color:#7f1d1d">
-        Artıq platformadan istifadə etmək istəmirsinizsə, hesabınızı və bütün məlumatlarınızı buradan birdəfəlik silə bilərsiniz.
+        {% if is_ru %}Если вы больше не пользуетесь платформой, вы можете безвозвратно удалить свой аккаунт и все данные.{% else %}Artıq platformadan istifadə etmək istəmirsinizsə, hesabınızı və bütün məlumatlarınızı buradan birdəfəlik silə bilərsiniz.{% endif %}
       </p>
     </div>
     <button type="button" class="btn btn-sm" onclick="openDeleteAccountModal()" style="background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;font-weight:700;padding:8px 18px;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='#fecdd3'" onmouseout="this.style.background='#fee2e2'">
       {% include 'partials/ui_icon.html' with name='trash' %}
-      Hesabı sil
+      {% if is_ru %}Удалить аккаунт{% else %}Hesabı sil{% endif %}
     </button>
   </div>
 

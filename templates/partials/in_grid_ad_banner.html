@@ -1,44 +1,44 @@
 {% if reklam_orta and reklam_orta.video %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
-  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
-    <video class="in-grid-ad-video" autoplay muted loop playsinline preload="auto">
+<div class="pu-mid-showcase in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="{% if is_ru %}Баннер среди объявлений{% else %}Elanlar Arası Reklam{% endif %}" data-banner-track-view="{{ reklam_orta.id }}" data-pu-showcase="{{ reklam_orta.id }}">
+  <a href="{% url 'partnyor_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="pu-mid-link in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+    <video class="pu-mid-video in-grid-ad-video" autoplay muted loop playsinline preload="auto">
       <source src="{{ reklam_orta.video.url }}">
     </video>
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.video_url %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
-  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
-    <video class="in-grid-ad-video" autoplay muted loop playsinline preload="auto">
+<div class="pu-mid-showcase in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="{% if is_ru %}Баннер среди объявлений{% else %}Elanlar Arası Reklam{% endif %}" data-banner-track-view="{{ reklam_orta.id }}" data-pu-showcase="{{ reklam_orta.id }}">
+  <a href="{% url 'partnyor_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="pu-mid-link in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+    <video class="pu-mid-video in-grid-ad-video" autoplay muted loop playsinline preload="auto">
       <source src="{{ reklam_orta.video_url }}">
     </video>
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.shekil %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
-  <a href="{% url 'banner_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
-    <img src="{{ reklam_orta.shekil.url|cld_card }}" alt="{{ reklam_orta.bashliq|default:'Reklam' }}" class="in-grid-ad-img" loading="lazy">
+<div class="pu-mid-showcase in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="{% if is_ru %}Баннер среди объявлений{% else %}Elanlar Arası Reklam{% endif %}" data-banner-track-view="{{ reklam_orta.id }}" data-pu-showcase="{{ reklam_orta.id }}">
+  <a href="{% url 'partnyor_klik' reklam_orta.id %}" target="_blank" rel="noopener sponsored" class="pu-mid-link in-grid-ad-link" title="{{ reklam_orta.bashliq }}">
+    <img src="{{ reklam_orta.shekil.url|cld_banner }}" alt="{{ reklam_orta.bashliq|default:'Prousta.az' }}" class="pu-mid-img in-grid-ad-img" loading="lazy" decoding="async">
   </a>
 </div>
 {% elif reklam_orta and reklam_orta.html_kod %}
-<div class="in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="Elanlar Arası Reklam" data-banner-track-view="{{ reklam_orta.id }}">
-  <div class="in-grid-custom-html">
+<div class="pu-mid-showcase in-grid-ad-banner{% if reklam_orta.animasiya_effekti != 'none' %} anim-{{ reklam_orta.animasiya_effekti }}{% endif %}" aria-label="{% if is_ru %}Баннер среди объявлений{% else %}Elanlar Arası Reklam{% endif %}" data-banner-track-view="{{ reklam_orta.id }}" data-pu-showcase="{{ reklam_orta.id }}">
+  <div class="pu-mid-custom-html in-grid-custom-html">
     {{ reklam_orta.html_kod|safe }}
   </div>
 </div>
 {% elif not reklam_orta or not reklam_orta.bos_olduqda_gizlet %}
-<div class="in-grid-ad-banner in-grid-ad-banner--placeholder" aria-label="Elanlar Arası Reklam Yeri">
-  <div class="in-grid-placeholder">
-    <div class="in-grid-placeholder-left">
-      <span class="in-grid-badge-title">REKLAM YERİ</span>
-      <span class="in-grid-badge-size">1120 × 160</span>
-      <span class="in-grid-desc">Reklam üçün müraciət edin: <strong style="color:#007b52">051 588 88 84</strong></span>
+<div class="pu-mid-showcase pu-mid-showcase--placeholder in-grid-ad-banner in-grid-ad-banner--placeholder" aria-label="{% if is_ru %}Место для рекламы{% else %}Elanlar Arası Reklam Yeri{% endif %}">
+  <div class="pu-mid-placeholder in-grid-placeholder">
+    <div class="pu-mid-placeholder-left in-grid-placeholder-left">
+      <span class="pu-mid-badge-title in-grid-badge-title">{% if is_ru %}МЕСТО ДЛЯ РЕКЛАМЫ{% else %}REKLAM YERİ{% endif %}</span>
+      <span class="pu-mid-badge-size in-grid-badge-size">1120 × 160</span>
+      <span class="pu-mid-desc in-grid-desc">{% if is_ru %}По вопросам рекламы:{% else %}Reklam üçün müraciət edin:{% endif %} <strong style="color:#007b52">051 588 88 84</strong></span>
     </div>
-    <div class="in-grid-placeholder-actions">
-      <a href="tel:0515888884" class="in-grid-btn in-grid-btn--phone">
+    <div class="pu-mid-placeholder-actions in-grid-placeholder-actions">
+      <a href="tel:0515888884" class="pu-mid-btn in-grid-btn in-grid-btn--phone">
         📞 051 588 88 84
       </a>
-      <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20elanlar%20aras%C4%B1%20reklam%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="in-grid-btn in-grid-btn--wp">
+      <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20elanlar%20aras%C4%B1%20reklam%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="pu-mid-btn pu-mid-btn--wp in-grid-btn in-grid-btn--wp">
         💬 WhatsApp
       </a>
     </div>

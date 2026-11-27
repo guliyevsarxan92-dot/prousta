@@ -1,27 +1,28 @@
 {% extends 'base.html' %}
-{% block title %}Mesajlar — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Сообщения{% else %}Mesajlar{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--narrow">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Mesajlar</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Сообщения{% else %}Mesajlar{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='chat' %} Daxili poçt</span>
-    <h1>Mənim <span>mesajlarım</span></h1>
-    <p>Müştərilər və ustalarla birbaşa yazışmalarınız.</p>
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='chat' %} {% if is_ru %}Внутренняя почта{% else %}Daxili poçt{% endif %}</span>
+    <h1>{% if is_ru %}Мои <span>сообщения</span>{% else %}Mənim <span>mesajlarım</span>{% endif %}</h1>
+    <p>{% if is_ru %}Ваша переписка с клиентами и мастерами.{% else %}Müştərilər və ustalarla birbaşa yazışmalarınız.{% endif %}</p>
   </div>
 
   <div class="tabs">
     <button type="button" class="is-active" onclick="showTab('qelen', this)">
-      Gələn mesajlar ({{ qelen_say }})
+      {% if is_ru %}Входящие{% else %}Gələn mesajlar{% endif %} ({{ qelen_say }})
     </button>
     <button type="button" onclick="showTab('gonderilenler', this)">
-      Göndərilənlər ({{ gonderilenler_say }})
+      {% if is_ru %}Отправленные{% else %}Göndərilənlər{% endif %} ({{ gonderilenler_say }})
     </button>
   </div>
 
@@ -44,12 +45,12 @@
               {% if m.gonderici.profil.ad %}{{ m.gonderici.profil.ad }} {{ m.gonderici.profil.soyad }}{% elif m.gonderici.first_name %}{{ m.gonderici.first_name }} {{ m.gonderici.last_name }}{% else %}{{ m.gonderici.username }}{% endif %}
             </span>
             {% if not m.oxundu %}
-              <span class="badge badge--green">Yeni</span>
+              <span class="badge badge--green">{% if is_ru %}Новое{% else %}Yeni{% endif %}</span>
             {% endif %}
           </div>
           {% if m.elan %}
             <div style="font-size:11px;color:#007b52;font-weight:600;margin-bottom:2px">
-              {% include 'partials/ui_icon.html' with name='tag' %} {{ m.elan.bashliq }}
+              {% include 'partials/ui_icon.html' with name='tag' %} {% if is_ru %}{{ m.elan|ru_title }}{% else %}{{ m.elan.bashliq }}{% endif %}
             </div>
           {% endif %}
           <div class="row-sub">{{ m.metn }}</div>
@@ -63,14 +64,14 @@
     {% else %}
     <div class="empty-state">
       <span class="empty-ico">{% include 'partials/ui_icon.html' with name='chat' %}</span>
-      <h3>Gələn mesajınız yoxdur</h3>
-      <p>Yeni mesajlar gəldikdə burada görünəcək.</p>
+      <h3>{% if is_ru %}Нет входящих сообщений{% else %}Gələn mesajınız yoxdur{% endif %}</h3>
+      <p>{% if is_ru %}Новые сообщения появятся здесь.{% else %}Yeni mesajlar gəldikdə burada görünəcək.{% endif %}</p>
     </div>
     {% endif %}
     <nav class="pager" aria-label="Gələn mesajların səhifələri">
-      {% if qelen.has_previous %}<a href="?in_page={{ qelen.previous_page_number }}">Əvvəlki</a>{% endif %}
+      {% if qelen.has_previous %}<a href="?in_page={{ qelen.previous_page_number }}">{% if is_ru %}Назад{% else %}Əvvəlki{% endif %}</a>{% endif %}
       <span>{{ qelen.number }} / {{ qelen.paginator.num_pages }}</span>
-      {% if qelen.has_next %}<a href="?in_page={{ qelen.next_page_number }}">Sonrakı</a>{% endif %}
+      {% if qelen.has_next %}<a href="?in_page={{ qelen.next_page_number }}">{% if is_ru %}Далее{% else %}Sonrakı{% endif %}</a>{% endif %}
     </nav>
   </div>
 
@@ -93,7 +94,7 @@
           </div>
           {% if m.elan %}
             <div style="font-size:11px;color:#007b52;font-weight:600;margin-bottom:2px">
-              {% include 'partials/ui_icon.html' with name='tag' %} {{ m.elan.bashliq }}
+              {% include 'partials/ui_icon.html' with name='tag' %} {% if is_ru %}{{ m.elan|ru_title }}{% else %}{{ m.elan.bashliq }}{% endif %}
             </div>
           {% endif %}
           <div class="row-sub">{{ m.metn }}</div>
@@ -107,14 +108,14 @@
     {% else %}
     <div class="empty-state">
       <span class="empty-ico">{% include 'partials/ui_icon.html' with name='send' %}</span>
-      <h3>Göndərilmiş mesajınız yoxdur</h3>
-      <p>Ustaların elanlarına baxaraq sual verə bilərsiniz.</p>
+      <h3>{% if is_ru %}Нет отправленных сообщений{% else %}Göndərilmiş mesajınız yoxdur{% endif %}</h3>
+      <p>{% if is_ru %}Вы можете задать вопрос мастерам со страницы их объявлений.{% else %}Ustaların elanlarına baxaraq sual verə bilərsiniz.{% endif %}</p>
     </div>
     {% endif %}
     <nav class="pager" aria-label="Göndərilən mesajların səhifələri">
-      {% if gonderilenler.has_previous %}<a href="?out_page={{ gonderilenler.previous_page_number }}#gonderilenler">Əvvəlki</a>{% endif %}
+      {% if gonderilenler.has_previous %}<a href="?out_page={{ gonderilenler.previous_page_number }}#gonderilenler">{% if is_ru %}Назад{% else %}Əvvəlki{% endif %}</a>{% endif %}
       <span>{{ gonderilenler.number }} / {{ gonderilenler.paginator.num_pages }}</span>
-      {% if gonderilenler.has_next %}<a href="?out_page={{ gonderilenler.next_page_number }}#gonderilenler">Sonrakı</a>{% endif %}
+      {% if gonderilenler.has_next %}<a href="?out_page={{ gonderilenler.next_page_number }}#gonderilenler">{% if is_ru %}Далее{% else %}Sonrakı{% endif %}</a>{% endif %}
     </nav>
   </div>
 </div>

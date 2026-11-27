@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load seo_tags %}
 {% block robots %}noindex, nofollow{% endblock %}
-{% block title %}{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}Usta{% endif %} — Prousta.az{% endblock %}
+{% block title %}{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{% if is_ru %}Мастер{% else %}Usta{% endif %}{% endif %} — Prousta.az{% endblock %}
 
 {% block content %}
 <div class="pg">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'elan_siyahi' %}">Ustalar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% if is_ru %}{% url 'ru_elan_siyahi' %}{% else %}{% url 'elan_siyahi' %}{% endif %}">{% if is_ru %}Мастера{% else %}Ustalar{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     <span aria-current="page">{% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{{ sahib.username }}{% endif %}</span>
   </nav>
 
@@ -25,12 +26,12 @@
           {% if sahib.profil.ad %}{{ sahib.profil.ad }} {{ sahib.profil.soyad }}{% elif sahib.first_name %}{{ sahib.first_name }} {{ sahib.last_name }}{% else %}{{ sahib.username }}{% endif %}
         </h1>
         <span class="badge" style="background:#eaf7f1;color:#007b52">
-          {% include 'partials/ui_icon.html' with name='user' %} Elan sahibi
+          {% include 'partials/ui_icon.html' with name='user' %} {% if is_ru %}Автор объявления{% else %}Elan sahibi{% endif %}
         </span>
       </div>
       <div class="meta-row">
-        <span>{% include 'partials/ui_icon.html' with name='calendar' %} {{ sahib.date_joined|date:"d.m.Y" }}-dən aktiv üzv</span>
-        {% if sahib.profil.sheher %}<span>{% include 'partials/ui_icon.html' with name='pin' %} {{ sahib.profil.sheher }}</span>{% endif %}
+        <span>{% include 'partials/ui_icon.html' with name='calendar' %} {% if is_ru %}На сайте с {{ sahib.date_joined|date:"d.m.Y" }}{% else %}{{ sahib.date_joined|date:"d.m.Y" }}-dən aktiv üzv{% endif %}</span>
+        {% if sahib.profil.sheher %}<span>{% include 'partials/ui_icon.html' with name='pin' %} {% if is_ru %}{{ sahib.profil.sheher|ru_city }}{% else %}{{ sahib.profil.sheher }}{% endif %}</span>{% endif %}
       </div>
     </div>
   </div>
@@ -38,7 +39,7 @@
   <!-- Ustanın Elanları -->
   <section class="pg-section">
     <div class="sec-head">
-      <h2>Ustanın aktiv elanları</h2>
+      <h2>{% if is_ru %}Активные объявления мастера{% else %}Ustanın aktiv elanları{% endif %}</h2>
     </div>
 
     <div class="service-grid">
@@ -47,9 +48,9 @@
       {% empty %}
         <div class="empty-state">
           <span class="empty-ico">{% include 'partials/ui_icon.html' with name='list' %}</span>
-          <h3>Bu ustanın hazırda aktiv elanı yoxdur</h3>
-          <p>Digər peşəkar ustaların elanlarına baxa bilərsiniz.</p>
-          <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Bütün elanlar</a>
+          <h3>{% if is_ru %}У этого мастера сейчас нет активных объявлений{% else %}Bu ustanın hazırda aktiv elanı yoxdur{% endif %}</h3>
+          <p>{% if is_ru %}Посмотрите объявления других специалистов.{% else %}Digər peşəkar ustaların elanlarına baxa bilərsiniz.{% endif %}</p>
+          <a href="{% if is_ru %}{% url 'ru_elan_siyahi' %}{% else %}{% url 'elan_siyahi' %}{% endif %}" class="btn btn-primary">{% if is_ru %}Все объявления{% else %}Bütün elanlar{% endif %}</a>
         </div>
       {% endfor %}
     </div>

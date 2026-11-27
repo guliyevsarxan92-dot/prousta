@@ -1,45 +1,46 @@
 {% extends 'base.html' %}
-{% block title %}Mesaj Göndər — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Отправить сообщение{% else %}Mesaj Göndər{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--narrow">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'elan_siyahi' %}">Elanlar</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% if is_ru %}{% url 'ru_elan_siyahi' %}{% else %}{% url 'elan_siyahi' %}{% endif %}">{% if is_ru %}Объявления{% else %}Elanlar{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     {% if elan %}
-      <a href="{{ elan.get_absolute_url }}">{{ elan.bashliq|truncatechars:25 }}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+      <a href="{% if is_ru %}{{ elan|ru_url }}{% else %}{{ elan.get_absolute_url }}{% endif %}">{% if is_ru %}{{ elan|ru_title|truncatechars:25 }}{% else %}{{ elan.bashliq|truncatechars:25 }}{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
     {% endif %}
-    <span aria-current="page">Mesaj yaz</span>
+    <span aria-current="page">{% if is_ru %}Написать сообщение{% else %}Mesaj yaz{% endif %}</span>
   </nav>
 
   <div class="panel">
-    <h1 style="font-size:20px;font-weight:800;letter-spacing:-.3px;margin:0 0 14px">Mesaj Göndər</h1>
+    <h1 style="font-size:20px;font-weight:800;letter-spacing:-.3px;margin:0 0 14px">{% if is_ru %}Отправить сообщение{% else %}Mesaj Göndər{% endif %}</h1>
 
     <div class="notice" style="margin-bottom:18px">
       {% include 'partials/ui_icon.html' with name='user' %}
       <div>
-        <strong>Alıcı:</strong>
+        <strong>{% if is_ru %}Получатель:{% else %}Alıcı:{% endif %}</strong>
         {% if receiver %}{{ receiver.get_full_name|default:receiver.username }}{% else %}
         {% if elan.istifadeci.profil.ad %}{{ elan.istifadeci.profil.ad }} {{ elan.istifadeci.profil.soyad }}{% elif elan.istifadeci.first_name %}{{ elan.istifadeci.first_name }} {{ elan.istifadeci.last_name }}{% else %}{{ elan.istifadeci.username }}{% endif %}
         {% endif %}
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">Elan: {{ elan.bashliq }}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">{% if is_ru %}Объявление: {{ elan|ru_title }}{% else %}Elan: {{ elan.bashliq }}{% endif %}</div>
       </div>
     </div>
 
     <form method="post">
       {% csrf_token %}
       <div class="field">
-        <label for="id_metn">Mesajınız <span class="req">*</span></label>
-        <textarea id="id_metn" name="metn" maxlength="5000" placeholder="Xidmət, qiymət və ya işin detalları haqqında sualınızı yazın..." required style="min-height:140px"></textarea>
+        <label for="id_metn">{% if is_ru %}Ваше сообщение{% else %}Mesajınız{% endif %} <span class="req">*</span></label>
+        <textarea id="id_metn" name="metn" maxlength="5000" placeholder="{% if is_ru %}Напишите ваш вопрос об услуге, стоимости или деталях работы...{% else %}Xidmət, qiymət və ya işin detalları haqqında sualınızı yazın...{% endif %}" required style="min-height:140px"></textarea>
       </div>
 
       <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center">
         <button class="btn btn-primary btn-lg" type="submit" style="min-width:160px">
           {% include 'partials/ui_icon.html' with name='send' %}
-          Göndər
+          {% if is_ru %}Отправить{% else %}Göndər{% endif %}
         </button>
-        <a href="{{ elan.get_absolute_url }}" class="btn btn-outline">Ləğv et</a>
+        <a href="{% if is_ru %}{{ elan|ru_url }}{% else %}{{ elan.get_absolute_url }}{% endif %}" class="btn btn-outline">{% if is_ru %}Отмена{% else %}Ləğv et{% endif %}</a>
       </div>
     </form>
   </div>

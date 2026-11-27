@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}Elan Yerləşdir — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Подать объявление{% else %}Elan Yerləşdir{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
 <div class="pg pg--form">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Yeni elan</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Новое объявление{% else %}Yeni elan{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='plus' %} Pulsuz yerləşdirmə</span>
-    <h1>Xidmət elanı <span>yerləşdir</span></h1>
-    <p>Minlərlə müştəri ustanı burada axtarır. Xidmətiniz haqqında məlumatları doldurun və müştəri qazanın.</p>
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='plus' %} {% if is_ru %}Бесплатное размещение{% else %}Pulsuz yerləşdirmə{% endif %}</span>
+    <h1>{% if is_ru %}Разместить объявление <span>об услуге</span>{% else %}Xidmət elanı <span>yerləşdir</span>{% endif %}</h1>
+    <p>{% if is_ru %}Тысячи клиентов ищут мастеров здесь. Заполните информацию о вашей услуге и получайте заказы.{% else %}Minlərlə müştəri ustanı burada axtarır. Xidmətiniz haqqında məlumatları doldurun və müştəri qazanın.{% endif %}</p>
   </div>
 
   <div class="panel">
@@ -20,19 +21,19 @@
       {% csrf_token %}
       
       <div class="field">
-        <label for="id_bashliq">Xidmətin adı <span class="req">*</span></label>
-        <input id="id_bashliq" name="bashliq" value="{{ form_data.bashliq|default:'' }}" placeholder="Məsələn: Elektrik ustası, Santexnik, Kombi təmiri..." required>
+        <label for="id_bashliq">{% if is_ru %}Название услуги{% else %}Xidmətin adı{% endif %} <span class="req">*</span></label>
+        <input id="id_bashliq" name="bashliq" value="{{ form_data.bashliq|default:'' }}" placeholder="{% if is_ru %}Например: Мастер по комби, Сантехник, Электрик...{% else %}Məsələn: Elektrik ustası, Santexnik, Kombi təmiri...{% endif %}" required>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_kategori">Kateqoriya <span class="req">*</span></label>
+          <label for="id_kategori">{% if is_ru %}Категория{% else %}Kateqoriya{% endif %} <span class="req">*</span></label>
           <select id="id_kategori" name="kategori" required>
-            <option value="">Seçin...</option>
+            <option value="">{% if is_ru %}Выберите...{% else %}Seçin...{% endif %}</option>
             {% for kat in kateqoriyalar %}
-              <optgroup label="{{ kat.ad }}">
+              <optgroup label="{% if is_ru %}{{ kat|ru_cat }}{% else %}{{ kat.ad }}{% endif %}">
                 {% for alt in kat.alt_kateqoriyalar.all %}
-                  <option value="{{ alt.pk }}">{{ alt.ad }}</option>
+                  <option value="{{ alt.pk }}">{% if is_ru %}{{ alt|ru_cat }}{% else %}{{ alt.ad }}{% endif %}</option>
                 {% endfor %}
               </optgroup>
             {% endfor %}
@@ -40,26 +41,26 @@
         </div>
 
         <div class="field">
-          <label for="id_qiymet">Qiymət (₼)</label>
-          <input id="id_qiymet" name="qiymet" type="number" step="any" value="{{ form_data.qiymet|default:'' }}" placeholder="Boş buraxsanız 'Razılaşma ilə' qeyd olunacaq">
+          <label for="id_qiymet">{% if is_ru %}Цена (₼){% else %}Qiymət (₼){% endif %}</label>
+          <input id="id_qiymet" name="qiymet" type="number" step="any" value="{{ form_data.qiymet|default:'' }}" placeholder="{% if is_ru %}Оставьте пустым для «По договорённости»{% else %}Boş buraxsanız 'Razılaşma ilə' qeyd olunacaq{% endif %}">
         </div>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_telefon">Mobil nömrə (WhatsApp) <span class="req">*</span></label>
+          <label for="id_telefon">{% if is_ru %}Мобильный номер (WhatsApp){% else %}Mobil nömrə (WhatsApp){% endif %} <span class="req">*</span></label>
           <div style="display:flex;align-items:center;gap:6px">
             <span style="padding:10px 14px;background:#f6fbf9;border:1px solid #d7e2de;border-radius:8px;font-size:13px;font-weight:700;color:#007b52">+994</span>
             <input id="id_telefon" name="telefon" type="tel" value="{{ form_data.telefon|default:'' }}" placeholder="51 588 88 84" maxlength="9" required>
           </div>
-          <div class="field-hint">Məs: 501234567 (prefiks olmadan)</div>
+          <div class="field-hint">{% if is_ru %}Напр.: 501234567 (без префикса){% else %}Məs: 501234567 (prefiks olmadan){% endif %}</div>
         </div>
 
         <div class="field">
-          <label for="id_sheher">Bölgə / Şəhər <span class="req">*</span></label>
+          <label for="id_sheher">{% if is_ru %}Город / Район{% else %}Bölgə / Şəhər{% endif %} <span class="req">*</span></label>
           <select id="id_sheher" name="sheher" required>
-            <option value="">Seçin...</option>
-            <optgroup label="Bakı">
+            <option value="">{% if is_ru %}Выберите...{% else %}Seçin...{% endif %}</option>
+            <optgroup label="{% if is_ru %}Баку{% else %}Bakı{% endif %}">
               <option>Bakı</option>
               <option>Bakı — Yasamal</option>
               <option>Bakı — Binəqədi</option>
@@ -75,7 +76,7 @@
               <option>Bakı — Pirallahı</option>
               <option>Bakı — Abşeron</option>
             </optgroup>
-            <optgroup label="Digər şəhər və rayonlar">
+            <optgroup label="{% if is_ru %}Другие города и районы{% else %}Digər şəhər və rayonlar{% endif %}">
               <option>Abşeron</option><option>Xırdalan</option>
               <option>Sumqayıt</option><option>Gəncə</option>
               <option>Lənkəran</option><option>Mingəçevir</option>
@@ -108,19 +109,19 @@
       {% include 'partials/service_areas_field.html' %}
 
       <div class="field">
-        <label for="id_acaqlama">Xidmət haqqında ətraflı məlumat <span class="req">*</span></label>
-        <textarea id="id_acaqlama" name="acaqlama" placeholder="Gördüyünüz işlər, təcrübəniz, zəmanət və digər şərtləri qeyd edin..." required>{{ form_data.acaqlama|default:'' }}</textarea>
+        <label for="id_acaqlama">{% if is_ru %}Подробное описание услуги{% else %}Xidmət haqqında ətraflı məlumat{% endif %} <span class="req">*</span></label>
+        <textarea id="id_acaqlama" name="acaqlama" placeholder="{% if is_ru %}Опишите выполняемые работы, опыт, гарантию и условия выезда...{% else %}Gördüyünüz işlər, təcrübəniz, zəmanət və digər şərtləri qeyd edin...{% endif %}" required>{{ form_data.acaqlama|default:'' }}</textarea>
       </div>
 
       <div class="field">
-        <label>İşinizin şəkilləri</label>
+        <label>{% if is_ru %}Фотографии ваших работ{% else %}İşinizin şəkilləri{% endif %}</label>
         <div style="border:2px dashed #b9d3c8;background:#f7fbf9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;transition:.2s" onclick="document.getElementById('shekilInput').click()">
           <div style="width:48px;height:48px;border-radius:50%;background:#eaf7f1;color:#007b52;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px">
             {% include 'partials/ui_icon.html' with name='camera' %}
           </div>
-          <p style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">Şəkilləri seçmək üçün klikləyin</p>
-          <small style="color:var(--muted);display:block;margin-bottom:4px">Maksimum 5 şəkil (JPG, PNG)</small>
-          <small style="display:inline-block;background:#eef7f2;color:#007b52;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600">⚡ Şəkillərdə filiqran (watermark) və kənar loqo olmadıqda elan dərhal avtomatik təsdiqlənir!</small>
+          <p style="font-size:13px;font-weight:700;color:var(--tx);margin:0 0 4px">{% if is_ru %}Нажмите, чтобы выбрать фотографии{% else %}Şəkilləri seçmək üçün klikləyin{% endif %}</p>
+          <small style="color:var(--muted);display:block;margin-bottom:4px">{% if is_ru %}Максимум 5 фото (JPG, PNG){% else %}Maksimum 5 şəkil (JPG, PNG){% endif %}</small>
+          <small style="display:inline-block;background:#eef7f2;color:#007b52;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600">{% if is_ru %}⚡ Фото без сторонних водяных знаков одобряются автоматически!{% else %}⚡ Şəkillərdə filiqran (watermark) və kənar loqo olmadıqda elan dərhal avtomatik təsdiqlənir!{% endif %}</small>
         </div>
         <input type="file" id="shekilInput" name="shekillar" multiple accept="image/*" style="display:none" onchange="showFiles(this)">
         <div id="fileNames" style="margin-top:8px;font-size:12px;color:#007b52;font-weight:600"></div>
@@ -129,7 +130,7 @@
       <div class="form-actions">
         <button class="btn btn-primary btn-lg" type="submit" style="min-width:200px">
           {% include 'partials/ui_icon.html' with name='check' %}
-          Elanı Yerləşdir
+          {% if is_ru %}Опубликовать объявление{% else %}Elanı Yerləşdir{% endif %}
         </button>
       </div>
     </form>
@@ -138,13 +139,12 @@
   <div class="panel panel--soft" style="margin-top:18px">
     <h3 class="panel-title">
       {% include 'partials/ui_icon.html' with name='info' %}
-      Elan vermə qaydaları
+      {% if is_ru %}Правила размещения{% else %}Elan vermə qaydaları{% endif %}
     </h3>
     <ul class="meta-list" style="line-height:1.6">
-      <li>{% include 'partials/ui_icon.html' with name='check' %} Elanınız moderasiya yoxlanmasından sonra (24 saat ərzində) aktivləşəcək.</li>
-      <li>{% include 'partials/ui_icon.html' with name='check' %} Elan 30 gün aktiv qalır. Müddət bitdikdə profilinizdən yeniləyə bilərsiniz.</li>
-      <li>{% include 'partials/ui_icon.html' with name='check' %} Yalnız real xidmət məlumatları daxil edilməlidir.</li>
-      <li>{% include 'partials/ui_icon.html' with name='check' %} Əlaqə nömrəniz mütləq işlək və dəqiq olmalıdır.</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} {% if is_ru %}Объявление активируется после проверки модератором.{% else %}Elanınız moderasiya yoxlanmasından sonra (24 saat ərzində) aktivləşəcək.{% endif %}</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} {% if is_ru %}Срок размещения — 30 дней с возможностью бесплатного продления в профиле.{% else %}Elan 30 gün aktiv qalır. Müddət bitdikdə profilinizdən yeniləyə bilərsiniz.{% endif %}</li>
+      <li>{% include 'partials/ui_icon.html' with name='check' %} {% if is_ru %}Указывайте только реальные услуги и актуальный номер телефона.{% else %}Yalnız real xidmət məlumatları və işlək əlaqə nömrəsi daxil edilməlidir.{% endif %}</li>
     </ul>
   </div>
 </div>
@@ -152,7 +152,7 @@
 <script>
 function showFiles(input){
   var names = Array.from(input.files).map(function(f){ return f.name; });
-  document.getElementById('fileNames').textContent = names.length ? 'Seçildi: ' + names.join(', ') : '';
+  document.getElementById('fileNames').textContent = names.length ? names.join(', ') : '';
 }
 </script>
 {% endblock %}

@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/logo.css' %}">
-<link rel="stylesheet" href="{% static 'css/prousta.css' %}?v=3.3">
+<link rel="stylesheet" href="{% static 'css/prousta.css' %}?v=3.5">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18379438131"></script>
 <script>
@@ -128,9 +128,9 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
   .msgs{left:16px;right:16px;max-width:100%}
 }
 </style>
-<link rel="stylesheet" href="{% static 'css/marketplace.css' %}?v=3.3">
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages.css' %}">
+<link rel="stylesheet" href="{% static 'css/marketplace.css' %}?v=3.5">
+<link rel="stylesheet" href="{% static 'css/home.css' %}?v=3.5">
+<link rel="stylesheet" href="{% static 'css/pages.css' %}?v=3.5">
 {% block style %}{% endblock %}
 {% block extra_head %}{% endblock %}
 </head>
@@ -203,51 +203,15 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 
 <!-- Sol və Sağ Reklam Bannerləri (Yalnız Web/Desktop) -->
 {% if not reklam_sol or reklam_sol.shekil or reklam_sol.video or reklam_sol.video_url or reklam_sol.html_kod or not reklam_sol.bos_olduqda_gizlet %}
-<aside class="side-ad-banner side-ad-banner--left" id="sideAdLeft" aria-label="Sol Reklam">
+<aside class="pu-wing-panel pu-wing-panel--left side-ad-banner side-ad-banner--left" id="puWingLeft" aria-label="{% if is_ru %}Левый баннер{% else %}Sol Reklam{% endif %}">
   {% include 'partials/side_ad_left.html' %}
 </aside>
 {% endif %}
 {% if not reklam_sag or reklam_sag.shekil or reklam_sag.video or reklam_sag.video_url or reklam_sag.html_kod or not reklam_sag.bos_olduqda_gizlet %}
-<aside class="side-ad-banner side-ad-banner--right" id="sideAdRight" aria-label="Sağ Reklam">
+<aside class="pu-wing-panel pu-wing-panel--right side-ad-banner side-ad-banner--right" id="puWingRight" aria-label="{% if is_ru %}Правый баннер{% else %}Sağ Reklam{% endif %}">
   {% include 'partials/side_ad_right.html' %}
 </aside>
 {% endif %}
-<script>
-(function(){
-  function p(){
-    var n = document.querySelector('.site-nav');
-    var f = document.querySelector('.site-footer');
-    var topVal = 84;
-    if(n) {
-      var b = n.getBoundingClientRect().bottom;
-      topVal = Math.max(Math.round(b + 12), 84);
-    }
-    document.documentElement.style.setProperty('--side-ad-top', topVal + 'px');
-    var winH = window.innerHeight || document.documentElement.clientHeight || 800;
-    var maxAvail = winH - topVal - 24;
-    var targetH = Math.min(Math.max(maxAvail, 300), 780);
-    if(f) {
-      var ft = f.getBoundingClientRect().top;
-      var availH = ft - topVal - 20;
-      if (availH < 180) {
-        document.documentElement.style.setProperty('--side-ad-opacity', '0');
-        document.documentElement.style.setProperty('--side-ad-pointer', 'none');
-      } else {
-        document.documentElement.style.setProperty('--side-ad-opacity', '1');
-        document.documentElement.style.setProperty('--side-ad-pointer', 'auto');
-        document.documentElement.style.setProperty('--side-ad-max-h', Math.min(availH, targetH) + 'px');
-      }
-    } else {
-      document.documentElement.style.setProperty('--side-ad-opacity', '1');
-      document.documentElement.style.setProperty('--side-ad-pointer', 'auto');
-      document.documentElement.style.setProperty('--side-ad-max-h', targetH + 'px');
-    }
-  }
-  p();
-  window.addEventListener('scroll', p, {passive:true});
-  window.addEventListener('resize', p);
-})();
-</script>
 
 <main class="page-shell">
 {% block content %}{% endblock %}
@@ -255,7 +219,7 @@ footer{background:#0f172a;color:#94a3b8;margin-top:60px}
 
 {% include 'partials/site_footer.html' %}
 
-<script src="{% static 'js/motion.js' %}" defer></script>
+<script src="{% static 'js/motion.js' %}?v=3.5" defer></script>
 <!-- MOBİL ALT NAVİQASİYA -->
 <div class="mobil-alt-nav">
   <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}" class="alt-nav-item {% block nav_index %}{% endblock %}">
@@ -340,20 +304,25 @@ document.addEventListener('click', function(e) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
         var el = entry.target;
-        var bId = el.getAttribute('data-banner-track-view');
+        var bId = el.getAttribute('data-pu-showcase') || el.getAttribute('data-banner-track-view');
         if (bId) {
+          el.removeAttribute('data-pu-showcase');
           el.removeAttribute('data-banner-track-view');
-          var bUrl = '/banner/' + encodeURIComponent(bId) + '/baxis/';
+          var bUrl = '/partnyor/' + encodeURIComponent(bId) + '/izle/';
           fetch(bUrl, {method: 'GET', keepalive: true, credentials: 'same-origin'}).catch(function() {});
         }
         observer.unobserve(el);
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
 
-  document.querySelectorAll('[data-banner-track-view]').forEach(function(b) {
-    observer.observe(b);
-  });
+  function observeBanners(root) {
+    (root || document).querySelectorAll('[data-pu-showcase], [data-banner-track-view]').forEach(function(b) {
+      observer.observe(b);
+    });
+  }
+  observeBanners(document);
+  window.__puObserveBanners = observeBanners;
 })();
 </script>
 </body>

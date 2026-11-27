@@ -30,9 +30,18 @@
           if (data && data.html) {
             var temp = document.createElement('div');
             temp.innerHTML = data.html;
+            var addedIdx = 0;
             while (temp.firstChild) {
-              grid.appendChild(temp.firstChild);
+              var node = temp.firstChild;
+              if (node.nodeType === 1) {
+                node.classList.add('pu-card-enter');
+                node.style.animationDelay = Math.min(addedIdx * 0.04, 0.32) + 's';
+                addedIdx++;
+              }
+              grid.appendChild(node);
             }
+            if (window.__puAttachSmoothImages) window.__puAttachSmoothImages(grid);
+            if (window.__puObserveBanners) window.__puObserveBanners(grid);
           }
           if (data && data.has_next && data.next_page) {
             nextPage = data.next_page;

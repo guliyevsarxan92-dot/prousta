@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Şifrəni Unutdum — Prousta.az{% endblock %}
+{% block title %}{% if is_ru %}Восстановление пароля{% else %}Şifrəni Unutdum{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
@@ -8,20 +8,20 @@
     <div class="auth-ico">
       {% include 'partials/ui_icon.html' with name='mail' %}
     </div>
-    <h1>Şifrəni unutmusunuz?</h1>
-    <p class="auth-sub">Qeydiyyatdan keçdiyiniz email ünvanını daxil edin. Yeni şifrə göndərəcəyik.</p>
+    <h1>{% if is_ru %}Забыли пароль?{% else %}Şifrəni unutmusunuz?{% endif %}</h1>
+    <p class="auth-sub">{% if is_ru %}Введите ваш email, указанный при регистрации. Мы отправим ссылку для сброса пароля.{% else %}Qeydiyyatdan keçdiyiniz email ünvanını daxil edin. Yeni şifrə göndərəcəyik.{% endif %}</p>
 
     <form method="post">
       {% csrf_token %}
       <div class="field">
-        <label for="id_email">Email ünvanı</label>
+        <label for="id_email">Email</label>
         <input id="id_email" name="email" type="email" required placeholder="example@mail.com">
       </div>
-      <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">Şifrə Göndər</button>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" style="margin-top:10px">{% if is_ru %}Отправить ссылку{% else %}Şifrə Göndər{% endif %}</button>
     </form>
 
     <div class="auth-foot">
-      <a href="{% url 'giris' %}">← Giriş səhifəsinə qayıt</a>
+      <a href="{% url 'giris' %}">← {% if is_ru %}Вернуться ко входу{% else %}Giriş səhifəsinə qayıt{% endif %}</a>
     </div>
   </div>
 </div>

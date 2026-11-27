@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Profilim — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Мой профиль{% else %}Profilim{% endif %} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block style %}
@@ -13,14 +14,14 @@
 {% block content %}
 <div class="pg">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Profilim</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</span>
   </nav>
 
   <!-- Profil Başlığı -->
   <div class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px">
     <div class="person">
-      <a href="{% url 'profil_foto_crop' %}" class="avatar-wrap" title="Şəkli dəyiş">
+      <a href="{% url 'profil_foto_crop' %}" class="avatar-wrap" title="{% if is_ru %}Изменить фото{% else %}Şəkli dəyiş{% endif %}">
         <div class="avatar avatar--lg">
           {% if user.profil.avatar %}
             <img src="{{ user.profil.avatar.url }}" alt="{{ user.username }}" loading="lazy">
@@ -41,22 +42,22 @@
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <a href="{% url 'profil_duzelis' %}" class="btn btn-outline btn-sm">
         {% include 'partials/ui_icon.html' with name='settings' %}
-        Tənzimləmələr
+        {% if is_ru %}Настройки{% else %}Tənzimləmələr{% endif %}
       </a>
       <a href="{% url 'elan_yarat' %}" class="btn btn-primary btn-sm">
         {% include 'partials/ui_icon.html' with name='plus' %}
-        Yeni Elan
+        {% if is_ru %}Новое объявление{% else %}Yeni Elan{% endif %}
       </a>
       <form method="post" action="{% url 'cixis' %}" style="margin:0">
         {% csrf_token %}
-        <button type="submit" class="btn btn-outline btn-sm" style="color:#e11d48;border-color:#fecdd3;gap:6px" onmouseover="this.style.background='#fff1f2';this.style.borderColor='#fda4af'" onmouseout="this.style.background='transparent';this.style.borderColor='#fecdd3'" title="Hesabdan çıxış">
+        <button type="submit" class="btn btn-outline btn-sm" style="color:#e11d48;border-color:#fecdd3;gap:6px" onmouseover="this.style.background='#fff1f2';this.style.borderColor='#fda4af'" onmouseout="this.style.background='transparent';this.style.borderColor='#fecdd3'" title="{% if is_ru %}Выйти из аккаунта{% else %}Hesabdan çıxış{% endif %}">
           {% include 'partials/ui_icon.html' with name='logout' %}
-          Çıxış
+          {% if is_ru %}Выйти{% else %}Çıxış{% endif %}
         </button>
       </form>
-      <button type="button" class="btn btn-outline btn-sm" onclick="openDeleteAccountModal()" style="color:#b91c1c;border-color:#fca5a5;gap:6px" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent';this.style.borderColor='#fca5a5'" title="Hesabı birdəfəlik sil">
+      <button type="button" class="btn btn-outline btn-sm" onclick="openDeleteAccountModal()" style="color:#b91c1c;border-color:#fca5a5;gap:6px" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent';this.style.borderColor='#fca5a5'" title="{% if is_ru %}Удалить аккаунт{% else %}Hesabı birdəfəlik sil{% endif %}">
         {% include 'partials/ui_icon.html' with name='trash' %}
-        Hesabı sil
+        {% if is_ru %}Удалить аккаунт{% else %}Hesabı sil{% endif %}
       </button>
     </div>
   </div>
@@ -68,13 +69,13 @@
         {% include 'partials/ui_icon.html' with name='wallet' %}
       </div>
       <div>
-        <small style="color:var(--muted);font-weight:600">Cari Balansınız</small>
+        <small style="color:var(--muted);font-weight:600">{% if is_ru %}Текущий баланс{% else %}Cari Balansınız{% endif %}</small>
         <div style="font-size:26px;font-weight:800;color:#00734b;line-height:1.1">{{ user.profil.balans }} ₼</div>
       </div>
     </div>
     <a href="{% url 'odenis' %}" class="btn btn-primary">
       {% include 'partials/ui_icon.html' with name='plus' %}
-      Balans Artır
+      {% if is_ru %}Пополнить баланс{% else %}Balans Artır{% endif %}
     </a>
   </div>
 
@@ -85,7 +86,7 @@
         {% include 'partials/ui_icon.html' with name='list' %}
       </div>
       <div>
-        <small style="color:var(--muted);font-size:11px;display:block">Elan Sayı</small>
+        <small style="color:var(--muted);font-size:11px;display:block">{% if is_ru %}Объявления{% else %}Elan Sayı{% endif %}</small>
         <strong style="font-size:17px;font-weight:800">{{ elanlar.paginator.count }}</strong>
       </div>
     </div>
@@ -94,7 +95,7 @@
         {% include 'partials/ui_icon.html' with name='eye' %}
       </div>
       <div>
-        <small style="color:var(--muted);font-size:11px;display:block">Cəmi Baxış</small>
+        <small style="color:var(--muted);font-size:11px;display:block">{% if is_ru %}Просмотры{% else %}Cəmi Baxış{% endif %}</small>
         <strong style="font-size:17px;font-weight:800">{{ cemi_baxish|default:0 }}</strong>
       </div>
     </div>
@@ -103,7 +104,7 @@
         {% include 'partials/ui_icon.html' with name='phone' %}
       </div>
       <div>
-        <small style="color:#047857;font-size:11px;display:block">Zəng Tıklamaları</small>
+        <small style="color:#047857;font-size:11px;display:block">{% if is_ru %}Звонки{% else %}Zəng Tıklamaları{% endif %}</small>
         <strong style="font-size:17px;font-weight:800;color:#047857">{{ cemi_zeng|default:0 }}</strong>
       </div>
     </div>
@@ -112,7 +113,7 @@
         {% include 'partials/ui_icon.html' with name='whatsapp' %}
       </div>
       <div>
-        <small style="color:#15803d;font-size:11px;display:block">WhatsApp Tıklamaları</small>
+        <small style="color:#15803d;font-size:11px;display:block">{% if is_ru %}Клики WhatsApp{% else %}WhatsApp Tıklamaları{% endif %}</small>
         <strong style="font-size:17px;font-weight:800;color:#15803d">{{ cemi_wp|default:0 }}</strong>
       </div>
     </div>
@@ -121,17 +122,17 @@
   <!-- Tablar -->
   <div class="tabs">
     <button class="is-active" type="button" onclick="showTab('elanlarim', this)">
-      Elanlarım ({{ elanlar.paginator.count }})
+      {% if is_ru %}Мои объявления{% else %}Elanlarım{% endif %} ({{ elanlar.paginator.count }})
     </button>
     <button type="button" onclick="showTab('bitmisler', this)">
-      Müddəti Bitmiş
+      {% if is_ru %}Завершённые{% else %}Müddəti Bitmiş{% endif %}
       {% if muddeti_bitmis.paginator.count %}<span class="badge badge--red" style="margin-left:4px">{{ muddeti_bitmis.paginator.count }}</span>{% endif %}
     </button>
     <button type="button" onclick="showTab('favoritler', this)">
-      Favoritlər ({{ favoritler.paginator.count }})
+      {% if is_ru %}Избранное{% else %}Favoritlər{% endif %} ({{ favoritler.paginator.count }})
     </button>
     <a href="{% url 'mesajlar' %}" style="text-decoration:none">
-      Mesajlar {% if oxunmamis %}<span class="badge badge--red" style="margin-left:4px">{{ oxunmamis }}</span>{% endif %}
+      {% if is_ru %}Сообщения{% else %}Mesajlar{% endif %} {% if oxunmamis %}<span class="badge badge--red" style="margin-left:4px">{{ oxunmamis }}</span>{% endif %}
     </a>
   </div>
 
@@ -143,13 +144,13 @@
       {% if elan.status != 'muddeti_bitmis' %}
       <article class="service-card">
         <div class="service-photo">
-          <a href="{{ elan.get_absolute_url }}">
+          <a href="{% if is_ru %}{{ elan|ru_url }}{% else %}{{ elan.get_absolute_url }}{% endif %}">
             {% with elan.shekillar.all as sh %}{% if sh %}
-              <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
+              <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{% if is_ru %}{{ elan|ru_title }}{% else %}{{ elan.bashliq }}{% endif %}" loading="lazy">
             {% else %}
               <span class="service-photo-empty">
                 {% include 'partials/ui_icon.html' with name='list' %}
-                <span>Şəkil yoxdur</span>
+                <span>{% if is_ru %}Без фото{% else %}Şəkil yoxdur{% endif %}</span>
               </span>
             {% endif %}{% endwith %}
           </a>
@@ -161,26 +162,26 @@
           {% endif %}
         </div>
         <div class="service-info">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:2px">#{{ elan.nomre }} · {{ elan.sheher }}</div>
-          <h3><a href="{{ elan.get_absolute_url }}">{{ elan.bashliq }}</a></h3>
-          <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}Razılaşma ilə{% endif %}</p>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:2px">#{{ elan.nomre }} · {% if is_ru %}{{ elan|ru_city }}{% else %}{{ elan.sheher }}{% endif %}</div>
+          <h3><a href="{% if is_ru %}{{ elan|ru_url }}{% else %}{{ elan.get_absolute_url }}{% endif %}">{% if is_ru %}{{ elan|ru_title }}{% else %}{{ elan.bashliq }}{% endif %}</a></h3>
+          <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}{% if is_ru %}По договорённости{% else %}Razılaşma ilə{% endif %}{% endif %}</p>
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
             <span class="badge {% if elan.status == 'aktiv' %}badge--green{% else %}badge--gold{% endif %}">
-              {{ elan.get_status_display }}
+              {% if is_ru %}{% if elan.status == 'aktiv' %}Активно{% elif elan.status == 'gozlemede' %}На проверке{% else %}{{ elan.get_status_display }}{% endif %}{% else %}{{ elan.get_status_display }}{% endif %}
             </span>
             {% if elan.is_vip_aktiv and elan.vip_bitis %}
-              <small style="font-size:10px;color:var(--muted)">{{ elan.vip_bitis|date:"d.m.Y" }}-dək VIP</small>
+              <small style="font-size:10px;color:var(--muted)">VIP {% if is_ru %}до{% else %}{% endif %} {{ elan.vip_bitis|date:"d.m.Y" }}{% if not is_ru %}-dək{% endif %}</small>
             {% endif %}
           </div>
           <!-- Tıklama Statistikası -->
           <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px;flex-wrap:wrap;font-size:11px">
-            <span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px" title="Baxış sayı">
+            <span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px" title="{% if is_ru %}Просмотры{% else %}Baxış sayı{% endif %}">
               {% include 'partials/ui_icon.html' with name='eye' %} {{ elan.baxish_sayi }}
             </span>
-            <span style="background:#ecfdf5;color:#047857;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #a7f3d0" title="Zəng düyməsinə tıklama">
-              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> zəng
+            <span style="background:#ecfdf5;color:#047857;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #a7f3d0" title="{% if is_ru %}Звонки{% else %}Zəng düyməsinə tıklama{% endif %}">
+              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> {% if is_ru %}зв.{% else %}zəng{% endif %}
             </span>
-            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp düyməsinə tıklama">
+            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp">
               {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
             </span>
           </div>
@@ -191,25 +192,25 @@
                     data-vip="{% if elan.is_vip_aktiv %}{{ elan.vip_status }}{% else %}normal{% endif %}"
                     data-vip-aktiv="{% if elan.is_vip_aktiv %}1{% else %}0{% endif %}"
                     data-vip-bitis="{{ elan.vip_bitis|date:'d.m.Y' }}"
-                    title="Elanı reklam et və önə çıxar">
+                    title="{% if is_ru %}Продвинуть объявление{% else %}Elanı reklam et və önə çıxar{% endif %}">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              <span style="pointer-events:none">Reklam et</span>
+              <span style="pointer-events:none">{% if is_ru %}Продвинуть{% else %}Reklam et{% endif %}</span>
             </button>
 
             <div class="card-dots-wrap">
-              <button type="button" class="btn-card-dots" onclick="toggleCardDotsMenu(this, event)" aria-label="Seçimlər" title="Seçimlər">
+              <button type="button" class="btn-card-dots" onclick="toggleCardDotsMenu(this, event)" aria-label="{% if is_ru %}Действия{% else %}Seçimlər{% endif %}" title="{% if is_ru %}Действия{% else %}Seçimlər{% endif %}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="pointer-events:none"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>
               </button>
               <div class="card-dots-menu">
                 <a href="{% url 'elan_duzelis' elan.pk %}" class="card-dots-item">
                   {% include 'partials/ui_icon.html' with name='edit' %}
-                  <span>Düzəlt</span>
+                  <span>{% if is_ru %}Изменить{% else %}Düzəlt{% endif %}</span>
                 </a>
-                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Bu elanı silmək istədiyinizdən əminsiniz?')">
+                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('{% if is_ru %}Удалить это объявление?{% else %}Bu elanı silmək istədiyinizdən əminsiniz?{% endif %}')">
                   {% csrf_token %}
                   <button type="submit" class="card-dots-item card-dots-item--danger">
                     {% include 'partials/ui_icon.html' with name='trash' %}
-                    <span>Sil</span>
+                    <span>{% if is_ru %}Удалить{% else %}Sil{% endif %}</span>
                   </button>
                 </form>
               </div>
@@ -223,9 +224,9 @@
     {% else %}
     <div class="empty-state">
       <span class="empty-ico">{% include 'partials/ui_icon.html' with name='list' %}</span>
-      <h3>Hələ aktiv elanınız yoxdur</h3>
-      <p>İlk elanınızı pulsuz yerləşdirin və müştərilər sizi tapsın.</p>
-      <a href="{% url 'elan_yarat' %}" class="btn btn-primary">Elan yerləşdir</a>
+      <h3>{% if is_ru %}У вас пока нет активных объявлений{% else %}Hələ aktiv elanınız yoxdur{% endif %}</h3>
+      <p>{% if is_ru %}Разместите своё первое объявление бесплатно, чтобы клиенты нашли вас.{% else %}İlk elanınızı pulsuz yerləşdirin və müştərilər sizi tapsın.{% endif %}</p>
+      <a href="{% url 'elan_yarat' %}" class="btn btn-primary">{% if is_ru %}Подать объявление{% else %}Elan yerləşdir{% endif %}</a>
     </div>
     {% endif %}
     {% include 'partials/profile_pager.html' with page=elanlar key='ads_page' tab='elanlarim' label='Elanların səhifələri' %}
@@ -239,31 +240,31 @@
       <article class="service-card" style="opacity:.75">
         <div class="service-photo">
           {% if elan.primary_photo %}
-            <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{{ elan.bashliq }}" loading="lazy">
+            <img src="{{ elan.primary_photo.shekil.url|cld_card }}" alt="{% if is_ru %}{{ elan|ru_title }}{% else %}{{ elan.bashliq }}{% endif %}" loading="lazy">
           {% else %}
             <span class="service-photo-empty">{% include 'partials/ui_icon.html' with name='list' %}</span>
           {% endif %}
-          <span class="badge badge--red" style="position:absolute;top:8px;left:8px">Müddəti bitib</span>
+          <span class="badge badge--red" style="position:absolute;top:8px;left:8px">{% if is_ru %}Срок истёк{% else %}Müddəti bitib{% endif %}</span>
         </div>
         <div class="service-info">
-          <h3>{{ elan.bashliq }}</h3>
-          <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}Razılaşma ilə{% endif %}</p>
+          <h3>{% if is_ru %}{{ elan|ru_title }}{% else %}{{ elan.bashliq }}{% endif %}</h3>
+          <p class="service-price">{% if elan.qiymet %}{{ elan.qiymet|floatformat:'-2' }} AZN{% else %}{% if is_ru %}По договорённости{% else %}Razılaşma ilə{% endif %}{% endif %}</p>
           <!-- Tıklama Statistikası -->
           <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;font-size:11px">
             <span style="background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px" title="Baxış sayı">
               {% include 'partials/ui_icon.html' with name='eye' %} {{ elan.baxish_sayi }}
             </span>
             <span style="background:#ecfdf5;color:#047857;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #a7f3d0" title="Zəng düyməsinə tıklama">
-              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> zəng
+              {% include 'partials/ui_icon.html' with name='phone' %} <b>{{ elan.zeng_sayi }}</b> {% if is_ru %}зв.{% else %}zəng{% endif %}
             </span>
-            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp düyməsinə tıklama">
+            <span style="background:#f0fdf4;color:#15803d;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;border:1px solid #bbf7d0" title="WhatsApp">
               {% include 'partials/ui_icon.html' with name='whatsapp' %} <b>{{ elan.wp_sayi }}</b> WP
             </span>
           </div>
           <div class="service-actions elan-card-actions" style="margin-top:8px">
             <form method="post" action="{% url 'elan_aktivlesdir' elan.pk %}" style="flex:1;margin:0">
               {% csrf_token %}
-              <button type="submit" class="btn btn-primary btn-block btn-sm" style="height:36px;border-radius:9px;font-weight:700">Yenidən aktivləşdir</button>
+              <button type="submit" class="btn btn-primary btn-block btn-sm" style="height:36px;border-radius:9px;font-weight:700">{% if is_ru %}Активировать снова{% else %}Yenidən aktivləşdir{% endif %}</button>
             </form>
             <div class="card-dots-wrap">
               <button type="button" class="btn-card-dots" onclick="toggleCardDotsMenu(this, event)" aria-label="Seçimlər" title="Seçimlər">
@@ -272,13 +273,13 @@
               <div class="card-dots-menu">
                 <a href="{% url 'elan_duzelis' elan.pk %}" class="card-dots-item">
                   {% include 'partials/ui_icon.html' with name='edit' %}
-                  <span>Düzəlt</span>
+                  <span>{% if is_ru %}Изменить{% else %}Düzəlt{% endif %}</span>
                 </a>
-                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('Silmək istəyirsiniz?')">
+                <form method="post" action="{% url 'elan_sil' elan.pk %}" style="margin:0" onsubmit="return confirm('{% if is_ru %}Удалить?{% else %}Silmək istəyirsiniz?{% endif %}')">
                   {% csrf_token %}
                   <button type="submit" class="card-dots-item card-dots-item--danger">
                     {% include 'partials/ui_icon.html' with name='trash' %}
-                    <span>Sil</span>
+                    <span>{% if is_ru %}Удалить{% else %}Sil{% endif %}</span>
                   </button>
                 </form>
               </div>
@@ -291,8 +292,8 @@
     {% else %}
     <div class="empty-state">
       <span class="empty-ico">{% include 'partials/ui_icon.html' with name='check' %}</span>
-      <h3>Müddəti bitmiş elanınız yoxdur</h3>
-      <p>Bütün elanlarınız aktiv vəziyyətdədir.</p>
+      <h3>{% if is_ru %}Нет завершённых объявлений{% else %}Müddəti bitmiş elanınız yoxdur{% endif %}</h3>
+      <p>{% if is_ru %}Все ваши объявления активны.{% else %}Bütün elanlarınız aktiv vəziyyətdədir.{% endif %}</p>
     </div>
     {% endif %}
     {% include 'partials/profile_pager.html' with page=muddeti_bitmis key='expired_page' tab='bitmisler' label='Müddəti bitmiş elanların səhifələri' %}
@@ -309,9 +310,9 @@
     {% else %}
     <div class="empty-state">
       <span class="empty-ico">{% include 'partials/ui_icon.html' with name='heart' %}</span>
-      <h3>Favorit elanınız yoxdur</h3>
-      <p>Bəyəndiyiniz elanları ürək ikonuna basaraq yadda saxlaya bilərsiniz.</p>
-      <a href="{% url 'elan_siyahi' %}" class="btn btn-primary">Elanlara bax</a>
+      <h3>{% if is_ru %}В избранном пока пусто{% else %}Favorit elanınız yoxdur{% endif %}</h3>
+      <p>{% if is_ru %}Нажмите на иконку сердечка на объявлении, чтобы сохранить его.{% else %}Bəyəndiyiniz elanları ürək ikonuna basaraq yadda saxlaya bilərsiniz.{% endif %}</p>
+      <a href="{% if is_ru %}{% url 'ru_elan_siyahi' %}{% else %}{% url 'elan_siyahi' %}{% endif %}" class="btn btn-primary">{% if is_ru %}Смотреть объявления{% else %}Elanlara bax{% endif %}</a>
     </div>
     {% endif %}
     {% include 'partials/profile_pager.html' with page=favoritler key='favorites_page' tab='favoritler' label='Favoritlərin səhifələri' %}
@@ -322,15 +323,15 @@
     <div>
       <h3 style="margin:0 0 4px;font-size:15px;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:8px">
         {% include 'partials/ui_icon.html' with name='trash' %}
-        Hesabın birdəfəlik silinməsi
+        {% if is_ru %}Удаление аккаунта навсегда{% else %}Hesabın birdəfəlik silinməsi{% endif %}
       </h3>
       <p style="margin:0;font-size:13px;color:#7f1d1d">
-        Artıq platformadan istifadə etmək istəmirsinizsə, hesabınızı və bütün məlumatlarınızı buradan birdəfəlik silə bilərsiniz.
+        {% if is_ru %}Если вы больше не пользуетесь платформой, вы можете безвозвратно удалить свой аккаунт и все данные.{% else %}Artıq platformadan istifadə etmək istəmirsinizsə, hesabınızı və bütün məlumatlarınızı buradan birdəfəlik silə bilərsiniz.{% endif %}
       </p>
     </div>
     <button type="button" class="btn btn-sm" onclick="openDeleteAccountModal()" style="background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;font-weight:700;padding:8px 18px;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='#fecdd3'" onmouseout="this.style.background='#fee2e2'">
       {% include 'partials/ui_icon.html' with name='trash' %}
-      Hesabı sil
+      {% if is_ru %}Удалить аккаунт{% else %}Hesabı sil{% endif %}
     </button>
   </div>
 
@@ -343,34 +344,34 @@
     <!-- Modal Header -->
     <div class="reklam-modal-header">
       <div>
-        <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">Elanı Reklam Et</h3>
+        <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">{% if is_ru %}Продвинуть объявление{% else %}Elanı Reklam Et{% endif %}</h3>
         <div id="modalElanBashliq" style="margin-top:2px;font-size:12px;color:#64748b;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
       </div>
-      <button type="button" class="reklam-modal-close" onclick="closeReklamModal()" aria-label="Bağla">✕</button>
+      <button type="button" class="reklam-modal-close" onclick="closeReklamModal()" aria-label="{% if is_ru %}Закрыть{% else %}Bağla{% endif %}">✕</button>
     </div>
 
     <!-- Balans Məlumatı -->
     <div class="reklam-modal-balans">
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:12.5px;color:#64748b">Cari balansınız:</span>
+        <span style="font-size:12.5px;color:#64748b">{% if is_ru %}Ваш баланс:{% else %}Cari balansınız:{% endif %}</span>
         <strong id="modalCariBalans" style="font-size:15px;color:#007b52">{{ profil.balans|floatformat:'2' }} ₼</strong>
       </div>
       <a href="{% url 'odenis' %}" class="reklam-balans-artir">
-        + Balansı artır
+        {% if is_ru %}+ Пополнить баланс{% else %}+ Balansı artır{% endif %}
       </a>
     </div>
 
     <!-- VIP Aktivdir Xəbərdarlıq Bloku -->
     <div id="modalVipActiveAlert" style="display:none;background:#fef3c7;border:1.5px solid #fde68a;border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#92400e;font-size:12.5px">
-      <strong id="modalVipActiveAlertTitle" style="display:block;font-size:13px;color:#92400e">Bu elan hazırda VIP statusundadır</strong>
-      <div id="modalVipActiveAlertDesc" style="font-size:11.5px;color:#b45309;margin-top:2px">Bitiş tarixi: ... Müddəti bitdikdən sonra yenidən VIP edə bilərsiniz.</div>
+      <strong id="modalVipActiveAlertTitle" style="display:block;font-size:13px;color:#92400e">{% if is_ru %}Это объявление уже имеет статус VIP{% else %}Bu elan hazırda VIP statusundadır{% endif %}</strong>
+      <div id="modalVipActiveAlertDesc" style="font-size:11.5px;color:#b45309;margin-top:2px">...</div>
     </div>
 
     <!-- Xəbərdarlıq və Uğur Mesajları -->
     <div id="modalSuccessMsg" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;font-weight:600"></div>
     <div id="modalYetersizBalans" style="display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:12px;margin-bottom:14px;font-size:12.5px;line-height:1.4">
-      <div id="modalYetersizBalansText"><b>Balansınız kifayət etmir.</b> Zəhmət olmasa balansı artırın.</div>
-      <a href="{% url 'odenis' %}" style="display:inline-block;margin-top:6px;font-weight:700;color:#dc2626;text-decoration:underline">Balansı indi artır →</a>
+      <div id="modalYetersizBalansText">{% if is_ru %}<b>Недостаточно средств на балансе.</b> Пожалуйста, пополните баланс.{% else %}<b>Balansınız kifayət etmir.</b> Zəhmət olmasa balansı artırın.{% endif %}</div>
+      <a href="{% url 'odenis' %}" style="display:inline-block;margin-top:6px;font-weight:700;color:#dc2626;text-decoration:underline">{% if is_ru %}Пополнить баланс →{% else %}Balansı indi artır →{% endif %}</a>
     </div>
 
     <!-- Ödənişli Seçimlər Siyahısı (Tap.az stili) -->
@@ -380,15 +381,15 @@
       <div class="reklam-service-item">
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">İrəli çək</h4>
-            <span class="reklam-badge reklam-badge--green">1 AZN · Sürətli</span>
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">{% if is_ru %}Поднять в поиске{% else %}İrəli çək{% endif %}</h4>
+            <span class="reklam-badge reklam-badge--green">1 AZN · {% if is_ru %}Быстро{% else %}Sürətli{% endif %}</span>
           </div>
-          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">Elanı dərhal axtarış və kateqoriya siyahısında ən ön sıraya qaldırır.</p>
+          <p style="margin:3px 0 0;font-size:11.5px;color:#64748b">{% if is_ru %}Мгновенно поднимает объявление на первое место в поиске и категории.{% else %}Elanı dərhal axtarış və kateqoriya siyahısında ən ön sıraya qaldırır.{% endif %}</p>
         </div>
         <div class="reklam-service-action">
           <div class="reklam-service-price">1.00 ₼</div>
           <button type="button" class="btn-reklam-apply btn-reklam-apply--green" onclick="submitIreliCek(this)">
-            İrəli çək
+            {% if is_ru %}Поднять{% else %}İrəli çək{% endif %}
           </button>
         </div>
       </div>
@@ -397,15 +398,15 @@
       <div class="reklam-service-item" id="itemModalVip">
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">VIP Elan</h4>
-            <span id="badgeModalVip" class="reklam-badge reklam-badge--amber">Populyar</span>
+            <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">{% if is_ru %}VIP объявление{% else %}VIP Elan{% endif %}</h4>
+            <span id="badgeModalVip" class="reklam-badge reklam-badge--amber">{% if is_ru %}Популярно{% else %}Populyar{% endif %}</span>
           </div>
-          <p id="descModalVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.</p>
+          <p id="descModalVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">{% if is_ru %}Отображается впереди в поиске и категориях со специальным значком VIP.{% else %}Bütün elanlar siyahısında və axtarışlarda öndə, VIP nişanı ilə seçilir.{% endif %}</p>
         </div>
         <div class="reklam-service-action">
-          <div class="reklam-service-price">{{ vip_paket.qiymet|floatformat:'-2'|default:'3.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ vip_paket.muddet_gun|default:'10' }} gün</small></div>
+          <div class="reklam-service-price">{{ vip_paket.qiymet|floatformat:'-2'|default:'3.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ vip_paket.muddet_gun|default:'10' }} {% if is_ru %}дн.{% else %}gün{% endif %}</small></div>
           <button type="button" id="btnModalVip" class="btn-reklam-apply btn-reklam-apply--amber" onclick="submitVip('vip', {{ vip_paket.qiymet|default:'3' }}, this)">
-            VIP et
+            VIP
           </button>
         </div>
       </div>
@@ -415,12 +416,12 @@
         <div class="reklam-service-details">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <h4 style="margin:0;font-size:14px;font-weight:700;color:#0f172a">Super VIP</h4>
-            <span id="badgeModalSuperVip" class="reklam-badge reklam-badge--emerald">Ən çox baxış</span>
+            <span id="badgeModalSuperVip" class="reklam-badge reklam-badge--emerald">{% if is_ru %}Максимум звонков{% else %}Ən çox baxış{% endif %}</span>
           </div>
-          <p id="descModalSuperVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.</p>
+          <p id="descModalSuperVip" style="margin:3px 0 0;font-size:11.5px;color:#64748b">{% if is_ru %}На главной странице и в верхнем блоке — до 5 раз больше обращений клиентов.{% else %}Ana səhifədə və ən üst blokda qızılı fərqlənmə ilə 5x daha çox müştəri qazandırır.{% endif %}</p>
         </div>
         <div class="reklam-service-action">
-          <div class="reklam-service-price">{{ super_vip_paket.qiymet|floatformat:'-2'|default:'8.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ super_vip_paket.muddet_gun|default:'30' }} gün</small></div>
+          <div class="reklam-service-price">{{ super_vip_paket.qiymet|floatformat:'-2'|default:'8.00' }} ₼ <small style="display:block;font-size:10px;color:#64748b;font-weight:500">/ {{ super_vip_paket.muddet_gun|default:'30' }} {% if is_ru %}дн.{% else %}gün{% endif %}</small></div>
           <button type="button" id="btnModalSuperVip" class="btn-reklam-apply btn-reklam-apply--emerald" onclick="submitVip('super_vip', {{ super_vip_paket.qiymet|default:'8' }}, this)">
             Super VIP
           </button>
@@ -431,8 +432,8 @@
 
     <!-- Modal Footer -->
     <div style="margin-top:16px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <small style="font-size:11px;color:#94a3b8">Bütün xidmətlər balansdan avtomatik aktivləşdirilir.</small>
-      <button type="button" onclick="closeReklamModal()" style="padding:7px 16px;border:none;background:#f1f5f9;color:#475569;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer">Bağla</button>
+      <small style="font-size:11px;color:#94a3b8">{% if is_ru %}Все услуги активируются автоматически с баланса.{% else %}Bütün xidmətlər balansdan avtomatik aktivləşdirilir.{% endif %}</small>
+      <button type="button" onclick="closeReklamModal()" style="padding:7px 16px;border:none;background:#f1f5f9;color:#475569;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer">{% if is_ru %}Закрыть{% else %}Bağla{% endif %}</button>
     </div>
 
   </div>

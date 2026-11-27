@@ -44,11 +44,48 @@ def language_paths(path):
     return False, path, ru_path, has_ru
 
 
+def resolve_ui_lang(request):
+    """
+    Səhifənin dilini müəyyən edir:
+    1. ?lang=az və ya ?lang=ru parametri varsa onu üstün tutur.
+    2. /ru/ ilə başlayan URL-lər həmişə 'ru'.
+    3. İkidilli ictimai səhifələrin AZ URL-ləri (/, /elanlar/, /xidmet/..., /elan/<id>-<slug>/, /haqqimizda/) həmişə 'az'.
+    4. Şəxsi və köməkçi səhifələrdə (/profil/, /mesajlar/, /odenis/, /elan/yeni/, /giris/ və s.)
+       istifadəçinin son seçdiyi dili (prousta_lang cookie və ya session) qoruyur.
+    """
+    path = getattr(request, 'path', '/') or '/'
+    q_lang = request.GET.get('lang', '').strip().lower() if hasattr(request, 'GET') else ''
+    if q_lang in ('az', 'ru'):
+        return q_lang
+    if path == '/ru' or path.startswith('/ru/'):
+        return 'ru'
+    is_public_bilingual_az = (
+        path == '/'
+        or path.startswith(('/elanlar/', '/xidmet/', '/haqqimizda/'))
+        or (path.startswith('/elan/') and not path.startswith('/elan/yeni/'))
+    )
+    if is_public_bilingual_az:
+        return 'az'
+    cookie_lang = getattr(request, 'COOKIES', {}).get('prousta_lang', '').strip().lower()
+    if cookie_lang in ('az', 'ru'):
+        return cookie_lang
+    if hasattr(request, 'session'):
+        sess_lang = request.session.get('prousta_lang', '')
+        if sess_lang in ('az', 'ru'):
+            return sess_lang
+    return 'az'
+
+
 def seo_context(request):
     path = request.path
     page = _page_number(request)
     params = {key for key, value in request.GET.items() if value.strip()}
-    is_ru, az_path, ru_path, has_ru = language_paths(path)
+    path_is_ru, az_path, ru_path, has_ru = language_paths(path)
+    ui_lang = resolve_ui_lang(request)
+    is_ru = path_is_ru or (ui_lang == 'ru')
+    if not has_ru:
+        az_path = f'{path}?lang=az'
+        ru_path = f'{path}?lang=ru'
 
     noindex = bool(params & _NOINDEX_PARAMS)
     # Ana səhifənin ?page=N variantları /elanlar/ ilə dublikatdır

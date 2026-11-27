@@ -1,112 +1,320 @@
-/* Prousta — motion, kölgələr, ümumi UI */
+/* Prousta — Apple-grade Fluid Motion, View Transitions & UI Physics */
 
 :root {
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast: 0.2s;
-  --dur-normal: 0.4s;
-  --dur-slow: 0.65s;
-  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 8px 28px rgba(15, 23, 42, 0.09);
-  --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.12);
-  --shadow-brand: 0 8px 32px rgba(0, 123, 82, 0.16);
+  /* Apple iOS / macOS fluid spring & deceleration curves */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: linear(
+    0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%,
+    1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%,
+    1.129 32.8%, 1.051 39.6%, 1.017 43.1%, 0.991, 0.977 51%, 0.974 53.8%,
+    0.975 57.1%, 0.997 69.8%, 1.003 76.9%, 1.004 83.8%, 1
+  );
+  --ease-spring-Fallback: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.22s;
+  --dur-normal: 0.42s;
+  --dur-slow: 0.62s;
+  --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.09);
+  --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.13);
+  --shadow-brand: 0 10px 32px rgba(0, 123, 82, 0.18);
 }
 
-html { scroll-behavior: smooth; }
+/* Cross-Document View Transitions API (Apple-like seamless page navigation) */
+@view-transition {
+  navigation: auto;
+}
 
-/* Səhifə girişi - flickersiz dərhal render */
+::view-transition-old(root) {
+  animation: puPageFadeOut 0.18s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: puPageFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes puPageFadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.994); }
+}
+
+@keyframes puPageFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Səhifə girişi — zərif Apple spring axını */
 .page-shell {
   opacity: 1;
   transform: none;
+  animation: puShellEnter 0.38s var(--ease-out);
 }
 
-/* Scroll reveal */
+@keyframes puShellEnter {
+  from { opacity: 0.01; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Scroll reveal & Staggered entrance ( yalnız GPU compositor: transform + opacity ) */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translate3d(0, 20px, 0);
   transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  will-change: opacity, transform;
 }
 
-[data-reveal].is-visible { opacity: 1; transform: translateY(0); }
-[data-reveal="fade"] { transform: none; }
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
 
 [data-stagger] > * {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translate3d(0, 16px, 0) scale(0.985);
   transition: opacity var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-out);
 }
 
-[data-stagger].is-visible > * { opacity: 1; transform: translateY(0); }
+[data-stagger].is-visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
 
 [data-reveal].is-visible [data-stagger] > * {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scale(1);
 }
 
-/* Nav scroll */
-nav {
-  transition: box-shadow var(--dur-normal), border-color var(--dur-normal), background var(--dur-normal) !important;
+/* Apple-style Card Entrance Animation for Dynamic / Infinite-Scroll Cards */
+.pu-card-enter {
+  animation: puCardSpringIn 0.48s var(--ease-out) both;
 }
 
-nav.is-scrolled {
-  box-shadow: var(--shadow-sm) !important;
-  background: rgba(255, 255, 255, 0.97) !important;
+@keyframes puCardSpringIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
-/* Düymələr */
-.btn {
-  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast),
-    transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) !important;
+/* Apple Frosted Glass Navigation (macOS / iOS translucent header) */
+.site-nav {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  transition: box-shadow 0.35s var(--ease-out),
+              border-color 0.35s var(--ease-out),
+              background 0.35s var(--ease-out),
+              transform 0.35s var(--ease-out) !important;
+}
+
+.site-nav.is-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(204, 224, 215, 0.95) !important;
+  box-shadow: 0 12px 32px -6px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(0, 123, 82, 0.08) !important;
+}
+
+/* Mobil Alt Naviqasiya — Apple iOS Tab Bar Frosted Glass */
+.mobil-alt-nav {
+  background: rgba(255, 255, 255, 0.86) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.85) !important;
+}
+
+.alt-nav-item {
+  transition: color 0.22s var(--ease-out), transform 0.22s var(--ease-out) !important;
+}
+
+.alt-nav-item:active {
+  transform: scale(0.92) !important;
+}
+
+.alt-nav-plus {
+  transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out), background 0.22s ease !important;
+}
+
+.alt-nav-plus:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+.alt-nav-plus:active {
+  transform: scale(0.93) !important;
+}
+
+/* Düymələr, Çiplər və İnteraktiv Elementlər (Apple Tactile Spring) */
+.btn,
+.chip,
+.quick-services a,
+.profile-button,
+.join-button,
+.load-more-btn {
+  transition: background var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              transform 0.26s var(--ease-out),
+              box-shadow 0.26s var(--ease-out) !important;
 }
 
 .btn-primary {
-  box-shadow: 0 2px 10px rgba(0, 123, 82, 0.14);
+  box-shadow: 0 2px 10px rgba(0, 123, 82, 0.15);
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 123, 82, 0.25);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px rgba(0, 123, 82, 0.26);
 }
 
-.btn:active { transform: scale(0.98); }
-
-/* Toast */
-.msg {
-  box-shadow: var(--shadow-md);
-  transition: opacity var(--dur-fast), transform var(--dur-fast);
+.btn:active,
+.chip:active,
+.quick-services a:active,
+.profile-button:active,
+.join-button:active,
+.load-more-btn:active {
+  transform: scale(0.96) !important;
 }
 
-.msg.is-dismissing {
-  opacity: 0;
-  transform: translateX(20px);
+.chip:hover,
+.quick-services a:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 123, 82, 0.10);
 }
 
-/* Kartlar və Elan Kartları (Kölgə, yığcam ölçülər və hover animasiyası) */
+/* Kateqoriya kartları, Usta kartları, Addım kartları, Rəy kartları */
+.category-tile,
+.professional-card,
+.step-card,
+.review-card,
+.panel {
+  transition: transform 0.34s var(--ease-out),
+              box-shadow 0.34s var(--ease-out),
+              border-color 0.25s ease !important;
+}
+
+.category-tile:hover {
+  transform: translateY(-4px) scale(1.015) !important;
+  box-shadow: 0 12px 24px rgba(0, 123, 82, 0.11) !important;
+  border-color: #9dceba !important;
+}
+
+.category-tile:active {
+  transform: scale(0.96) !important;
+}
+
+.category-tile .category-emoji {
+  transition: transform 0.36s var(--ease-out);
+}
+
+.category-tile:hover .category-emoji {
+  transform: scale(1.1) translateY(-1px);
+}
+
+.professional-card:hover,
+.step-card:hover,
+.review-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.09), 0 3px 10px rgba(0, 123, 82, 0.06) !important;
+  border-color: #c5dfd4 !important;
+}
+
+/* Elan Kartları (Service Card — Apple Store Card Feel) */
 .service-card {
   background: #ffffff !important;
   border: 1px solid #dfebe5 !important;
-  border-radius: 10px !important;
-  padding: 4px !important;
-  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+  border-radius: 12px !important;
+  padding: 5px !important;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: transform 0.34s var(--ease-out),
+              box-shadow 0.34s var(--ease-out),
+              border-color 0.24s ease !important;
+  will-change: transform;
 }
 
 .service-card:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12), 0 3px 8px rgba(0, 123, 82, 0.08) !important;
-  border-color: #bad8cc !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.11), 0 4px 12px rgba(0, 123, 82, 0.09) !important;
+  border-color: #a8d2c1 !important;
+}
+
+.service-photo img {
+  transition: transform 0.55s var(--ease-out), opacity 0.38s var(--ease-out);
+}
+
+.service-card:hover .service-photo img {
+  transform: scale(1.045);
+}
+
+.favorite-button {
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  transition: transform 0.25s var(--ease-out), background 0.2s ease, color 0.2s ease !important;
+}
+
+.favorite-button:hover {
+  transform: scale(1.12);
+}
+
+.favorite-button:active {
+  transform: scale(0.9);
 }
 
 @media (max-width: 680px) {
   .service-card {
-    border-radius: 8px !important;
-    padding: 3.5px !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
   }
 }
 
 /* Elan kartlarında alt mətni (təsviri) tam gizlət */
 .service-description {
   display: none !important;
+}
+
+/* Qalereya Şəkli Keçidi (Elan Daxili Səhifə) */
+.gallery-main img {
+  transition: opacity 0.26s var(--ease-out), transform 0.36s var(--ease-out);
+}
+
+.gallery-main img.is-switching {
+  opacity: 0.15;
+  transform: scale(0.988);
+}
+
+.gallery-thumbs button {
+  transition: transform 0.22s var(--ease-out), border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.gallery-thumbs button:hover {
+  transform: translateY(-2px);
+}
+
+.gallery-thumbs button.is-active {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 123, 82, 0.22);
+}
+
+/* Toast Bildirişləri */
+.msg {
+  box-shadow: var(--shadow-md);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.msg.is-dismissing {
+  opacity: 0;
+  transform: translate3d(20px, 0, 0) scale(0.96);
 }
 
 .kart {
@@ -123,7 +331,7 @@ nav.is-scrolled {
 
 .kart:hover .kart-img img { transform: scale(1.04); }
 
-/* Mobil menyu overlay və Yan Panel (Drawer) */
+/* Mobil menyu overlay və Yan Panel (Apple iOS Sheet Drawer) */
 .mobil-menu-overlay {
   display: none;
   position: fixed;
@@ -134,12 +342,12 @@ nav.is-scrolled {
   right: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(15, 23, 42, 0.55) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.48) !important;
+  backdrop-filter: saturate(150%) blur(8px);
+  -webkit-backdrop-filter: saturate(150%) blur(8px);
   z-index: 9998 !important;
   opacity: 0;
-  transition: opacity var(--dur-normal);
+  transition: opacity 0.34s var(--ease-apple);
 }
 
 .mobil-menu-overlay.aktiv { display: block; opacity: 1; }
@@ -154,23 +362,25 @@ nav.is-scrolled {
   height: 100vh !important;
   height: 100dvh !important;
   max-height: 100vh !important;
-  background: #ffffff !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: saturate(180%) blur(24px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(24px) !important;
   z-index: 9999 !important;
   padding: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  border-radius: 20px 0 0 20px !important;
+  border-radius: 22px 0 0 22px !important;
   border: none !important;
-  border-left: 1px solid #dce8e2 !important;
-  box-shadow: -8px 0 32px rgba(15, 23, 42, 0.2) !important;
-  transform: translateX(100%) !important;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-left: 1px solid rgba(220, 232, 226, 0.9) !important;
+  box-shadow: -12px 0 40px rgba(15, 23, 42, 0.22) !important;
+  transform: translate3d(100%, 0, 0) !important;
+  transition: transform 0.36s var(--ease-apple) !important;
   overflow: hidden !important;
 }
 
 .mobil-menu.aktiv {
   display: flex !important;
-  transform: translateX(0) !important;
+  transform: translate3d(0, 0, 0) !important;
 }
 
 .mobil-menu-scroll {
@@ -197,7 +407,7 @@ nav.is-scrolled {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all .18s ease;
+  transition: all .2s var(--ease-out);
   box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);
 }
 
@@ -229,5 +439,9 @@ nav.is-scrolled {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  [data-reveal], [data-stagger] > *, .page-shell { opacity: 1; transform: none; animation: none; }
+  [data-reveal], [data-stagger] > *, .page-shell, .pu-card-enter {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }

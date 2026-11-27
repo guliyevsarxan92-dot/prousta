@@ -3,18 +3,73 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Nav kölgə */
-  var nav = document.querySelector('nav');
-  if (nav) {
-    var onScroll = function () {
-      nav.classList.toggle('is-scrolled', window.scrollY > 6);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+  /* 1. Nav kölgə və Sol/Sağ yan vitrinlərin rAF ilə axıcı mövqelənməsi */
+  var nav = document.querySelector('.site-nav') || document.querySelector('nav');
+  var footer = document.querySelector('.site-footer') || document.querySelector('footer');
+  var scrollTicking = false;
+
+  function updateScrollLayout() {
+    scrollTicking = false;
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+    if (nav) {
+      nav.classList.toggle('is-scrolled', scrollY > 6);
+    }
+
+    var topVal = 84;
+    if (nav) {
+      var navBottom = nav.getBoundingClientRect().bottom;
+      topVal = Math.max(Math.round(navBottom + 12), 84);
+    }
+    var docStyle = document.documentElement.style;
+    docStyle.setProperty('--side-ad-top', topVal + 'px');
+
+    var winH = window.innerHeight || document.documentElement.clientHeight || 800;
+    var maxAvail = winH - topVal - 24;
+    var targetH = Math.min(Math.max(maxAvail, 280), 760);
+
+    if (footer) {
+      var ft = footer.getBoundingClientRect().top;
+      var availH = ft - topVal - 20;
+      if (availH < 180) {
+        docStyle.setProperty('--side-ad-opacity', '0');
+        docStyle.setProperty('--side-ad-pointer', 'none');
+      } else {
+        docStyle.setProperty('--side-ad-opacity', '1');
+        docStyle.setProperty('--side-ad-pointer', 'auto');
+        docStyle.setProperty('--side-ad-max-h', Math.min(availH, targetH) + 'px');
+      }
+    } else {
+      docStyle.setProperty('--side-ad-opacity', '1');
+      docStyle.setProperty('--side-ad-pointer', 'auto');
+      docStyle.setProperty('--side-ad-max-h', targetH + 'px');
+    }
   }
 
-  /* Mobil menyu */
+  function requestScrollLayout() {
+    if (!scrollTicking) {
+      scrollTicking = true;
+      requestAnimationFrame(updateScrollLayout);
+    }
+  }
+
+  updateScrollLayout();
+  window.addEventListener('scroll', requestScrollLayout, { passive: true });
+  window.addEventListener('resize', requestScrollLayout, { passive: true });
+  window.addEventListener('load', requestScrollLayout);
+
+  /* 2. Video bannerlərin səssiz avtomatik oxunmasını təmin et */
+  document.querySelectorAll('.pu-top-video, .pu-wing-video, .pu-mid-video, .top-ad-video, .side-ad-custom-video, .in-grid-ad-video').forEach(function (vid) {
+    vid.muted = true;
+    vid.playsInline = true;
+    var playPromise = vid.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(function () { /* Brauzer enerjiyə qənaət rejimindədirsə səssiz keç */ });
+    }
+  });
+
+  /* 3. Mobil menyu */
   window.toggleMenu = function (el) {
+    if (!el) return;
     el.classList.toggle('aktiv');
     var menu = document.getElementById('mobilMenu');
     var overlay = document.getElementById('mobilMenuOverlay');
@@ -45,7 +100,7 @@
     }
   });
 
-  /* Alt nav aktiv */
+  /* 4. Alt nav aktiv */
   var path = window.location.pathname;
   document.querySelectorAll('.alt-nav-item').forEach(function (link) {
     var href = link.getAttribute('href');
@@ -54,7 +109,7 @@
     }
   });
 
-  /* Toast */
+  /* 5. Toast */
   document.querySelectorAll('.msg').forEach(function (msg, i) {
     setTimeout(function () {
       msg.classList.add('is-dismissing');
@@ -62,7 +117,16 @@
     }, 4500 + i * 400);
   });
 
-  /* Xidmət slayderi — avtomatik sürüşən bir sətir */
+  /* 6. Naviqasiya açılan menyuların (details.nav-dropdown) kənara kliklədikdə bağlanması */
+  document.addEventListener('click', function (e) {
+    document.querySelectorAll('details.nav-dropdown[open]').forEach(function (dropdown) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.removeAttribute('open');
+      }
+    });
+  });
+
+  /* 7. Xidmət slayderi — avtomatik sürüşən bir sətir */
   var slider = document.getElementById('xidmetSlider');
   if (slider) {
     var viewport = slider.querySelector('.xidmet-viewport');
@@ -111,7 +175,7 @@
       } else {
         viewport.classList.remove('is-snapping');
       }
-      track.style.transform = 'translateX(' + offset + 'px)';
+      track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
     }
 
     function scrollBy(dx, animate) {
@@ -255,72 +319,88 @@
     }
   }
 
-  if (reduced) {
-    document.querySelectorAll('[data-reveal], [data-stagger]').forEach(function (el) {
-      el.classList.add('is-visible');
+  /* 8. Apple-style Scroll Reveal & Staggered Section Entrances */
+  if (!reduced) {
+    // Avtomatik olaraq əsas bölmələrə zərif scroll-reveal əlavə et (ilk ekranda olmayanlara)
+    var autoSections = document.querySelectorAll(
+      '.home-section, .pg-section, .join-banner, .home-stats, .panel'
+    );
+    var winHeight = window.innerHeight || 800;
+    autoSections.forEach(function (sec) {
+      if (sec.hasAttribute('data-reveal') || sec.closest('[data-reveal]')) return;
+      var rect = sec.getBoundingClientRect();
+      // İlk ekranda dərhal görünən elementləri gizlətmə (LCP və CLS qorunur)
+      if (rect.top > winHeight * 0.92) {
+        sec.setAttribute('data-reveal', '');
+      }
     });
-    return;
+
+    var autoGrids = document.querySelectorAll(
+      '.category-grid, .professional-grid, .steps-grid, .review-grid, .cat-grid'
+    );
+    autoGrids.forEach(function (grid) {
+      if (grid.hasAttribute('data-stagger')) return;
+      var rect = grid.getBoundingClientRect();
+      if (rect.top > winHeight * 0.88) {
+        grid.setAttribute('data-stagger', '');
+      }
+    });
   }
 
-  /* Scroll reveal */
   var targets = document.querySelectorAll('[data-reveal], [data-stagger]');
-  if (!targets.length || !('IntersectionObserver' in window)) {
+  if (reduced || !targets.length || !('IntersectionObserver' in window)) {
     targets.forEach(function (el) { el.classList.add('is-visible'); });
-    return;
-  }
-
-  function revealEl(el) {
-    if (el.classList.contains('is-visible')) return;
-    if (el.hasAttribute('data-stagger') || el.querySelector('[data-stagger]')) {
-      var staggers = el.hasAttribute('data-stagger') ? [el] : el.querySelectorAll('[data-stagger]');
-      Array.prototype.forEach.call(staggers, function (stagger) {
-        Array.prototype.forEach.call(stagger.children, function (child, i) {
-          child.style.transitionDelay = (i * 0.06) + 's';
+  } else {
+    function revealEl(el) {
+      if (el.classList.contains('is-visible')) return;
+      if (el.hasAttribute('data-stagger') || el.querySelector('[data-stagger]')) {
+        var staggers = el.hasAttribute('data-stagger') ? [el] : el.querySelectorAll('[data-stagger]');
+        Array.prototype.forEach.call(staggers, function (stagger) {
+          Array.prototype.forEach.call(stagger.children, function (child, i) {
+            child.style.transitionDelay = Math.min(i * 0.045, 0.36) + 's';
+          });
+          stagger.classList.add('is-visible');
         });
-        stagger.classList.add('is-visible');
-      });
+      }
+      el.classList.add('is-visible');
     }
-    el.classList.add('is-visible');
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        revealEl(entry.target);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px 48px 0px' });
+
+    targets.forEach(function (el) { io.observe(el); });
+
+    requestAnimationFrame(function () {
+      targets.forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) revealEl(el);
+      });
+    });
   }
 
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      revealEl(entry.target);
-      io.unobserve(entry.target);
+  /* 9. Şəkil zərif fade-in */
+  function attachSmoothImageLoad(root) {
+    (root || document).querySelectorAll('.kart-img img, .service-photo img').forEach(function (img) {
+      if (img.complete || img.dataset.puImgReady) return;
+      img.dataset.puImgReady = '1';
+      if (!reduced) {
+        img.style.opacity = '0';
+        img.addEventListener('load', function () {
+          img.style.opacity = '1';
+        }, { once: true });
+        img.addEventListener('error', function () {
+          img.style.opacity = '1';
+        }, { once: true });
+      }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px 40px 0px' });
-
-  targets.forEach(function (el) { io.observe(el); });
-
-  /* Artıq görünən bölmələri dərhal aç (məs. qısa ekran, scrollsuz) */
-  requestAnimationFrame(function () {
-    targets.forEach(function (el) {
-      var rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) revealEl(el);
-    });
-  });
-
-  /* Şəkil fade-in */
-  document.querySelectorAll('.kart-img img').forEach(function (img) {
-    if (img.complete) return;
-    img.style.opacity = '0';
-    img.style.transition = 'opacity 0.5s ease';
-    img.addEventListener('load', function () { img.style.opacity = '1'; });
-  });
-
-  /* Sol və sağ yan reklamların üst menyunun altına düşməsinin qarşısını al */
-  function updateSideBannersPosition() {
-    var nav = document.querySelector('.site-nav');
-    if (!nav) return;
-    var rect = nav.getBoundingClientRect();
-    var targetTop = Math.max(Math.round(rect.bottom + 12), 84);
-    document.documentElement.style.setProperty('--side-ad-top', targetTop + 'px');
   }
-  window.addEventListener('scroll', updateSideBannersPosition, { passive: true });
-  window.addEventListener('resize', updateSideBannersPosition);
-  window.addEventListener('load', updateSideBannersPosition);
-  updateSideBannersPosition();
+  attachSmoothImageLoad(document);
+  window.__puAttachSmoothImages = attachSmoothImageLoad;
 })();
 
 // Keyboard access for the site's custom payment dialogs.

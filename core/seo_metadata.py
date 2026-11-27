@@ -179,8 +179,14 @@ def build_metadata(context):
                       'profil_duzelis': 'Profili redaktə et', 'mesajlar': 'Mesajlar',
                       'sifre_unutdum': 'Şifrənin bərpası', 'elan_yarat': 'Elan yerləşdir',
                       'odenis': 'Ödəniş', 'istifadeci_profil': 'Elan sahibinin profili'}
+    private_titles_ru = {'giris': 'Вход в аккаунт', 'qeydiyyat': 'Регистрация', 'profil': 'Мой профиль',
+                         'profil_duzelis': 'Настройки профиля', 'mesajlar': 'Сообщения',
+                         'sifre_unutdum': 'Восстановление пароля', 'elan_yarat': 'Подать объявление',
+                         'odenis': 'Пополнение баланса', 'istifadeci_profil': 'Профиль мастера'}
     if is_ru:
-        title, description = STATIC_PAGES_RU.get(view, (BRAND, 'Платформа объявлений мастеров и услуг в Баку.'))
+        title, description = STATIC_PAGES_RU.get(view, (
+            (private_titles_ru[view] + ' | ' + BRAND) if view in private_titles_ru else BRAND,
+            'Платформа объявлений мастеров и услуг в Баку.'))
     else:
         title, description = STATIC_PAGES.get(view, (
             (private_titles[view] + ' | ' + BRAND) if view in private_titles else BRAND,

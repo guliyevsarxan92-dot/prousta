@@ -52,4 +52,29 @@ class SecurityHeadersMiddleware:
         if request.path.startswith(self.PRIVATE_PREFIXES) or getattr(request, 'user', None) and request.user.is_authenticated:
             if 'no-store' not in response.get('Cache-Control', ''):
                 response['Cache-Control'] = 'private, no-store, max-age=0'
+
+        # İstifadəçinin seçdiyi dili (az / ru) cookie-də saxla ki, /profil/, /mesajlar/, /odenis/ kimi
+        # ortaq səhifələrə keçdikdə dil avtomatik dəyişməsin.
+        path = request.path or '/'
+        q_lang = request.GET.get('lang', '').strip().lower()
+        target_lang = None
+        if q_lang in ('az', 'ru'):
+            target_lang = q_lang
+        elif path == '/ru' or path.startswith('/ru/'):
+            target_lang = 'ru'
+        elif (
+            path == '/'
+            or path.startswith(('/elanlar/', '/xidmet/', '/haqqimizda/'))
+            or (path.startswith('/elan/') and not path.startswith('/elan/yeni/') and '/klik/' not in path and '/ireli-cek/' not in path)
+        ):
+            target_lang = 'az'
+
+        if target_lang and request.COOKIES.get('prousta_lang') != target_lang:
+            response.set_cookie(
+                'prousta_lang',
+                target_lang,
+                max_age=365 * 24 * 3600,
+                path='/',
+                samesite='Lax',
+            )
         return response

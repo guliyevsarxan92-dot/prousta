@@ -1,53 +1,53 @@
 {% if reklam_ust and reklam_ust.video %}
-<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri" data-banner-track-view="{{ reklam_ust.id }}">
-  <div class="top-ad-container">
-    <a href="{% url 'banner_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-      <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
+<aside class="pu-top-showcase top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="puTopShowcase" aria-label="{% if is_ru %}Верхний баннер{% else %}Üst Reklam Banneri{% endif %}" data-banner-track-view="{{ reklam_ust.id }}" data-pu-showcase="{{ reklam_ust.id }}">
+  <div class="pu-top-container top-ad-container">
+    <a href="{% url 'partnyor_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="pu-top-link top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <video class="pu-top-video top-ad-video" autoplay muted loop playsinline preload="auto">
         <source src="{{ reklam_ust.video.url }}">
       </video>
     </a>
   </div>
 </aside>
 {% elif reklam_ust and reklam_ust.video_url %}
-<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri" data-banner-track-view="{{ reklam_ust.id }}">
-  <div class="top-ad-container">
-    <a href="{% url 'banner_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-      <video class="top-ad-video" autoplay muted loop playsinline preload="auto">
+<aside class="pu-top-showcase top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="puTopShowcase" aria-label="{% if is_ru %}Верхний баннер{% else %}Üst Reklam Banneri{% endif %}" data-banner-track-view="{{ reklam_ust.id }}" data-pu-showcase="{{ reklam_ust.id }}">
+  <div class="pu-top-container top-ad-container">
+    <a href="{% url 'partnyor_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="pu-top-link top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <video class="pu-top-video top-ad-video" autoplay muted loop playsinline preload="auto">
         <source src="{{ reklam_ust.video_url }}">
       </video>
     </a>
   </div>
 </aside>
 {% elif reklam_ust and reklam_ust.shekil %}
-<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri" data-banner-track-view="{{ reklam_ust.id }}">
-  <div class="top-ad-container">
-    <a href="{% url 'banner_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="top-ad-link" title="{{ reklam_ust.bashliq }}">
-      <img src="{{ reklam_ust.shekil.url|cld_detail }}" alt="{{ reklam_ust.bashliq|default:'Reklam' }}" class="top-ad-img" loading="eager">
+<aside class="pu-top-showcase top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="puTopShowcase" aria-label="{% if is_ru %}Верхний баннер{% else %}Üst Reklam Banneri{% endif %}" data-banner-track-view="{{ reklam_ust.id }}" data-pu-showcase="{{ reklam_ust.id }}">
+  <div class="pu-top-container top-ad-container">
+    <a href="{% url 'partnyor_klik' reklam_ust.id %}" target="_blank" rel="noopener sponsored" class="pu-top-link top-ad-link" title="{{ reklam_ust.bashliq }}">
+      <img src="{{ reklam_ust.shekil.url|cld_banner }}" alt="{{ reklam_ust.bashliq|default:'Prousta.az' }}" class="pu-top-img top-ad-img" loading="eager" decoding="async">
     </a>
   </div>
 </aside>
 {% elif reklam_ust and reklam_ust.html_kod %}
-<aside class="top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="topAdBanner" aria-label="Üst Reklam Banneri" data-banner-track-view="{{ reklam_ust.id }}">
-  <div class="top-ad-container">
-    <div class="top-ad-custom-html">
+<aside class="pu-top-showcase top-ad-banner{% if reklam_ust.animasiya_effekti != 'none' %} anim-{{ reklam_ust.animasiya_effekti }}{% endif %}" id="puTopShowcase" aria-label="{% if is_ru %}Верхний баннер{% else %}Üst Reklam Banneri{% endif %}" data-banner-track-view="{{ reklam_ust.id }}" data-pu-showcase="{{ reklam_ust.id }}">
+  <div class="pu-top-container top-ad-container">
+    <div class="pu-top-custom-html top-ad-custom-html">
       {{ reklam_ust.html_kod|safe }}
     </div>
   </div>
 </aside>
 {% elif not reklam_ust or not reklam_ust.bos_olduqda_gizlet %}
-<aside class="top-ad-banner top-ad-banner--placeholder" id="topAdBanner" aria-label="Üst Reklam Yeri">
-  <div class="top-ad-container">
-    <div class="top-ad-placeholder">
-      <div class="top-ad-placeholder-left">
-        <span class="top-ad-badge-title">ÜST REKLAM BANNERİ</span>
-        <span class="top-ad-badge-size">1920 × 400</span>
-        <span class="top-ad-desc">Reklam üçün müraciət edin: <strong style="color:#007b52">051 588 88 84</strong></span>
+<aside class="pu-top-showcase pu-top-showcase--placeholder top-ad-banner top-ad-banner--placeholder" id="puTopShowcase" aria-label="{% if is_ru %}Место для рекламы{% else %}Üst Reklam Yeri{% endif %}">
+  <div class="pu-top-container top-ad-container">
+    <div class="pu-top-placeholder top-ad-placeholder">
+      <div class="pu-top-placeholder-left top-ad-placeholder-left">
+        <span class="pu-top-badge-title top-ad-badge-title">{% if is_ru %}ВЕРХНИЙ РЕКЛАМНЫЙ БАННЕР{% else %}ÜST REKLAM BANNERİ{% endif %}</span>
+        <span class="pu-top-badge-size top-ad-badge-size">1920 × 250</span>
+        <span class="pu-top-desc top-ad-desc">{% if is_ru %}По вопросам рекламы:{% else %}Reklam üçün müraciət edin:{% endif %} <strong style="color:#007b52">051 588 88 84</strong></span>
       </div>
-      <div class="top-ad-placeholder-actions">
-        <a href="tel:0515888884" class="top-ad-btn top-ad-btn--phone">
+      <div class="pu-top-placeholder-actions top-ad-placeholder-actions">
+        <a href="tel:0515888884" class="pu-top-btn top-ad-btn top-ad-btn--phone">
           📞 051 588 88 84
         </a>
-        <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20%C3%BCst%20banner%20reklam%C4%B1%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="top-ad-btn top-ad-btn--wp">
+        <a href="https://wa.me/994515888884?text=Salam%2C%20Prousta.az%20sayt%C4%B1nda%20%C3%BCst%20banner%20reklam%C4%B1%20haqq%C4%B1nda%20m%C9%99lumat%20almaq%20ist%C9%99yir%C9%99m" target="_blank" rel="noopener" class="pu-top-btn pu-top-btn--wp top-ad-btn top-ad-btn--wp">
           💬 WhatsApp
         </a>
       </div>

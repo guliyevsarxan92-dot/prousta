@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Elanı Düzəlt — #{{ elan.nomre }} — Prousta.az{% endblock %}
+{% load seo_tags %}
+{% block title %}{% if is_ru %}Редактировать объявление{% else %}Elanı Düzəlt{% endif %} — #{{ elan.nomre }} — Prousta.az{% endblock %}
 {% block robots %}noindex, nofollow{% endblock %}
 
 {% block style %}
@@ -21,15 +22,15 @@
 {% block content %}
 <div class="pg pg--form">
   <nav class="crumbs" aria-label="Breadcrumb">
-    <a href="{% url 'index' %}">Ana səhifə</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <a href="{% url 'profil' %}">Profilim</a>{% include 'partials/ui_icon.html' with name='chevron' %}
-    <span aria-current="page">Elana düzəliş</span>
+    <a href="{% if is_ru %}{% url 'ru_index' %}{% else %}{% url 'index' %}{% endif %}">{% if is_ru %}Главная{% else %}Ana səhifə{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <a href="{% url 'profil' %}">{% if is_ru %}Мой профиль{% else %}Profilim{% endif %}</a>{% include 'partials/ui_icon.html' with name='chevron' %}
+    <span aria-current="page">{% if is_ru %}Редактирование{% else %}Elana düzəliş{% endif %}</span>
   </nav>
 
   <div class="pg-hero">
-    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='edit' %} Redaktə</span>
-    <h1>Elana düzəliş et — <span>#{{ elan.nomre }}</span></h1>
-    <p>Elanın məlumatlarını və şəkillərini yeniləyə bilərsiniz.</p>
+    <span class="eyebrow">{% include 'partials/ui_icon.html' with name='edit' %} {% if is_ru %}Редактирование{% else %}Redaktə{% endif %}</span>
+    <h1>{% if is_ru %}Изменить объявление — <span>#{{ elan.nomre }}</span>{% else %}Elana düzəliş et — <span>#{{ elan.nomre }}</span>{% endif %}</h1>
+    <p>{% if is_ru %}Обновите информацию об услуге и фотографии ваших работ.{% else %}Elanın məlumatlarını və şəkillərini yeniləyə bilərsiniz.{% endif %}</p>
   </div>
 
   <div class="panel">
@@ -37,19 +38,19 @@
       {% csrf_token %}
       
       <div class="field">
-        <label for="id_bashliq">Xidmətin adı <span class="req">*</span></label>
+        <label for="id_bashliq">{% if is_ru %}Название услуги{% else %}Xidmətin adı{% endif %} <span class="req">*</span></label>
         <input id="id_bashliq" name="bashliq" value="{{ elan.bashliq }}" required>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_kategori">Kateqoriya <span class="req">*</span></label>
+          <label for="id_kategori">{% if is_ru %}Категория{% else %}Kateqoriya{% endif %} <span class="req">*</span></label>
           <select id="id_kategori" name="kategori" required>
             {% for kat in kateqoriyalar %}
               {% if not kat.ust_kategori %}
-                <optgroup label="{{ kat.ad }}">
+                <optgroup label="{% if is_ru %}{{ kat|ru_cat }}{% else %}{{ kat.ad }}{% endif %}">
                   {% for alt in kat.alt_kateqoriyalar.all %}
-                    <option value="{{ alt.pk }}" {% if elan.kategori == alt %}selected{% endif %}>{{ alt.ad }}</option>
+                    <option value="{{ alt.pk }}" {% if elan.kategori == alt %}selected{% endif %}>{% if is_ru %}{{ alt|ru_cat }}{% else %}{{ alt.ad }}{% endif %}</option>
                   {% endfor %}
                 </optgroup>
               {% endif %}
@@ -58,14 +59,14 @@
         </div>
 
         <div class="field">
-          <label for="id_qiymet">Qiymət (₼)</label>
+          <label for="id_qiymet">{% if is_ru %}Цена (₼){% else %}Qiymət (₼){% endif %}</label>
           <input id="id_qiymet" name="qiymet" type="number" step="any" value="{{ elan.qiymet|default:'' }}">
         </div>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="id_telefon">Mobil nömrə <span class="req">*</span></label>
+          <label for="id_telefon">{% if is_ru %}Мобильный номер{% else %}Mobil nömrə{% endif %} <span class="req">*</span></label>
           <div style="display:flex;align-items:center;gap:6px">
             <span style="padding:10px 14px;background:#f6fbf9;border:1px solid #d7e2de;border-radius:8px;font-size:13px;font-weight:700;color:#007b52">+994</span>
             <input id="id_telefon" name="telefon" type="tel" value="{{ elan.telefon|slice:'4:' }}" maxlength="9" required>
@@ -73,10 +74,10 @@
         </div>
 
         <div class="field">
-          <label for="id_sheher">Bölgə / Şəhər <span class="req">*</span></label>
+          <label for="id_sheher">{% if is_ru %}Город / Район{% else %}Bölgə / Şəhər{% endif %} <span class="req">*</span></label>
           <select id="id_sheher" name="sheher" required>
-            <option value="">Seçin...</option>
-            <optgroup label="Bakı">
+            <option value="">{% if is_ru %}Выберите...{% else %}Seçin...{% endif %}</option>
+            <optgroup label="{% if is_ru %}Баку{% else %}Bakı{% endif %}">
               <option {% if elan.sheher == 'Bakı' %}selected{% endif %}>Bakı</option>
               <option {% if elan.sheher == 'Bakı — Yasamal' %}selected{% endif %}>Bakı — Yasamal</option>
               <option {% if elan.sheher == 'Bakı — Binəqədi' %}selected{% endif %}>Bakı — Binəqədi</option>
@@ -92,7 +93,7 @@
               <option {% if elan.sheher == 'Bakı — Pirallahı' %}selected{% endif %}>Bakı — Pirallahı</option>
               <option {% if elan.sheher == 'Bakı — Abşeron' %}selected{% endif %}>Bakı — Abşeron</option>
             </optgroup>
-            <optgroup label="Digər şəhər və rayonlar">
+            <optgroup label="{% if is_ru %}Другие города и районы{% else %}Digər şəhər və rayonlar{% endif %}">
               <option {% if elan.sheher == 'Abşeron' %}selected{% endif %}>Abşeron</option><option {% if elan.sheher == 'Xırdalan' %}selected{% endif %}>Xırdalan</option>
               <option {% if elan.sheher == 'Sumqayıt' %}selected{% endif %}>Sumqayıt</option><option {% if elan.sheher == 'Gəncə' %}selected{% endif %}>Gəncə</option>
               <option {% if elan.sheher == 'Lənkəran' %}selected{% endif %}>Lənkəran</option><option {% if elan.sheher == 'Mingəçevir' %}selected{% endif %}>Mingəçevir</option>
@@ -125,29 +126,29 @@
       {% include 'partials/service_areas_field.html' %}
 
       <div class="field">
-        <label for="id_acaqlama">Açıqlama <span class="req">*</span></label>
+        <label for="id_acaqlama">{% if is_ru %}Описание{% else %}Açıqlama{% endif %} <span class="req">*</span></label>
         <textarea id="id_acaqlama" name="acaqlama" required>{{ elan.acaqlama }}</textarea>
       </div>
 
       {% with elan.shekillar.all as shekillar %}
       {% if shekillar %}
       <div class="field">
-        <label>Mövcud şəkillər</label>
+        <label>{% if is_ru %}Текущие фотографии{% else %}Mövcud şəkillər{% endif %}</label>
         <div class="photos-grid">
           {% for sh in shekillar %}
           <div class="photo-item {% if sh.esas %}esas{% endif %}" id="photo-{{ sh.pk }}">
             <img src="{{ sh.shekil.url }}" alt="Şəkil" loading="lazy">
             <div class="photo-actions">
-              <button type="button" class="photo-btn btn-esas {% if sh.esas %}aktiv{% endif %}" title="Əsas şəkil et"
+              <button type="button" class="photo-btn btn-esas {% if sh.esas %}aktiv{% endif %}" title="{% if is_ru %}Сделать главным{% else %}Əsas şəkil et{% endif %}"
                       data-esas-url="{% url 'shekil_esas' sh.pk %}" data-pk="{{ sh.pk }}">
                 {% include 'partials/ui_icon.html' with name='star' %}
               </button>
-              <button type="button" class="photo-btn btn-sil" title="Şəkli sil"
+              <button type="button" class="photo-btn btn-sil" title="{% if is_ru %}Удалить фото{% else %}Şəkli sil{% endif %}"
                       data-sil-url="{% url 'shekil_sil' sh.pk %}" data-pk="{{ sh.pk }}">
                 {% include 'partials/ui_icon.html' with name='trash' %}
               </button>
             </div>
-            {% if sh.esas %}<div class="photo-label">Əsas</div>{% endif %}
+            {% if sh.esas %}<div class="photo-label">{% if is_ru %}Главное{% else %}Əsas{% endif %}</div>{% endif %}
           </div>
           {% endfor %}
         </div>
@@ -156,18 +157,18 @@
       {% endwith %}
 
       <div class="field">
-        <label>Yeni şəkillər əlavə et</label>
+        <label>{% if is_ru %}Добавить новые фотографии{% else %}Yeni şəkillər əlavə et{% endif %}</label>
         <input type="file" name="shekillar" multiple accept="image/*">
-        <small style="color:var(--muted);display:block;margin-top:4px">Maksimum 5 şəkil. Şəkillərdə filiqran (watermark) və kənar sayt loqoları olmamalıdır.</small>
+        <small style="color:var(--muted);display:block;margin-top:4px">{% if is_ru %}Максимум 5 фотографий без сторонних водяных знаков.{% else %}Maksimum 5 şəkil. Şəkillərdə filiqran (watermark) və kənar sayt loqoları olmamalıdır.{% endif %}</small>
       </div>
 
       <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
         <button class="btn btn-primary btn-lg" type="submit" style="min-width:180px">
           {% include 'partials/ui_icon.html' with name='check' %}
-          Yadda Saxla
+          {% if is_ru %}Сохранить{% else %}Yadda Saxla{% endif %}
         </button>
-        <a href="{% url 'elan_detail' elan.pk elan.slug %}" class="btn btn-outline">
-          Elana bax
+        <a href="{% if is_ru %}{{ elan|ru_url }}{% else %}{% url 'elan_detail' elan.pk elan.slug %}{% endif %}" class="btn btn-outline">
+          {% if is_ru %}Смотреть объявление{% else %}Elana bax{% endif %}
         </a>
       </div>
     </form>
@@ -187,7 +188,7 @@
   }
   document.querySelectorAll('.btn-sil[data-sil-url]').forEach(function(btn){
     btn.addEventListener('click',function(){
-      if(!confirm('Bu şəkli silmək istəyirsiniz?')) return;
+      if(!confirm('{% if is_ru %}Удалить это фото?{% else %}Bu şəkli silmək istəyirsiniz?{% endif %}')) return;
       var pk = btn.getAttribute('data-pk');
       post(btn.getAttribute('data-sil-url')).then(function(r){
         if(r.ok){ var el=document.getElementById('photo-'+pk); if(el) el.remove(); }
@@ -205,7 +206,7 @@
         var item=document.getElementById('photo-'+pk);
         if(item){
           item.classList.add('esas');
-          var lbl=document.createElement('div'); lbl.className='photo-label'; lbl.textContent='Əsas'; item.appendChild(lbl);
+          var lbl=document.createElement('div'); lbl.className='photo-label'; lbl.textContent='{% if is_ru %}Главное{% else %}Əsas{% endif %}'; item.appendChild(lbl);
         }
         btn.classList.add('aktiv');
       });

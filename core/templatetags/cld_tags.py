@@ -3,6 +3,7 @@ from core.image_optimizer import (
     optimize_cloudinary_url,
     get_card_image_url,
     get_detail_image_url,
+    get_banner_image_url,
     get_thumb_image_url,
 )
 
@@ -45,6 +46,15 @@ def cld_detail(image_or_url):
         return ''
     url = getattr(image_or_url, 'url', str(image_or_url))
     return get_detail_image_url(url)
+
+
+@register.filter(name='cld_banner')
+def cld_banner(image_or_url):
+    """Reklam bannerləri üçün kəsilmədən yüksək keyfiyyətli WebP/AVIF URL."""
+    if not image_or_url:
+        return ''
+    url = getattr(image_or_url, 'url', str(image_or_url))
+    return get_banner_image_url(url)
 
 
 @register.filter(name='cld_thumb')

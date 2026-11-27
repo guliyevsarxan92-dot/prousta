@@ -34,6 +34,11 @@ def get_detail_image_url(url):
     return optimize_cloudinary_url(url, 'f_auto,q_auto,w_1200,c_limit')
 
 
+def get_banner_image_url(url):
+    """Reklam bannerləri üçün kəsilmədən yüksək dəqiqlikli WebP/AVIF URL."""
+    return optimize_cloudinary_url(url, 'f_auto,q_auto:best,w_2200,c_limit')
+
+
 def get_thumb_image_url(url):
     """Qalereya kiçik ikonları üçün URL (~5-10 KB)."""
     return optimize_cloudinary_url(url, 'f_auto,q_auto,w_160,c_limit')

@@ -1,13 +1,13 @@
 <div class="field" id="serviceAreasField">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
-    <label style="margin:0">Xidmət göstərdiyiniz rayon və qəsəbələr <small style="font-weight:500;color:var(--muted)">(çoxlu seçim)</small></label>
-    <button type="button" id="toggleAllBakuBtn" style="font-size:12px;font-weight:700;color:#007b52;background:#eaf6f1;border:1px solid #b9d3c8;border-radius:8px;padding:4px 10px;cursor:pointer">
-      Bütün Bakı rayonlarını seç
+    <label style="margin:0">{% if is_ru %}Районы и посёлки выезда{% else %}Xidmət göstərdiyiniz rayon və qəsəbələr{% endif %} <small style="font-weight:500;color:var(--muted)">({% if is_ru %}множественный выбор{% else %}çoxlu seçim{% endif %})</small></label>
+    <button type="button" id="toggleAllBakuBtn" data-select-label="{% if is_ru %}Выбрать все районы Баку{% else %}Bütün Bakı rayonlarını seç{% endif %}" data-clear-label="{% if is_ru %}Очистить выбор Баку{% else %}Bakı seçimini təmizlə{% endif %}" style="font-size:12px;font-weight:700;color:#007b52;background:#eaf6f1;border:1px solid #b9d3c8;border-radius:8px;padding:4px 10px;cursor:pointer">
+      {% if is_ru %}Выбрать все районы Баку{% else %}Bütün Bakı rayonlarını seç{% endif %}
     </button>
   </div>
   <input type="hidden" name="xidmet_erazileri" value="">
   <div class="field-hint" style="margin-bottom:10px">
-    Gedə bildiyiniz əraziləri işarələyin ki, müştərilər rayon və qəsəbə axtarışlarında elanınızı daha tez tapsın.
+    {% if is_ru %}Отметьте районы, куда вы выезжаете, чтобы клиенты быстрее находили ваше объявление.{% else %}Gedə bildiyiniz əraziləri işarələyin ki, müştərilər rayon və qəsəbə axtarışlarında elanınızı daha tez tapsın.{% endif %}
   </div>
   {% for qrup_adi, eraziler in lokasiya_qruplari %}
   <div style="margin-bottom:12px">
@@ -47,7 +47,9 @@
     var btn = document.getElementById('toggleAllBakuBtn');
     if (btn && baku.length) {
       var allChecked = baku.every(function(cb){ return cb.checked; });
-      btn.textContent = allChecked ? 'Bakı seçimini təmizlə' : 'Bütün Bakı rayonlarını seç';
+      var selLbl = btn.getAttribute('data-select-label') || 'Bütün Bakı rayonlarını seç';
+      var clrLbl = btn.getAttribute('data-clear-label') || 'Bakı seçimini təmizlə';
+      btn.textContent = allChecked ? clrLbl : selLbl;
     }
   }
   root.addEventListener('change', syncStyles);
